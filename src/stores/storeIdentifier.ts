@@ -6,4 +6,6 @@ export default class Stores {
   static SessionStore: string = 'sessionStore';
   static AccountStore: string = 'accountStore';
   static CBFCdataStore: string = 'cbfcdataStore';
+  static ProcureStore: string = 'procureStore';
+
 }

@@ -67,6 +67,15 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../scenes/CBFCdatas')),
   },
   {
+    path: '/procuredatas',
+    name: 'procuredatas',
+    //permission: '',
+    title: 'ProcureDatas',
+    icon: HomeOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/ProcureDatas')),
+  },
+  {
     path: '/tenants',
     permission: 'Pages.Tenants',
     title: 'Tenants',
