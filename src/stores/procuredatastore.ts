@@ -7,6 +7,7 @@ import { PagedResultDto } from '../services/dto/pagedResultDto';
 import { PagedProcureResultRequestDto } from '../services/procuredatas/dto/PagedProcureResultRequestDto';
 import Procuredataservice from '../services/procuredatas/procuredataservice';
 import { GetProcureDataForViewDto } from '../services/procuredatas/dto/GetProcureDataForViewDto';
+import procuredataservice from '../services/procuredatas/procuredataservice';
 
 class ProcureStore {
   @observable procure!: PagedResultDto<GetProcureDataForViewDto>;
@@ -102,6 +103,20 @@ class ProcureStore {
         console.error("Error exporting Excel:", error);
     }
    }
+
+   async importExcel(file: File): Promise<any> {
+    try {
+        if (!file) {
+            throw new Error("No file provided");
+        }
+        
+        const items = await procuredataservice.inportExceldata(file);
+        return items;
+    } catch (error) {
+        console.error("Error importing Excel file:", error);
+        throw error; // Optionally rethrow the error to propagate it
+    }
+}
 
     
   async changeLanguage(languageName: string) {

@@ -7,6 +7,7 @@ import { PagedProcureResultRequestDto } from "./dto/PagedProcureResultRequestDto
 //import { UpdateUserInput } from './dto/updateUserInput';
 import http from '../httpService';
 import { GetProcureDataForViewDto } from './dto/GetProcureDataForViewDto';
+//import { promises } from 'dns';
 //import { GetAllProcureDatasForExcelInput } from './dto/GetAllProcureDatasForExcelInput';
 
 
@@ -49,6 +50,20 @@ class ProcureService {
     let result = await http.get('api/services/app/ProcureDatas/GetProcureDatasToExcelReact');
         return result.data.result;
   }
+  public async inportExceldata(file: File): Promise<any> {
+    const formData = new FormData();
+    formData.append('file', file);  // Append the file to FormData
+
+    // Sending the request with the FormData containing the file
+    let result = await http.post('api/services/app/ProcureDatas/ImportGlobusDataFromExcel', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'  // Ensure the Content-Type is set for file uploads
+        }
+    });
+
+    return result.data.result;
+}
+
 }
 
 export default new ProcureService();

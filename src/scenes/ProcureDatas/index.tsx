@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 import { Button, Card, Col, Dropdown, Input, Menu, Modal, Row, Table} from 'antd';
 import { inject, observer } from 'mobx-react';
 
@@ -27,8 +26,10 @@ export interface IProcureState {
   filter: string;
 }
 
+
 const confirm = Modal.confirm;
 const Search = Input.Search;
+//onst [data, setData] = useState([]);
 
 @inject(Stores.ProcureStore)
 @observer
@@ -116,7 +117,16 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
   handleexcelexport = () =>{
     this.props.procureStore.getExcelExport();
   }
-
+  
+  
+   handleFileUpload = (event:any) => {
+      const file = event.target.files[0];
+      if (file) {
+        this.props.procureStore.importExcel(file);
+      }
+    };
+  
+   
    globalProcureData: any = null;
 
   public render() {
@@ -190,9 +200,13 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
             trigger={['click']}
             overlay={
               <Menu>
-                <Menu.Item onClick={() => ({})}>{L('ImportExcel')}</Menu.Item>
-                <Menu.Item onClick={() =>this.handleexcelexport()}>{L('ExportExcel')}</Menu.Item>
-              </Menu>
+      <Menu.Item>
+        <label htmlFor="fileUpload" style={{ cursor: 'pointer' }}>{L('ImportExcel')}</label>
+      </Menu.Item>
+      <Menu.Item onClick={this.handleexcelexport}>{L('ExportExcel')}</Menu.Item>
+      <input id="fileUpload" type="file" accept=".xlsx, .xls" onClick={this.handleFileUpload}  style={{ display: 'none' }} />
+        
+    </Menu>
             }
             placement="bottomLeft"
           >
@@ -239,6 +253,7 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
               loading={procure === undefined ? true : false}
               dataSource={procure === undefined ? [] : procure.items}
               onChange={this.handleTableChange}
+              scroll={{x: 'max-content'} }
             />
           </Col>
         </Row>
