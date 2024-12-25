@@ -5,6 +5,8 @@ import {GetCBFCdataForEditOutput} from './dto/getCBFCdataForEditOutput';
 import { PagedResultDto } from '../../services/dto/pagedResultDto';
 import {PagedTenantResultRequestDto} from './dto/PagedTenantResultRequestDto';
 import {CBFCdataPartLookupTableDto} from './dto/cbfcdataPartLookupTableDto';
+import {CBFCdataBuyerLookupTableDto} from './dto/cbfcdataBuyerLookupTableDto';
+import {CBFCdataSupplierLookupTableDto} from './dto/cbfcdataSupplierLookupTableDto';
 import http from '../httpService';
 
 class cbfcdataService {
@@ -35,6 +37,15 @@ class cbfcdataService {
 
   public async getAllPartForLookupTable(pagedFilterAndSortedRequest: PagedTenantResultRequestDto): Promise<PagedResultDto<CBFCdataPartLookupTableDto>>{
     let result = await http.get('api/services/app/CBFCdatas/GetAllPartForLookupTable', { params: pagedFilterAndSortedRequest });
+    return result.data.result;
+  }
+
+  public async getAllBuyerForLookupTable(pagedFilterAndSortedRequest: PagedTenantResultRequestDto): Promise<PagedResultDto<CBFCdataBuyerLookupTableDto>>{
+    let result = await http.get('api/services/app/CBFCdatas/GetAllBuyerForLookupTable', { params: pagedFilterAndSortedRequest });
+    return result.data.result;
+  }
+  public async getAllSupplierForLookupTable(pagedFilterAndSortedRequest: PagedTenantResultRequestDto): Promise<PagedResultDto<CBFCdataSupplierLookupTableDto>>{
+    let result = await http.get('api/services/app/CBFCdatas/GetAllSupplierForLookupTable', { params: pagedFilterAndSortedRequest });
     return result.data.result;
   }
 }

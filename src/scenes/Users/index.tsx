@@ -61,10 +61,10 @@ class User extends AppComponentBase<IUserProps, IUserState> {
   async createOrUpdateModalOpen(entityDto: EntityDto) {
     if (entityDto.id === 0) {
       await this.props.userStore.createUser();
-      //await this.props.userStore.getRoles(entityDto);
+      await this.props.userStore.getRoles();
     } else {
       await this.props.userStore.get(entityDto);
-     //await this.props.userStore.getRoles(entityDto);
+      await this.props.userStore.getRoles();
     }
 
     this.setState({ userId: entityDto.id });

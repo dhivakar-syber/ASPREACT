@@ -88,7 +88,7 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
     const { visible, onCancel, onCreate } = this.props;
 
     const options = roles.map((x: GetRoles) => {
-      var test = { label: x.description, value: x.normalizedName };
+      var test = { label: x.displayName, value: x.normalizedName };
       return test;
     });
 

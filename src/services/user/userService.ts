@@ -9,7 +9,7 @@ import http from '../httpService';
 
 class UserService {
   public async create(createUserInput: CreateOrUpdateUserInput) {
-    let result = await http.post('api/services/app/User/CreateOrUpdateUser', createUserInput);
+    let result = await http.post('api/services/app/User/Create', createUserInput);
     return result.data.result;
   }
 
@@ -23,9 +23,9 @@ class UserService {
     return result.data;
   }
 
-  public async getRoles(entityDto: EntityDto) {
-    let result = await http.get('api/services/app/User/GetUserRolesForEdit',);
-    return result.data.result;
+  public async getRoles() {
+    let result = await http.post('api/services/app/Role/GetRoles');
+    return result.data.result.items;
   }
 
   public async changeLanguage(changeLanguageInput: ChangeLanguagaInput) {
@@ -35,7 +35,7 @@ class UserService {
 
   public async get(entityDto: EntityDto): Promise<CreateOrUpdateUserInput> {
     let result = await http.get('api/services/app/User/GetUserForEdit', { params: entityDto });
-    return result.data.result.user;
+    return result.data.result;
   }
 
     public async getAll(pagedFilterAndSortedRequest: PagedUserResultRequestDto): Promise<PagedResultDto<GetAllUserOutput>> {

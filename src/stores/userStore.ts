@@ -36,17 +36,15 @@ class UserStore {
   }
 
   @action
-  async getRoles(entityDto: EntityDto) {
-    let result = await userService.getRoles(entityDto);
+  async getRoles() {
+    let result = await userService.getRoles();
     this.roles = result;
   }
 
   @action
   async get(entityDto: EntityDto) {
     let result = await userService.get(entityDto);
-    
-     this.editUser = result;
-     
+    this.editUser = result;
   }
 
   @action

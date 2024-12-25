@@ -48,7 +48,7 @@ class RoleService {
   }
 
   public async getAll(pagedFilterAndSortedRequest: PagedRoleResultRequestDto): Promise<PagedResultDto<GetAllRoleOutput>> {
-    let result = await http.get('api/services/app/Role/GetAll', { params: pagedFilterAndSortedRequest });
+    let result = await http.post('api/services/app/Role/GetRoles', { params: pagedFilterAndSortedRequest });
     return result.data.result;
   }
 }

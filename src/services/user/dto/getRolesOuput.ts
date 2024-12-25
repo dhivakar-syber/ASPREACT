@@ -1,8 +1,8 @@
 export interface GetRoles {
-  roleName: string;
-  roleDisplayName: string;
+  name: string;
+  displayName: string;
   normalizedName: string;
   description: string;
   grantedPermissions: string[];
-  roleId: number;
+  id: number;
 }

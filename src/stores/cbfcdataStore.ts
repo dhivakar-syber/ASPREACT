@@ -13,6 +13,8 @@ import { EnumCurrency, EnumTransaction } from '../enum'
 class CBFCdataStore {
   @observable cbfcdata!: PagedResultDto<GetCBFCdataForViewDto>;
   @observable partlookupdata!: PagedResultDto<CBFCdataPartLookupTableDto>;
+  @observable buyerlookupdata!: PagedResultDto<CBFCdataPartLookupTableDto>;
+  @observable supplierlookupdata!: PagedResultDto<CBFCdataPartLookupTableDto>;
   @observable editUser!: GetCBFCdataForEditOutput;
 
   @action
@@ -74,6 +76,16 @@ class CBFCdataStore {
   async getAllPartForLookupTable(pagedFilterAndSortedRequest: PagedUserResultRequestDto) {
     let result = await cbfcdataService.getAllPartForLookupTable(pagedFilterAndSortedRequest);
     this.partlookupdata = result;
+  }
+  @action
+  async getAllBuyerForLookupTable(pagedFilterAndSortedRequest: PagedUserResultRequestDto) {
+    let result = await cbfcdataService.getAllBuyerForLookupTable(pagedFilterAndSortedRequest);
+    this.buyerlookupdata = result;
+  }
+  @action
+  async getAllSupplierForLookupTable(pagedFilterAndSortedRequest: PagedUserResultRequestDto) {
+    let result = await cbfcdataService.getAllSupplierForLookupTable(pagedFilterAndSortedRequest);
+    this.supplierlookupdata = result;
   }
 }
 
