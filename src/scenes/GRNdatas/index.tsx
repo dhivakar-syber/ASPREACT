@@ -4,33 +4,44 @@ import { Button, Card, Col, Dropdown, Input, Menu, Modal, Row, Table} from 'antd
 import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../components/AppComponentBase';
-import CreateOrUpdateCBFCData from './components/createOrUpdateCBFCData';
+import CreateOrUpdateGRNData from './components/createOrUpdateGRNData';
 import { EntityDto } from '../../services/dto/entityDto';
 import { L } from '../../lib/abpUtility';
 import Stores from '../../stores/storeIdentifier';
-import cbfcdataStore from '../../stores/cbfcdataStore';
+import grndataStore from '../../stores/grndataStore';
 import { FormInstance } from 'antd/lib/form';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
-import { EnumCurrency,EnumTransaction } from '../../../src/enum'
+import { EnumMovementType } from '../../enum'
 
-export interface ICBFCdataProps {
-  cbfcdataStore: cbfcdataStore;
+export interface IGRNdataProps {
+  grndataStore: grndataStore;
 }
 
-export interface ICBFCdataState {
+export interface IGRNdataState {
   modalVisible: boolean;
   maxResultCount: number;
   skipCount: number;
   userId: number;
   filter: string;
 }
-
+type LookupItem = {
+  id: number;
+  displayName: string;
+};
+type SupplierLookupItem = {
+  id: number;
+  displayName: string;
+};
+type BuyerLookupItem = {
+  id: number;
+  displayName: string;
+};
 const confirm = Modal.confirm;
 const Search = Input.Search;
 
-@inject(Stores.CBFCdataStore)
+@inject(Stores.GRNdataStore)
 @observer
-class CBFCDatas extends AppComponentBase<ICBFCdataProps, ICBFCdataState> {
+class GRNDatas extends AppComponentBase<IGRNdataProps, IGRNdataState> {
   formRef = React.createRef<FormInstance>();
 
   state = {
@@ -39,6 +50,9 @@ class CBFCDatas extends AppComponentBase<ICBFCdataProps, ICBFCdataState> {
     skipCount: 0,
     userId: 0,
     filter: '',
+    selectedLookupItem: null as LookupItem | null,
+    selectedSupplierLookupItem: null as SupplierLookupItem | null,
+    selectedBuyerLookupItem: null as BuyerLookupItem | null,
   };
 
   async componentDidMount() {
@@ -46,11 +60,11 @@ class CBFCDatas extends AppComponentBase<ICBFCdataProps, ICBFCdataState> {
   }
 
   async getAll() {
-    if (!this.props.cbfcdataStore) {
-        console.error('cbfcdatastore is undefined');
+    if (!this.props.grndataStore) {
+        console.error('grndatastore is undefined');
         return;
     }
-    await this.props.cbfcdataStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
+    await this.props.grndataStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
   }
 
   handleTableChange = (pagination: any) => {
@@ -65,16 +79,16 @@ class CBFCDatas extends AppComponentBase<ICBFCdataProps, ICBFCdataState> {
 
   async createOrUpdateModalOpen(entityDto: EntityDto) {
     if (entityDto.id === 0) {
-      await this.props.cbfcdataStore.createCBFCData();
+      await this.props.grndataStore.createGRNData();
     } else {
-      await this.props.cbfcdataStore.get(entityDto);
+      await this.props.grndataStore.get(entityDto);
     }
 
     this.setState({ userId: entityDto.id });
     this.Modal();
 
     setTimeout(() => {
-      this.formRef.current?.setFieldsValue({ ...this.props.cbfcdataStore.editUser });
+      this.formRef.current?.setFieldsValue({ ...this.props.grndataStore.editUser });
     }, 100);
   }
 
@@ -83,7 +97,7 @@ class CBFCDatas extends AppComponentBase<ICBFCdataProps, ICBFCdataState> {
     confirm({
       title: 'Do you Want to delete these items?',
       onOk() {
-        self.props.cbfcdataStore.delete(input);
+        self.props.grndataStore.delete(input);
       },
       onCancel() {
         console.log('Cancel');
@@ -93,12 +107,23 @@ class CBFCDatas extends AppComponentBase<ICBFCdataProps, ICBFCdataState> {
 editdata:any = null;
   handleCreate = () => {
     const form = this.formRef.current;
-
+    const { selectedLookupItem } = this.state;
+    if (selectedLookupItem?.id) { 
+      form?.setFieldsValue({ partId: selectedLookupItem.id });
+    }
+    const { selectedSupplierLookupItem } = this.state;
+    if (selectedSupplierLookupItem?.id) { 
+      form?.setFieldsValue({ supplierId: selectedSupplierLookupItem.id });
+    }
+    const { selectedBuyerLookupItem } = this.state;
+    if (selectedBuyerLookupItem?.id) { 
+      form?.setFieldsValue({ buyerId: selectedBuyerLookupItem.id });
+    }
     form!.validateFields().then(async (values: any) => {
       if (this.state.userId === 0) {
-        await this.props.cbfcdataStore.create(values);
+        await this.props.grndataStore.create(values);
       } else {
-        await this.props.cbfcdataStore.update({ ...values, id: this.state.userId });
+        await this.props.grndataStore.update({ ...values, id: this.state.userId });
       }
 
       await this.getAll();
@@ -112,8 +137,8 @@ editdata:any = null;
   };
 
   public render() {
-    console.log(this.props.cbfcdataStore);
-    const { cbfcdata } = this.props.cbfcdataStore;
+    console.log(this.props.grndataStore);
+    const { grndata } = this.props.grndataStore;
     const columns = [
         {
             title: L('Actions'),
@@ -124,8 +149,8 @@ editdata:any = null;
                   trigger={['click']}
                   overlay={
                     <Menu>
-                      <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.cbfCdata?.id })}>{L('Edit')}</Menu.Item>
-                      <Menu.Item onClick={() => this.delete({ id: item.cbfCdata?.id })}>{L('Delete')}</Menu.Item>
+                      <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.grnMaster?.id })}>{L('Edit')}</Menu.Item>
+                      <Menu.Item onClick={() => this.delete({ id: item.grnMaster?.id })}>{L('Delete')}</Menu.Item>
                     </Menu>
                   }
                   placement="bottomLeft"
@@ -137,24 +162,19 @@ editdata:any = null;
               </div>
             ),
           },
-      { title: L('DeliveryNote'), dataIndex: 'cbfCdata.deliveryNote', key: 'deliveryNote', width: 150, render: (text: string, record: any) =>
-        <div>{record.cbfCdata?.deliveryNote || ''}</div> },
-      { title: L('DeliveryNoteDate'), dataIndex: 'cbfCdata.deliveryNoteDate', key: 'deliveryNoteDate', width: 150, render: (text: string, record: any) =>
-        <div>{record.cbfCdata?.deliveryNoteDate || ''}</div> },
-      { title: L('Currency'), dataIndex: 'cbfCdata.currency', key: 'currency', width: 150, render: (text: string, record: any) => {
-        const currencyvalue = record.cbfCdata?.currency;
-        const currencyText = EnumCurrency[currencyvalue] || '';
-        return <div>{currencyText}</div>;
+      { title: L('Description'), dataIndex: 'grnMaster.description', key: 'description', width: 150, render: (text: string, record: any) =>
+        <div>{record.grnMaster?.description || ''}</div> },
+      { title: L('InvoiceNo'), dataIndex: 'grnMaster.invoiceNo', key: 'invoiceNo', width: 150, render: (text: string, record: any) =>
+        <div>{record.grnMaster?.invoiceNo || ''}</div> },
+      { title: L('InvoiceDate'), dataIndex: 'grnMaster.invoiceDate', key: 'invoiceDate', width: 150, render: (text: string, record: any) =>
+        <div>{record.grnMaster?.invoiceDate || ''}</div> },
+      { title: L('Quantity'), dataIndex: 'grnMaster.quantity', key: 'quantity', width: 150, render: (text: string, record: any) =>
+        <div>{record.grnMaster?.quantity || ''}</div> },
+      { title: L('MovementType'), dataIndex: 'grnMaster.movementType', key: 'movementType', width: 150, render: (text: string, record: any) => {
+        const movementTypevalue = record.grnMaster?.movementType;
+        const movementTypeText = EnumMovementType[movementTypevalue] || '';
+        return <div>{movementTypeText}</div>;
     } },
-      { title: L('Transaction'), dataIndex: 'cbfCdata.transaction', key: 'transaction', width: 150, render: (text: string, record: any) => {
-        const transactionValue = record.cbfCdata?.transaction;
-        const transactionText = EnumTransaction[transactionValue] || '';
-        return <div>{transactionText}</div>;
-    } },
-      { title: L('PaidAmount'), dataIndex: 'cbfCdata.paidAmount', key: 'paidAmount', width: 150, render: (text: string, record: any) =>
-        <div>{record.cbfCdata?.paidAmount || ''}</div> },
-      { title: L('Year'), dataIndex: 'cbfCdata.year', key: 'year', width: 150, render: (text: string, record: any) =>
-        <div>{record.cbfCdata?.year || ''}</div> },
       { title: L('PartNo'), dataIndex: 'partPartNo', key: 'partFk.partNo', width: 150, render: (text: string) => <div>{text}</div> },
       { title: L('BuyerName'), dataIndex: 'buyerName', key: 'buyerFk.name', width: 150, render: (text: string) => <div>{text}</div> },
       { title: L('SupplierName'), dataIndex: 'supplierName', key: 'supplierFk.name', width: 150, render: (text: string) => <div>{text}</div> },
@@ -173,7 +193,7 @@ editdata:any = null;
             xxl={{ span: 2, offset: 0 }}
           >
             {' '}
-            <h2>{L('CBFCdata')}</h2>
+            <h2>{L('GRNdata')}</h2>
           </Col>
           <Col
             xs={{ span: 14, offset: 0 }}
@@ -201,18 +221,18 @@ editdata:any = null;
             xxl={{ span: 24, offset: 0 }}
           >
             <Table
-              rowKey={(record) => record.CBFCdata?.id.toString()}
+              rowKey={(record) => record.GRNdata?.id.toString()}
               bordered={true}
               columns={columns}
-              pagination={{ pageSize: 10, total: cbfcdata === undefined ? 0 : cbfcdata.totalCount, defaultCurrent: 1 }}
-              loading={cbfcdata === undefined ? true : false}
-              dataSource={cbfcdata === undefined ? [] : cbfcdata.items}
+              pagination={{ pageSize: 10, total: grndata === undefined ? 0 : grndata.totalCount, defaultCurrent: 1 }}
+              loading={grndata === undefined ? true : false}
+              dataSource={grndata === undefined ? [] : grndata.items}
               onChange={this.handleTableChange}
               scroll={{ x: 'max-content' }}
             />
           </Col>
         </Row>
-        <CreateOrUpdateCBFCData //ts2769
+        <CreateOrUpdateGRNData
           formRef={this.formRef}
           visible={this.state.modalVisible}
           onCancel={() => {
@@ -230,11 +250,11 @@ editdata:any = null;
             paidAmount: 0,
             year: 0,
           }}
-          cbfcdataStore={this.props.cbfcdataStore}
+          grndataStore={this.props.grndataStore}
         />
       </Card>
     );
   }
 }
 
-export default CBFCDatas;
+export default GRNDatas;
