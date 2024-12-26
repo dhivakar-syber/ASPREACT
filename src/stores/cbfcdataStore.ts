@@ -10,7 +10,7 @@ import { CBFCdataPartLookupTableDto } from '../services/cbfcdata/dto/cbfcdataPar
 import { CBFCdataSupplierLookupTableDto } from '../services/cbfcdata/dto/cbfcdataSupplierLookupTableDto';
 import { CBFCdataBuyerLookupTableDto } from '../services/cbfcdata/dto/cbfcdataBuyerLookupTableDto';
 import cbfcdataService from '../services/cbfcdata/cbfcdataService';
-import { EnumCurrency, EnumTransaction } from '../enum'
+import { EnumCurrency, EnumTransaction } from '../enum';
 
 class CBFCdataStore {
   @observable cbfcdata!: PagedResultDto<GetCBFCdataForViewDto>;
@@ -89,6 +89,22 @@ class CBFCdataStore {
     let result = await cbfcdataService.getAllSupplierForLookupTable(pagedFilterAndSortedRequest);
     this.supplierlookupdata = result;
   }
+
+  
+
+   async importExcel(file: File): Promise<any> {
+    try {
+        if (!file) {
+            throw new Error("No file provided");
+        }
+        
+        const items = await cbfcdataService.inportExceldata(file);
+        return items;
+    } catch (error) {
+        console.error("Error importing Excel file:", error);
+        throw error; // Optionally rethrow the error to propagate it
+    }
+}
 }
 
 export default CBFCdataStore;

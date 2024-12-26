@@ -114,9 +114,9 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
     this.setState({ filter: value }, async () => await this.getAll());
   };
 
-  handleexcelexport = () =>{
-    this.props.procureStore.getExcelExport();
-  }
+  // handleexcelexport = () =>{
+  //   this.props.procureStore.getExcelExport();
+  // }
   
   
    handleFileUpload = (event:any) => {
@@ -197,22 +197,25 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
             xxl={{ span: 1, offset: 19 }}
           >  <div>
           <Dropdown
-            trigger={['click']}
-            overlay={
-              <Menu>
-      <Menu.Item>
-        <label htmlFor="fileUpload" style={{ cursor: 'pointer' }}>{L('ImportExcel')}</label>
-      </Menu.Item>
-      <Menu.Item onClick={this.handleexcelexport}>{L('ExportExcel')}</Menu.Item>
-      <input id="fileUpload" type="file" accept=".xlsx, .xls" onClick={this.handleFileUpload}  style={{ display: 'none' }} />
-        
-    </Menu>
-            }
-            placement="bottomLeft"
-          >
-            <Button type="primary" icon={<SettingOutlined />}>
-              {L('Excel Operation')}
-            </Button>
+              trigger={['click']}
+              overlay={
+                <Menu>
+                <Menu.Item>
+                  <label style={{ cursor: 'pointer' }}>
+                    <input type="file" accept=".xlsx, .xls"  style={{ display: 'none' }}  onChange={this.handleFileUpload} />
+                    {L('ImportExcel')}
+                  </label>
+                </Menu.Item>
+                {/* <Menu.Item onClick={this.handleexcelexport}>
+                  {L('ExportExcel')}
+                </Menu.Item> */}
+              </Menu>
+              
+              }
+                placement="bottomLeft">            
+              <Button type="primary" icon={<SettingOutlined />} style={{marginLeft: '-150px'}}>
+                {L('Excel Operation')}
+              </Button>
           </Dropdown>
         </div>
 
@@ -227,7 +230,7 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
             lg={{ span: 1, offset: 21 }}
             xl={{ span: 1, offset: 21 }}
             xxl={{ span: 1, offset: 30 }}
-          > <Button type="primary"   icon={<PlusOutlined />} onClick={() => this.createOrEditeModalOpen({ id: 0 })} >Create ProcurDatas</Button>
+          > <Button type="primary"   icon={<PlusOutlined />} onClick={() => this.createOrEditeModalOpen({ id: 0 })} style={{marginLeft: '-50px'}}>Create ProcurDatas</Button>
 
           </Col>
         </Row>

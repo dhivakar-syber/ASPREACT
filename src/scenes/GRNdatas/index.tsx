@@ -136,6 +136,13 @@ editdata:any = null;
     this.setState({ filter: value }, async () => await this.getAll());
   };
 
+  handleFileUpload = (event:any) => {
+    const file = event.target.files[0];
+    if (file) {
+      this.props.grndataStore.importExcel(file);
+    }
+  };
+
   public render() {
     console.log(this.props.grndataStore);
     const { grndata } = this.props.grndataStore;
@@ -196,6 +203,41 @@ editdata:any = null;
             <h2>{L('GRNdata')}</h2>
           </Col>
           <Col
+                      xs={{ span: 14, offset: 0 }}
+                      sm={{ span: 15, offset: 0 }}
+                      md={{ span: 15, offset: 0 }}
+                      lg={{ span: 1, offset: 21 }}
+                      xl={{ span: 1, offset: 21 }}
+                      xxl={{ span: 1, offset: 19 }}
+                    >  <div>
+                    <Dropdown
+                        trigger={['click']}
+                        overlay={
+                          <Menu>
+                          <Menu.Item>
+                            <label style={{ cursor: 'pointer' }}>
+                              <input type="file" accept=".xlsx, .xls"  style={{ display: 'none' }}  onChange={this.handleFileUpload} />
+                              {L('ImportExcel')}
+                            </label>
+                          </Menu.Item>
+                          {/* <Menu.Item onClick={this.handleexcelexport}>
+                            {L('ExportExcel')}
+                          </Menu.Item> */}
+                        </Menu>
+                        
+                        }
+                          placement="bottomLeft">            
+                        <Button type="primary" icon={<SettingOutlined />} style={{marginLeft: '-150px'}}>
+                          {L('Excel Operation')}
+                        </Button>
+                    </Dropdown>
+                  </div>
+          
+                    </Col>
+                    <br />
+                    <br />
+                    <br />
+          <Col
             xs={{ span: 14, offset: 0 }}
             sm={{ span: 15, offset: 0 }}
             md={{ span: 15, offset: 0 }}
@@ -203,7 +245,8 @@ editdata:any = null;
             xl={{ span: 1, offset: 21 }}
             xxl={{ span: 1, offset: 21 }}
           >
-            <Button type="primary" shape="circle" icon={<PlusOutlined />} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} />
+            <Button type="primary" icon={<PlusOutlined/>} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} style={{marginLeft:'-50px'}}>Create GRNDatas</Button>
+
           </Col>
         </Row>
         <Row>

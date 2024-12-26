@@ -48,6 +48,19 @@ class grndataService {
     let result = await http.get('api/services/app/GRNMasters/GetAllSupplierForLookupTable', { params: pagedFilterAndSortedRequest });
     return result.data.result;
   }
+  public async inportExceldata(file: File): Promise<any> {
+    const formData = new FormData();
+    formData.append('file', file);  // Append the file to FormData
+
+    // Sending the request with the FormData containing the file
+    let result = await http.post('api/services/app/GRNMasters/ImportGRNDataFromExcel', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'  // Ensure the Content-Type is set for file uploads
+        }
+    });
+
+    return result.data.result;
+  }
 }
 
 export default new grndataService();
