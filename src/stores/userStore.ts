@@ -1,6 +1,8 @@
 import { action, observable } from 'mobx';
 
 import { CreateOrUpdateUserInput } from '../services/user/dto/createOrUpdateUserInput';
+//import { GetUserForEditOutput } from '../services/user/dto/getUserForEditOutput';
+import { UserRoleDto } from '../services/user/dto/userRoleDto';
 import { EntityDto } from '../services/dto/entityDto';
 import { GetRoles } from '../services/user/dto/getRolesOuput';
 import { GetUserOutput } from '../services/user/dto/getUserOutput';
@@ -12,6 +14,7 @@ import userService from '../services/user/userService';
 class UserStore {
   @observable users!: PagedResultDto<GetUserOutput>;
   @observable editUser!: CreateOrUpdateUserInput;
+  @observable editRole!: UserRoleDto;
   @observable roles: GetRoles[] = [];
 
   @action
@@ -44,21 +47,29 @@ class UserStore {
   @action
   async get(entityDto: EntityDto) {
     let result = await userService.get(entityDto);
-    this.editUser = result;
+    this.editUser = result.user;
+    this.editRole = result.roles;
   }
 
   @action
   async createUser() {
     this.editUser = {
-      userName: '',
-      name: '',
-      surname: '',
-      emailAddress: '',
-      isActive: false,
-      roleNames: [],
-      password: '',
-      id: 0,
-    };
+        userName: '',
+        name: '',
+        surname: '',
+        emailAddress: '',
+        isActive: false,
+        roleNames: [],
+        password: '',
+        id: 0,
+      };
+      this.editRole = {
+        RoleId:0,
+        RoleName:'',
+        RoleDisplayName:'',
+        IsAssigned:false,
+        InheritedFromOrganizationUnit:false
+      };
     this.roles = [];
   }
 

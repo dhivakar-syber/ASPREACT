@@ -1,5 +1,6 @@
 import { ChangeLanguagaInput } from './dto/changeLanguageInput';
 import { CreateOrUpdateUserInput } from './dto/createOrUpdateUserInput';
+import { GetUserForEditOutput } from './dto/getUserForEditOutput';
 import { EntityDto } from '../../services/dto/entityDto';
 import { GetAllUserOutput } from './dto/getAllUserOutput';
 import { PagedResultDto } from '../../services/dto/pagedResultDto';
@@ -42,9 +43,9 @@ class UserService {
     return result.data;
   }
 
-  public async get(entityDto: EntityDto): Promise<CreateOrUpdateUserInput> {
+  public async get(entityDto: EntityDto): Promise<GetUserForEditOutput> {
     let result = await http.get('api/services/app/User/GetUserForEdit', { params: entityDto });
-    return result.data.result.user;
+    return result.data.result;
   }
 
     public async getAll(pagedFilterAndSortedRequest: PagedUserResultRequestDto): Promise<PagedResultDto<GetAllUserOutput>> {
