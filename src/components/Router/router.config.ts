@@ -93,6 +93,7 @@ export const appRouters: any = [
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/SupplementarySummaries')),
   },
+  
   {
     path: '/tenants',
     permission: 'Pages.Tenants',

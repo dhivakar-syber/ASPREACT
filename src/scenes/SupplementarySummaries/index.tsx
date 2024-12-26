@@ -169,6 +169,7 @@ editdata:any = null;
               </div>
             ),
           },
+          
       { title: L('SupplementaryInvoiceNo'), dataIndex: 'supplementarySummary.supplementaryInvoiceNo', key: 'SupplementaryInvoiceNo', width: 150, render: (text: string, record: any) =>
         <div>{record.supplementarySummary?.supplementaryInvoiceNo || ''}</div> },
       { title: L('SupplementaryInvoiceDate'), dataIndex: 'supplementarySummary.SupplementaryInvoiceDate', key: 'SupplementaryInvoiceDate', width: 150, render: (text: string, record: any) =>

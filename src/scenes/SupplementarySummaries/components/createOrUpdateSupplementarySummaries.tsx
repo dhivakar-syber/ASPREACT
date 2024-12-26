@@ -288,6 +288,7 @@ class CreateOrUpdateSupplementarySummaries extends React.Component<ICreateOrUpda
             </Form.Item>
             <Form.Item label={L('PartId')} name="partId" {...formItemLayout} hidden>
       <Input />
+      
     </Form.Item>
             <Form.Item label={L('SupplementaryInvoiceNo')} name={'supplementaryInvoiceNo'} {...formItemLayout}>
               <Input/>
