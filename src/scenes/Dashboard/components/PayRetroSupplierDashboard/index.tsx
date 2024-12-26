@@ -71,11 +71,19 @@ const PayRetroSupplierDashboard: React.SFC = () => {
 
   
   React.useEffect(() => {
+
+    const supplierDashboardInput: SupplierDashboardInput = {
+      Supplierids: [0], 
+      Buyerids: [0], 
+      Partids:[0]
+    };
+
     // Fetch data when the component mounts
     const fetchData = async () => {
       try {
-        const result = await supplementarySummariesService.loadsupplementarySummary();
-        setTableData(result.data.result || []); // Update state with fetched data
+        const result = await supplementarySummariesService.loadsupplementarySummary(supplierDashboardInput);
+        setTableData(result.data.result || []); 
+        console.log('Supplementary_top_table',result.data.result);
       } catch (error) {
         console.error("Error fetching supplementary summaries:", error);
       }
@@ -128,10 +136,10 @@ const PayRetroSupplierDashboard: React.SFC = () => {
           <tbody>
             {tableData.map((row) => (
               <tr key={row.id} style={{ backgroundColor: row.id % 2 === 0 ? "#f9f9f9" : "#fff" }}>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.buyer}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.partNo}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.reportDate}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.ageing}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.buyerName}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.partno}-{row.versionNo}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.createtime}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign: "center" }}>{row.ageing}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
                   <div className="dropdown-container" style={{ position: "relative" }}>
                     <button
@@ -168,9 +176,9 @@ const PayRetroSupplierDashboard: React.SFC = () => {
                   </div>
                 </td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.date}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.from}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.to}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "right" }}>{row.value}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.contractFromDate}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.contractToDate}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "right" }}>{row.total  }</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.supplier}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.buyerValue}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.fc}</td>
