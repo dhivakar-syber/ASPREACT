@@ -67,6 +67,15 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../scenes/CBFCdatas')),
   },
   {
+    path: '/GRNdatas',
+    permission: '',
+    title: 'GRNdatas',
+    name: 'grndatas',
+    icon: TagsOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/GRNdatas')),
+  },
+  {
     path: '/procuredatas',
     name: 'procuredatas',
     //permission: '',

@@ -5,6 +5,7 @@ import SessionStore from './sessionStore';
 import AuthenticationStore from './authenticationStore';
 import AccountStore from './accountStore';
 import CBFCDataStore from './cbfcdataStore';
+import GRNDataStore from './grndataStore';
 import ProcureStore from './procuredatastore';
 
 
@@ -17,6 +18,7 @@ export default function initializeStores() {
     sessionStore: new SessionStore(),
     accountStore: new AccountStore(),
     cbfcdataStore: new CBFCDataStore(),
+    grndataStore: new GRNDataStore(),
     procureStore: new ProcureStore(),
 
   };
