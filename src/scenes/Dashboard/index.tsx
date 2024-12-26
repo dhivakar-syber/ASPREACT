@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { Row, Col, Card } from 'antd';
-import { CheckOutlined, QuestionOutlined, MessageOutlined, UserAddOutlined } from '@ant-design/icons';
+// import { CheckOutlined, QuestionOutlined, MessageOutlined, UserAddOutlined } from '@ant-design/icons';
 import './index.less';
-import TinyLineChartExample from './components/TinyLineChartExample';
-import BarChartExample from './components/BarChartExample';
-import PieChartExample from './components/PieChartExample';
-import LineChartExample from './components/LineChartExample';
-import ListExample from './components/ListExample';
+// import TinyLineChartExample from './components/TinyLineChartExample';
+// import BarChartExample from './components/BarChartExample';
+// import PieChartExample from './components/PieChartExample';
+// import LineChartExample from './components/LineChartExample';
+// import ListExample from './components/ListExample';
+import PayRetroSUpplierDashboard from './components/PayRetroSupplierDashboard';
 
 export class Dashboard extends React.Component<any> {
   componentDidMount() {
@@ -24,17 +25,17 @@ export class Dashboard extends React.Component<any> {
   };
 
   render() {
-    const { cardLoading, lineChartLoading, barChartLoading, pieChartLoading } = this.state;
+    // const { cardLoading, lineChartLoading, barChartLoading, pieChartLoading } = this.state;
 
-    const visitorStatisticList = [
-      { title: 'TODAY', body: '1.200 user' },
-      { title: 'YESTERDAY', body: '3.872 user' },
-      { title: 'LAST WEEK', body: '26.582 user' },
-    ];
+    // const visitorStatisticList = [
+    //   { title: 'TODAY', body: '1.200 user' },
+    //   { title: 'YESTERDAY', body: '3.872 user' },
+    //   { title: 'LAST WEEK', body: '26.582 user' },
+    // ];
 
     return (
       <React.Fragment>
-        <Row gutter={16}>
+        {/* <Row gutter={16}>
           <Col
             className={'dashboardCard'}
             xs={{ offset: 1, span: 22 }}
@@ -111,17 +112,24 @@ export class Dashboard extends React.Component<any> {
               </Col>
             </Card>
           </Col>
-        </Row>
+        </Row> */}
 
-        <Row>
+        {/* <Row>
           <Col span={24}>
             <Card className={'dashboardBox'} title="Visit Statistics" loading={lineChartLoading} bordered={false}>
               <LineChartExample />
             </Card>
           </Col>
+        </Row> */}
+        <Row>
+          <Col span={24}>
+            <Card>
+              <PayRetroSUpplierDashboard />
+            </Card>
+          </Col>
         </Row>
 
-        <Row gutter={16}>
+        {/* <Row gutter={16}>
           <Col
             xs={{ offset: 1, span: 22 }}
             sm={{ offset: 1, span: 22 }}
@@ -161,9 +169,11 @@ export class Dashboard extends React.Component<any> {
               <ListExample value={visitorStatisticList} />
             </Card>
           </Col>
-        </Row>
+        </Row> */}
 
-        <Row gutter={16}>
+        
+
+        {/* <Row gutter={16}>
           <Col span={16}>
             <Card title="Payment Statistics" className={'dashboardBox'} loading={barChartLoading} bordered={false}>
               <BarChartExample />
@@ -174,7 +184,7 @@ export class Dashboard extends React.Component<any> {
               <PieChartExample />
             </Card>
           </Col>
-        </Row>
+        </Row> */}
       </React.Fragment>
     );
   }

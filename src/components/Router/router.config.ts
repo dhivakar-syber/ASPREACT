@@ -41,7 +41,7 @@ export const appRouters: any = [
   },
   {
     path: '/users',
-    permission: '',
+    permission: 'Pages.Administration.Users',
     title: 'Users',
     name: 'user',
     icon: UserOutlined,
@@ -50,7 +50,7 @@ export const appRouters: any = [
   },
   {
     path: '/roles',
-    permission: '',
+    permission: 'Pages.Administration.Roles',
     title: 'Roles',
     name: 'role',
     icon: TagsOutlined,
@@ -59,7 +59,7 @@ export const appRouters: any = [
   },
   {
     path: '/CBFCdatas',
-    permission: '',
+    permission: 'Pages.Administration.CBFCdatas',
     title: 'CBFCdatas',
     name: 'cbfcdatas',
     icon: TagsOutlined,
@@ -68,7 +68,7 @@ export const appRouters: any = [
   },
   {
     path: '/GRNdatas',
-    permission: '',
+    permission: 'Pages.Administration.GRNMasters',
     title: 'GRNdatas',
     name: 'grndatas',
     icon: TagsOutlined,
@@ -78,7 +78,7 @@ export const appRouters: any = [
   {
     path: '/procuredatas',
     name: 'procuredatas',
-    //permission: '',
+    permission: 'Pages.Administration.ProcureDatas',
     title: 'ProcureDatas',
     icon: HomeOutlined,
     showInMenu: true,

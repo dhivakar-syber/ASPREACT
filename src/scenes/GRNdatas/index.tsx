@@ -13,6 +13,10 @@ import { FormInstance } from 'antd/lib/form';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
 import { EnumMovementType } from '../../enum'
 
+const userPermissions = ["Pages.Administration.GRNMasters.Create", "Pages.Administration.GRNMasters.Edit","Pages.Administration.GRNMasters.Delete"];
+const hasPermission = (permission: string): boolean => userPermissions.includes(permission);
+
+
 export interface IGRNdataProps {
   grndataStore: grndataStore;
 }
@@ -156,9 +160,12 @@ editdata:any = null;
                   trigger={['click']}
                   overlay={
                     <Menu>
-                      <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.grnMaster?.id })}>{L('Edit')}</Menu.Item>
-                      <Menu.Item onClick={() => this.delete({ id: item.grnMaster?.id })}>{L('Delete')}</Menu.Item>
+                      {hasPermission("Pages.Administration.GRNMasters.Edit") && (
+                      <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.grnMaster?.id })}>{L('Edit')}</Menu.Item>)}
+                      {hasPermission("Pages.Administration.GRNMasters.Delete") && (
+                      <Menu.Item onClick={() => this.delete({ id: item.grnMaster?.id })}>{L('Delete')}</Menu.Item>)}
                     </Menu>
+                    
                   }
                   placement="bottomLeft"
                 >
@@ -245,8 +252,13 @@ editdata:any = null;
             xl={{ span: 1, offset: 21 }}
             xxl={{ span: 1, offset: 21 }}
           >
+<<<<<<< HEAD
             <Button type="primary" icon={<PlusOutlined/>} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} style={{marginLeft:'-50px'}}>Create GRNDatas</Button>
 
+=======
+            {hasPermission('Pages.Administration.GRNMasters.Create') && (
+            <Button type="primary" shape="circle" icon={<PlusOutlined />} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} />)}
+>>>>>>> 0d079044efa9c8f370eef4415af397183d958ddd
           </Col>
         </Row>
         <Row>
