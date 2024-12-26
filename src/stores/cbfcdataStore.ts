@@ -7,14 +7,16 @@ import { PagedUserResultRequestDto } from '../services/user/dto/PagedUserResultR
 import { GetCBFCdataForEditOutput } from '../services/cbfcdata/dto/getCBFCdataForEditOutput';
 import { GetCBFCdataForViewDto } from '../services/cbfcdata/dto/getCBFCdataForViewDto';
 import { CBFCdataPartLookupTableDto } from '../services/cbfcdata/dto/cbfcdataPartLookupTableDto';
+import { CBFCdataSupplierLookupTableDto } from '../services/cbfcdata/dto/cbfcdataSupplierLookupTableDto';
+import { CBFCdataBuyerLookupTableDto } from '../services/cbfcdata/dto/cbfcdataBuyerLookupTableDto';
 import cbfcdataService from '../services/cbfcdata/cbfcdataService';
 import { EnumCurrency, EnumTransaction } from '../enum'
 
 class CBFCdataStore {
   @observable cbfcdata!: PagedResultDto<GetCBFCdataForViewDto>;
   @observable partlookupdata!: PagedResultDto<CBFCdataPartLookupTableDto>;
-  @observable buyerlookupdata!: PagedResultDto<CBFCdataPartLookupTableDto>;
-  @observable supplierlookupdata!: PagedResultDto<CBFCdataPartLookupTableDto>;
+  @observable buyerlookupdata!: PagedResultDto<CBFCdataBuyerLookupTableDto>;
+  @observable supplierlookupdata!: PagedResultDto<CBFCdataSupplierLookupTableDto>;
   @observable editUser!: GetCBFCdataForEditOutput;
 
   @action
