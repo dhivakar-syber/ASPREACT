@@ -24,8 +24,17 @@ class UserService {
   }
 
   public async getRoles() {
-    let result = await http.post('api/services/app/Role/GetRoles');
-    return result.data.result.items;
+    try {
+      const result = await http.post('api/services/app/Role/GetRoles', {}, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      return result.data.result.items;
+    } catch (error) {
+      console.error('Error fetching roles:', error);
+      throw error; // Rethrow the error to handle it elsewhere if needed
+    }
   }
 
   public async changeLanguage(changeLanguageInput: ChangeLanguagaInput) {
@@ -35,7 +44,7 @@ class UserService {
 
   public async get(entityDto: EntityDto): Promise<CreateOrUpdateUserInput> {
     let result = await http.get('api/services/app/User/GetUserForEdit', { params: entityDto });
-    return result.data.result;
+    return result.data.result.user;
   }
 
     public async getAll(pagedFilterAndSortedRequest: PagedUserResultRequestDto): Promise<PagedResultDto<GetAllUserOutput>> {
