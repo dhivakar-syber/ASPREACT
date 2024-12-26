@@ -210,14 +210,9 @@ editdata:any = null;
             xl={{ span: 1, offset: 21 }}
             xxl={{ span: 1, offset: 21 }}
           >
-<<<<<<< HEAD
 
             {hasPermission('Pages.Administration.GRNMasters.Create') && (
-            <Button type="primary" shape="circle" icon={<PlusOutlined />} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} />)}
-=======
-            {hasPermission('Pages.Administration.GRNMasters.Create') && (
             <Button type="primary"  icon={<PlusOutlined />} onClick={() => this.createOrUpdateModalOpen({ id: 0 })}>Create GRNDatas</Button>)}
->>>>>>> 9436a6e24002fc7c1896ee17fef62d3a12c2a86f
           </Col>
         </Row>
         <Row>
