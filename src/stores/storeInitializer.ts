@@ -9,6 +9,7 @@ import GRNDataStore from './grndataStore';
 import ProcureStore from './procuredatastore';
 import SupplementarySummariesStore from './supplementarySummariesStore';
 import FileMasterStore from './fileMasterStore';
+import AnnexureDetailsStore from './annexureDetailsStore';
 
 
 
@@ -25,6 +26,7 @@ export default function initializeStores() {
     procureStore: new ProcureStore(),
     supplementarySummariesStore: new SupplementarySummariesStore(),
     filemasterStore: new FileMasterStore(),
+    annexureDetailsStore: new AnnexureDetailsStore(),
 
   };
 }

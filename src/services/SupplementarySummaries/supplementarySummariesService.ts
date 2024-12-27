@@ -27,6 +27,34 @@ class supplementarySummariesService{
         }
       }
 
+      public async grndata(id: number) {
+        try {
+          
+          const result = await http.get(
+            'api/services/app/SupplementarySummaries/Getgrndbfcdetail',{ params: { supplementaryid:id } },
+             
+          );
+          return result.data.result;
+        } catch (error) {
+          console.error('Error fetching supplementary summaries:', error);
+          throw error; 
+        }
+      }
+
+      public async annexuredata(id: number) {
+        try {
+          
+          const result = await http.get(
+            'api/services/app/SupplementarySummaries/GetAllSupplementaryInvoice',{ params: { supplementaryid:id } },
+             
+          );
+          return result.data.result;
+        } catch (error) {
+          console.error('Error fetching supplementary summaries:', error);
+          throw error; 
+        }
+      }
+
       public async create(createOrEditSupplementarySummaryDto: CreateOrEditSupplementarySummaryDto) {
         let result = await http.post('api/services/app/SupplementarySummaries/CreateOrEdit', createOrEditSupplementarySummaryDto);
         return result.data.result;

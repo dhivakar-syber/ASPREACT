@@ -11,5 +11,6 @@ export default class Stores {
   static FilemasterStore: string = 'filemasterStore';
 
   static SupplementarySummariesStore: string = 'supplementarySummariesStore';
+  static AnnexureDetailsStore: string = 'annexureDetailsStore';
 
 }
