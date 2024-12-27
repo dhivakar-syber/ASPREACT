@@ -93,7 +93,15 @@ export const appRouters: any = [
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/SupplementarySummaries')),
   },
-  
+  {
+    path: '/AnnexureDetails',
+    name: 'AnnexureDetails',
+    permission: 'Pages.Administration.AnnexureDetails',
+    title: 'AnnexureDetails',
+    icon: HomeOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/AnnexureDetails')),
+  },
   {
     path: '/tenants',
     permission: 'Pages.Tenants',

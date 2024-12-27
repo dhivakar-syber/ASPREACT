@@ -9,5 +9,6 @@ export default class Stores {
   static ProcureStore: string = 'procureStore';
   static GRNdataStore: string = 'grndataStore';
   static SupplementarySummariesStore: string = 'supplementarySummariesStore';
+  static AnnexureDetailsStore: string = 'annexureDetailsStore';
 
 }

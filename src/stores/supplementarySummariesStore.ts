@@ -12,7 +12,7 @@ import { supplementarySummaryBuyerLookupTableDto } from '../services/Supplementa
 import supplementarySummariesService from '../services/SupplementarySummaries/supplementarySummariesService';
 import { DocumentStatus } from '../enum'
 
-class CBFCdataStore {
+class SupplementarySummariesStore {
   @observable supplementarySummary!: PagedResultDto<GetSupplementarySummaryForViewDto>;
   @observable partlookupdata!: PagedResultDto<SupplementarySummaryPartLookupTableDto>;
   @observable buyerlookupdata!: PagedResultDto<supplementarySummaryBuyerLookupTableDto>;
@@ -125,4 +125,4 @@ class CBFCdataStore {
   }
 }
 
-export default CBFCdataStore;
+export default SupplementarySummariesStore;
