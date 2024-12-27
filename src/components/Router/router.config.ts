@@ -94,6 +94,16 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../scenes/SupplementarySummaries')),
   },
   {
+    path: '/FileMasters',
+    name: 'FileMasters',
+    permission: 'Pages.Administration.FileMasters',
+    title: 'FileMasters',
+    icon: HomeOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/FileMaster')),
+  },
+  
+{
     path: '/AnnexureDetails',
     name: 'AnnexureDetails',
     permission: 'Pages.Administration.AnnexureDetails',

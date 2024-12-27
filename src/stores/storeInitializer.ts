@@ -8,8 +8,10 @@ import CBFCDataStore from './cbfcdataStore';
 import GRNDataStore from './grndataStore';
 import ProcureStore from './procuredatastore';
 import SupplementarySummariesStore from './supplementarySummariesStore';
+import FileMasterStore from './fileMasterStore';
 import AnnexureDetailsStore from './annexureDetailsStore';
 import SupplierRaisedQueryStore from './supplierRaisedQueryStore';
+
 
 
 export default function initializeStores() {
@@ -24,6 +26,7 @@ export default function initializeStores() {
     grndataStore: new GRNDataStore(),
     procureStore: new ProcureStore(),
     supplementarySummariesStore: new SupplementarySummariesStore(),
+    filemasterStore: new FileMasterStore(),
     annexureDetailsStore: new AnnexureDetailsStore(),
     supplierRaisedQueryStore: new SupplierRaisedQueryStore(),
 
