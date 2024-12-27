@@ -8,6 +8,8 @@ export default class Stores {
   static CBFCdataStore: string = 'cbfcdataStore';
   static ProcureStore: string = 'procureStore';
   static GRNdataStore: string = 'grndataStore';
+  static FilemasterStore: string = 'filemasterStore';
+
   static SupplementarySummariesStore: string = 'supplementarySummariesStore';
 
 }

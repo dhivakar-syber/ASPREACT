@@ -93,6 +93,15 @@ export const appRouters: any = [
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/SupplementarySummaries')),
   },
+  {
+    path: '/FileMasters',
+    name: 'FileMasters',
+    permission: 'Pages.Administration.FileMasters',
+    title: 'FileMasters',
+    icon: HomeOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/FileMaster')),
+  },
   
   {
     path: '/tenants',
