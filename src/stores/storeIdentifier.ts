@@ -13,5 +13,6 @@ export default class Stores {
   static SupplementarySummariesStore: string = 'supplementarySummariesStore';
   static AnnexureDetailsStore: string = 'annexureDetailsStore';
   static SupplierRaisedQueryStore: string = 'supplierRaisedQueryStore';
+  static SupplierRejectionStore: string = 'supplierRejectionStore';
 
 }

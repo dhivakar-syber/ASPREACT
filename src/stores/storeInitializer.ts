@@ -11,6 +11,7 @@ import SupplementarySummariesStore from './supplementarySummariesStore';
 import FileMasterStore from './fileMasterStore';
 import AnnexureDetailsStore from './annexureDetailsStore';
 import SupplierRaisedQueryStore from './supplierRaisedQueryStore';
+import SupplierRejectionStore from './supplierRejectionStore';
 
 
 
@@ -29,6 +30,7 @@ export default function initializeStores() {
     filemasterStore: new FileMasterStore(),
     annexureDetailsStore: new AnnexureDetailsStore(),
     supplierRaisedQueryStore: new SupplierRaisedQueryStore(),
+    supplierRejectionStore: new SupplierRejectionStore(),
 
   };
 }

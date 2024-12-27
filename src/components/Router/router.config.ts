@@ -122,6 +122,15 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../scenes/SupplierRaisedQueries')),
   },
   {
+    path: '/SupplierRejections',
+    name: 'SupplierRejections',
+    permission: 'Pages.Administration.SupplierRejections',
+    title: 'SupplierRejections',
+    icon: HomeOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/SupplierRejections')),
+  },
+  {
     path: '/tenants',
     permission: 'Pages.Tenants',
     title: 'Tenants',
