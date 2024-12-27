@@ -1,5 +1,4 @@
 import { action, observable } from 'mobx';
-import * as XLSX from 'xlsx';
 import { CreateOrEditProcureDataDto } from '../services/procuredatas/dto/CreateOrEditProcureDataDto';
 import { EntityDto } from '../services/dto/entityDto';
 import { GetRoles } from '../services/user/dto/getRolesOuput';
@@ -64,45 +63,45 @@ class ProcureStore {
     this.procure = result;
   }
 
-  async getExcelExport() {
-    try {
-        const result = await Procuredataservice.getexceldata();
-        const items = result
-        ?.map((item: any) => {
-            // Extract only the specific fields you need from procureData
-            return item.procureData ? {
-                PartNo: item.partPartNo,
-                BuyerName: item.buyerName,
-                ValidFrom	: item.procureData.validFrom,
-                ValidTo :  item.procureData.validTo,
-                ContractNo : item.procureData.contractNo,
-                ContractDate : item.procureData.contractDate,
-                ApprovalDate : item.procureData.approvalDate,
-                PlantCode : item.procureData.plantCode,
-                Version : item.procureData.versionNo,
+  // async getExcelExport() {
+  //   try {
+  //       const result = await Procuredataservice.getexceldata();
+  //       const items = result
+  //       ?.map((item: any) => {
+  //           // Extract only the specific fields you need from procureData
+  //           return item.procureData ? {
+  //               PartNo: item.partPartNo,
+  //               BuyerName: item.buyerName,
+  //               ValidFrom	: item.procureData.validFrom,
+  //               ValidTo :  item.procureData.validTo,
+  //               ContractNo : item.procureData.contractNo,
+  //               ContractDate : item.procureData.contractDate,
+  //               ApprovalDate : item.procureData.approvalDate,
+  //               PlantCode : item.procureData.plantCode,
+  //               Version : item.procureData.versionNo,
                  
-            } : null;  
-        })
-        .filter((data: any) => data)  // Filter out null values
-        .flat();  // Flatten the array if necessary
+  //           } : null;  
+  //       })
+  //       .filter((data: any) => data)  // Filter out null values
+  //       .flat();  // Flatten the array if necessary
     
-    if (!items?.length) {
-        console.warn("No valid ProcureData found for export.");
-        return;
-    }
+  //   if (!items?.length) {
+  //       console.warn("No valid ProcureData found for export.");
+  //       return;
+  //   }
     
         
 
-        const ws = XLSX.utils.json_to_sheet(items);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Procure Data");
-        XLSX.writeFile(wb, "ProcureData.xlsx");
+  //       const ws = XLSX.utils.json_to_sheet(items);
+  //       const wb = XLSX.utils.book_new();
+  //       XLSX.utils.book_append_sheet(wb, ws, "Procure Data");
+  //       XLSX.writeFile(wb, "ProcureData.xlsx");
 
-        console.log("Export successful: ProcureData.xlsx");
-    } catch (error) {
-        console.error("Error exporting Excel:", error);
-    }
-   }
+  //       console.log("Export successful: ProcureData.xlsx");
+  //   } catch (error) {
+  //       console.error("Error exporting Excel:", error);
+  //   }
+  //  }
 
    async importExcel(file: File): Promise<any> {
     try {

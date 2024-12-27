@@ -89,6 +89,20 @@ class GRNdataStore {
     let result = await grndataService.getAllSupplierForLookupTable(pagedFilterAndSortedRequest);
     this.supplierlookupdata = result;
   }
+  async importExcel(file: File): Promise<any> {
+      try {
+          if (!file) {
+              throw new Error("No file provided");
+          }
+          
+          const items = await grndataService.inportExceldata(file);
+          return items;
+      } catch (error) {
+          console.error("Error importing Excel file:", error);
+          throw error; // Optionally rethrow the error to propagate it
+      }
+  
+}
 }
 
 export default GRNdataStore;

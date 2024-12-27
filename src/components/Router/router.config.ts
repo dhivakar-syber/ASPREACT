@@ -85,6 +85,16 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../scenes/ProcureDatas')),
   },
   {
+    path: '/SupplementarySummaries',
+    name: 'SupplementarySummaries',
+    permission: 'Pages.Administration.SupplementarySummaries',
+    title: 'SupplementarySummaries',
+    icon: HomeOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/SupplementarySummaries')),
+  },
+  
+  {
     path: '/tenants',
     permission: 'Pages.Tenants',
     title: 'Tenants',
