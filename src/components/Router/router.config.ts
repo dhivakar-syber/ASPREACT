@@ -103,6 +103,15 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../scenes/AnnexureDetails')),
   },
   {
+    path: '/SupplierRaisedQueries',
+    name: 'SupplierRaisedQueries',
+    permission: 'Pages.Administration.SupplierRaisedQueries',
+    title: 'SupplierRaisedQueries',
+    icon: HomeOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/SupplierRaisedQueries')),
+  },
+  {
     path: '/tenants',
     permission: 'Pages.Tenants',
     title: 'Tenants',

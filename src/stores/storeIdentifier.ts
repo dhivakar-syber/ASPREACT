@@ -10,5 +10,6 @@ export default class Stores {
   static GRNdataStore: string = 'grndataStore';
   static SupplementarySummariesStore: string = 'supplementarySummariesStore';
   static AnnexureDetailsStore: string = 'annexureDetailsStore';
+  static SupplierRaisedQueryStore: string = 'supplierRaisedQueryStore';
 
 }
