@@ -102,6 +102,25 @@ export const appRouters: any = [
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/FileMaster')),
   },
+  {
+    path: '/Parts',
+    name: 'Parts',
+    permission: 'Pages.Administration.Parts',
+    title: 'Parts',
+    icon: HomeOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/Parts')),
+  },
+
+  {
+    path: '/Plants',
+    name: 'Plants',
+    permission: 'Pages.Administration.Plants',
+    title: 'Plants',
+    icon: HomeOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/Plant')),
+  },
   
 {
     path: '/AnnexureDetails',

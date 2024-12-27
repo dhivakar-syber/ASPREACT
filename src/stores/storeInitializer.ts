@@ -10,6 +10,10 @@ import ProcureStore from './procuredatastore';
 import SupplementarySummariesStore from './supplementarySummariesStore';
 import FileMasterStore from './fileMasterStore';
 import AnnexureDetailsStore from './annexureDetailsStore';
+import PartsStore from './partsStore';
+import PlantsStore from './PlantStore';
+
+
 
 
 
@@ -27,6 +31,9 @@ export default function initializeStores() {
     supplementarySummariesStore: new SupplementarySummariesStore(),
     filemasterStore: new FileMasterStore(),
     annexureDetailsStore: new AnnexureDetailsStore(),
+    partsStore: new PartsStore(),
+    plantsStore: new PlantsStore(),
+
 
   };
 }
