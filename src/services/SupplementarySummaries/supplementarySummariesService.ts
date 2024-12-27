@@ -27,7 +27,6 @@ class supplementarySummariesService{
         }
       }
 
-<<<<<<< HEAD
       public async grndata(id: number) {
         try {
           
@@ -56,7 +55,6 @@ class supplementarySummariesService{
         }
       }
 
-=======
       public async create(createOrEditSupplementarySummaryDto: CreateOrEditSupplementarySummaryDto) {
         let result = await http.post('api/services/app/SupplementarySummaries/CreateOrEdit', createOrEditSupplementarySummaryDto);
         return result.data.result;
@@ -95,6 +93,5 @@ class supplementarySummariesService{
         let result = await http.get('api/services/app/SupplementarySummaries/GetAllSupplierForLookupTable', { params: pagedFilterAndSortedRequest });
         return result.data.result;
       }     
->>>>>>> 2f7bae4112f870bedac0bfc4c2b2df9ecf44aef0
 }
 export default new supplementarySummariesService();
