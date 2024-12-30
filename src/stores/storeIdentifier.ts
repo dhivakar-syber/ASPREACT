@@ -16,5 +16,5 @@ export default class Stores {
   static SupplierRaisedQueryStore: string = 'supplierRaisedQueryStore';
   static SupplierRejectionStore: string = 'supplierRejectionStore';
   static DisputesStore: string = 'disputesStore'; 
-
+  static ApprovalWorkflowStore: string = 'approvalWorkflowStore';
 }

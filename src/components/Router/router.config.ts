@@ -160,6 +160,15 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../scenes/Disputes')),
   },
   {
+    path: '/ApprovalWorkflows',
+    name: 'ApprovalWorkflows',
+    permission: 'Pages.Administration.ApprovalWorkflows',
+    title: 'ApprovalWorkflows',
+    icon: HomeOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/ApprovalWorkflows')),
+  },
+  {
     path: '/tenants',
     permission: 'Pages.Tenants',
     title: 'Tenants',

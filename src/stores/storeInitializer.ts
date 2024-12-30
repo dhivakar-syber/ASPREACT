@@ -15,6 +15,7 @@ import PlantsStore from './PlantStore';
 import SupplierRaisedQueryStore from './supplierRaisedQueryStore';
 import SupplierRejectionStore from './supplierRejectionStore';
 import DisputesStore from './DisputesStrore';
+import ApprovalWorkflowStore from './approvalWorkflowStore';
 
 
 
@@ -37,6 +38,6 @@ export default function initializeStores() {
     supplierRaisedQueryStore: new SupplierRaisedQueryStore(),
     supplierRejectionStore: new SupplierRejectionStore(),
     disputesStore: new DisputesStore(),
-
+    approvalWorkflowStore: new ApprovalWorkflowStore(),
   };
 }
