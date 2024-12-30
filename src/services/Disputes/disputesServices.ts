@@ -1,0 +1,107 @@
+import {CreateOrEditDisputeDto} from './dto/CreateOrEditDisputeDto';
+import { EntityDto } from '../../services/dto/entityDto';
+import { GetDisputeForViewDto } from './dto/GetDisputeForViewDto';
+import {GetDisputeForEditOutput} from './dto/GetDisputeForEditOutput';
+import { PagedResultDto } from '../../services/dto/pagedResultDto';
+import {PagedDisputesResultRequestDto} from './dto/PagedDisputesResultRequestDto';
+import {DisputeSupplementarySummaryLookupTableDto} from './dto/DisputeSupplementarySummaryLookupTableDto';
+import {DisputeBuyerLookupTableDto} from './dto/DisputeBuyerLookupTableDto';
+import {DisputeSupplierLookupTableDto} from './dto/DisputeSupplierLookupTableDto';
+import {DisputeSupplierRejectionLookupTableDto} from './dto/DisputeSupplierRejectionLookupTableDto';
+import http from '../httpService';
+
+class disputesService {
+  public async create(createOrEditDisputeDto: CreateOrEditDisputeDto) {
+    let result = await http.post('api/services/app/Disputes/CreateOrEdit', createOrEditDisputeDto);
+    return result.data.result;
+  }
+
+  
+
+  public async delete(entityDto: EntityDto) {
+    let result = await http.delete('api/services/app/Disputes/Delete', { params: entityDto });
+    return result.data;
+  }
+
+  public async get(entityDto: EntityDto): Promise<GetDisputeForEditOutput> {
+    let result = await http.get('api/services/app/Disputes/GetDisputeForEdit', { params: entityDto });
+    return result.data.result;
+  }
+
+  public async supplierget(entityDto: EntityDto): Promise<GetDisputeForEditOutput> {
+    let result = await http.get('api/services/app/Disputes/SupplierGetDisputeForEdit', { params: entityDto });
+    return result.data.result;
+  }
+
+  public async buyerget(entityDto: EntityDto): Promise<GetDisputeForEditOutput> {
+    let result = await http.get('api/services/app/Disputes/BuyerGetDisputeForEdit', { params: entityDto });
+    return result.data.result;
+  }
+
+  public async accountget(entityDto: EntityDto): Promise<GetDisputeForEditOutput> {
+    let result = await http.get('api/services/app/Disputes/GetDisputeForAccountsEdit', { params: entityDto });
+    return result.data.result;
+  }
+
+  public async getAll(pagedFilterAndSortedRequest: PagedDisputesResultRequestDto): Promise<PagedResultDto<GetDisputeForViewDto>> {
+    let result = await http.get('api/services/app/Disputes/GetAll', { params: pagedFilterAndSortedRequest });
+    return result.data.result;
+  }
+
+  public async suppliergetAll(pagedFilterAndSortedRequest: PagedDisputesResultRequestDto): Promise<PagedResultDto<GetDisputeForViewDto>> {
+    let result = await http.get('api/services/app/Disputes/SupplierSummaryGetAll', { params: pagedFilterAndSortedRequest });
+    return result.data.result;
+  }
+
+  public async buyergetAll(pagedFilterAndSortedRequest: PagedDisputesResultRequestDto): Promise<PagedResultDto<GetDisputeForViewDto>> {
+    let result = await http.get('api/services/app/Disputes/BuyerGetAll', { params: pagedFilterAndSortedRequest });
+    return result.data.result;
+  }
+
+  public async accountgetAll(pagedFilterAndSortedRequest: PagedDisputesResultRequestDto): Promise<PagedResultDto<GetDisputeForViewDto>> {
+    let result = await http.get('api/services/app/Disputes/AccountsGetAll', { params: pagedFilterAndSortedRequest });
+    return result.data.result;
+  }
+
+  public async update(createOrEditDisputeDto: CreateOrEditDisputeDto) {
+    let result = await http.post('api/services/app/Disputes/CreateOrEdit', createOrEditDisputeDto);
+    return result.data.result;
+  }
+
+  public async accountsForwardupdate(createOrEditDisputeDto: CreateOrEditDisputeDto) {
+    let result = await http.post('api/services/app/Disputes/BuyerAccountsForwardEdit', createOrEditDisputeDto);
+    return result.data.result;
+  }
+
+  public async buyercloseupdate(createOrEditDisputeDto: CreateOrEditDisputeDto) {
+    let result = await http.post('api/services/app/Disputes/BuyercloseEdit', createOrEditDisputeDto);
+    return result.data.result;
+  }
+
+  public async accountupdate(createOrEditDisputeDto: CreateOrEditDisputeDto) {
+    let result = await http.post('api/services/app/Disputes/AccountsEdit', createOrEditDisputeDto);
+    return result.data.result;
+  }
+
+  public async getAllsuppliersummariesForLookupTable(pagedFilterAndSortedRequest: PagedDisputesResultRequestDto): Promise<PagedResultDto<DisputeSupplementarySummaryLookupTableDto>>{
+    let result = await http.get('api/services/app/Disputes/GetAllSupplementarySummaryForLookupTable', { params: pagedFilterAndSortedRequest });
+    return result.data.result;
+  }
+  public async getAllsupplierrejectionForLookupTable(pagedFilterAndSortedRequest: PagedDisputesResultRequestDto): Promise<PagedResultDto<DisputeSupplierRejectionLookupTableDto>>{
+    let result = await http.get('api/services/app/Disputes/GetAllSupplierRejectionForLookupTable', { params: pagedFilterAndSortedRequest });
+    return result.data.result;
+  }
+
+  public async getAllBuyerForLookupTable(pagedFilterAndSortedRequest: PagedDisputesResultRequestDto): Promise<PagedResultDto<DisputeBuyerLookupTableDto>>{
+    let result = await http.get('api/services/app/Disputes/GetAllBuyerForLookupTable', { params: pagedFilterAndSortedRequest });
+    return result.data.result;
+  }
+  public async getAllSupplierForLookupTable(pagedFilterAndSortedRequest: PagedDisputesResultRequestDto): Promise<PagedResultDto<DisputeSupplierLookupTableDto>>{
+    let result = await http.get('api/services/app/Disputes/GetAllSupplierForLookupTable', { params: pagedFilterAndSortedRequest });
+    return result.data.result;
+  }
+
+  
+}
+
+export default new disputesService();

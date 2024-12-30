@@ -15,5 +15,6 @@ export default class Stores {
   static PlantsStore: string = 'plantsStore';
   static SupplierRaisedQueryStore: string = 'supplierRaisedQueryStore';
   static SupplierRejectionStore: string = 'supplierRejectionStore';
+  static DisputesStore: string = 'disputesStore'; 
 
 }
