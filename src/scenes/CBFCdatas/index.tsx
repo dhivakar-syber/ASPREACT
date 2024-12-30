@@ -192,7 +192,8 @@ editdata:any = null;
         <div>{record.cbfCdata?.paidAmount || ''}</div> },
       { title: L('Year'), dataIndex: 'cbfCdata.year', key: 'year', width: 150, render: (text: string, record: any) =>
         <div>{record.cbfCdata?.year || ''}</div> },
-      { title: L('PartNo'), dataIndex: 'partPartNo', key: 'partFk.partNo', width: 150, render: (text: string) => <div>{text}</div> },
+      { title: L('SupplementarySummaries'), dataIndex: 'supplementarySummaryDisplayProperty', key: 'supplementarySummaryFk.supplementaryInvoiceNo', width: 150, render: (text: string) => <div>{text}</div> },
+      { title: L('SupplierRejection'), dataIndex: 'supplierRejectionCode', key: 'supplementarySummaryFk.code', width: 150, render: (text: string) => <div>{text}</div> },
       { title: L('BuyerName'), dataIndex: 'buyerName', key: 'buyerFk.name', width: 150, render: (text: string) => <div>{text}</div> },
       { title: L('SupplierName'), dataIndex: 'supplierName', key: 'supplierFk.name', width: 150, render: (text: string) => <div>{text}</div> },
       

@@ -149,6 +149,16 @@ export const appRouters: any = [
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/SupplierRejections')),
   },
+
+  {
+    path: '/Disputes',
+    name: 'Disputes',
+    permission: 'Pages.Administration.Disputes',
+    title: 'Disputes',
+    icon: HomeOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/Disputes')),
+  },
   {
     path: '/ApprovalWorkflows',
     name: 'ApprovalWorkflows',
