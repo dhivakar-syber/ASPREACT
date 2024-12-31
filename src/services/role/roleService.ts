@@ -33,7 +33,7 @@ class RoleService {
   }
 
   public async getAllPermissions() {
-    let result = await http.get('api/services/app/Role/GetAllPermissions');
+    let result = await http.get('api/services/app/Permission/GetAllPermissions');
     return result.data.result.items;
   }
 

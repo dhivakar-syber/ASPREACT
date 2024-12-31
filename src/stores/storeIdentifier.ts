@@ -9,5 +9,13 @@ export default class Stores {
   static BuyerStore: string = 'buyerStore'
   static ProcureStore: string = 'procureStore';
   static GRNdataStore: string = 'grndataStore';
-
+  static FilemasterStore: string = 'filemasterStore';
+  static SupplementarySummariesStore: string = 'supplementarySummariesStore';
+  static AnnexureDetailsStore: string = 'annexureDetailsStore';
+  static PartsStore: string = 'partsStore';
+  static PlantsStore: string = 'plantsStore';
+  static SupplierRaisedQueryStore: string = 'supplierRaisedQueryStore';
+  static SupplierRejectionStore: string = 'supplierRejectionStore';
+  static DisputesStore: string = 'disputesStore'; 
+  static ApprovalWorkflowStore: string = 'approvalWorkflowStore';
 }

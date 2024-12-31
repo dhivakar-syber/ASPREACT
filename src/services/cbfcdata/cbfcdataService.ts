@@ -48,6 +48,20 @@ class cbfcdataService {
     let result = await http.get('api/services/app/CBFCdatas/GetAllSupplierForLookupTable', { params: pagedFilterAndSortedRequest });
     return result.data.result;
   }
+
+  public async inportExceldata(file: File): Promise<any> {
+    const formData = new FormData();
+    formData.append('file', file);  // Append the file to FormData
+
+    // Sending the request with the FormData containing the file
+    let result = await http.post('api/services/app/CBFCdatas/ImportCBFCDataFromExcel', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'  // Ensure the Content-Type is set for file uploads
+        }
+    });
+
+    return result.data.result;
+  }
 }
 
 export default new cbfcdataService();
