@@ -1,707 +1,56 @@
 .trigger {
-  font-size: 18px;
-  line-height: 64px;
-  padding: 0 24px;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.trigger:hover {
-  color: #1890ff;
-}
-
-.logo {
-  height: 32px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 16px;
-}
-
-/* Let's get this party started */
-::-webkit-scrollbar {
-  width: 12px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
-  -webkit-border-radius: 10px;
-  border-radius: 10px;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  -webkit-border-radius: 10px;
-  border-radius: 10px;
-  background: #455a64;
-  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5);
-}
-
-::-webkit-scrollbar-thumb:window-inactive {
-  background: #455a64;
-}
-
-.sidebar {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 3px 10px 30px 3px rgba(0, 0, 0, 0.19);
-}
-
-.header-container {
-  -webkit-box-shadow: 0px 6px 50px -18px rgba(0, 0, 0, 0.81);
-  -moz-box-shadow: 0px 6px 50px -18px rgba(0, 0, 0, 0.81);
-  box-shadow: 0px 6px 50px -18px rgba(0, 0, 0, 0.81);
-}
-
-.progress-tube {
-  width: 90%;
-  height: 20px;
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 5px;
-  position: relative;
-  overflow: hidden;
-}
-
-.progress-segment {
-  height: 100%;
-  border-radius: 2px;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(255, 255, 255, 0.3);
-  transform: skewX(-15deg);
-  position: relative;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.progress-segment.approved {
-  background: #6EA046;
-}
-
-.progress-segment.rejected {
-  background: #FF0000;
-}
-
-.progress-segment.pending {
-  background: #FFFF40;
-}
-
-.progress-segment:hover {
-  transform: skewX(-15deg) scale(1.1);
-  box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(255, 255, 255, 0.5);
-}
-
-.progress-tube .progress-segment:not(:last-child) {
-  margin-right: 10px;
-}
-
-
-
-body {
-}
-@font-face {
-    font-family: "corpS";
-    src: url("/src/Assets/Fonts/MBCorpoSText-Regular-Web.woff2") format("woff");
-}
-
-html,
-body {
-    font-family: corpS;
-}
-
-#kt_app_header_wrapper {
-    background-color: #003366;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    background-repeat: no-repeat;
-    background-size: 100%;
-}
-
-#kt_app_toolbar {
-    height: 0px
-}
-
-#Widgets_Contract_Details {
-    background-color: white;
-}
-
-.app-container container-xxl d-flex align-items-center {
-    height: 10px;
-}
-
-
-.app-container container-xxl {
-    background-color: white;
-    width: 1560px;
-}
-
-.btn.btn-primary {
-    background-color: #006780;
-}
-
-.btn btn-danger btn-icon {
-    background-color: #FF0000
-}
-
-.login-form {
-    background: #ffffff12;
-}
-
-    .login-form > .login-form2 {
-        background-color: #ffffffe6;
-    }
-
-.login.login-1 .login-aside .aside-img {
-    min-height: 450px;
-}
-
-.form-label {
-    margin-bottom: 0.5rem;
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: var(--bs-gray-800);
-}
-
-.form-control {
-    display: block;
-    width: 100%;
-    padding: 0.265rem;
-    font-size: 1.1rem;
-    font-weight: 500;
-    line-height: 1.5;
-    color: var(--bs-gray-700);
-    background-color: var(--bs-body-bg);
-    background-clip: padding-box;
-    border: 1px solid #aab2c4;
-    appearance: none;
-    border-radius: 0;
-    box-shadow: false;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-}
-
-
-    .form-control:disabled {
-        color: var(--bs-gray-500);
-        background-color: var(--bs-gray-400);
-        border-color: var(--bs-gray-300);
-        opacity: 1;
-    }
-
-.btn.btn-light-primary {
-    color: #FFFFFF;
-    background-color: #71180C;
-    border-color: #71180C;
-    border-radius: 0.35rem;
-}
-
-.btn.btn-secondary {
-    border-radius: 0.35rem;
-}
-
-
-
-.form-control {
-    border-radius: 0.35rem;
-}
-
-
-    .form-control[readonly] {
-        background-color: #d0d4d8;
-    }
-
-    .form-control:disabled {
-        background-color: #d0d4d8;
-    }
-
-    .form-control:read-only {
-        color: var(--bs-gray-900) !important;
-        background-color: #d0d4d8;
-        border-color: var(--bs-gray-400) !important;
-        opacity: 1 !important;
-    }
-/* Container Styling */
-.NotificationAreaContainer {
-    background-color: #ffffff; /* White background for the card */
-    border: 1px solid #e0e0e0; /* Light border for card */
-    border-radius: 8px; /* Rounded corners for card */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for card */
-    overflow: hidden; /* Prevent content overflow */
-}
-
-    /* Card Header */
-    .NotificationAreaContainer .card-header {
-        background-color: #f8f9fa; /* Light gray background */
-        padding: 10px 15px; /* Padding for spacing */
-        font-weight: bold; /* Bold text */
-        border-bottom: 1px solid #e0e0e0; /* Bottom border */
-    }
-
-/* Table Styling */
-#NotificationAreaTable {
-    width: 100%; /* Full width */
-    border-collapse: collapse; /* Remove gaps between cells */
-    background-color: #ffffff; /* White background */
-}
-
-    #NotificationAreaTable th, #NotificationAreaTable td {
-        border: 1px solid #dee2e6; /* Light border for cells */
-        text-align: center; /* Center align text */
-        padding: 8px; /* Padding for spacing */
-        font-size: 12px; /* Font size for table text */
-        vertical-align: middle; /* Vertically align text */
-    }
-
-    /* Header Styling */
-    #NotificationAreaTable thead th {
-        color: rgba(0, 0, 0, 0.2); /* White text */
-        font-weight: bold;
-        font-size: 12px /* Bold header text */
-    }
-
-    /* Row Styling */
-    #NotificationAreaTable tbody tr:nth-child(even) {
-        background-color: #f2f2f2; /* Light gray background for even rows */
-    }
-
-    #NotificationAreaTable tbody tr:hover {
-        background-color: #e9ecef; /* Slightly lighter hover effect */
-        cursor: pointer; /* Pointer cursor on hover */
-        transform: scale(1.02); /* Slight zoom effect on hover */
-    }
-
-
-    #NotificationAreaTable tbody tr:hover {
-        background-color: #e9ecef; /* Hover effect for rows */
-        cursor: pointer; /* Pointer cursor on hover */
-    }
-
-/* Responsive Design */
-.table-responsive {
-    overflow-x: auto; /* Horizontal scroll for smaller screens */
-}
-
-@media (max-width: 768px) {
-    .NotificationAreaContainer {
-        margin-bottom: 20px; /* Margin for mobile view */
-    }
-
-    #NotificationAreaTable th, #NotificationAreaTable td {
-        font-size: 12px; /* Smaller font size for mobile */
-    }
-}
-
-
-/* Specific Column Widths */
-#NotificationAreaTable th.p-2 {
-    padding: 10px; /* Specific padding for headers */
-}
-
-.upload-btn {
-    background-color: #4e7f8c; /* Green background */
-    color: white; /* White text */
-    font-size: 12px; /* Slightly larger text */
-    padding: 5px 10px; /* Padding for button */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor on hover */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    transition: background-color 0.3s ease-in-out; /* Smooth hover transition */
-}
-
-.createsuplsumy {
-    background-color: #4e7f8c;
-    color: white;
-    font-size: 12px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
+    font-size: 18px;
+    line-height: 64px;
+    padding: 0 24px;
     cursor: pointer;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease-in-out;
-}
-
-.upload-btn:hover {
-    background-color: lightgrey; /* Darker green on hover */
-}
-
-.upload-btn:active {
-    background-color: #4e7f8c; /* Even darker when pressed */
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Deeper shadow on click */
-    transform: translateY(2px); /* Simulate button press */
-}
-
-.createsuplsumy:hover {
-    background-color: #45a049; /* Darker green on hover */
-}
-
-.createsuplsumy:active {
-    background-color: #4e7f8c; /* Even darker when pressed */
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Deeper shadow on click */
-    transform: translateY(2px); /* Simulate button press */
-}
-
-.table-container {
-    display: table;
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.table-row {
-    display: table-row;
-}
-
-.table-cell {
-    display: table-cell;
-    padding: 10px;
-    border: 1px solid #ddd;
-    vertical-align: middle; /* Centers content vertically */
-}
-
-svg {
-    max-width: 100%; /* Ensures SVG scales with the container */
-    height: auto; /* Maintains aspect ratio */
-}
-
-.container {
-    display: flex;
-    align-items: center; /* Align items vertically centered */
-}
-
-.checkbox-container {
-    margin-right: 20px; /* Add space between the checkbox and the box1 */
-}
-
-.box1 {
-    margin-right: 20px; /* Add space between box1 and box2 */
-}
-
-.box2 {
-    /* No specific styles needed here unless you want to add more customization */
-}
-/*.flaticon-folder-1 {
-    color: #E6E6E6
-}*/
-.fa fa-file-alt {
-    color: #E6E6E6;
-    height: 10px;
-}
-
-.col.mt-2 {
-    /*font-weight: bold;*/
-    color: green
-}
-
-.h3 {
-    text-align: left;
-    margin-left: 10px;
-    color: #003366;
-    font-size: 13px;
-    /*background-color: #ebf2f0;*/
-}
-
-.notify {
-    padding: 0,10px,0,10px;
-}
-
-
-
-.text-end {
-    padding-right: 10px;
-}
-
-
-.btn-group {
-    position: relative; /* Ensure the button group is the reference point for absolute positioning */
-}
-
-#historybutton {
-    padding: 2px;
-    margin: 0;
-    font-size: 12px;
-}
-
-
-.contract-table th {
-    background-color: lightslategrey;
-    color: #fbfcff;
-    font-weight: normal;
-    padding: 10px 15px;
-    border-right: 1px solid;
-}
-
-.contract-table td {
-    color: #333;
-    padding: 10px 15px;
-}
-
-.contract-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.contract-table tr:hover {
-    background-color: #f1f1f1;
-}
-
-.contract-table-n th {
-    background-color: lightslategrey;
-    color: #fbfcff;
-    font-weight: normal;
-    padding: 10px 15px;
-    border-right: 1px solid;
-}
-
-.contract-table-n td {
-    color: #333;
-    padding: 10px 15px;
-}
-
-.contract-table-n tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.contract-table-n tr:hover {
-    background-color: #f1f1f1;
-}
-
-.invoice-table {
-    width: 100%;
-    margin: 20px 0;
-    max-height: 400px;
-    height: auto
-}
-
-    .invoice-table h3 {
-        margin-bottom: 10px;
-        font-size: 18px;
-        color: #333;
-    }
-
-    .invoice-table table {
-        width: 100%;
-        border-collapse: collapse;
-        text-align: left;
-    }
-
-    .invoice-table th {
-        background-color: #006780;
-        color: #fbfcff;
-        font-weight: normal;
-        padding: 10px 15px;
-        text-align: center;
-        border-right: 1px solid;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        width: auto;
-    }
-
-    .invoice-table td {
-        color: #333;
-        padding: 10px 15px;
-    }
-
-        .invoice-table td:last-child {
-            color: #333;
-            padding: 10px 15px;
-            text-align: right;
-        }
-
-    .invoice-table tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
-
-    .invoice-table tr:hover {
-        background-color: #f1f1f1;
-    }
-
-.small-circle {
-    font-size: 2px;
-}
-
-.small-dot {
-    height: 6px;
-    width: 6px;
-    background-color: lightgrey;
-    border-radius: 50%;
-    display: inline-block;
-}
-
-
-
-
-
-
-
-/*input[type="text"] {
-    width: 120px;
-    padding: 5px;
-}*/
-.nowrap {
-    white-space: nowrap;
-}
-
-.tree-container {
-    display: flex;
-    flex-direction: column;
-    margin-left: 20px;
-}
-
-.parent {
-    margin-bottom: 10px;
-}
-
-#myallCheckbox {
-    position: relative;
-    margin-bottom: 20px;
-}
-
-#subdivContainer {
-    position: relative;
-}
-
-.tree-node {
-    display: flex;
-    align-items: center;
-    margin-left: 65px;
-    position: relative;
-}
-
-.line-container {
-    display: flex;
-    align-items: center;
-    position: relative;
-}
-
-.vertical-line {
-    width: 1px;
-    height: 30px;
-    background-color: blue;
-    position: absolute;
-    top: -25px;
-    left: -30px;
-}
-
-    .vertical-line.last {
-        height: 25px; /* Shorten the last vertical line */
-    }
-
-.horizontal-line {
-    width: 30px;
-    height: 1px;
-    background-color: blue;
-    position: relative;
-    left: -30px;
-}
-
-.content {
-    margin-left: 10px;
-}
-
-.node-id {
-    margin-right: 10px;
-}
-
-.supldetails {
-    margin-left: -50px
-}
-
-.modal-body {
-    padding: 20px;
-    font-family: 'Arial', sans-serif;
-    background-color: #f9f9f9;
+    transition: color 0.3s;
+  }
+  
+  .trigger:hover {
+    color: #1890ff;
+  }
+  
+  .logo {
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 16px;
+  }
+  
+  /* Let's get this party started */
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+    -webkit-border-radius: 10px;
     border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.modal-title {
-    margin-bottom: 20px;
-    font-size: 1.5rem;
-    color: #333;
-    font-weight: bold;
-    text-align: center;
-}
-
-.form-group {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.form-label {
-    flex-basis: 40%;
-    text-align: right;
-    margin-right: 10px;
-    font-weight: 600;
-    color: #555;
-}
-
-.form-input {
-    flex-basis: 55%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    transition: border 0.3s;
-    font-size: 1rem;
-}
-
-    .form-input:focus {
-        border: 1px solid #007bff;
-        outline: none;
-    }
-
-input[type="file"] {
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-    cursor: pointer;
-}
-
-    input[type="file"]:hover {
-        background-color: #f0f0f0;
-    }
-
-.doccontainer {
-    background: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
-    /*border: #e7e0e0 0.1px solid;*/
-    -webkit-backdrop-filter: blur(10px); /* For Safari */
-    border-radius: 5px; /* Rounded corners */
-    /*border: 5.5px solid rgba(255, 255, 255, 0.3);*/ /* Light border */
-    /*box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);*/ /* Subtle shadow for depth */
-    padding: 5px; /* Some padding inside the container */
-    margin: 3px 0; /* Add some spacing around the container */
-}
-
-    .doccontainer:nth-child(even) {
-        background: #e9ecef; /* Light blue for even rows */
-        border-color: #d0e4f7; /* Optional: Change border color for even rows */
-    }
-
-
-
-#supplierquerybutton {
-    background-color: #006780; /* Bootstrap's primary blue color */
-    color: white;
-    border: none;
-    padding: 5px 5px;
-    font-size: 11px;
-    border-radius: 5px;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-    #supplierquerybutton:hover {
-        background-color: #0056b3; /* Darker shade for hover effect */
-        transform: translateY(-2px); /* Slight movement up on hover */
-    }
-
-    #supplierquerybutton:active {
-        background-color: #004494; /* Even darker shade for active state */
-        transform: translateY(0); /* Reset movement when clicked */
-    }
-
-
-
-.progress-tube {
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: #455a64;
+    -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5);
+  }
+  
+  ::-webkit-scrollbar-thumb:window-inactive {
+    background: #455a64;
+  }
+  
+  .sidebar {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 3px 10px 30px 3px rgba(0, 0, 0, 0.19);
+  }
+  
+  .header-container {
+    -webkit-box-shadow: 0px 6px 50px -18px rgba(0, 0, 0, 0.81);
+    -moz-box-shadow: 0px 6px 50px -18px rgba(0, 0, 0, 0.81);
+    box-shadow: 0px 6px 50px -18px rgba(0, 0, 0, 0.81);
+  }
+  
+  .progress-tube {
     width: 90%;
     height: 20px;
     border-radius: 15px;
@@ -711,189 +60,856 @@ input[type="file"] {
     padding: 5px;
     position: relative;
     overflow: hidden;
-}
-
-/* Inner glassy segments */
-.progress-segment.approved {
-    width: 33%;
+  }
+  
+  .progress-segment {
     height: 100%;
-    background: #6EA046; /*#;*/
     border-radius: 2px;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(255, 255, 255, 0.3);
     transform: skewX(-15deg);
     position: relative;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.progress-segment.rejected {
-    width: 33%;
-    height: 100%;
-    background: #FF0000; /* #;*/
-    border-radius: 2px;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(255, 255, 255, 0.3);
-    transform: skewX(-15deg);
-    position: relative;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.progress-segment.pending {
-    width: 33%;
-    height: 100%;
-    background: #FFFF40; /* ;*/
-    border-radius: 2px;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(255, 255, 255, 0.3);
-    transform: skewX(-15deg);
-    position: relative;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.progress-segment.default {
-    width: 33%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 2px;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(255, 255, 255, 0.3);
-    transform: skewX(-15deg);
-    position: relative;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Hover effect */
-.progress-segment:hover {
+  }
+  
+  .progress-segment.approved {
+    background: #6EA046;
+  }
+  
+  .progress-segment.rejected {
+    background: #FF0000;
+  }
+  
+  .progress-segment.pending {
+    background: #FFFF40;
+  }
+  
+  .progress-segment:hover {
     transform: skewX(-15deg) scale(1.1);
     box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(255, 255, 255, 0.5);
-}
-
-/* Add spacing */
-.progress-tube .progress-segment:not(:last-child) {
+  }
+  
+  .progress-tube .progress-segment:not(:last-child) {
     margin-right: 10px;
-}
-
-.supplementarycircle {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: #3498db; /* Blue background */
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-}
-
-.btn-search {
-    background-color: #007A93; /* Default background color */
-    color: #fff; /* Text color for better visibility */
-    border-color: #007A93; /* Border color to match the background */
-    outline: none; /* Remove default outline */
-}
-
-    .btn-search:hover,
-    .btn-search:focus,
-    .btn-search:active {
-        background-color: lightgrey !important; /* Ensure the same background color on hover, focus, and click */
-        color: #fff; /* Maintain the same text color */
-        border-color: lightgrey; /* Maintain the same border color */
-        outline: none; /* Ensure no outline is shown on focus */
+  }
+  
+  
+  
+  body {
+  }
+  @font-face {
+      font-family: "corpS";
+      src: url("/assets/fonts/MBCorpoSText-Regular-Web.woff2") format("woff");
+  }
+  
+  html,
+  body {
+      font-family: corpS;
+  }
+  
+  #kt_app_header_wrapper {
+      background-color: #003366;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+      background-repeat: no-repeat;
+      background-size: 100%;
+  }
+  
+  #kt_app_toolbar {
+      height: 0px
+  }
+  
+  #Widgets_Contract_Details {
+      background-color: white;
+  }
+  
+  .app-container container-xxl d-flex align-items-center {
+      height: 10px;
+  }
+  
+  
+  .app-container container-xxl {
+      background-color: white;
+      width: 1560px;
+  }
+  
+  .btn.btn-primary {
+      background-color: #006780;
+  }
+  
+  .btn btn-danger btn-icon {
+      background-color: #FF0000
+  }
+  
+  .login-form {
+      background: #ffffff12;
+  }
+  
+      .login-form > .login-form2 {
+          background-color: #ffffffe6;
+      }
+  
+  .login.login-1 .login-aside .aside-img {
+      min-height: 450px;
+  }
+  
+  .form-label {
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--bs-gray-800);
+  }
+  
+  .form-control {
+      display: block;
+      width: 100%;
+      padding: 0.265rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+      line-height: 1.5;
+      color: var(--bs-gray-700);
+      background-color: var(--bs-body-bg);
+      background-clip: padding-box;
+      border: 1px solid #aab2c4;
+      appearance: none;
+      border-radius: 0;
+      box-shadow: false;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+  
+  
+      .form-control:disabled {
+          color: var(--bs-gray-500);
+          background-color: var(--bs-gray-400);
+          border-color: var(--bs-gray-300);
+          opacity: 1;
+      }
+  
+  .btn.btn-light-primary {
+      color: #FFFFFF;
+      background-color: #71180C;
+      border-color: #71180C;
+      border-radius: 0.35rem;
+  }
+  
+  .btn.btn-secondary {
+      border-radius: 0.35rem;
+  }
+  
+  
+  
+  .form-control {
+      border-radius: 0.35rem;
+  }
+  
+  
+      .form-control[readonly] {
+          background-color: #d0d4d8;
+      }
+  
+      .form-control:disabled {
+          background-color: #d0d4d8;
+      }
+  
+      .form-control:read-only {
+          color: var(--bs-gray-900) !important;
+          background-color: #d0d4d8;
+          border-color: var(--bs-gray-400) !important;
+          opacity: 1 !important;
+      }
+  /* Container Styling */
+  .NotificationAreaContainer {
+      background-color: #ffffff; /* White background for the card */
+      border: 1px solid #e0e0e0; /* Light border for card */
+      border-radius: 8px; /* Rounded corners for card */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for card */
+      overflow: hidden; /* Prevent content overflow */
+  }
+  
+      /* Card Header */
+      .NotificationAreaContainer .card-header {
+          background-color: #f8f9fa; /* Light gray background */
+          padding: 10px 15px; /* Padding for spacing */
+          font-weight: bold; /* Bold text */
+          border-bottom: 1px solid #e0e0e0; /* Bottom border */
+      }
+  
+  /* Table Styling */
+  #NotificationAreaTable {
+      width: 100%; /* Full width */
+      border-collapse: collapse; /* Remove gaps between cells */
+      background-color: #ffffff; /* White background */
+  }
+  
+      #NotificationAreaTable th, #NotificationAreaTable td {
+          border: 1px solid #dee2e6; /* Light border for cells */
+          text-align: center; /* Center align text */
+          padding: 8px; /* Padding for spacing */
+          font-size: 12px; /* Font size for table text */
+          vertical-align: middle; /* Vertically align text */
+      }
+  
+      /* Header Styling */
+      #NotificationAreaTable thead th {
+          color: rgba(0, 0, 0, 0.2); /* White text */
+          font-weight: bold;
+          font-size: 12px /* Bold header text */
+      }
+  
+      /* Row Styling */
+      #NotificationAreaTable tbody tr:nth-child(even) {
+          background-color: #f2f2f2; /* Light gray background for even rows */
+      }
+  
+      #NotificationAreaTable tbody tr:hover {
+          background-color: #e9ecef; /* Slightly lighter hover effect */
+          cursor: pointer; /* Pointer cursor on hover */
+          transform: scale(1.02); /* Slight zoom effect on hover */
+      }
+  
+  
+      #NotificationAreaTable tbody tr:hover {
+          background-color: #e9ecef; /* Hover effect for rows */
+          cursor: pointer; /* Pointer cursor on hover */
+      }
+  
+  /* Responsive Design */
+  .table-responsive {
+      overflow-x: auto; /* Horizontal scroll for smaller screens */
+  }
+  
+  @media (max-width: 768px) {
+      .NotificationAreaContainer {
+          margin-bottom: 20px; /* Margin for mobile view */
+      }
+  
+      #NotificationAreaTable th, #NotificationAreaTable td {
+          font-size: 12px; /* Smaller font size for mobile */
+      }
+  }
+  
+  
+  /* Specific Column Widths */
+  #NotificationAreaTable th.p-2 {
+      padding: 10px; /* Specific padding for headers */
+  }
+  
+  .upload-btn {
+      background-color: #4e7f8c; /* Green background */
+      color: white; /* White text */
+      font-size: 12px; /* Slightly larger text */
+      padding: 5px 10px; /* Padding for button */
+      border: none; /* No border */
+      border-radius: 5px; /* Rounded corners */
+      cursor: pointer; /* Pointer cursor on hover */
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+      transition: background-color 0.3s ease-in-out; /* Smooth hover transition */
+  }
+  
+  .createsuplsumy {
+      background-color: #4e7f8c;
+      color: white;
+      font-size: 12px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s ease-in-out;
+  }
+  
+  .upload-btn:hover {
+      background-color: lightgrey; /* Darker green on hover */
+  }
+  
+  .upload-btn:active {
+      background-color: #4e7f8c; /* Even darker when pressed */
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Deeper shadow on click */
+      transform: translateY(2px); /* Simulate button press */
+  }
+  
+  .createsuplsumy:hover {
+      background-color: #45a049; /* Darker green on hover */
+  }
+  
+  .createsuplsumy:active {
+      background-color: #4e7f8c; /* Even darker when pressed */
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Deeper shadow on click */
+      transform: translateY(2px); /* Simulate button press */
+  }
+  
+  .table-container {
+      display: table;
+      width: 100%;
+      border-collapse: collapse;
+  }
+  
+  .table-row {
+      display: table-row;
+  }
+  
+  .table-cell {
+      display: table-cell;
+      padding: 10px;
+      border: 1px solid #ddd;
+      vertical-align: middle; /* Centers content vertically */
+  }
+  
+  svg {
+      max-width: 100%; /* Ensures SVG scales with the container */
+      height: auto; /* Maintains aspect ratio */
+  }
+  
+  .container {
+      display: flex;
+      align-items: center; /* Align items vertically centered */
+  }
+  
+  .checkbox-container {
+      margin-right: 20px; /* Add space between the checkbox and the box1 */
+  }
+  
+  .box1 {
+      margin-right: 20px; /* Add space between box1 and box2 */
+  }
+  
+  .box2 {
+      /* No specific styles needed here unless you want to add more customization */
+  }
+  /*.flaticon-folder-1 {
+      color: #E6E6E6
+  }*/
+  .fa fa-file-alt {
+      color: #E6E6E6;
+      height: 10px;
+  }
+  
+  .col.mt-2 {
+      /*font-weight: bold;*/
+      color: green
+  }
+  
+  .h3 {
+      text-align: left;
+      margin-left: 10px;
+      color: #003366;
+      font-size: 13px;
+      /*background-color: #ebf2f0;*/
+  }
+  
+  .notify {
+      padding: 0,10px,0,10px;
+  }
+  
+  
+  
+  .text-end {
+      padding-right: 10px;
+  }
+  
+  
+  .btn-group {
+      position: relative; /* Ensure the button group is the reference point for absolute positioning */
+  }
+  
+  #historybutton {
+      padding: 2px;
+      margin: 0;
+      font-size: 12px;
+  }
+  
+  
+  .contract-table th {
+      background-color: lightslategrey;
+      color: #fbfcff;
+      font-weight: normal;
+      padding: 10px 15px;
+      border-right: 1px solid;
+  }
+  
+  .contract-table td {
+      color: #333;
+      padding: 10px 15px;
+  }
+  
+  .contract-table tr:nth-child(even) {
+      background-color: #f9f9f9;
+  }
+  
+  .contract-table tr:hover {
+      background-color: #f1f1f1;
+  }
+  
+  .contract-table-n th {
+      background-color: lightslategrey;
+      color: #fbfcff;
+      font-weight: normal;
+      padding: 10px 15px;
+      border-right: 1px solid;
+  }
+  
+  .contract-table-n td {
+      color: #333;
+      padding: 10px 15px;
+  }
+  
+  .contract-table-n tr:nth-child(even) {
+      background-color: #f9f9f9;
+  }
+  
+  .contract-table-n tr:hover {
+      background-color: #f1f1f1;
+  }
+  
+  .invoice-table {
+      width: 100%;
+      margin: 20px 0;
+      max-height: 400px;
+      height: auto
+  }
+  
+      .invoice-table h3 {
+          margin-bottom: 10px;
+          font-size: 18px;
+          color: #333;
+      }
+  
+      .invoice-table table {
+          width: 100%;
+          border-collapse: collapse;
+          text-align: left;
+      }
+  
+      .invoice-table th {
+          background-color: #006780;
+          color: #fbfcff;
+          font-weight: normal;
+          padding: 10px 15px;
+          text-align: center;
+          border-right: 1px solid;
+          position: sticky;
+          top: 0;
+          z-index: 10;
+          width: auto;
+      }
+  
+      .invoice-table td {
+          color: #333;
+          padding: 10px 15px;
+      }
+  
+          .invoice-table td:last-child {
+              color: #333;
+              padding: 10px 15px;
+              text-align: right;
+          }
+  
+      .invoice-table tr:nth-child(even) {
+          background-color: #f9f9f9;
+      }
+  
+      .invoice-table tr:hover {
+          background-color: #f1f1f1;
+      }
+  
+  .small-circle {
+      font-size: 2px;
+  }
+  
+  .small-dot {
+      height: 6px;
+      width: 6px;
+      background-color: lightgrey;
+      border-radius: 50%;
+      display: inline-block;
+  }
+  
+  
+  
+  
+  
+  
+  
+  /*input[type="text"] {
+      width: 120px;
+      padding: 5px;
+  }*/
+  .nowrap {
+      white-space: nowrap;
+  }
+  
+  .tree-container {
+      display: flex;
+      flex-direction: column;
+      margin-left: 20px;
+  }
+  
+  .parent {
+      margin-bottom: 10px;
+  }
+  
+  #myallCheckbox {
+      position: relative;
+      margin-bottom: 20px;
+  }
+  
+  #subdivContainer {
+      position: relative;
+  }
+  
+  .tree-node {
+      display: flex;
+      align-items: center;
+      margin-left: 65px;
+      position: relative;
+  }
+  
+  .line-container {
+      display: flex;
+      align-items: center;
+      position: relative;
+  }
+  
+  .vertical-line {
+      width: 1px;
+      height: 30px;
+      background-color: blue;
+      position: absolute;
+      top: -25px;
+      left: -30px;
+  }
+  
+      .vertical-line.last {
+          height: 25px; /* Shorten the last vertical line */
+      }
+  
+  .horizontal-line {
+      width: 30px;
+      height: 1px;
+      background-color: blue;
+      position: relative;
+      left: -30px;
+  }
+  
+  .content {
+      margin-left: 10px;
+  }
+  
+  .node-id {
+      margin-right: 10px;
+  }
+  
+  .supldetails {
+      margin-left: -50px
+  }
+  
+  .modal-body {
+      padding: 20px;
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .modal-title {
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+      color: #333;
+      font-weight: bold;
+      text-align: center;
+  }
+  
+  .form-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+  }
+  
+  .form-label {
+      flex-basis: 40%;
+      text-align: right;
+      margin-right: 10px;
+      font-weight: 600;
+      color: #555;
+  }
+  
+  .form-input {
+      flex-basis: 55%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      transition: border 0.3s;
+      font-size: 1rem;
+  }
+  
+      .form-input:focus {
+          border: 1px solid #007bff;
+          outline: none;
+      }
+  
+  input[type="file"] {
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #fff;
+      cursor: pointer;
+  }
+  
+      input[type="file"]:hover {
+          background-color: #f0f0f0;
+      }
+  
+  .doccontainer {
+      background: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
+      /*border: #e7e0e0 0.1px solid;*/
+      -webkit-backdrop-filter: blur(10px); /* For Safari */
+      border-radius: 5px; /* Rounded corners */
+      /*border: 5.5px solid rgba(255, 255, 255, 0.3);*/ /* Light border */
+      /*box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);*/ /* Subtle shadow for depth */
+      padding: 5px; /* Some padding inside the container */
+      margin: 3px 0; /* Add some spacing around the container */
+  }
+  
+      .doccontainer:nth-child(even) {
+          background: #e9ecef; /* Light blue for even rows */
+          border-color: #d0e4f7; /* Optional: Change border color for even rows */
+      }
+  
+  
+  
+  #supplierquerybutton {
+      background-color: #006780; /* Bootstrap's primary blue color */
+      color: white;
+      border: none;
+      padding: 5px 5px;
+      font-size: 11px;
+      border-radius: 5px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+      #supplierquerybutton:hover {
+          background-color: #0056b3; /* Darker shade for hover effect */
+          transform: translateY(-2px); /* Slight movement up on hover */
+      }
+  
+      #supplierquerybutton:active {
+          background-color: #004494; /* Even darker shade for active state */
+          transform: translateY(0); /* Reset movement when clicked */
+      }
+  
+  
+  
+  .progress-tube {
+      width: 90%;
+      height: 20px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px;
+      position: relative;
+      overflow: hidden;
+  }
+  
+  /* Inner glassy segments */
+  .progress-segment.approved {
+      width: 33%;
+      height: 100%;
+      background: #6EA046; /*#;*/
+      border-radius: 2px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(255, 255, 255, 0.3);
+      transform: skewX(-15deg);
+      position: relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .progress-segment.rejected {
+      width: 33%;
+      height: 100%;
+      background: #FF0000; /* #;*/
+      border-radius: 2px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(255, 255, 255, 0.3);
+      transform: skewX(-15deg);
+      position: relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .progress-segment.pending {
+      width: 33%;
+      height: 100%;
+      background: #FFFF40; /* ;*/
+      border-radius: 2px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(255, 255, 255, 0.3);
+      transform: skewX(-15deg);
+      position: relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .progress-segment.default {
+      width: 33%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 2px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(255, 255, 255, 0.3);
+      transform: skewX(-15deg);
+      position: relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  /* Hover effect */
+  .progress-segment:hover {
+      transform: skewX(-15deg) scale(1.1);
+      box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(255, 255, 255, 0.5);
+  }
+  
+  /* Add spacing */
+  .progress-tube .progress-segment:not(:last-child) {
+      margin-right: 10px;
+  }
+  
+  .supplementarycircle {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #3498db; /* Blue background */
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  }
+  
+  .btn-search {
+      background-color: #007A93; /* Default background color */
+      color: #fff; /* Text color for better visibility */
+      border-color: #007A93; /* Border color to match the background */
+      outline: none; /* Remove default outline */
+  }
+  
+      .btn-search:hover,
+      .btn-search:focus,
+      .btn-search:active {
+          background-color: lightgrey !important; /* Ensure the same background color on hover, focus, and click */
+          color: #fff; /* Maintain the same text color */
+          border-color: lightgrey; /* Maintain the same border color */
+          outline: none; /* Ensure no outline is shown on focus */
+      }
+  
+  /* Default style */
+  /*.hoverDiv {
+      background-color: #f9f9f9;
+      transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+      .hoverDiv:hover {
+          background-color: #e0e0e0;*/ /* Light teal color */
+  /*cursor: pointer;
+          transform: translateY(-5px);*/ /* Moves the element upwards */
+  /*box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);*/ /* Enhances shadow for 3D effect */
+  /*}*/
+  
+  .hoversubDiv {
+      background-color: #f9f9f9;
+      transition: background-color 0.3s ease;
+  }
+  
+      /* Hover effect */
+      .hoversubDiv:hover {
+          background-color: #f1f1f1; /* Light teal color */
+          cursor: pointer;
+          transform: translateY(-5px) rotateX(2deg) rotateY(2deg);
+          box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+      }
+  
+  .invoice-table table-responsive {
+      max-height: 400px;
+      height: auto;
+      overflow-y: auto;
+      text-align: center;
+  }
+  
+  .supplementary-icon {
+      margin-right: 8px; /* Adds spacing between the spans */
+  }
+  
+      /* Remove margin for the last span */
+      .supplementary-icon:last-child {
+          margin-right: 0;
+      }
+  
+  .dropdown-menu {
+      position: relative;
+  }
+  
+  .doccontainer:active {
+      background-color: rgba(100, 150, 255, 0.3); /* Darker shade on click */
+      border-color: #a0c4f3; /* Optional: Slightly darker border on click */
+  }
+  
+  .ui-container .form-group label {
+      text-align: right;
+      display: block;
+      width: 100%;
+  }
+  
+  .largeicon {
+      font-size: 20px
+  }
+  
+  .status {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end; /* Align all items to the end */
+  }
+  
+  .progress-dot {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+  }
+  
+  .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 10px;
+  }
+  
+      /* Define colors for different statuses */
+      .dot.pending {
+          background-color: #FFFF40; /* Adjust color for Pending */
+      }
+  
+      .dot.approved {
+          background-color: #6EA046; /* Adjust color for Approved */
+      }
+  
+      .dot.rejected {
+          background-color: #FF0000; /* Adjust color for Rejected */
+      }
+  
+  .status-text {
+      font-size: 12px;
+      color: #333; /* Adjust text color if needed */
+  }
+  
+  .filter-row {
+      display: flex;
+      gap: 15px; /* Adds space between the input boxes */
+      align-items: center; /* Vertically align the items */
     }
-
-/* Default style */
-/*.hoverDiv {
-    background-color: #f9f9f9;
-    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-    .hoverDiv:hover {
-        background-color: #e0e0e0;*/ /* Light teal color */
-/*cursor: pointer;
-        transform: translateY(-5px);*/ /* Moves the element upwards */
-/*box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);*/ /* Enhances shadow for 3D effect */
-/*}*/
-
-.hoversubDiv {
-    background-color: #f9f9f9;
-    transition: background-color 0.3s ease;
-}
-
-    /* Hover effect */
-    .hoversubDiv:hover {
-        background-color: #f1f1f1; /* Light teal color */
-        cursor: pointer;
-        transform: translateY(-5px) rotateX(2deg) rotateY(2deg);
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    
+    .filter-row > div {
+      display: flex;
+      flex-direction: column; /* Stack the label and input vertically */
     }
-
-.invoice-table table-responsive {
-    max-height: 400px;
-    height: auto;
-    overflow-y: auto;
-    text-align: center;
-}
-
-.supplementary-icon {
-    margin-right: 8px; /* Adds spacing between the spans */
-}
-
-    /* Remove margin for the last span */
-    .supplementary-icon:last-child {
-        margin-right: 0;
+    
+    label {
+      margin-bottom: 5px; /* Adds some space between the label and input */
     }
-
-.dropdown-menu {
-    position: relative;
-}
-
-.doccontainer:active {
-    background-color: rgba(100, 150, 255, 0.3); /* Darker shade on click */
-    border-color: #a0c4f3; /* Optional: Slightly darker border on click */
-}
-
-.ui-container .form-group label {
-    text-align: right;
-    display: block;
-    width: 100%;
-}
-
-.largeicon {
-    font-size: 20px
-}
-
-.status {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end; /* Align all items to the end */
-}
-
-.progress-dot {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    margin-right: 10px;
-}
-
-    /* Define colors for different statuses */
-    .dot.pending {
-        background-color: #FFFF40; /* Adjust color for Pending */
-    }
-
-    .dot.approved {
-        background-color: #6EA046; /* Adjust color for Approved */
-    }
-
-    .dot.rejected {
-        background-color: #FF0000; /* Adjust color for Rejected */
-    }
-
-.status-text {
-    font-size: 12px;
-    color: #333; /* Adjust text color if needed */
-}
+    

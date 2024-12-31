@@ -25,7 +25,86 @@ class supplementarySummariesService{
           console.error('Error fetching supplementary summaries:', error);
           throw error; 
         }
+    }
+    public async GetAllSuppliers(input:string) {
+      try {
+        
+        const result = await http.get(
+          'api/services/app/SupplementarySummaries/GetAllSuppliers',{ params: input },
+           
+        );
+        return result;
+      } catch (error) {
+        console.error('Error fetching supplementary summaries:', error);
+        throw error; 
       }
+  }
+  public async GetAllBuyers(input:string) {
+    try {
+      
+      const result = await http.get(
+        'api/services/app/Buyers/Getallbuyers',{ params: { supplierid:input } },
+         
+      );
+      return result;
+    } catch (error) {
+      console.error('Error fetching supplementary summaries:', error);
+      throw error; 
+    }
+}
+public async GetAllBuyersList(input:number[]) {
+  try {
+    
+    const result = await http.get(
+      'api/services/app/SupplementarySummaries/Getallbuyers',{ params: { supplierids:input } },
+       
+    );
+    return result;
+  } catch (error) {
+    console.error('Error fetching supplementary summaries:', error);
+    throw error; 
+  }
+}
+public async GetAllPartNumbersList(supplierids:number[],buyerids:number[]) {
+  try {
+    
+    const result = await http.get(
+      'api/services/app/SupplementarySummaries/GetAllPartNumbersList',{ params: { buyerids:buyerids,supplierids:supplierids } },
+       
+    );
+    return result;
+  } catch (error) {
+    console.error('Error fetching supplementary summaries:', error);
+    throw error; 
+  }
+}
+public async GetAllParts(supplierid:string,buyerid:string) {
+  try {
+    
+    const result = await http.get(
+      'api/services/app/SupplementarySummaries/GetAllPartNumbers',{ params: { supplierid:supplierid,buyerid:buyerid} },
+       
+    );
+    return result;
+  } catch (error) {
+    console.error('Error fetching supplementary summaries:', error);
+    throw error; 
+  }
+}
+
+    public async carddetails(input: SupplierDashboardInput) {
+      try {
+        
+        const result = await http.get(
+          'api/services/app/SupplementarySummaries/GetAllsupplementarySummaryContractDataTestvalue',{ params: input },
+           
+        );
+        return result;
+      } catch (error) {
+        console.error('Error fetching supplementary summaries:', error);
+        throw error; 
+      }
+  }
 
       public async grndata(id: number) {
         try {
