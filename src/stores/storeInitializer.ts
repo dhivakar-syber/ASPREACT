@@ -7,6 +7,7 @@ import AccountStore from './accountStore';
 import CBFCDataStore from './cbfcdataStore';
 import GRNDataStore from './grndataStore';
 import ProcureStore from './procuredatastore';
+import BuyerStore from './buyerstore';
 
 
 export default function initializeStores() {
@@ -20,6 +21,7 @@ export default function initializeStores() {
     cbfcdataStore: new CBFCDataStore(),
     grndataStore: new GRNDataStore(),
     procureStore: new ProcureStore(),
+    buyerStore: new BuyerStore(),
 
   };
 }
