@@ -7,6 +7,7 @@ import {PagedSupplementarySummaryResultRequestDto} from './dto/PagedSupplementar
 import {SupplementarySummaryPartLookupTableDto} from './dto/supplementarySummaryPartLookupTableDto';
 import {supplementarySummaryBuyerLookupTableDto} from './dto/supplementarySummaryBuyerLookupTableDto';
 import {SupplementarySummarySupplierLookupTableDto} from './dto/supplementarySummarySupplierLookupTableDto';
+//import {SupplementaryData} from './dto/checkSignatureInputDto';
 import http from '../httpService';
 
 import {SupplierDashboardInput} from '../../scenes/Dashboard/components/PayRetroSupplierDashboard/DashboardInput'
@@ -133,7 +134,48 @@ public async GetAllParts(supplierid:string,buyerid:string) {
           throw error; 
         }
       }
-
+      public async supplementaryuploadeddetails(id: number) {
+        try {
+          
+          const result = await http.post(
+            'api/services/app/SupplementarySummaries/Supplementaryuploadeddetails',{ params: { supplementaryid:id } },
+             
+          );
+          return result.data.result;
+        } catch (error) {
+          console.error('Error fetching supplementary summaries:', error);
+          throw error; 
+        }
+      }
+      public async supplementaryInvoiceSubmit(id: number,remarks:string) {
+        try {
+          
+          const result = await http.post(
+            'api/services/app/SupplementarySummaries/supplementaryInvoiceSubmit',{ params: { supplementaryid:id,submitRemarks:remarks } },
+             
+          );
+          return result.data.result;
+        } catch (error) {
+          console.error('Error fetching supplementary summaries:', error);
+          throw error; 
+        }
+      }
+      public async checkSignature(formData: FormData) {
+        try {
+            // Send the FormData in a POST request using your custom HTTP service
+            const result = await http.post(
+                'api/services/app/SupplementarySummaries/CheckSignature',
+                formData
+            );
+          
+            // Assuming the response contains data
+            return result.data; // Adjust based on your actual response format
+        } catch (error) {
+            console.error('Error checking signature:', error);
+            throw error; // Optionally re-throw the error to handle it in the component
+        }
+    }
+    
       public async create(createOrEditSupplementarySummaryDto: CreateOrEditSupplementarySummaryDto) {
         let result = await http.post('api/services/app/SupplementarySummaries/CreateOrEdit', createOrEditSupplementarySummaryDto);
         return result.data.result;

@@ -3,6 +3,9 @@ import supplementarySummariesService from "../../../../services/SupplementarySum
 import { SupplierDashboardInput } from "../PayRetroSupplierDashboard/DashboardInput";
 import  DashboardCards  from "../PayRetroSupplierDashboard/DashboardCards";
 import { Row, Col, Input, Form,Select } from 'antd';
+import SupplierSubmitModal from './SupplierSubmitModal';
+import SupplementaryInvoiceModal from "./SupplementaryInvoicesModal";
+
 
 
 
@@ -17,6 +20,7 @@ const PayRetroSupplierDashboard: React.SFC = () => {
   const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
   const [selectedRow, setSelectedRow] = React.useState<any | null>(null); // To manage selected row for modal
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false); // To control modal visibility
+  const [isSupplierSubmitModalOpen, setIsSupplierSubmitModalOpen] = React.useState<boolean>(false); // To control modal visibility
   const [modalData, setModalData] = React.useState<any[]>([]);
   const [annexuremodalData, annexuresetModalData] = React.useState<any[]>([]);
   const [suppliers, setSuppliers] =React.useState<any[]>([]);
@@ -46,6 +50,15 @@ const PayRetroSupplierDashboard: React.SFC = () => {
  
   React.useEffect(() => {
     
+  const [submitIdRow, setSubmitIdRow] = React.useState<number>(0);
+  const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  // Track modal visibility
+  const [currentRowId, setCurrentRowId] = React.useState<string | null>(null); 
+  React.useEffect(() => {
+    const supplierDashboardInput: SupplierDashboardInput = {
+      Supplierids: [0],
+      Buyerids: [0],
+      Partids: [0],
+    };
 
     const fetchData = async () => {
       try {
@@ -222,17 +235,42 @@ const PayRetroSupplierDashboard: React.SFC = () => {
     };
   }, []);
 
-  const toggleDropdown = (id: number) => {
-    setOpenDropdownId((prevId) => (prevId === id ? null : id));
+  const toggleDropdown = (id:any,event: React.MouseEvent) => {
+    event.stopPropagation();
+    // Toggle the dropdown for the clicked row
+    setOpenDropdownId(openDropdownId === id ? null : id);
   };
 
-  const handleDropdownAction = (action: string, id: number) => {
+  const handleDropdownAction = (action: string, id: number,event: React.MouseEvent) => {
+    event.stopPropagation();
     console.log(`Action: ${action}, Row ID: ${id}`);
     // Placeholder for dropdown action logic
   };
 
 
   
+  const handleSupplierSubmitAction = (action: string, id: number, event: React.MouseEvent) => {
+    event.stopPropagation();
+    console.log(action, id);
+    setSubmitIdRow(id);
+    // Open the modal
+    setIsSupplierSubmitModalOpen(true);
+  };
+  const closeSupplierSubmitModal = () => {
+    setIsSupplierSubmitModalOpen(false);
+  };
+  const supplementaryInvoiceSubmit = (item: any) => {
+    console.log('Processing item:', item);
+    // Your logic here
+  };
+  const handleSupplementaryDropdownAction = (buttonName: string, rowId: string, event: React.MouseEvent) => {
+    event.stopPropagation();
+    setCurrentRowId(rowId); // Set the rowId when the button is clicked
+    setIsModalVisible(true); // Show the modal
+  };
+  const handleCloseModal = () => {
+    setIsModalVisible(false);        
+  };
   function formatDate(d:string) {
     const date = new Date(d);
     const year = date.getFullYear();
@@ -699,7 +737,7 @@ function barstatus(status:any) {
                         padding: "5px 10px",
                         cursor: "pointer",
                       }}
-                      onClick={() => toggleDropdown(row.id)}
+                      onClick={(event) => toggleDropdown(row.id,event)}
                     >
                       ⚙️
                     </button>
@@ -713,33 +751,57 @@ function barstatus(status:any) {
                           boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
                           zIndex: 999,
                           padding: "10px",
-                          width: "150px",
+                          width: "325px",
                         }}
                       >
                         <button
                           style={{
                             width: "100%",
-                            backgroundColor: "#f44336",
-                            color: "#fff",
+                            backgroundColor: "#fff",
+                            color: "#071437",
                             border: "none",
                             padding: "10px",
                             marginBottom: "5px",
                           }}
-                          onClick={() => handleDropdownAction("Action 1", row.id)}
+                          onClick={(event) => handleSupplementaryDropdownAction("Supplementary Invoice/Credit Note Details", row.id,event)}
                         >
-                          Action 1
+                          Supplementary Invoice/Credit Note Details
                         </button>
                         <button
                           style={{
                             width: "100%",
-                            backgroundColor: "#4CAF50",
-                            color: "#fff",
+                            backgroundColor: "#fff",
+                            color: "#071437",
                             border: "none",
                             padding: "10px",
                           }}
-                          onClick={() => handleDropdownAction("Action 2", row.id)}
+                          onClick={(event) => handleSupplierSubmitAction("Submit", row.id,event)}
                         >
-                          Action 2
+                          Submit
+                        </button>
+                        <button
+                          style={{
+                            width: "100%",
+                            backgroundColor: "#fff",
+                            color: "#071437",
+                            border: "none",
+                            padding: "10px",
+                          }}
+                          onClick={(event) => handleDropdownAction("Raise Query", row.id,event)}
+                        >
+                          Raise Query
+                        </button>
+                        <button
+                          style={{
+                            width: "100%",
+                            backgroundColor: "#fff",
+                            color: "#071437",
+                            border: "none",
+                            padding: "10px",
+                          }}
+                          onClick={(event) => handleDropdownAction("History of Query", row.id,event)}
+                        >
+                          History of Query
                         </button>
                       </div>
                     )}
@@ -763,6 +825,13 @@ function barstatus(status:any) {
           </tbody>
         </table>
       </div>
+      <SupplierSubmitModal isOpen={isSupplierSubmitModalOpen} onClose={closeSupplierSubmitModal} submitIdRow={submitIdRow}
+        supplementaryInvoiceSubmit={supplementaryInvoiceSubmit} />
+        <SupplementaryInvoiceModal
+        rowId={currentRowId}      // Pass rowId to the modal
+        visible={isModalVisible}   // Control visibility of the modal
+        onCancel={handleCloseModal} // Function to close modal
+      />
       {isModalOpen && modalData && Suppliermodalview(selectedRow)}
     </div>
   );

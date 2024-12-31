@@ -4,27 +4,29 @@ import { Button, Card, Col, Dropdown, Input, Menu, Modal, Row, Table} from 'antd
 import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../components/AppComponentBase';
-import CreateOrUpdateCBFCData from './components/createOrUpdateCBFCData';
+import CreateOrUpdateApprovalWorkflows from './components/createOrUpdateApprovalWorkflows';
 import { EntityDto } from '../../services/dto/entityDto';
 import { L } from '../../lib/abpUtility';
 import Stores from '../../stores/storeIdentifier';
-import cbfcdataStore from '../../stores/cbfcdataStore';
+import approvalWorkflowStore from '../../stores/approvalWorkflowStore';
 import { FormInstance } from 'antd/lib/form';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
-import { EnumCurrency,EnumTransaction } from '../../../src/enum'
 
-export interface ICBFCdataProps {
-  cbfcdataStore: cbfcdataStore;
+const userPermissions = ["Pages.Administration.ApprovalWorkflows.Create", "Pages.Administration.ApprovalWorkflows.Edit","Pages.Administration.ApprovalWorkflows.Delete"];
+const hasPermission = (permission: string): boolean => userPermissions.includes(permission);
+
+export interface IApprovalWorkflowsProps {
+  approvalWorkflowStore: approvalWorkflowStore;
 }
 
-export interface ICBFCdataState {
+export interface IApprovalWorkflowsState {
   modalVisible: boolean;
   maxResultCount: number;
   skipCount: number;
   userId: number;
   filter: string;
 }
-type LookupItem = {
+type BuyerLookupItem = {
   id: number;
   displayName: string;
 };
@@ -32,16 +34,24 @@ type SupplierLookupItem = {
   id: number;
   displayName: string;
 };
-type BuyerLookupItem = {
+type UserLookupItem = {
+  id: number;
+  displayName: string;
+};
+type User2LookupItem = {
+  id: number;
+  displayName: string;
+};
+type User3LookupItem = {
   id: number;
   displayName: string;
 };
 const confirm = Modal.confirm;
 const Search = Input.Search;
 
-@inject(Stores.CBFCdataStore)
+@inject(Stores.ApprovalWorkflowStore)
 @observer
-class CBFCDatas extends AppComponentBase<ICBFCdataProps, ICBFCdataState> {
+class ApprovalWorkflows extends AppComponentBase<IApprovalWorkflowsProps, IApprovalWorkflowsState> {
   formRef = React.createRef<FormInstance>();
 
   state = {
@@ -50,7 +60,9 @@ class CBFCDatas extends AppComponentBase<ICBFCdataProps, ICBFCdataState> {
     skipCount: 0,
     userId: 0,
     filter: '',
-    selectedLookupItem: null as LookupItem | null,
+    selectedUserLookupItem: null as UserLookupItem | null,
+    selectedUser2LookupItem: null as User2LookupItem | null,
+    selectedUser3LookupItem: null as User3LookupItem | null,
     selectedSupplierLookupItem: null as SupplierLookupItem | null,
     selectedBuyerLookupItem: null as BuyerLookupItem | null,
   };
@@ -60,11 +72,11 @@ class CBFCDatas extends AppComponentBase<ICBFCdataProps, ICBFCdataState> {
   }
 
   async getAll() {
-    if (!this.props.cbfcdataStore) {
-        console.error('cbfcdatastore is undefined');
+    if (!this.props.approvalWorkflowStore) {
+        console.error('approvalWorkflowStore is undefined');
         return;
     }
-    await this.props.cbfcdataStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
+    await this.props.approvalWorkflowStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
   }
 
   handleTableChange = (pagination: any) => {
@@ -79,16 +91,16 @@ class CBFCDatas extends AppComponentBase<ICBFCdataProps, ICBFCdataState> {
 
   async createOrUpdateModalOpen(entityDto: EntityDto) {
     if (entityDto.id === 0) {
-      await this.props.cbfcdataStore.createCBFCData();
+      await this.props.approvalWorkflowStore.createApprovalWorkflow();
     } else {
-      await this.props.cbfcdataStore.get(entityDto);
+      await this.props.approvalWorkflowStore.get(entityDto);
     }
 
     this.setState({ userId: entityDto.id });
     this.Modal();
 
     setTimeout(() => {
-      this.formRef.current?.setFieldsValue({ ...this.props.cbfcdataStore.editUser });
+      this.formRef.current?.setFieldsValue({ ...this.props.approvalWorkflowStore.editUser });
     }, 100);
   }
 
@@ -97,7 +109,7 @@ class CBFCDatas extends AppComponentBase<ICBFCdataProps, ICBFCdataState> {
     confirm({
       title: 'Do you Want to delete these items?',
       onOk() {
-        self.props.cbfcdataStore.delete(input);
+        self.props.approvalWorkflowStore.delete(input);
       },
       onCancel() {
         console.log('Cancel');
@@ -107,9 +119,17 @@ class CBFCDatas extends AppComponentBase<ICBFCdataProps, ICBFCdataState> {
 editdata:any = null;
   handleCreate = () => {
     const form = this.formRef.current;
-    const { selectedLookupItem } = this.state;
-    if (selectedLookupItem?.id) { 
-      form?.setFieldsValue({ partId: selectedLookupItem.id });
+    const { selectedUserLookupItem } = this.state;
+    if (selectedUserLookupItem?.id) { 
+      form?.setFieldsValue({ approvalBuyer: selectedUserLookupItem.id });
+    }
+    const { selectedUser2LookupItem } = this.state;
+    if (selectedUser2LookupItem?.id) { 
+      form?.setFieldsValue({ accountsApprover: selectedUser2LookupItem.id });
+    }
+    const { selectedUser3LookupItem } = this.state;
+    if (selectedUser3LookupItem?.id) { 
+      form?.setFieldsValue({ paymentApprover: selectedUser3LookupItem.id });
     }
     const { selectedSupplierLookupItem } = this.state;
     if (selectedSupplierLookupItem?.id) { 
@@ -121,9 +141,9 @@ editdata:any = null;
     }
     form!.validateFields().then(async (values: any) => {
       if (this.state.userId === 0) {
-        await this.props.cbfcdataStore.create(values);
+        await this.props.approvalWorkflowStore.create(values);
       } else {
-        await this.props.cbfcdataStore.update({ ...values, id: this.state.userId });
+        await this.props.approvalWorkflowStore.update({ ...values, id: this.state.userId });
       }
 
       await this.getAll();
@@ -141,16 +161,16 @@ editdata:any = null;
   // }
   
   
-   handleFileUpload = (event:any) => {
-      const file = event.target.files[0];
-      if (file) {
-        this.props.cbfcdataStore.importExcel(file);
-      }
-    };
+  //  handleFileUpload = (event:any) => {
+  //     const file = event.target.files[0];
+  //     if (file) {
+  //       this.props.annexureDetailsStore.importExcel(file);
+  //     }
+  //   };
 
   public render() {
-    console.log(this.props.cbfcdataStore);
-    const { cbfcdata } = this.props.cbfcdataStore;
+    console.log(this.props.approvalWorkflowStore);
+    const { approvalWorkflow } = this.props.approvalWorkflowStore;
     const columns = [
         {
             title: L('Actions'),
@@ -161,8 +181,10 @@ editdata:any = null;
                   trigger={['click']}
                   overlay={
                     <Menu>
-                      <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.cbfCdata?.id })}>{L('Edit')}</Menu.Item>
-                      <Menu.Item onClick={() => this.delete({ id: item.cbfCdata?.id })}>{L('Delete')}</Menu.Item>
+                      {hasPermission("Pages.Administration.ApprovalWorkflows.Edit") && (
+                      <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.approvalWorkflow?.id })}>{L('Edit')}</Menu.Item>)}
+                      {hasPermission("Pages.Administration.ApprovalWorkflows.Delete") && (
+                      <Menu.Item onClick={() => this.delete({ id: item.approvalWorkflow?.id })}>{L('Delete')}</Menu.Item>)}
                     </Menu>
                   }
                   placement="bottomLeft"
@@ -174,29 +196,11 @@ editdata:any = null;
               </div>
             ),
           },
-      { title: L('DeliveryNote'), dataIndex: 'cbfCdata.deliveryNote', key: 'deliveryNote', width: 150, render: (text: string, record: any) =>
-        <div>{record.cbfCdata?.deliveryNote || ''}</div> },
-      { title: L('DeliveryNoteDate'), dataIndex: 'cbfCdata.deliveryNoteDate', key: 'deliveryNoteDate', width: 150, render: (text: string, record: any) =>
-        <div>{record.cbfCdata?.deliveryNoteDate || ''}</div> },
-      { title: L('Currency'), dataIndex: 'cbfCdata.currency', key: 'currency', width: 150, render: (text: string, record: any) => {
-        const currencyvalue = record.cbfCdata?.currency;
-        const currencyText = EnumCurrency[currencyvalue] || '';
-        return <div>{currencyText}</div>;
-    } },
-      { title: L('Transaction'), dataIndex: 'cbfCdata.transaction', key: 'transaction', width: 150, render: (text: string, record: any) => {
-        const transactionValue = record.cbfCdata?.transaction;
-        const transactionText = EnumTransaction[transactionValue] || '';
-        return <div>{transactionText}</div>;
-    } },
-      { title: L('PaidAmount'), dataIndex: 'cbfCdata.paidAmount', key: 'paidAmount', width: 150, render: (text: string, record: any) =>
-        <div>{record.cbfCdata?.paidAmount || ''}</div> },
-      { title: L('Year'), dataIndex: 'cbfCdata.year', key: 'year', width: 150, render: (text: string, record: any) =>
-        <div>{record.cbfCdata?.year || ''}</div> },
-      { title: L('SupplementarySummaries'), dataIndex: 'supplementarySummaryDisplayProperty', key: 'supplementarySummaryFk.supplementaryInvoiceNo', width: 150, render: (text: string) => <div>{text}</div> },
-      { title: L('SupplierRejection'), dataIndex: 'supplierRejectionCode', key: 'supplementarySummaryFk.code', width: 150, render: (text: string) => <div>{text}</div> },
-      { title: L('BuyerName'), dataIndex: 'buyerName', key: 'buyerFk.name', width: 150, render: (text: string) => <div>{text}</div> },
-      { title: L('SupplierName'), dataIndex: 'supplierName', key: 'supplierFk.name', width: 150, render: (text: string) => <div>{text}</div> },
-      
+      { title: L('BuyerShortId'), dataIndex: 'buyerShortId', key: 'buyerShortId', width: 150, render: (text: string) => <div>{text}</div> },
+      { title: L('SupplierCode'), dataIndex: 'supplierCode', key: 'supplierCode', width: 150, render: (text: string) => <div>{text}</div> },
+      { title: L('buyermailaddress'), dataIndex: 'userName', key: 'userName', width: 150, render: (text: string) => <div>{text}</div> },
+      { title: L('accountmailaddress'), dataIndex: 'userName2', key: 'userName2', width: 150, render: (text: string) => <div>{text}</div> },
+      { title: L('paymentmailaddress'), dataIndex: 'userName3', key: 'userName3', width: 150, render: (text: string) => <div>{text}</div> },
     ];
 
     return (
@@ -211,9 +215,9 @@ editdata:any = null;
             xxl={{ span: 2, offset: 0 }}
           >
             {' '}
-            <h2>{L('CBFCdata')}</h2>
+            <h2>{L('ApprovalWorkflows')}</h2>
           </Col>
-             <Col
+             {/* <Col
                       xs={{ span: 14, offset: 0 }}
                       sm={{ span: 15, offset: 0 }}
                       md={{ span: 15, offset: 0 }}
@@ -231,9 +235,9 @@ editdata:any = null;
                               {L('ImportExcel')}
                             </label>
                           </Menu.Item>
-                          {/* <Menu.Item onClick={this.handleexcelexport}>
+                          <Menu.Item onClick={this.handleexcelexport}>
                             {L('ExportExcel')}
-                          </Menu.Item> */}
+                          </Menu.Item>
                         </Menu>
                         
                         }
@@ -247,7 +251,7 @@ editdata:any = null;
                     </Col>
                     <br />
                     <br />
-                    <br />
+                    <br /> */}
           <Col
             xs={{ span: 14, offset: 0 }}
             sm={{ span: 15, offset: 0 }}
@@ -256,7 +260,7 @@ editdata:any = null;
             xl={{ span: 1, offset: 21 }}
             xxl={{ span: 1, offset: 21 }}
           >
-            <Button type="primary"  icon={<PlusOutlined/>} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} style={{marginLeft:'-50px'}}>Create CBFCDatas</Button>
+            <Button type="primary"  icon={<PlusOutlined/>} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} style={{marginLeft:'-50px'}}>Create Approval Workflows</Button>
           </Col>
         </Row>
         <Row>
@@ -274,18 +278,18 @@ editdata:any = null;
             xxl={{ span: 24, offset: 0 }}
           >
             <Table
-              rowKey={(record) => record.CBFCdata?.id.toString()}
+              rowKey={(record) => record.ApprovalWorkflow?.id.toString()}
               bordered={true}
               columns={columns}
-              pagination={{ pageSize: 10, total: cbfcdata === undefined ? 0 : cbfcdata.totalCount, defaultCurrent: 1 }}
-              loading={cbfcdata === undefined ? true : false}
-              dataSource={cbfcdata === undefined ? [] : cbfcdata.items}
+              pagination={{ pageSize: 10, total: approvalWorkflow === undefined ? 0 : approvalWorkflow.totalCount, defaultCurrent: 1 }}
+              loading={approvalWorkflow === undefined ? true : false}
+              dataSource={approvalWorkflow === undefined ? [] : approvalWorkflow.items}
               onChange={this.handleTableChange}
               scroll={{ x: 'max-content' }}
             />
           </Col>
         </Row>
-        <CreateOrUpdateCBFCData
+        <CreateOrUpdateApprovalWorkflows
           formRef={this.formRef}
           visible={this.state.modalVisible}
           onCancel={() => {
@@ -303,11 +307,11 @@ editdata:any = null;
             paidAmount: 0,
             year: 0,
           }}
-          cbfcdataStore={this.props.cbfcdataStore}
+          approvalWorkflowStore={this.props.approvalWorkflowStore}
         />
       </Card>
     );
   }
 }
 
-export default CBFCDatas;
+export default ApprovalWorkflows;
