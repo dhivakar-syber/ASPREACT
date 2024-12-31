@@ -15,7 +15,7 @@ declare var abp: any;
 
 
 
-const PayRetroSupplierDashboard: React.SFC = () => {
+    const PayRetroSupplierDashboard: React.SFC = () => {
   const [tableData, setTableData] = React.useState<any[]>([]);
   const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
   const [selectedRow, setSelectedRow] = React.useState<any | null>(null); // To manage selected row for modal
@@ -30,6 +30,9 @@ const PayRetroSupplierDashboard: React.SFC = () => {
   const [parts, setParts] =React.useState<any[]>([]);
   const [selectedparts, setselectedparts] =React.useState<any[]>([]);
   const [selectedcategory, setselectedcategory] =React.useState<any>(String);
+  const [submitIdRow, setSubmitIdRow] = React.useState<number>(0);
+  const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  
+  const [currentRowId, setCurrentRowId] = React.useState<string | null>(null); 
 
   var userid='0';
   
@@ -50,15 +53,6 @@ const PayRetroSupplierDashboard: React.SFC = () => {
  
   React.useEffect(() => {
     
-  const [submitIdRow, setSubmitIdRow] = React.useState<number>(0);
-  const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  // Track modal visibility
-  const [currentRowId, setCurrentRowId] = React.useState<string | null>(null); 
-  React.useEffect(() => {
-    const supplierDashboardInput: SupplierDashboardInput = {
-      Supplierids: [0],
-      Buyerids: [0],
-      Partids: [0],
-    };
 
     const fetchData = async () => {
       try {
@@ -109,6 +103,7 @@ const PayRetroSupplierDashboard: React.SFC = () => {
   }, []);
 
 
+  
 
   const handlesupplierChange =async  (selectedValues: any[]) => {
     
@@ -212,14 +207,6 @@ const PayRetroSupplierDashboard: React.SFC = () => {
   };
 
 
-  
-
-
-  const handleSearch = () => {
-    console.log('Searching with filters:');
-    
-  };
-  
 
   const handleClickOutside = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
