@@ -1,6 +1,6 @@
 import * as React from "react";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
-import { SupplierDashboardInput } from "../../../Dashboard/components/PayRetroSupplierDashboard/DashboardInput";
+import { SupplierDashboardInput } from "../../../Dashboard/components/PayRetroSupplierDashboard/SupplierDashboardInput";
 import { Row, Col, Input, Form } from 'antd';
 
 
