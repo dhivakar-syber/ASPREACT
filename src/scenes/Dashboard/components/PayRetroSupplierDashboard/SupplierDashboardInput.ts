@@ -5,4 +5,3 @@ export interface SupplierDashboardInput {
     invoicetype:number;
 
   }
-  

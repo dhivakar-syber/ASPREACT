@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Badge, Row, Col } from "antd";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
-import { SupplierDashboardInput } from "../PayRetroSupplierDashboard/DashboardInput";
+import { SupplierDashboardInput } from "./SupplierDashboardInput";
 
 interface DashboardCardsProps {
     SupplierDashboardInputs: SupplierDashboardInput; // Explicitly define expected props
