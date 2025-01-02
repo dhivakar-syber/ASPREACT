@@ -3,7 +3,7 @@ import React ,{useRef,useState} from "react";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
 import { SupplierDashboardInput } from "./SupplierDashboardInput";
 import  DashboardCards  from "../PayRetroSupplierDashboard/DashboardCards";
-import { Row, Col, Input, Form,Select } from 'antd';
+import { Row, Col, Input, Form,Select,message } from 'antd';
 import SupplierSubmitModal from './SupplierSubmitModal';
 import SupplementaryInvoiceModal from "./SupplementaryInvoicesModal";
 import DisputesStore from "../../../../stores/DisputesStrore";
@@ -390,7 +390,35 @@ declare var abp: any;
 
   const supplementaryInvoiceSubmit = (item: any) => {
     console.log('Processing item:', item);
-    // Your logic here
+    if (item.buyerEmailAddress) {
+      item.buyerEmailAddress = item.buyerEmailAddress.split(",").map((email: string) => email.trim());
+    }
+    if (item.supplierEmailAddress) {
+      item.supplierEmailAddress = item.supplierEmailAddress.split(",").map((email: string) => email.trim());
+    }
+  
+    if (item.accountantEmailAddress) {
+      item.accountantEmailAddress = item.accountantEmailAddress.split(",").map((email: string) => email.trim());
+    }
+    const jsondata = JSON.stringify(item);
+    console.log('item', jsondata);
+    const url = `${process.env.REACT_APP_REMOTE_SERVICE_BASE_URL}RetroPay/Buyer_Approval_Workflow`;
+    fetch(url, {
+      method: 'POST',
+      body: jsondata,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((data) => {
+        abp.ui.clearBusy();
+        message.success(`Approve Mail Sent to - ${item.buyerName}`);
+      })
+      .catch((error) => {
+        abp.ui.clearBusy();
+        abp.message.error(error.message || error);
+      });
+
   };
   const handleSupplementaryDropdownAction = (buttonName: string, rowId: string, event: React.MouseEvent) => {
     event.stopPropagation();
