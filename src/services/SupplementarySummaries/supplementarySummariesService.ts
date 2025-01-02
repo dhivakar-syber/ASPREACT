@@ -10,7 +10,7 @@ import {SupplementarySummarySupplierLookupTableDto} from './dto/supplementarySum
 //import {SupplementaryData} from './dto/checkSignatureInputDto';
 import http from '../httpService';
 
-import {SupplierDashboardInput} from '../../scenes/Dashboard/components/PayRetroSupplierDashboard/DashboardInput'
+import {SupplierDashboardInput} from '../../scenes/Dashboard/components/PayRetroSupplierDashboard/SupplierDashboardInput'
 
 class supplementarySummariesService{
 
@@ -27,6 +27,19 @@ class supplementarySummariesService{
           throw error; 
         }
     }
+    public async Buyer_approvaltab_loadsupplementarySummary(input: SupplierDashboardInput) {
+      try {
+        
+        const result = await http.get(
+          'api/services/app/SupplementarySummaries/GetAllsupplementarySummaryTest',{ params: input },
+           
+        );
+        return result;
+      } catch (error) {
+        console.error('Error fetching supplementary summaries:', error);
+        throw error; 
+      }
+  }
     public async GetAllSuppliers(input:string) {
       try {
         

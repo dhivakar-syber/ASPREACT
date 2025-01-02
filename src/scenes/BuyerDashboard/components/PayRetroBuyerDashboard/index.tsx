@@ -1,6 +1,6 @@
 import * as React from "react";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
-import { SupplierDashboardInput } from "../../../Dashboard/components/PayRetroSupplierDashboard/DashboardInput";
+import { SupplierDashboardInput } from "../../../Dashboard/components/PayRetroSupplierDashboard/SupplierDashboardInput";
 import  DashboardCards  from "../../../Dashboard/components/PayRetroSupplierDashboard/DashboardCards";
 import { Row, Col, Input, Form,Select } from 'antd';
 import SupplierSubmitModal from '../../../Dashboard/components/PayRetroSupplierDashboard/SupplierSubmitModal';
@@ -689,16 +689,16 @@ function barstatus(status:any) {
           <thead>
             <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
               {[
-                "Buyer Name",
-                "Part No - Version",
-                "Report Date",
-                "Ageing",
-                "Action",
-                "Supplementary Invoice/Credit Note",
+                "S.No",
+                "Document",
+                "Document Number",
                 "Date",
-                "From",
-                "To",
                 "Value",
+                "Ageing",
+                "Documents",
+                "Accounting Number",
+                "Accounting Date",
+                "Action",
                 "Supplier",
                 "Buyer",
                 "F&C",

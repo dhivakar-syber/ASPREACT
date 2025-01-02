@@ -1,7 +1,7 @@
 import React ,{useRef,useState} from "react";
 
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
-import { SupplierDashboardInput } from "../PayRetroSupplierDashboard/DashboardInput";
+import { SupplierDashboardInput } from "./SupplierDashboardInput";
 import  DashboardCards  from "../PayRetroSupplierDashboard/DashboardCards";
 import { Row, Col, Input, Form,Select } from 'antd';
 import SupplierSubmitModal from './SupplierSubmitModal';
@@ -754,7 +754,7 @@ function barstatus(status:any) {
       options={
         suppliers.map((supplier) => ({
           label: supplier.name,
-          value: supplier.value,
+          value: supplier.id,
         }))
       }
       value={selectedsuppliers.name} 
@@ -822,7 +822,7 @@ function barstatus(status:any) {
       <Select
         mode="multiple"
         style={{ width: '200px' }}
-        placeholder="Select one or more suppliers"
+        placeholder="Select one or more Parts"
         options={parts.map((part) => ({
           label: part.name,
           value: part.value,
