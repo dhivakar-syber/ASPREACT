@@ -7,6 +7,7 @@ import AccountStore from './accountStore';
 import CBFCDataStore from './cbfcdataStore';
 import GRNDataStore from './grndataStore';
 import ProcureStore from './procuredatastore';
+import BuyerStore from './buyerstore';
 import SupplementarySummariesStore from './supplementarySummariesStore';
 import FileMasterStore from './fileMasterStore';
 import AnnexureDetailsStore from './annexureDetailsStore';
@@ -16,6 +17,7 @@ import SupplierRaisedQueryStore from './supplierRaisedQueryStore';
 import SupplierRejectionStore from './supplierRejectionStore';
 import DisputesStore from './DisputesStrore';
 import ApprovalWorkflowStore from './approvalWorkflowStore';
+
 
 
 
@@ -30,6 +32,9 @@ export default function initializeStores() {
     cbfcdataStore: new CBFCDataStore(),
     grndataStore: new GRNDataStore(),
     procureStore: new ProcureStore(),
+    buyerStore: new BuyerStore(),
+
+
     supplementarySummariesStore: new SupplementarySummariesStore(),
     filemasterStore: new FileMasterStore(),
     annexureDetailsStore: new AnnexureDetailsStore(),
