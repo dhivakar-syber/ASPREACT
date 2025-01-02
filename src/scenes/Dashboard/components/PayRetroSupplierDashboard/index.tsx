@@ -448,6 +448,7 @@ return (
                             border: "none",
                             padding: "10px",
                             marginBottom: "5px",
+                            textAlign:"left"
                           }}
                           onClick={(event) => handleSupplementaryDropdownAction("Supplementary Invoice/Credit Note Details", row.id,event)}
                         >
@@ -460,6 +461,7 @@ return (
                             color: "#071437",
                             border: "none",
                             padding: "10px",
+                            textAlign:"left"
                           }}
                           onClick={(event) => handleSupplierSubmitAction("Submit", row.id,event)}
                         >
@@ -472,6 +474,7 @@ return (
                             color: "#071437",
                             border: "none",
                             padding: "10px",
+                            textAlign:"left"
                           }}
                           onClick={(event) => handleDropdownAction("Raise Query", row.id,event)}
                         >
@@ -484,6 +487,7 @@ return (
                             color: "#071437",
                             border: "none",
                             padding: "10px",
+                            textAlign:"left"
                           }}
                           onClick={(event) => handleDropdownAction("History of Query", row.id,event)}
                         >
@@ -515,7 +519,8 @@ return (
         <SupplementaryInvoiceModal
         rowId={currentRowId}      // Pass rowId to the modal
         visible={isModalVisible}   // Control visibility of the modal
-        onCancel={handleCloseModal} // Function to close modal
+        onCancel={handleCloseModal}
+         // Function to close modal
       />
       {isModalOpen && modalData && Suppliermodalview(selectedRow)}
     </div>
