@@ -22,7 +22,7 @@ declare var abp: any;
 
     const PayRetroSupplierDashboard: React.SFC = () => {
   const [tableData, setTableData] = React.useState<any[]>([]);
-  const [disputeData, setDisputeData] = useState<any[]>([]);
+  const [disputeData,setDisputeData] = useState<any[]>([]);
   const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
   const [selectedRow, setSelectedRow] = React.useState<any | null>(null); // To manage selected row for modal
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false); // To control modal visibility
@@ -276,14 +276,26 @@ declare var abp: any;
 
 
     // Fetch data from the store or API
-    const fetchedData = await disputesStore.getAll({
-      maxResultCount: state.maxResultCount,
-      skipCount: state.skipCount,
-      keyword: state.filter,
+    const fetchedData = await disputesStore.suppliergetAll({
+      SupplementarySummaryId: id,
+      Filter: state.filter || "", // Add required Filter
+      QueryFilter: "", // Default or dynamic value
+      BuyerRemarksFilter: "", // Default or dynamic value
+      StatusFilter: 0, // Default or dynamic value
+      SupplementarySummaryDisplayPropertyFilter:"",
+      SupplierRejectionCodeFilter:"",
+      SupplierCodeFilter:"",
+      BuyerShortIdFilter:"",
+      PagedDisputesResultRequestDto: {
+        maxResultCount: state.maxResultCount,
+        skipCount: state.skipCount,
+        keyword: state.filter,
+      },
+      
     });
-
+    console.log(fetchedData); 
     // Update the state with the fetched data
-    setDisputeData(fetchedData.items);
+   setDisputeData(fetchedData.items);
     setIsHistoryModalVisible(true);
   };
 

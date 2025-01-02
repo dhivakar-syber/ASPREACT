@@ -1,5 +1,7 @@
+import { PagedDisputesResultRequestDto } from "./PagedDisputesResultRequestDto";
 export interface GetAllDisputesInput
 {
+    PagedDisputesResultRequestDto:PagedDisputesResultRequestDto
     Filter:string;
     QueryFilter:string;
     BuyerRemarksFilter:string;

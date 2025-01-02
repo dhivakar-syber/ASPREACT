@@ -271,7 +271,7 @@ class CreateOrUpdatedisputedata extends React.Component<ICreateOrUpdateDisputesD
             <Form.Item label={L('BuyerId')} name="buyerId" {...formItemLayout} hidden>
               <Input />
             </Form.Item>    
-                <Form.Item label={L('Rejection')} name={'rejection'} {...formItemLayout}>
+                <Form.Item label={L('Rejection')} name="supplierRejectionId" {...formItemLayout}>
             <Select
                 placeholder={L('Select Rejection')}
                 onChange={(value) => {
@@ -285,10 +285,7 @@ class CreateOrUpdatedisputedata extends React.Component<ICreateOrUpdateDisputesD
                     {item.displayName}
                 </Select.Option>
                 ))}
-            </Select>
-            </Form.Item>
-            <Form.Item label={L('Rejection ID')} name="rejectionId" {...formItemLayout} hidden>
-            <Input />
+            </Select>           
             </Form.Item>
             <Form.Item label={L('Query')} name={'query'} {...formItemLayout}>
               <Input/>
