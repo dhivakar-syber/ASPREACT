@@ -17,7 +17,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
 
   React.useEffect(() => {
     const supplierDashboardInput: SupplierDashboardInput = {
-      Supplierids: [0],
+      Supplierid: 0,
       Buyerids: [0],
       Partids: [0],
       invoicetype:0

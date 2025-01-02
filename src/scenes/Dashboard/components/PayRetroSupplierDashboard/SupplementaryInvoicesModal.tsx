@@ -69,7 +69,7 @@ const SupplementaryInvoiceModal: React.FC<SupplementaryInvoiceModalProps> = ({
   
       if (response.hasSignature && response.success) {
         message.success("Supplementary Invoice uploaded successfully.");
-        const uploadData = await supplementarySummariesService.supplementaryuploadeddetails(Number(rowId));
+        // const uploadData = await supplementarySummariesService.supplementaryuploadeddetails(Number(rowId));
         
         //onCancel(); // Close the modal
       } 

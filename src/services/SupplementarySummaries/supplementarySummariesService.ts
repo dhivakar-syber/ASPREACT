@@ -31,7 +31,7 @@ class supplementarySummariesService{
       try {
         
         const result = await http.get(
-          'api/services/app/SupplementarySummaries/GetAllSuppliers',{ params: input },
+          'api/services/app/SupplementarySummaries/GetLoginSupplier2',{ params:{input:input}  },
            
         );
         return result;
@@ -53,11 +53,11 @@ class supplementarySummariesService{
       throw error; 
     }
 }
-public async GetAllBuyersList(input:number[]) {
+public async GetAllBuyersList(input:number) {
   try {
     
     const result = await http.get(
-      'api/services/app/SupplementarySummaries/Getallbuyers',{ params: { supplierids:input } },
+      'api/services/app/SupplementarySummaries/Getallbuyers',{ params: { supplierid:input } },
        
     );
     return result;
@@ -66,11 +66,11 @@ public async GetAllBuyersList(input:number[]) {
     throw error; 
   }
 }
-public async GetAllPartNumbersList(supplierids:number[],buyerids:number[]) {
+public async GetAllPartNumbersList(supplierid:number,buyerids:number[]) {
   try {
     
     const result = await http.get(
-      'api/services/app/SupplementarySummaries/GetAllPartNumbersList',{ params: { buyerids:buyerids,supplierids:supplierids } },
+      'api/services/app/SupplementarySummaries/GetAllPartNumbersList',{ params: { buyerids:buyerids,supplierid:supplierid } },
        
     );
     return result;
