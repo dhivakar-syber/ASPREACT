@@ -11,6 +11,7 @@ import { FormInstance } from 'antd/lib/form';
 import CreateOrUpdateDisputes from '../../../../scenes/Disputes/components/createOrUpdateDisputes'; // Import the modal component
 import DisputedataStore from "../../../../stores/DisputesStrore";
 import DisputeHistoryModal from "../../../Dashboard/components/PayRetroSupplierDashboard/DisputeHistoryModal";
+import disputesServices from "../../../../services/Disputes/disputesServices";
 //import { IDisputesdataState } from "../../../Disputes";
 
 
@@ -356,7 +357,7 @@ declare var abp: any;
 
  
 
-  const handleCreate = () => {
+  const handleCreate = (item:any) => {
     const form = formRef.current;
     const { selectedLookupItem, selectedBuyerLookupItem, selectedSupplierLookupItem, userId } = state;
 
@@ -380,9 +381,21 @@ declare var abp: any;
         values.SupplementarySummaryId = currentRowId;
       }
       
-      // Handle userId condition for create or update
       if (userId === 0) {
-        await disputesStore.create(values);  // Create new record
+         await disputesStore.create(values).then(function(docid){
+          disputesServices
+          .buyermail(docid) 
+          .then((item) => { 
+            
+              railqueryMail(item); 
+            
+      
+            message.success("Submission successful.");
+          })
+          .catch((error: any) => {
+            console.error("Error during submission:", error); // Handle errors
+          });
+        });  // Create new record
       } else {
         await disputesStore.update({ ...values, id: userId });  // Update existing record with userId
       }
@@ -391,13 +404,47 @@ declare var abp: any;
       setState(prevState => ({ ...prevState, modalVisible: false }));
       form!.resetFields();
     });
-    
 
+    
+  
+ 
+       
     setIsQueryModalVisible(false);
   };
 
   const formRef = useRef<FormInstance>(null); 
+const railqueryMail = (item:any) =>
+{
+  console.log(item);  
+  if (item.buyerMail) {
+    item.buyerMail = item.buyerMail.split(",").map((email: string) => email.trim());   
+  }
 
+  var jsondata = JSON.stringify(item);
+  console.log(jsondata);
+  
+  //var url = "";
+  var url =`${process.env.REACT_APP_REMOTE_SERVICE_BASE_URL}PayRetro/disputebuyerapprovalmail`;
+
+  abp.ui.setBusy();
+
+  fetch(url, {
+      method: 'POST',
+      body: jsondata,
+      headers: {
+          'Content-Type': 'application/json'
+      }
+  }).then(function (response) {
+      //return response.json();
+      return console.log(response.body);
+  }).then(function (data) {
+      abp.ui.clearBusy();
+      message.success(`Supplier Query Raised Intimation -  ${item.buyerMail}`);
+  }).catch(function (error) {
+      abp.ui.clearBusy();
+      abp.message.error(error.message || error);
+  });
+}
 
 
   const supplementaryInvoiceSubmit = (item: any) => {
