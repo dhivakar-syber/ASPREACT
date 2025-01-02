@@ -439,7 +439,7 @@ const railqueryMail = (item:any) =>
       return console.log(response.body);
   }).then(function (data) {
       abp.ui.clearBusy();
-      message.success(`Supplier Query Raised Intimation -  ${item.buyerMail}`);
+      message.success(`Supplier Query Raised Intimation -  ${item.buyerShortId}`);
   }).catch(function (error) {
       abp.ui.clearBusy();
       abp.message.error(error.message || error);
