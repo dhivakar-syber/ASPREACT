@@ -1,12 +1,17 @@
-import * as React from "react";
+import React ,{useRef,useState} from "react";
+
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
 import { SupplierDashboardInput } from "../PayRetroSupplierDashboard/DashboardInput";
 import  DashboardCards  from "../PayRetroSupplierDashboard/DashboardCards";
 import { Row, Col, Input, Form,Select } from 'antd';
 import SupplierSubmitModal from './SupplierSubmitModal';
 import SupplementaryInvoiceModal from "./SupplementaryInvoicesModal";
-
-
+import DisputesStore from "../../../../stores/DisputesStrore";
+import { FormInstance } from 'antd/lib/form';
+import CreateOrUpdateDisputes from '../../../../scenes/Disputes/components/createOrUpdateDisputes'; // Import the modal component
+import DisputedataStore from "../../../../stores/DisputesStrore";
+import DisputeHistoryModal from "../../../Dashboard/components/PayRetroSupplierDashboard/DisputeHistoryModal";
+//import { IDisputesdataState } from "../../../Disputes";
 
 
 
@@ -17,6 +22,7 @@ declare var abp: any;
 
     const PayRetroSupplierDashboard: React.SFC = () => {
   const [tableData, setTableData] = React.useState<any[]>([]);
+  const [disputeData, setDisputeData] = useState<any[]>([]);
   const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
   const [selectedRow, setSelectedRow] = React.useState<any | null>(null); // To manage selected row for modal
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false); // To control modal visibility
@@ -31,8 +37,23 @@ declare var abp: any;
   const [selectedparts, setselectedparts] =React.useState<any[]>([]);
   const [selectedcategory, setselectedcategory] =React.useState<any>(String);
   const [submitIdRow, setSubmitIdRow] = React.useState<number>(0);
-  const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  
+  const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  // Track modal visibility
+  const [isQueryModalVisible, setIsQueryModalVisible] = React.useState<boolean>(false);  // Track modal visibility
+  const [isHistoryModalVisible, setIsHistoryModalVisible] = React.useState<boolean>(false);  // Track modal visibility
   const [currentRowId, setCurrentRowId] = React.useState<string | null>(null); 
+  const disputesStore = new DisputedataStore ();
+  // const [disputesState, setDisputesState] = React.useState<IDisputesdataState>({
+  //   modalVisible: false,
+  //   maxResultCount: 10,
+  //   skipCount: 0,
+  //   userId: 0,
+  //   filter: '',
+  // });
+            
+  var userid='0';
+  
+  var supplierDashboardInput: SupplierDashboardInput = {
+    Supplierids: [0],
   const [rowsupplierstatus, setrowsupplierstatus] = React.useState<number | null>(0); 
   const [rowBuyerstatus, setrowBuyerstatus] = React.useState<number | null>(0); 
   const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0); 
@@ -40,6 +61,10 @@ declare var abp: any;
     Supplierid: 0,
     Buyerids: [0],
     Partids: [0],
+    invoicetype:0
+  };
+
+ 
     invoicetype: 0,
   }); 
 
@@ -249,16 +274,38 @@ declare var abp: any;
     };
   }, []);
 
+
   const toggleDropdown = (id:any,event: React.MouseEvent) => {
     event.stopPropagation();
     // Toggle the dropdown for the clicked row
     setOpenDropdownId(openDropdownId === id ? null : id);
   };
 
-  const handleDropdownAction = (action: string, id: number,event: React.MouseEvent) => {
+  
+  const handleDisputeHisotryAction = async (
+    action: string,
+    id: number,
+    event: React.MouseEvent
+  ) => {
     event.stopPropagation();
     console.log(`Action: ${action}, Row ID: ${id}`);
-    // Placeholder for dropdown action logic
+    setSubmitIdRow(id);
+
+
+    // Fetch data from the store or API
+    const fetchedData = await disputesStore.getAll({
+      maxResultCount: state.maxResultCount,
+      skipCount: state.skipCount,
+      keyword: state.filter,
+    });
+
+    // Update the state with the fetched data
+    setDisputeData(fetchedData.items);
+    setIsHistoryModalVisible(true);
+  };
+
+  const handlehistoryCancel = () => {
+    setIsHistoryModalVisible(false); // close the modal
   };
 
 
@@ -273,6 +320,91 @@ declare var abp: any;
   const closeSupplierSubmitModal = () => {
     setIsSupplierSubmitModalOpen(false);
   };
+
+
+  const handleRaiseQueryAction = (buttonName: string, rowId: string, event: React.MouseEvent) => {
+    event.stopPropagation();
+    setCurrentRowId(rowId); // Set the rowId when the button is clicked
+    setIsQueryModalVisible(true); // Show the modal    
+  };
+  const handleCancel = () => {
+    setIsQueryModalVisible(false);        
+  };
+
+  type SummariesLookupItem = {
+    id: number;
+    displayName: string;
+  };
+  
+  type SupplierLookupItem = {
+    id: number;
+    displayName: string;
+  };
+  type BuyerLookupItem = {
+    id: number;
+    displayName: string;
+  };
+
+  
+
+  const [state, setState] = useState({
+    modalVisible: false,
+    maxResultCount: 10,
+    skipCount: 0,
+    userId: 0,
+    filter: '',
+    selectedLookupItem: null as SummariesLookupItem | null,
+   // relectedLookupItem: null as RejectionLookupItem | null,
+    selectedSupplierLookupItem: null as SupplierLookupItem | null,
+    selectedBuyerLookupItem: null as BuyerLookupItem | null,
+  });
+
+ 
+
+  const handleCreate = () => {
+    const form = formRef.current;
+    const { selectedLookupItem, selectedBuyerLookupItem, selectedSupplierLookupItem, userId } = state;
+
+    if (selectedLookupItem?.id) {
+      form?.setFieldsValue({ summariesId: selectedLookupItem.id });
+    }
+
+    
+
+    if (selectedBuyerLookupItem?.id) {
+      form?.setFieldsValue({ buyerId: selectedBuyerLookupItem.id });
+    }
+
+    if (selectedSupplierLookupItem?.id) {
+      form?.setFieldsValue({ buyerId: selectedSupplierLookupItem.id });
+    }
+
+    form!.validateFields().then(async (values: any) => {
+      // Check and assign SupplementarySummaryId if it's null or undefined
+      if (values.SupplementarySummaryId == null) {
+        values.SupplementarySummaryId = currentRowId;
+      }
+      
+      // Handle userId condition for create or update
+      if (userId === 0) {
+        await disputesStore.create(values);  // Create new record
+      } else {
+        await disputesStore.update({ ...values, id: userId });  // Update existing record with userId
+      }
+    
+      // Close the modal and reset the form
+      setState(prevState => ({ ...prevState, modalVisible: false }));
+      form!.resetFields();
+    });
+    
+
+    setIsQueryModalVisible(false);
+  };
+
+  const formRef = useRef<FormInstance>(null); 
+
+
+
   const supplementaryInvoiceSubmit = (item: any) => {
     console.log('Processing item:', item);
     // Your logic here
@@ -330,6 +462,12 @@ declare var abp: any;
     setSelectedRow(null);  // Clear the selected row data
   };
   
+  //const disputestores = new DisputesStore;
+
+  // const handleRaiseQueryAction = (actionName: string, entityId: number) => {
+    
+  //   disputestores.createDisputeData();
+  // }
 
   const Suppliermodalview = (selectedRow: any) => {
     
@@ -453,6 +591,7 @@ return (
                   </Form>
                   <InvoiceTable data={modalData} />
                   <AnnexureTable data={annexuremodalData} />
+                 
                 </div>
                 
           </div>
@@ -469,8 +608,10 @@ return (
   //   InvoiceTable(result);
   //   console.log('grndata-',result)
   // };
+  
 
 
+  
 
   const InvoiceTable = ({ data }: { data: any[] }) => {
     console.log('invoiceTable',data);
@@ -520,22 +661,21 @@ return (
           <thead>
           <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
           
-    <th>S.No</th>
-    <th>Annexure Group</th>
-    <th>Part No</th>
-    <th>Invoice No</th>
-    <th style={{width:"120px"}}>InvoiceDate</th>
-    <th>Old Contract</th>
-    <th>New Contract</th>
-    <th>Paid Price(CBFC)</th>
-    <th>Diff Value</th>
-    <th>Qty</th>
-    <th>Total</th>
-    <th>Currency</th>
-    <th>Supp.Inv.No/Credit Note</th>
-    <th>Supp.Inv.Date/Credit Note Date</th>
-
-</tr>
+            <th>S.No</th>
+            <th>Annexure Group</th>
+            <th>Part No</th>
+            <th>Invoice No</th>
+            <th style={{width:"120px"}}>InvoiceDate</th>
+            <th>Old Contract</th>
+            <th>New Contract</th>
+            <th>Paid Price(CBFC)</th>
+            <th>Diff Value</th>
+            <th>Qty</th>
+            <th>Total</th>
+            <th>Currency</th>
+            <th>Supp.Inv.No/Credit Note</th>
+            <th>Supp.Inv.Date/Credit Note Date</th>
+          </tr>
             
           </thead>
           <tbody >
@@ -762,19 +902,88 @@ function barstatus(status:any) {
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.createtime)}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.ageing}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
-                  <div className="dropdown-container" style={{ position: "relative" }}>
+                <div className="dropdown-container" style={{ position: "relative" }}>
+                <button
+                  style={{
+                    backgroundColor: "#005f7f",
+                    color: "#fff",
+                    border: "none",
+                    padding: "5px 10px",
+                    cursor: "pointer",
+                  }}
+                  onClick={(event) => toggleDropdown(row.id, event)} // Ensure this function handles the dropdown toggle
+                >
+                  ⚙️
+                </button>
+
+                {openDropdownId === row.id && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "100%",
+                      left: "0",
+                      backgroundColor: "#fff",
+                      boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+                      zIndex: 999,
+                      padding: "10px",
+                      width: "325px",
+                    }}
+                  >
                     <button
                       style={{
-                        backgroundColor: "#005f7f",
-                        color: "#fff",
+                        width: "100%",
+                        backgroundColor: "#fff",
+                        color: "#071437",
                         border: "none",
-                        padding: "5px 10px",
-                        cursor: "pointer",
+                        padding: "10px",
+                        marginBottom: "5px",
                       }}
-                      onClick={(event) => toggleDropdown(row.id,event)}
+                      onClick={(event) => handleSupplementaryDropdownAction("Supplementary Invoice/Credit Note Details", row.id, event)}
                     >
-                      ⚙️
+                      Supplementary Invoice/Credit Note Details
                     </button>
+
+                    <button
+                      style={{
+                        width: "100%",
+                        backgroundColor: "#fff",
+                        color: "#071437",
+                        border: "none",
+                        padding: "10px",
+                      }}
+                      onClick={(event) => handleSupplierSubmitAction("Submit", row.id, event)}
+                    >
+                      Submit
+                    </button>                   
+                    <button
+                    
+                      style={{
+                        width: "100%",
+                        backgroundColor: "#fff",
+                        color: "#071437",
+                        border: "none",
+                        padding: "10px",
+                      }}
+                      onClick={(event) => handleRaiseQueryAction("Raise Query", row.id, event)}
+                    >
+                      Raise Query
+                    </button>
+                    
+
+                    <button
+                      style={{
+                        width: "100%",
+                        backgroundColor: "#fff",
+                        color: "#071437",
+                        border: "none",
+                        padding: "10px",
+                      }}
+                      onClick={(event) => handleDisputeHisotryAction("History of Query", row.id, event)}                      
+                    >
+                      History of Query
+                    </button>
+                    
+
                     {openDropdownId === row.id && (
                       <div
                         style={{
@@ -796,6 +1005,7 @@ function barstatus(status:any) {
                             border: "none",
                             padding: "10px",
                             marginBottom: "5px",
+                            textAlign:"left"
                           }}
                           onClick={(event) => handleSupplementaryDropdownAction("Supplementary Invoice/Credit Note Details", row.id,event)}
                         >
@@ -808,6 +1018,7 @@ function barstatus(status:any) {
                             color: "#071437",
                             border: "none",
                             padding: "10px",
+                            textAlign:"left"
                           }}
                           onClick={(event) => handleSupplierSubmitAction("Submit", row.id,event)}
                         >
@@ -820,8 +1031,9 @@ function barstatus(status:any) {
                             color: "#071437",
                             border: "none",
                             padding: "10px",
+                            textAlign:"left"
                           }}
-                          onClick={(event) => handleDropdownAction("Raise Query", row.id,event)}
+                          onClick={(event) => handleRaiseQueryAction("Raise Query", row.id,event)}
                         >
                           Raise Query
                         </button>
@@ -832,14 +1044,19 @@ function barstatus(status:any) {
                             color: "#071437",
                             border: "none",
                             padding: "10px",
+                            textAlign:"left"
                           }}
-                          onClick={(event) => handleDropdownAction("History of Query", row.id,event)}
+                          onClick={(event) => handleDisputeHisotryAction("History of Query", row.id,event)}
                         >
                           History of Query
                         </button>
                       </div>
                     )}
+
                   </div>
+                )}
+              </div>
+
                 </td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryInvoiceNo}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryinvoicedatestring}</td>
@@ -864,11 +1081,42 @@ function barstatus(status:any) {
         <SupplementaryInvoiceModal
         rowId={currentRowId}      // Pass rowId to the modal
         visible={isModalVisible}   // Control visibility of the modal
-        onCancel={handleCloseModal} // Function to close modal
+
+        onCancel={handlehistoryCancel} // Function to close modal
+      />      
+        {isQueryModalVisible && (
+        <CreateOrUpdateDisputes
+          visible={isQueryModalVisible}
+          modalType="view"
+          onCreate={handleCreate}
+          onCancel={handleCancel}
+          disputesStrore={new DisputesStore()}
+          initialData={{
+            deliveryNote: "",
+            deliveryNoteDate: "",
+            transaction: 0,
+            paidAmount: 0,
+            year: 0,
+          }} 
+          formRef={formRef} 
+        />
+      )}
+      {isHistoryModalVisible && (
+        <DisputeHistoryModal
+        rowId={submitIdRow}              
+        visible={isHistoryModalVisible}          
+        onCancel={handleCloseModal}      
+        data={disputeData}                               
+         // Function to close modal
       />
+      )}
+        
+
       {isModalOpen && modalData && Suppliermodalview(selectedRow)}
     </div>
   );
+
+
 };
 
 export default PayRetroSupplierDashboard;

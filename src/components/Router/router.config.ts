@@ -76,6 +76,15 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../scenes/Roles')),
   },
   {
+    path: '/Buyers',
+    permission: '',
+    title: 'Buyers',
+    name: 'buyer',
+    icon: UserOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/Buyers')),
+  },
+  {
     path: '/CBFCdatas',
     permission: 'Pages.Administration.CBFCdatas',
     title: 'CBFCdatas',

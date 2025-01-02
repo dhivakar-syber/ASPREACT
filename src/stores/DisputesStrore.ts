@@ -24,7 +24,9 @@ class DisputedataStore {
   @action
   async create(CreateOrEditDisputeDto: CreateOrEditDisputeDto) {
     let result = await disputesService.create(CreateOrEditDisputeDto);
-    this.disputedata.items.push(result);
+    
+    return result;
+    
   }
 
   @action
@@ -96,30 +98,32 @@ class DisputedataStore {
   @action
   async createDisputeData() {
     this.editDispute = {
-        CreateOrEditDisputeDto: {
-            id:0,
-            Query:'',
-            BuyerRemarks:'',
-            AccountsRemarks:'',
-            Status:EnumDisputeStatus.Open,
-            ResponseTime:new Date(),
-            SupplementarySummaryId:0,
-            SupplierRejectionId:0,
-            SupplierId:0,
-            BuyerId:0,
-          },
-          SupplementarySummaryDisplayProperty: '',
-          SupplierRejectionCode: '',
-          SupplierCode: '',
-          BuyerShortId:'',
-          id: 0
+            CreateOrEditDisputeDto: {
+                id:0,
+                Query:'',
+                BuyerRemarks:'',
+                AccountsRemarks:'',
+                Status:EnumDisputeStatus.Open,
+                ResponseTime:new Date(),
+                SupplementarySummaryId:0,
+                SupplierRejectionId:0,
+                SupplierId:0,
+                BuyerId:0,
+            },
+            SupplementarySummaryDisplayProperty: '',
+            SupplierRejectionCode: '',
+            SupplierCode: '',
+            BuyerShortId:'',
+            id: 0
         };
-  }
+    }
 
   @action
   async getAll(pagedFilterAndSortedRequest: PagedUserResultRequestDto) {
     let result = await disputesService.getAll(pagedFilterAndSortedRequest);
     this.disputedata = result;
+    return result; 
+
   }
 
   @action
@@ -179,4 +183,4 @@ class DisputedataStore {
 // }
 }
 
-export default DisputedataStore;
+export default  DisputedataStore;

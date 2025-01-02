@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { Form, Input, Modal, Table, Button } from 'antd';
+import { Form, Input, Modal, Table, Button,Select} from 'antd';
 import { FormInstance } from 'antd/lib/form';
 import { L } from '../../../lib/abpUtility';
-//import { EnumDisputeStatus } from '../../../enum';
 import DisputesStrore from '../../../stores/DisputesStrore';
 import { DisputeSupplementarySummaryLookupTableDto } from '../../../services/Disputes/dto/DisputeSupplementarySummaryLookupTableDto';
 import { DisputeSupplierRejectionLookupTableDto } from '../../../services/Disputes/dto/DisputeSupplierRejectionLookupTableDto';
@@ -10,6 +9,7 @@ import { DisputeBuyerLookupTableDto } from '../../../services/Disputes/dto/Dispu
 import { DisputeSupplierLookupTableDto } from '../../../services/Disputes/dto/DisputeSupplierLookupTableDto';
 
 export interface ICreateOrUpdateDisputesDataProps {
+  //rowId:any;
   visible: boolean;
   modalType: string;
   onCreate: () => void;
@@ -38,7 +38,7 @@ type SummariesLookupItem = {
 
 
 
-class CreateOrUpdateCBFCdata extends React.Component<ICreateOrUpdateDisputesDataProps> {
+class CreateOrUpdatedisputedata extends React.Component<ICreateOrUpdateDisputesDataProps> {
   state = {
     visibleSummariesLookup: false,
     visibleRejectionLookup: false,
@@ -104,15 +104,18 @@ class CreateOrUpdateCBFCdata extends React.Component<ICreateOrUpdateDisputesData
   showsummariesLookupModal = () => {
     this.setState({ visibleSummariesLookup: true });
   };
-  showrejectionLookupModal = () => {
-    this.setState({ visibleRejectionLookup: true });
-  };
+
   showSupplierLookupModal = () => {
     this.setState({ visibleSupplierLookup: true });
+    
   };
   showBuyerLookupModal = () => {
     this.setState({ visibleBuyerLookup: true });
+    
   };
+
+  
+  
 
   // Handle selection from lookup table
   handleSummariesLookupSelect = (record: SummariesLookupItem) => {
@@ -131,21 +134,7 @@ class CreateOrUpdateCBFCdata extends React.Component<ICreateOrUpdateDisputesData
       }
     );
   };
-  handleRejectionLookupSelect = (record: SupplierLookupItem) => {
-    this.setState(
-      {
-        selectedRejectionLookupItem: record, // Store the selected supplier item
-        visibleRejectionLookup: false, // Close the supplier lookup modal
-      },
-      () => {
-        const { formRef } = this.props;
-        formRef.current?.setFieldsValue({
-          rejection: record.displayName, // Set the supplier field
-          rejectionId: record.id, // Set the supplierId field
-        });
-      }
-    );
-  };
+
   handleBuyerLookupSelect = (record: BuyerLookupItem) => {
     this.setState(
       {
@@ -181,9 +170,7 @@ class CreateOrUpdateCBFCdata extends React.Component<ICreateOrUpdateDisputesData
   handlesummariesLookupCancel = () => {
     this.setState({ visibleSummariesLookup: false });
   };
-  handlerejectionLookupCancel = () => {
-    this.setState({ visibleRejectionLookup: false });
-  };
+
   handleSupplierLookupCancel = () => {
     this.setState({ visibleSupplierLookup: false });
   };
@@ -199,15 +186,15 @@ class CreateOrUpdateCBFCdata extends React.Component<ICreateOrUpdateDisputesData
     };
 
     const { visible, onCancel, onCreate, formRef, initialData } = this.props;
-    const {visibleSummariesLookup,visibleRejectionLookup, visibleSupplierLookup,visibleBuyerLookup, selectedSummariesLookupItem,selectedRejectionLookupItem, selectedSupplierLookupItem,selectedBuyerLookupItem} = this.state;
-
+    const {visibleSummariesLookup, visibleSupplierLookup,visibleBuyerLookup, selectedSummariesLookupItem, selectedSupplierLookupItem,selectedBuyerLookupItem} = this.state;
     // Fetch lookupData from store
     const summariesData: DisputeSupplementarySummaryLookupTableDto[] = this.props.disputesStrore.supplementarylookupdata?.items || []; 
     const rejectionData: DisputeSupplierRejectionLookupTableDto[] = this.props.disputesStrore.rejectionlookupdata?.items || []; 
     const supplierData: DisputeSupplierLookupTableDto[] = this.props.disputesStrore.supplierlookupdata?.items || []; 
     const buyerData: DisputeBuyerLookupTableDto[] = this.props.disputesStrore.buyerlookupdata?.items || []; 
+    
 
-    // Define columns for the lookup table
+    
     const summariescolumns = [
       { title: 'ID', dataIndex: 'id', key: 'id' },
       { title: 'Name', dataIndex: 'displayName', key: 'displayName' },
@@ -219,18 +206,7 @@ class CreateOrUpdateCBFCdata extends React.Component<ICreateOrUpdateDisputesData
         ),
       },
     ];
-
-    const rejectioncolumns = [
-        { title: 'ID', dataIndex: 'id', key: 'id' },
-        { title: 'Name', dataIndex: 'displayName', key: 'displayName' },
-        {
-          title: 'Action',
-          key: 'action',
-          render: (text: any, record: RejectionLookupItem) => (
-            <Button onClick={() => this.handleRejectionLookupSelect(record)}>Select</Button>
-          ),
-        },
-      ];
+   
 
     const supplierColumns = [
       { title: 'ID', dataIndex: 'id', key: 'id' },
@@ -263,11 +239,7 @@ class CreateOrUpdateCBFCdata extends React.Component<ICreateOrUpdateDisputesData
           partId: selectedSummariesLookupItem.id,
         });
       }
-      if (changedValues.rejection && selectedRejectionLookupItem) {
-        formRef.current?.setFieldsValue({
-          partId: selectedRejectionLookupItem.id,
-        });
-      }
+    
       if (changedValues.supplierName && selectedSupplierLookupItem) {
         formRef.current?.setFieldsValue({
           supplierId: selectedSupplierLookupItem.id,
@@ -298,36 +270,37 @@ class CreateOrUpdateCBFCdata extends React.Component<ICreateOrUpdateDisputesData
             </Form.Item>
             <Form.Item label={L('BuyerId')} name="buyerId" {...formItemLayout} hidden>
               <Input />
+            </Form.Item>    
+                <Form.Item label={L('Rejection')} name={'rejection'} {...formItemLayout}>
+            <Select
+                placeholder={L('Select Rejection')}
+                onChange={(value) => {
+                const selectedOption = rejectionData.find((option) => option.id === value);
+                this.setState({ selectedRejectionLookupItem: selectedOption });
+                formRef.current?.setFieldsValue({ rejectionId: value });
+                }}
+            >
+                {rejectionData.map((item) => (
+                <Select.Option key={item.id} value={item.id}>
+                    {item.displayName}
+                </Select.Option>
+                ))}
+            </Select>
             </Form.Item>
-      <Form.Item label={L('Summaries')} name={'summaries'} {...formItemLayout}>
-              <Input
-                onClick={this.showsummariesLookupModal} // Trigger lookup table when clicked
-                value={selectedSummariesLookupItem?.displayName || ''} // Safe access using optional chaining
-                readOnly
-              />
+            <Form.Item label={L('Rejection ID')} name="rejectionId" {...formItemLayout} hidden>
+            <Input />
             </Form.Item>
-            <Form.Item label={L('SummariesId')} name="summariesId" {...formItemLayout} hidden>
-      <Input />
-    </Form.Item>
-    <Form.Item label={L('Rejection')} name={'rejection'} {...formItemLayout}>
-              <Input
-                onClick={this.showrejectionLookupModal} // Trigger lookup table when clicked
-                value={selectedRejectionLookupItem?.displayName || ''} // Safe access using optional chaining
-                readOnly
-              />
-            </Form.Item>
-            <Form.Item label={L('RejectionId')} name="rejectionId" {...formItemLayout} hidden>
-      <Input />
-    </Form.Item>
             <Form.Item label={L('Query')} name={'query'} {...formItemLayout}>
               <Input/>
+            </Form.Item> 
+            <Form.Item label={L('SupplementarySummaryId')} name={'supplementarySummaryId'} {...formItemLayout} style={{ display: 'none' }}>
+            <Input />
             </Form.Item>
-            <Form.Item label={L('BuyerRemarks')} name={'buyerRemarks'} {...formItemLayout}>
-              <Input />
+
+            <Form.Item label={L('Id')} name={'id'} {...formItemLayout} style={{ display: 'none' }}>
+            <Input />
             </Form.Item>
-            <Form.Item label={L('AccountsRemarks')} name={'accountsRemarks'} {...formItemLayout}>
-              <Input />
-            </Form.Item>                      
+                           
           </Form>
         </Modal>
 
@@ -346,7 +319,7 @@ class CreateOrUpdateCBFCdata extends React.Component<ICreateOrUpdateDisputesData
             pagination={false}
           />
         </Modal>
-        <Modal
+        {/* <Modal
           title="Rejection"
           visible={visibleRejectionLookup}
           onCancel={this.handlerejectionLookupCancel}
@@ -359,7 +332,7 @@ class CreateOrUpdateCBFCdata extends React.Component<ICreateOrUpdateDisputesData
             rowKey="id"
             pagination={false}
           />
-        </Modal>
+        </Modal> */}
         <Modal
           title="Suppliers"
           visible={visibleSupplierLookup}
@@ -393,4 +366,4 @@ class CreateOrUpdateCBFCdata extends React.Component<ICreateOrUpdateDisputesData
   }
 }
 
-export default CreateOrUpdateCBFCdata;
+export default CreateOrUpdatedisputedata;
