@@ -42,34 +42,17 @@ declare var abp: any;
   const [isHistoryModalVisible, setIsHistoryModalVisible] = React.useState<boolean>(false);  // Track modal visibility
   const [currentRowId, setCurrentRowId] = React.useState<string | null>(null); 
   const disputesStore = new DisputedataStore ();
-  // const [disputesState, setDisputesState] = React.useState<IDisputesdataState>({
-  //   modalVisible: false,
-  //   maxResultCount: 10,
-  //   skipCount: 0,
-  //   userId: 0,
-  //   filter: '',
-  // });
-            
-  var userid='0';
-  
-  var supplierDashboardInput: SupplierDashboardInput = {
-    Supplierids: [0],
   const [rowsupplierstatus, setrowsupplierstatus] = React.useState<number | null>(0); 
   const [rowBuyerstatus, setrowBuyerstatus] = React.useState<number | null>(0); 
-  const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0); 
+  const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0);
   const [dashboardinput, setdashboardinput] = React.useState<SupplierDashboardInput>({
     Supplierid: 0,
     Buyerids: [0],
     Partids: [0],
     invoicetype:0
-  };
-
- 
-    invoicetype: 0,
-  }); 
+  });
 
   var userid='0';
-  
 
   React.useEffect(() => {
     
