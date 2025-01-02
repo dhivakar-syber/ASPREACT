@@ -742,7 +742,7 @@ function barstatus(status:any) {
       options={
         suppliers.map((supplier) => ({
           label: supplier.name,
-          value: supplier.value,
+          value: supplier.id,
         }))
       }
       value={selectedsuppliers.name} 
