@@ -34,10 +34,28 @@ export const appRouters: any = [
     path: '/dashboard',
     name: 'dashboard',
     permission: '',
-    title: 'Dashboard',
+    title: 'Supplier Dashboard',
     icon: HomeOutlined,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/Dashboard')),
+  },
+  {
+    path: '/buyerdashboard',
+    name: 'buyerdashboard',
+    permission: '',
+    title: 'Buyer Dashboard',
+    icon: HomeOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/BuyerDashboard')),
+  },
+  {
+    path: '/accountsdashboard',
+    name: 'accountsdashboard',
+    permission: '',
+    title: 'Accounts Dashboard',
+    icon: HomeOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/Accounts Dashboard')),
   },
   {
     path: '/users',
@@ -56,6 +74,15 @@ export const appRouters: any = [
     icon: TagsOutlined,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/Roles')),
+  },
+  {
+    path: '/Buyers',
+    permission: '',
+    title: 'Buyers',
+    name: 'buyer',
+    icon: UserOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/Buyers')),
   },
   {
     path: '/CBFCdatas',
@@ -168,6 +195,7 @@ export const appRouters: any = [
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/ApprovalWorkflows')),
   },
+  
   {
     path: '/tenants',
     permission: 'Pages.Tenants',

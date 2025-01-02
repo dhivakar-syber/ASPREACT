@@ -1,99 +1,33 @@
 import * as React from "react";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
-import { SupplierDashboardInput } from "../PayRetroSupplierDashboard/DashboardInput";
-import  DashboardCards  from "../PayRetroSupplierDashboard/DashboardCards";
-import { Row, Col, Input, Form,Select } from 'antd';
-import SupplierSubmitModal from './SupplierSubmitModal';
-import SupplementaryInvoiceModal from "./SupplementaryInvoicesModal";
+import { SupplierDashboardInput } from "../../../Dashboard/components/PayRetroSupplierDashboard/DashboardInput";
+import { Row, Col, Input, Form } from 'antd';
 
 
 
 
 
-declare var abp: any;
-
-
-
-
-    const PayRetroSupplierDashboard: React.SFC = () => {
+const PayRetroAccountsDashboard: React.SFC = () => {
   const [tableData, setTableData] = React.useState<any[]>([]);
   const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
   const [selectedRow, setSelectedRow] = React.useState<any | null>(null); // To manage selected row for modal
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false); // To control modal visibility
-  const [isSupplierSubmitModalOpen, setIsSupplierSubmitModalOpen] = React.useState<boolean>(false); // To control modal visibility
   const [modalData, setModalData] = React.useState<any[]>([]);
   const [annexuremodalData, annexuresetModalData] = React.useState<any[]>([]);
-  const [suppliers, setSuppliers] =React.useState<any[]>([]);
-  const [selectedsuppliers, setselectedsuppliers] =React.useState<any[]>([]);
-  const [buyers, setBuyers] =React.useState<any[]>([]);
-  const [selectedbuyers, setselectedbuyers] =React.useState<any[]>([]);
-  const [parts, setParts] =React.useState<any[]>([]);
-  const [selectedparts, setselectedparts] =React.useState<any[]>([]);
-  const [selectedcategory, setselectedcategory] =React.useState<any>(String);
-  const [submitIdRow, setSubmitIdRow] = React.useState<number>(0);
-  const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  
-  const [currentRowId, setCurrentRowId] = React.useState<string | null>(null); 
 
-  var userid='0';
-  
-  var supplierDashboardInput: SupplierDashboardInput = {
-    Supplierids: [0],
-    Buyerids: [0],
-    Partids: [0],
-    invoicetype:0
-  };
-
-  
-
-  
-
-  
-
-
- 
   React.useEffect(() => {
-    
+    const supplierDashboardInput: SupplierDashboardInput = {
+      Supplierids: [0],
+      Buyerids: [0],
+      Partids: [0],
+      invoicetype:0
+    };
 
     const fetchData = async () => {
       try {
-
-        if(abp.session.userId==2||abp.session.userId==1)
-        {
-
-         userid='0';
-        }
-        else{
-
-          userid=abp.session.userId;
-
-        }
-        
-        
-
-        const suppliers = await supplementarySummariesService.GetAllSuppliers(userid);
-        setSuppliers(suppliers.data.result || []);
-        if(abp.session.userId===1||abp.session.userId===2)
-        {
-          
-          setselectedsuppliers([])
-          setSuppliers(suppliers.data.result || []);
-          setselectedcategory(['Select All']);
-          getbuyers([])
-          getparts([],[])
         const result = await supplementarySummariesService.loadsupplementarySummary(supplierDashboardInput);
         setTableData(result.data.result || []);
         console.log("Supplementary_top_table", result.data.result);
-
-        }
-        else{
-
-          setSuppliers(suppliers.data.result || []);
-          setselectedsuppliers(suppliers.data.result);
-          getbuyers(suppliers.data.result)
-          getparts(suppliers.data.result,[])
-        }
-        console.log('Suppliers',suppliers.data.result);
-        
       } catch (error) {
         console.error("Error fetching supplementary summaries:", error);
       }
@@ -101,112 +35,6 @@ declare var abp: any;
 
     fetchData();
   }, []);
-
-
-  
-
-  const handlesupplierChange =async  (selectedValues: any[]) => {
-    
-    setselectedsuppliers(selectedValues);
-    console.log('selectedSuppliers',selectedValues)
-
-    getbuyers(selectedValues);
-
-    // const buyers = await supplementarySummariesService.GetAllBuyersList(selectedValues);
-    //     setBuyers(buyers.data.result || []);
-    //     setselectedbuyers(['0'])
-    //     setselectedparts([]);
-
-
-  };
-
-
-  const handlebuyerChange =async  (selectedValues: any[]) => {
-    
-    setselectedbuyers(selectedValues);
-    console.log('selectedbuyers',selectedValues)
-
-    getparts(selectedsuppliers,selectedValues);
-
-    //  const parts = await supplementarySummariesService.GetAllPartNumbersList(selectedsuppliers,selectedValues);
-    //      setParts(parts.data.result || []);
-    //      console.log('parts',parts.data.result) 
-    //      setselectedparts(['Select All'])
-  };
-
-
-  const getbuyers =async  (suppliers: any[]) => {
-    
-    
-
-    const buyers = await supplementarySummariesService.GetAllBuyersList(suppliers);
-        setBuyers(buyers.data.result || []);
-        setselectedbuyers([]);
-        setselectedparts([]);
-
-      
-        
-
-  };
-
-  const getparts=async  (suppliers: any[],buyers: any[]) => {
-
-     const parts = await supplementarySummariesService.GetAllPartNumbersList(suppliers,buyers);
-         setParts(parts.data.result || []);
-         console.log('parts',parts.data.result) 
-         setselectedparts([]);
-
-         var   supplierDashboardInput: SupplierDashboardInput = {
-          Supplierids: suppliers,
-          Buyerids: buyers,
-          Partids: parts.data.result,
-          invoicetype:0
-        };
-
-        const result = await supplementarySummariesService.loadsupplementarySummary(supplierDashboardInput);
-        setTableData(result.data.result || []);
-        console.log("Supplementary_top_table", result.data.result);
-
-  };
-
-
-  const handlepartChange =async  (selectedValues: any[]) => {
-    
-    setselectedparts(selectedValues);
-    console.log('selectedparts',selectedValues)
-
-    var   supplierDashboardInput: SupplierDashboardInput = {
-      Supplierids: selectedsuppliers,
-      Buyerids: selectedbuyers,
-      Partids: selectedValues,
-      invoicetype:selectedcategory
-    };
-
-    const result = await supplementarySummariesService.loadsupplementarySummary(supplierDashboardInput);
-    setTableData(result.data.result || []);
-    console.log("Supplementary_top_table", result.data.result);
-  };
-
- 
-
-  const handlecategorychange = async(value: number) => {
-    console.log(`selected ${value}`);
-    setselectedcategory(value);
-
-    var   supplierDashboardInput: SupplierDashboardInput = {
-      Supplierids: selectedsuppliers,
-      Buyerids: selectedbuyers,
-      Partids: selectedparts,
-      invoicetype:value
-    };
-
-    const result = await supplementarySummariesService.loadsupplementarySummary(supplierDashboardInput);
-    setTableData(result.data.result || []);
-    console.log("Supplementary_top_table", result.data.result);
-    
-  };
-
-
 
   const handleClickOutside = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
@@ -222,42 +50,16 @@ declare var abp: any;
     };
   }, []);
 
-  const toggleDropdown = (id:any,event: React.MouseEvent) => {
-    event.stopPropagation();
-    // Toggle the dropdown for the clicked row
-    setOpenDropdownId(openDropdownId === id ? null : id);
+  const toggleDropdown = (id: number) => {
+    setOpenDropdownId((prevId) => (prevId === id ? null : id));
   };
 
-  const handleDropdownAction = (action: string, id: number,event: React.MouseEvent) => {
-    event.stopPropagation();
+  const handleDropdownAction = (action: string, id: number) => {
     console.log(`Action: ${action}, Row ID: ${id}`);
     // Placeholder for dropdown action logic
   };
 
-
   
-  const handleSupplierSubmitAction = (action: string, id: number, event: React.MouseEvent) => {
-    event.stopPropagation();
-    console.log(action, id);
-    setSubmitIdRow(id);
-    // Open the modal
-    setIsSupplierSubmitModalOpen(true);
-  };
-  const closeSupplierSubmitModal = () => {
-    setIsSupplierSubmitModalOpen(false);
-  };
-  const supplementaryInvoiceSubmit = (item: any) => {
-    console.log('Processing item:', item);
-    // Your logic here
-  };
-  const handleSupplementaryDropdownAction = (buttonName: string, rowId: string, event: React.MouseEvent) => {
-    event.stopPropagation();
-    setCurrentRowId(rowId); // Set the rowId when the button is clicked
-    setIsModalVisible(true); // Show the modal
-  };
-  const handleCloseModal = () => {
-    setIsModalVisible(false);        
-  };
   function formatDate(d:string) {
     const date = new Date(d);
     const year = date.getFullYear();
@@ -538,142 +340,13 @@ return (
     );
   };
 
-  function supplierstatus(status:any) {
-
-    switch (status) {
-        case 0:
-            return 'progress-segment pending'; //yellow
-        default:
-            return 'progress-segment approved';//green
-    }
-
-
-
-}
-
-
-function barstatus(status:any) {
-
-    switch (status) {
-        case 0:
-            return 'progress-segment default'; //yellow
-        case 1:
-            return 'progress-segment pending';
-        case 2:
-            return 'progress-segment approved';
-        case 3:
-            return 'progress-segment rejected';
-        default:
-            return '';
-    }
-
-
-
-}
 
   return (
-
-        
     <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      <p>Current User id:{abp.session.userId}</p>
-      
-      <DashboardCards SupplierDashboardInputs={supplierDashboardInput} />
-      <br></br>
-      
-    <Row gutter={11}>
-      <Col className="gutter-row" span={4}>
-      <div style={{ textAlign: 'left' }}>
-      <h3>Suppliers</h3>
-      <Select
-      
-      style={{ width: '200px' }}
-      placeholder="Select one or more suppliers"
-      options={
-        suppliers.map((supplier) => ({
-          label: supplier.name,
-          value: supplier.value,
-        }))
-      }
-      value={selectedsuppliers} 
-      onChange={handlesupplierChange} 
-      optionLabelProp="label"
-    />
-    </div>
-      </Col>
-      <Col className="gutter-row" span={4}>
-      <div style={{ textAlign: 'left' }}>
-      <h3>Category</h3>
-      <Select
-        
-        style={{ width: '200px' }}
-        placeholder="Select one or more suppliers"
-        options={[
-          {
-            label: 'Select All',
-            value: 0,
-          },
-          {
-          label: 'Supplementary Invoice',
-          value: 1,
-        },
-        {
-          label: 'Credit Note',
-          value: 2,
+      <h1 style={{ textAlign: "center", marginBottom: "20px", fontSize: "24px", color: "#333" }}>Dashboard</h1>
 
-        }
-      ]}
-      value={selectedcategory}
-        onChange={handlecategorychange}
-        optionLabelProp="label"
-      />
-    </div>
-      </Col>
-      <Col className="gutter-row" span={4}>
-      <div style={{ textAlign: 'left' }}>
-      <h3>Buyers</h3>
-      <Select
-      mode="multiple"
-      style={{ width: '200px' }}
-      placeholder="Select one or more Buyers"
-      options={buyers.map((buyer) => ({
-        label: buyer.name,
-        value: buyer.value,
-      }))}
-      value={selectedbuyers} 
-      onChange={handlebuyerChange} 
-      showSearch 
-      optionLabelProp="label"
-      filterOption={(input:any, buyers:any) =>
-        buyers?.label.toLowerCase().includes(input.toLowerCase())
-      } 
-    />
-    </div>
-      </Col>
-      <Col className="gutter-row" span={4}>
-      <div style={{ textAlign: 'left' }}>
-      <h3>Parts</h3>
-      <Select
-        mode="multiple"
-        style={{ width: '200px' }}
-        placeholder="Select one or more suppliers"
-        options={parts.map((part) => ({
-          label: part.name,
-          value: part.value,
-        }))}
-        value={selectedparts} 
-        onChange={handlepartChange}
-        filterOption={(input:any, parts:any) =>
-          parts?.label.toLowerCase().includes(input.toLowerCase())}
-        optionLabelProp="label"
-      />
-    </div>
-      </Col>
-      
-    </Row>
-    
-      <br></br>
       <div style={{ marginTop: "20px" }}>
-        
+        <h2 style={{ fontSize: "20px", color: "#555" }}>Supplementary Data</h2>
         <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px" }}>
           <thead>
             <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
@@ -683,7 +356,6 @@ function barstatus(status:any) {
                 "Report Date",
                 "Ageing",
                 "Action",
-                "Supplementary Invoice/Credit Note",
                 "Date",
                 "From",
                 "To",
@@ -724,7 +396,7 @@ function barstatus(status:any) {
                         padding: "5px 10px",
                         cursor: "pointer",
                       }}
-                      onClick={(event) => toggleDropdown(row.id,event)}
+                      onClick={() => toggleDropdown(row.id)}
                     >
                       ⚙️
                     </button>
@@ -738,77 +410,48 @@ function barstatus(status:any) {
                           boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
                           zIndex: 999,
                           padding: "10px",
-                          width: "325px",
+                          width: "150px",
                         }}
                       >
                         <button
                           style={{
                             width: "100%",
-                            backgroundColor: "#fff",
-                            color: "#071437",
+                            backgroundColor: "#f44336",
+                            color: "#fff",
                             border: "none",
                             padding: "10px",
                             marginBottom: "5px",
-                            textAlign:"left"
                           }}
-                          onClick={(event) => handleSupplementaryDropdownAction("Supplementary Invoice/Credit Note Details", row.id,event)}
+                          onClick={() => handleDropdownAction("Action 1", row.id)}
                         >
-                          Supplementary Invoice/Credit Note Details
+                          Action 1
                         </button>
                         <button
                           style={{
                             width: "100%",
-                            backgroundColor: "#fff",
-                            color: "#071437",
+                            backgroundColor: "#4CAF50",
+                            color: "#fff",
                             border: "none",
                             padding: "10px",
-                            textAlign:"left"
                           }}
-                          onClick={(event) => handleSupplierSubmitAction("Submit", row.id,event)}
+                          onClick={() => handleDropdownAction("Action 2", row.id)}
                         >
-                          Submit
-                        </button>
-                        <button
-                          style={{
-                            width: "100%",
-                            backgroundColor: "#fff",
-                            color: "#071437",
-                            border: "none",
-                            padding: "10px",
-                            textAlign:"left"
-                          }}
-                          onClick={(event) => handleDropdownAction("Raise Query", row.id,event)}
-                        >
-                          Raise Query
-                        </button>
-                        <button
-                          style={{
-                            width: "100%",
-                            backgroundColor: "#fff",
-                            color: "#071437",
-                            border: "none",
-                            padding: "10px",
-                            textAlign:"left"
-                          }}
-                          onClick={(event) => handleDropdownAction("History of Query", row.id,event)}
-                        >
-                          History of Query
+                          Action 2
                         </button>
                       </div>
                     )}
                   </div>
                 </td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryInvoiceNo}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryinvoicedatestring}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.date ? formatDate(row.date) : ''}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.contractFromDate)}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.contractToDate)}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.total}</td>
                 
                 <td style={{ padding: "10px", border: "1px solid #ddd" }} colSpan={3}>
   <div className="progress-tube">
-    <div className={supplierstatus(row.documentStatus)} style={{ width: "33%" }}></div>
-    <div className={barstatus(row.buyerApprovalStatus)} style={{ width: "33%" }}></div>
-    <div className={barstatus(row.accountantApprovalStatus)} style={{ width: "33%" }}></div>
+    <div className="progress-segment approved" style={{ width: "33%" }}></div>
+    <div className="progress-segment rejected" style={{ width: "33%" }}></div>
+    <div className="progress-segment pending" style={{ width: "33%" }}></div>
   </div>
 </td>
               </tr>
@@ -816,17 +459,9 @@ function barstatus(status:any) {
           </tbody>
         </table>
       </div>
-      <SupplierSubmitModal isOpen={isSupplierSubmitModalOpen} onClose={closeSupplierSubmitModal} submitIdRow={submitIdRow}
-        supplementaryInvoiceSubmit={supplementaryInvoiceSubmit} />
-        <SupplementaryInvoiceModal
-        rowId={currentRowId}      // Pass rowId to the modal
-        visible={isModalVisible}   // Control visibility of the modal
-        onCancel={handleCloseModal}
-         // Function to close modal
-      />
       {isModalOpen && modalData && Suppliermodalview(selectedRow)}
     </div>
   );
 };
 
-export default PayRetroSupplierDashboard;
+export default PayRetroAccountsDashboard;
