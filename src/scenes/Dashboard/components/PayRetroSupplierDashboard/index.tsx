@@ -920,6 +920,76 @@ function barstatus(status:any) {
                       History of Query
                     </button>
                     
+
+                    {openDropdownId === row.id && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "100%",
+                          left: "0",
+                          backgroundColor: "#fff",
+                          boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+                          zIndex: 999,
+                          padding: "10px",
+                          width: "325px",
+                        }}
+                      >
+                        <button
+                          style={{
+                            width: "100%",
+                            backgroundColor: "#fff",
+                            color: "#071437",
+                            border: "none",
+                            padding: "10px",
+                            marginBottom: "5px",
+                            textAlign:"left"
+                          }}
+                          onClick={(event) => handleSupplementaryDropdownAction("Supplementary Invoice/Credit Note Details", row.id,event)}
+                        >
+                          Supplementary Invoice/Credit Note Details
+                        </button>
+                        <button
+                          style={{
+                            width: "100%",
+                            backgroundColor: "#fff",
+                            color: "#071437",
+                            border: "none",
+                            padding: "10px",
+                            textAlign:"left"
+                          }}
+                          onClick={(event) => handleSupplierSubmitAction("Submit", row.id,event)}
+                        >
+                          Submit
+                        </button>
+                        <button
+                          style={{
+                            width: "100%",
+                            backgroundColor: "#fff",
+                            color: "#071437",
+                            border: "none",
+                            padding: "10px",
+                            textAlign:"left"
+                          }}
+                          onClick={(event) => handleRaiseQueryAction("Raise Query", row.id,event)}
+                        >
+                          Raise Query
+                        </button>
+                        <button
+                          style={{
+                            width: "100%",
+                            backgroundColor: "#fff",
+                            color: "#071437",
+                            border: "none",
+                            padding: "10px",
+                            textAlign:"left"
+                          }}
+                          onClick={(event) => handleDisputeHisotryAction("History of Query", row.id,event)}
+                        >
+                          History of Query
+                        </button>
+                      </div>
+                    )}
+
                   </div>
                 )}
               </div>
@@ -948,6 +1018,7 @@ function barstatus(status:any) {
         <SupplementaryInvoiceModal
         rowId={currentRowId}      // Pass rowId to the modal
         visible={isModalVisible}   // Control visibility of the modal
+
         onCancel={handlehistoryCancel} // Function to close modal
       />      
         {isQueryModalVisible && (
@@ -973,6 +1044,7 @@ function barstatus(status:any) {
         visible={isHistoryModalVisible}          
         onCancel={handleCloseModal}      
         data={disputeData}                               
+         // Function to close modal
       />
       )}
         

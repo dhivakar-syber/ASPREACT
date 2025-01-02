@@ -134,11 +134,11 @@ public async GetAllParts(supplierid:string,buyerid:string) {
           throw error; 
         }
       }
-      public async supplementaryuploadeddetails(id: number) {
+      public async GetFile(filepath: string) {
         try {
           
-          const result = await http.post(
-            'api/services/app/SupplementarySummaries/Supplementaryuploadeddetails',{ params: { supplementaryid:id } },
+          const result = await http.get(
+            'api/services/app/SupplementarySummaries/GetFile',{ params: { filepath:filepath } },
              
           );
           return result.data.result;
@@ -147,11 +147,52 @@ public async GetAllParts(supplierid:string,buyerid:string) {
           throw error; 
         }
       }
+      public async DownloadExcel(filepath: string) {
+        try {
+          
+          const result = await http.post(
+            `api/services/app/SupplementarySummaries/DownloadExcel?filepath=${filepath}`,'' ,
+            {
+              headers: {
+                  'accept': 'text/plain',
+              }
+          }
+             
+          );
+          return result.data.result;
+        } catch (error) {
+          console.error('Error fetching supplementary summaries:', error);
+          throw error; 
+        }
+      }
+      public async supplementaryuploadeddetails(id: string) {
+        try {
+            const result = await http.post(
+                `api/services/app/SupplementarySummaries/Supplementaryuploadeddetails?supplementaryid=${id}`, // Use the query parameter in the URL
+                '', // Empty body
+                {
+                    headers: {
+                        'accept': 'text/plain',
+                    }
+                }
+            );
+            return result.data.result;
+        } catch (error) {
+            console.error('Error fetching supplementary summaries:', error);
+            throw error;
+        }
+    }
       public async supplementaryInvoiceSubmit(id: number,remarks:string) {
         try {
           
           const result = await http.post(
-            'api/services/app/SupplementarySummaries/supplementaryInvoiceSubmit',{ params: { supplementaryid:id,submitRemarks:remarks } },
+            `api/services/app/SupplementarySummaries/supplementaryInvoiceSubmit?supplementaryid=${id}&submitRemarks=${remarks}`,
+            '',
+            {
+              headers: {
+                'accept': 'text/plain',
+            }
+          }
              
           );
           return result.data.result;
