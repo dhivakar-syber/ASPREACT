@@ -112,15 +112,6 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../scenes/Suppliers')),
   },
   {
-    path: '/Disputedatas',
-    permission: '',
-    title: 'Disputedatas',
-    name: 'Disputedatas',
-    icon: TagsOutlined,
-    showInMenu: true,
-    component: LoadableComponent(() => import('../../scenes/Disputedatas')),
-  },
-  {
     path: '/procuredatas',
     name: 'procuredatas',
     permission: 'Pages.Administration.ProcureDatas',
