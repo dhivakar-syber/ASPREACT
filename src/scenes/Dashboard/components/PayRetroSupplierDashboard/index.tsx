@@ -674,12 +674,24 @@ return (
       </div>
     );
   };
- 
+  const handleAnnexureClick = (supplementarysummaryId:number) => {
+    alert(`Download Annexure button clicked!${supplementarysummaryId}`);
+    // You can add more logic here, such as triggering a download, calling an API, etc.
+  };
   const AnnexureTable = ({ data }: { data: any[] }) => {
     console.log('AnnexureTable',data);
     return (
       <div >
         <h3>AnnexureDetails</h3>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button
+  className="upload-btn"
+  id="downloadannexure"
+  onClick={() => handleAnnexureClick(data[0].supplementarysummaryId)}
+>
+  Download Annexure
+</button>
+    </div>
         <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px" }}>
           <thead>
           <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
