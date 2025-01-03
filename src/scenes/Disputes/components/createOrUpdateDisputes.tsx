@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Form, Input, Modal, Table, Button,Select} from 'antd';
+//import { message } from 'antd';
 import { FormInstance } from 'antd/lib/form';
 import { L } from '../../../lib/abpUtility';
 import DisputesStrore from '../../../stores/DisputesStrore';
@@ -7,12 +8,13 @@ import { DisputeSupplementarySummaryLookupTableDto } from '../../../services/Dis
 import { DisputeSupplierRejectionLookupTableDto } from '../../../services/Disputes/dto/DisputeSupplierRejectionLookupTableDto';
 import { DisputeBuyerLookupTableDto } from '../../../services/Disputes/dto/DisputeBuyerLookupTableDto';
 import { DisputeSupplierLookupTableDto } from '../../../services/Disputes/dto/DisputeSupplierLookupTableDto';
+//import disputesServices from '../../../services/Disputes/disputesServices';
 
 export interface ICreateOrUpdateDisputesDataProps {
   //rowId:any;
   visible: boolean;
   modalType: string;
-  onCreate: () => void;
+  onCreate: (item: any) => void;
   onCancel: () => void;
   formRef: React.RefObject<FormInstance>;
   initialData?: any;
@@ -185,7 +187,7 @@ class CreateOrUpdatedisputedata extends React.Component<ICreateOrUpdateDisputesD
       wrapperCol: { span: 18 },
     };
 
-    const { visible, onCancel, onCreate, formRef, initialData } = this.props;
+    const { visible, onCancel,onCreate, formRef, initialData } = this.props;
     const {visibleSummariesLookup, visibleSupplierLookup,visibleBuyerLookup, selectedSummariesLookupItem, selectedSupplierLookupItem,selectedBuyerLookupItem} = this.state;
     // Fetch lookupData from store
     const summariesData: DisputeSupplementarySummaryLookupTableDto[] = this.props.disputesStrore.supplementarylookupdata?.items || []; 
@@ -194,6 +196,8 @@ class CreateOrUpdatedisputedata extends React.Component<ICreateOrUpdateDisputesD
     const buyerData: DisputeBuyerLookupTableDto[] = this.props.disputesStrore.buyerlookupdata?.items || []; 
     
 
+   
+      
     
     const summariescolumns = [
       { title: 'ID', dataIndex: 'id', key: 'id' },
