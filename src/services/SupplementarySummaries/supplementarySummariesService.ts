@@ -32,7 +32,7 @@ class supplementarySummariesService{
       try {
         
         const result = await http.get(
-          'api/services/app/SupplementarySummaries/GetAllsupplementarySummaryTest',{ params: input },
+          'api/services/app/SupplementarySummaries/GetAllsupplementarySummarybuyerdashboard',{ params: input },
            
         );
         return result;
@@ -135,11 +135,11 @@ public async GetAllPartNumbersList(supplierid:number,buyerids:number[]) {
     throw error; 
   }
 }
-public async BuyerDashboardGetAllPartNumbersList(buyerid:number,supplierids:number[]) {
+public async BuyerDashboardGetAllPartNumbersList(buyerid:number,Supplierids:number[]) {
   try {
     
     const result = await http.get(
-      'api/services/app/SupplementarySummaries/BuyerDashboardGetAllPartNumbersList',{ params: { buyerid:buyerid,supplierids:supplierids } },
+      'api/services/app/SupplementarySummaries/GetAllPartNumbersListbuyerdashboard',{ params: { supplierids:Supplierids,buyerid:buyerid } },
        
     );
     return result;

@@ -106,7 +106,7 @@ declare var abp: any;
   
       var   buyerdashboard: BuyerDashboardInput = {
         Supplierids: [],
-        Buyerid:0,
+        Buyerid:value,
         Partids: [],
         invoicetype:selectedcategory,
         Date:null,
@@ -365,7 +365,7 @@ function barstatus(status:any) {
       options={
         suppliers.map((supplier) => ({
           label: supplier.name,
-          value: supplier.id,
+          value: supplier.value,
         }))
       }
       value={selectedsuppliers} 
