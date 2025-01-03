@@ -1,8 +1,10 @@
 export interface BuyerDashboardInput {
-    Supplierid:number[];
+    Supplierids:number[];
       Buyerid: number;
       Partids:number[];
-      invoicetype:number;
+      invoicetype:number; 
+      Date:Date|null;
+      Document:string | null;
   
     }
     
