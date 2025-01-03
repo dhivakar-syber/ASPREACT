@@ -6,7 +6,8 @@ import AuthenticationStore from './authenticationStore';
 import AccountStore from './accountStore';
 import CBFCDataStore from './cbfcdataStore';
 import ProcureStore from './procuredatastore';
-
+import SupplierStore from './supplierStore';
+import disputeStore from './disputeStore';
 
 export default function initializeStores() {
   return {
@@ -18,6 +19,7 @@ export default function initializeStores() {
     accountStore: new AccountStore(),
     cbfcdataStore: new CBFCDataStore(),
     procureStore: new ProcureStore(),
-
+    supplierStore:new SupplierStore(),
+    disputeStore:new disputeStore(),
   };
 }

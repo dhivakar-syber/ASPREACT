@@ -2,4 +2,6 @@ import { PagedFilterAndSortedRequest } from '../../dto/pagedFilterAndSortedReque
 
 export interface PagedTenantResultRequestDto extends PagedFilterAndSortedRequest  {
     keyword: string;
+    maxResultCount: number;
+    skipCount: number;
 }
