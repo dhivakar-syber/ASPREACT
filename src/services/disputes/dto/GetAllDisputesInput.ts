@@ -1,12 +1,14 @@
+import { PagedDisputesResultRequestDto } from "./PagedDisputesResultRequestDto";
 export interface GetAllDisputesInput
 {
+    PagedDisputesResultRequestDto:PagedDisputesResultRequestDto
     Filter:string;
     QueryFilter:string;
     BuyerRemarksFilter:string;
-    StatusFilter:number;
+    StatusFilter: number;
     SupplementarySummaryDisplayPropertyFilter:string;
     SupplierRejectionCodeFilter:string;
     SupplierCodeFilter:string;
     BuyerShortIdFilter:string;
-    SupplementarySummaryId:string;
+    SupplementarySummaryId:number;
 }

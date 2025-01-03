@@ -1,4 +1,5 @@
-export interface DisputeSupplementarySummaryLookupTableDto{
-    Id:number;
-    DisplayName:string;
+export interface DisputeSupplementarySummaryLookupTableDto
+{
+    id:number;
+    displayName:string;
 }

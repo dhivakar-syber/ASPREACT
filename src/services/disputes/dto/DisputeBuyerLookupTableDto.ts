@@ -1,4 +1,4 @@
 export interface DisputeBuyerLookupTableDto{
-    Id:number;
-    DisplayName:string;
+    id:number;
+    displayName:string;
 }

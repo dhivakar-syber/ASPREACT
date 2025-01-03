@@ -1,4 +1,3 @@
 export interface GetAllForLookupTableInput{
-    Id:number;
-    DisplayName:string;
+    Filter:string;
 }

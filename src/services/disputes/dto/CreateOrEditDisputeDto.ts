@@ -1,13 +1,15 @@
 import { EnumDisputeStatus } from "../../../enum";
+export interface CreateOrEditDisputeDto
+{
+    id:number;
+    Query:string;
+    BuyerRemarks:string;
+    AccountsRemarks:string;
+    Status:EnumDisputeStatus;
+    ResponseTime:Date;
+    SupplementarySummaryId:number;
+    SupplierRejectionId:number;
+    SupplierId:number;
+    BuyerId:number;
 
-export interface CreateOrEditDisputeDto{
-    query:string;
-    buyerRemarks:string;
-    accountsRemarks:string;
-    status:EnumDisputeStatus;
-    responseTime:Date;
-    supplementarySummaryId:number;
-    supplierRejectionId:number;
-    supplierId:number;
-    buyerId:number;
 }
