@@ -1,5 +1,6 @@
 import { ChangeLanguagaInput } from './dto/changeLanguageInput';
 import { CreateOrUpdateUserInput } from './dto/createOrUpdateUserInput';
+import { GetUserForEditOutput } from './dto/getUserForEditOutput';
 import { EntityDto } from '../../services/dto/entityDto';
 import { GetAllUserOutput } from './dto/getAllUserOutput';
 import { PagedResultDto } from '../../services/dto/pagedResultDto';
@@ -24,8 +25,17 @@ class UserService {
   }
 
   public async getRoles() {
-    let result = await http.post('api/services/app/Role/GetRoles');
-    return result.data.result.items;
+    try {
+      const result = await http.post('api/services/app/Role/GetRoles', {}, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      return result.data.result.items;
+    } catch (error) {
+      console.error('Error fetching roles:', error);
+      throw error; // Rethrow the error to handle it elsewhere if needed
+    }
   }
 
   public async changeLanguage(changeLanguageInput: ChangeLanguagaInput) {
@@ -33,7 +43,7 @@ class UserService {
     return result.data;
   }
 
-  public async get(entityDto: EntityDto): Promise<CreateOrUpdateUserInput> {
+  public async get(entityDto: EntityDto): Promise<GetUserForEditOutput> {
     let result = await http.get('api/services/app/User/GetUserForEdit', { params: entityDto });
     return result.data.result;
   }

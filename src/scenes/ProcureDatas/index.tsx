@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 import { Button, Card, Col, Dropdown, Input, Menu, Modal, Row, Table} from 'antd';
 import { inject, observer } from 'mobx-react';
 
@@ -27,8 +26,10 @@ export interface IProcureState {
   filter: string;
 }
 
+
 const confirm = Modal.confirm;
 const Search = Input.Search;
+//onst [data, setData] = useState([]);
 
 @inject(Stores.ProcureStore)
 @observer
@@ -113,10 +114,19 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
     this.setState({ filter: value }, async () => await this.getAll());
   };
 
-  handleexcelexport = () =>{
-    this.props.procureStore.getExcelExport();
-  }
-
+  // handleexcelexport = () =>{
+  //   this.props.procureStore.getExcelExport();
+  // }
+  
+  
+   handleFileUpload = (event:any) => {
+      const file = event.target.files[0];
+      if (file) {
+        this.props.procureStore.importExcel(file);
+      }
+    };
+  
+   
    globalProcureData: any = null;
 
   public render() {
@@ -187,18 +197,25 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
             xxl={{ span: 1, offset: 19 }}
           >  <div>
           <Dropdown
-            trigger={['click']}
-            overlay={
-              <Menu>
-                <Menu.Item onClick={() => ({})}>{L('ImportExcel')}</Menu.Item>
-                <Menu.Item onClick={() =>this.handleexcelexport()}>{L('ExportExcel')}</Menu.Item>
+              trigger={['click']}
+              overlay={
+                <Menu>
+                <Menu.Item>
+                  <label style={{ cursor: 'pointer' }}>
+                    <input type="file" accept=".xlsx, .xls"  style={{ display: 'none' }}  onChange={this.handleFileUpload} />
+                    {L('ImportExcel')}
+                  </label>
+                </Menu.Item>
+                {/* <Menu.Item onClick={this.handleexcelexport}>
+                  {L('ExportExcel')}
+                </Menu.Item> */}
               </Menu>
-            }
-            placement="bottomLeft"
-          >
-            <Button type="primary" icon={<SettingOutlined />}>
-              {L('Excel Operation')}
-            </Button>
+              
+              }
+                placement="bottomLeft">            
+              <Button type="primary" icon={<SettingOutlined />} style={{marginLeft: '-150px'}}>
+                {L('Excel Operation')}
+              </Button>
           </Dropdown>
         </div>
 
@@ -213,7 +230,7 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
             lg={{ span: 1, offset: 21 }}
             xl={{ span: 1, offset: 21 }}
             xxl={{ span: 1, offset: 30 }}
-          > <Button type="primary"   icon={<PlusOutlined />} onClick={() => this.createOrEditeModalOpen({ id: 0 })} >Create ProcurDatas</Button>
+          > <Button type="primary"   icon={<PlusOutlined />} onClick={() => this.createOrEditeModalOpen({ id: 0 })} style={{marginLeft: '-50px'}}>Create ProcurDatas</Button>
 
           </Col>
         </Row>
@@ -239,6 +256,7 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
               loading={procure === undefined ? true : false}
               dataSource={procure === undefined ? [] : procure.items}
               onChange={this.handleTableChange}
+              scroll={{x: 'max-content'} }
             />
           </Col>
         </Row>

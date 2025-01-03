@@ -5,9 +5,20 @@ import SessionStore from './sessionStore';
 import AuthenticationStore from './authenticationStore';
 import AccountStore from './accountStore';
 import CBFCDataStore from './cbfcdataStore';
+import GRNDataStore from './grndataStore';
 import ProcureStore from './procuredatastore';
-import SupplierStore from './supplierStore';
-import disputeStore from './disputeStore';
+import BuyerStore from './buyerstore';
+import SupplementarySummariesStore from './supplementarySummariesStore';
+import FileMasterStore from './fileMasterStore';
+import AnnexureDetailsStore from './annexureDetailsStore';
+import PartsStore from './partsStore';
+import PlantsStore from './PlantStore';
+import SupplierRaisedQueryStore from './supplierRaisedQueryStore';
+import SupplierRejectionStore from './supplierRejectionStore';
+import ApprovalWorkflowStore from './approvalWorkflowStore';
+
+
+
 
 export default function initializeStores() {
   return {
@@ -18,8 +29,18 @@ export default function initializeStores() {
     sessionStore: new SessionStore(),
     accountStore: new AccountStore(),
     cbfcdataStore: new CBFCDataStore(),
+    grndataStore: new GRNDataStore(),
     procureStore: new ProcureStore(),
-    supplierStore:new SupplierStore(),
-    disputeStore:new disputeStore(),
+    buyerStore: new BuyerStore(),
+
+
+    supplementarySummariesStore: new SupplementarySummariesStore(),
+    filemasterStore: new FileMasterStore(),
+    annexureDetailsStore: new AnnexureDetailsStore(),
+    partsStore: new PartsStore(),
+    plantsStore: new PlantsStore(),
+    supplierRaisedQueryStore: new SupplierRaisedQueryStore(),
+    supplierRejectionStore: new SupplierRejectionStore(),
+    approvalWorkflowStore: new ApprovalWorkflowStore(),
   };
 }
