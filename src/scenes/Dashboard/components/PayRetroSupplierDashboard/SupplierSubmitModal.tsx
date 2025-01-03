@@ -62,7 +62,7 @@ const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({ isOpen, onClo
             <div className="modal-dialog modal-md" role="document">
                 <div className="modal-content">
                     <div className="modal-body">
-                        <div className="row">
+                        
                             <h6 style={{ marginLeft: '10px',fontSize: 'larger',textAlign: 'center' }}>Submit Model</h6>
                             <div className="col-md-12">
                                 <div className="rm-a3-remarks-container">
@@ -80,7 +80,7 @@ const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({ isOpen, onClo
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        
                     </div>
                     <div className="modal-footer" style={{ padding: '10px',textAlign: 'end' }}>
                         <button

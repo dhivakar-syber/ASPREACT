@@ -18,4 +18,5 @@ export default class Stores {
   static SupplierRejectionStore: string = 'supplierRejectionStore';
   static DisputesStore: string = 'disputesStore'; 
   static ApprovalWorkflowStore: string = 'approvalWorkflowStore';
+  static SupplierStore: string = 'supplierStore';
 }

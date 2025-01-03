@@ -103,6 +103,15 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../scenes/GRNdatas')),
   },
   {
+    path: '/Suppliers',
+    permission: '',
+    title: 'Suppliers',
+    name: 'supplier',
+    icon: TagsOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/Suppliers')),
+  },
+  {
     path: '/procuredatas',
     name: 'procuredatas',
     permission: 'Pages.Administration.ProcureDatas',

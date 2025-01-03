@@ -9,5 +9,5 @@ export interface GetCBFCdataForViewDto {
     id:number;
     partid:number;
     buyerid:number;
-    supplierid:number
-}
+    supplierid:number;
+} 

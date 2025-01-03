@@ -28,6 +28,20 @@ class supplementarySummariesService{
           throw error; 
         }
     }
+
+    public async accountsDashboardSummaries(input: BuyerDashboardInput) {
+      try {
+        
+        const result = await http.get(
+          'api/services/app/SupplementarySummaries/GetAllsupplementarySummarypaymentdashboard',{ params: input },
+           
+        );
+        return result;
+      } catch (error) {
+        console.error('Error fetching supplementary summaries:', error);
+        throw error; 
+      }
+  }
     public async BuyerdashboardloadsupplementarySummary(input: BuyerDashboardInput) {
       try {
         
@@ -176,6 +190,20 @@ public async GetAllParts(supplierid:string,buyerid:string) {
       }
   }
 
+  public async accounntcarddetails(input: BuyerDashboardInput) {
+    try {
+      
+      const result = await http.get(
+        'api/services/app/SupplementarySummaries/GetAllsupplementarySummaryContractDataTestvalue',{ params: input },
+         
+      );
+      return result;
+    } catch (error) {
+      console.error('Error fetching supplementary summaries:', error);
+      throw error; 
+    }
+}
+
   public async Buyerdashboardcarddetails(input: BuyerDashboardInput) {
     try {
       
@@ -270,6 +298,45 @@ public async GetAllParts(supplierid:string,buyerid:string) {
           const result = await http.post(
             `api/services/app/SupplementarySummaries/supplementaryInvoiceSubmit?supplementaryid=${id}&submitRemarks=${remarks}`,
             '',
+            {
+              headers: {
+                'accept': 'text/plain',
+            }
+          }
+             
+          );
+          return result.data.result;
+        } catch (error) {
+          console.error('Error fetching supplementary summaries:', error);
+          throw error; 
+        }
+      }
+
+      public async supplementaryInvoiceAccountApprove(id: number,remarks:string,accNo:string,accdate:any) {
+        try {
+          
+          const result = await http.post(
+            `api/services/app/SupplementarySummaries/supplementaryInvoiceaccountapprove?fileid=${id}&accountsapproveremarks=${remarks}&accNo=${accNo}&accdate=${accdate}`,'',
+            {
+              headers: {
+                'accept': 'text/plain',
+            }
+          }
+             
+          );
+          return result.data.result;
+        } catch (error) {
+          console.error('Error fetching supplementary summaries:', error);
+          throw error; 
+        }
+      }
+
+      public async supplementaryInvoiceAccountReject(id: number,remarks:string,accNo:string,accdate:any) {
+        try {
+          
+          const result = await http.post(
+            `api/services/app/SupplementarySummaries/supplementaryInvoiceaccountreject?fileid=${id}&accountsapproveremarks=${remarks}&accNo=${accNo}&accdate=${accdate}`,'',
+            
             {
               headers: {
                 'accept': 'text/plain',
