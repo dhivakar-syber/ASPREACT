@@ -1,4 +1,5 @@
 import React, { useState ,useRef } from 'react';
+import {message}from 'antd';
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
 
 
@@ -32,7 +33,7 @@ const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({ isOpen, onClo
               supplementaryInvoiceSubmit(item); // Process each item in the result
             });
       
-            console.log("Submission successful. Closing modal...");
+            message.success("Submission successful.");
             onClose(); // Close the modal after successful submission
           })
           .catch((error: any) => {

@@ -2,6 +2,7 @@ import {CreateOrEditDisputeDto} from './dto/CreateOrEditDisputeDto';
 import { EntityDto } from '../../services/dto/entityDto';
 import { GetDisputeForViewDto } from './dto/GetDisputeForViewDto';
 import {GetDisputeForEditOutput} from './dto/GetDisputeForEditOutput';
+import { GetAllDisputesInput } from './dto/GetAllDisputesInput';
 import { PagedResultDto } from '../../services/dto/pagedResultDto';
 import {PagedDisputesResultRequestDto} from './dto/PagedDisputesResultRequestDto';
 import {DisputeSupplementarySummaryLookupTableDto} from './dto/DisputeSupplementarySummaryLookupTableDto';
@@ -48,18 +49,31 @@ class disputesService {
     return result.data.result;
   }
 
-  public async suppliergetAll(pagedFilterAndSortedRequest: PagedDisputesResultRequestDto): Promise<PagedResultDto<GetDisputeForViewDto>> {
-    let result = await http.get('api/services/app/Disputes/SupplierSummaryGetAll', { params: pagedFilterAndSortedRequest });
+  public async suppliergetAll(getAllDisputesInput: GetAllDisputesInput): Promise<PagedResultDto<GetAllDisputesInput>> {
+    const input = {
+        SupplementarySummaryId: getAllDisputesInput.SupplementarySummaryId,
+        Filter: getAllDisputesInput.Filter,
+        QueryFilter: getAllDisputesInput.QueryFilter,
+        BuyerRemarksFilter: getAllDisputesInput.BuyerRemarksFilter,
+        StatusFilter: getAllDisputesInput.StatusFilter,
+        SupplementarySummaryDisplayPropertyFilter: getAllDisputesInput.SupplementarySummaryDisplayPropertyFilter,
+        SupplierRejectionCodeFilter: getAllDisputesInput.SupplierRejectionCodeFilter,
+        SupplierCodeFilter: getAllDisputesInput.SupplierCodeFilter,
+        BuyerShortIdFilter: getAllDisputesInput.BuyerShortIdFilter
+    };
+
+    const result = await http.post('api/services/app/Disputes/SupplierSummaryGetAll', input);
     return result.data.result;
-  }
+}
+
 
   public async buyergetAll(pagedFilterAndSortedRequest: PagedDisputesResultRequestDto): Promise<PagedResultDto<GetDisputeForViewDto>> {
-    let result = await http.get('api/services/app/Disputes/BuyerGetAll', { params: pagedFilterAndSortedRequest });
+    let result = await http.post('api/services/app/Disputes/BuyerGetAll', { params: pagedFilterAndSortedRequest });
     return result.data.result;
   }
 
   public async accountgetAll(pagedFilterAndSortedRequest: PagedDisputesResultRequestDto): Promise<PagedResultDto<GetDisputeForViewDto>> {
-    let result = await http.get('api/services/app/Disputes/AccountsGetAll', { params: pagedFilterAndSortedRequest });
+    let result = await http.post('api/services/app/Disputes/AccountsGetAll', { params: pagedFilterAndSortedRequest });
     return result.data.result;
   }
 
@@ -101,6 +115,17 @@ class disputesService {
     return result.data.result;
   }
 
+  public async buyermail(DocId: number) {
+    try {
+      const result = await http.get('api/services/app/Disputes/GetBuyerMail', {
+        params: { DocId } // Use an object to pass parameters
+      });
+      return result.data.result; // Access the nested result
+    } catch (error) {
+      console.error('Error fetching buyer mail:', error);
+      throw error; // Re-throw the error for further handling
+    }
+  }
   
 }
 

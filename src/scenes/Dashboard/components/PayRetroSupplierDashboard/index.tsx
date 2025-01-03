@@ -3,7 +3,7 @@ import React ,{useRef,useState} from "react";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
 import { SupplierDashboardInput } from "./SupplierDashboardInput";
 import  DashboardCards  from "../PayRetroSupplierDashboard/DashboardCards";
-import { Row, Col, Input, Form,Select } from 'antd';
+import { Row, Col, Input, Form,Select,message } from 'antd';
 import SupplierSubmitModal from './SupplierSubmitModal';
 import SupplementaryInvoiceModal from "./SupplementaryInvoicesModal";
 import DisputesStore from "../../../../stores/DisputesStrore";
@@ -11,6 +11,7 @@ import { FormInstance } from 'antd/lib/form';
 import CreateOrUpdateDisputes from '../../../../scenes/Disputes/components/createOrUpdateDisputes'; // Import the modal component
 import DisputedataStore from "../../../../stores/DisputesStrore";
 import DisputeHistoryModal from "../../../Dashboard/components/PayRetroSupplierDashboard/DisputeHistoryModal";
+import disputesServices from "../../../../services/Disputes/disputesServices";
 //import { IDisputesdataState } from "../../../Disputes";
 
 
@@ -22,7 +23,7 @@ declare var abp: any;
 
     const PayRetroSupplierDashboard: React.SFC = () => {
   const [tableData, setTableData] = React.useState<any[]>([]);
-  const [disputeData, setDisputeData] = useState<any[]>([]);
+  const [disputeData,setDisputeData] = useState<any[]>([]);
   const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
   const [selectedRow, setSelectedRow] = React.useState<any | null>(null); // To manage selected row for modal
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false); // To control modal visibility
@@ -276,14 +277,26 @@ declare var abp: any;
 
 
     // Fetch data from the store or API
-    const fetchedData = await disputesStore.getAll({
-      maxResultCount: state.maxResultCount,
-      skipCount: state.skipCount,
-      keyword: state.filter,
+    const fetchedData = await disputesStore.suppliergetAll({
+      SupplementarySummaryId: id,
+      Filter: state.filter || "", // Add required Filter
+      QueryFilter: "", // Default or dynamic value
+      BuyerRemarksFilter: "", // Default or dynamic value
+      StatusFilter: 0, // Default or dynamic value
+      SupplementarySummaryDisplayPropertyFilter:"",
+      SupplierRejectionCodeFilter:"",
+      SupplierCodeFilter:"",
+      BuyerShortIdFilter:"",
+      PagedDisputesResultRequestDto: {
+        maxResultCount: state.maxResultCount,
+        skipCount: state.skipCount,
+        keyword: state.filter,
+      },
+      
     });
-
+    console.log(fetchedData); 
     // Update the state with the fetched data
-    setDisputeData(fetchedData.items);
+   setDisputeData(fetchedData.items);
     setIsHistoryModalVisible(true);
   };
 
@@ -344,7 +357,7 @@ declare var abp: any;
 
  
 
-  const handleCreate = () => {
+  const handleCreate = (item:any) => {
     const form = formRef.current;
     const { selectedLookupItem, selectedBuyerLookupItem, selectedSupplierLookupItem, userId } = state;
 
@@ -368,9 +381,21 @@ declare var abp: any;
         values.SupplementarySummaryId = currentRowId;
       }
       
-      // Handle userId condition for create or update
       if (userId === 0) {
-        await disputesStore.create(values);  // Create new record
+         await disputesStore.create(values).then(function(docid){
+          disputesServices
+          .buyermail(docid) 
+          .then((item) => { 
+            
+              railqueryMail(item); 
+            
+      
+            message.success("Submission successful.");
+          })
+          .catch((error: any) => {
+            console.error("Error during submission:", error); // Handle errors
+          });
+        });  // Create new record
       } else {
         await disputesStore.update({ ...values, id: userId });  // Update existing record with userId
       }
@@ -379,18 +404,80 @@ declare var abp: any;
       setState(prevState => ({ ...prevState, modalVisible: false }));
       form!.resetFields();
     });
-    
 
+    
+  
+ 
+       
     setIsQueryModalVisible(false);
   };
 
   const formRef = useRef<FormInstance>(null); 
+const railqueryMail = (item:any) =>
+{
+  console.log(item);  
+  if (item.buyerMail) {
+    item.buyerMail = item.buyerMail.split(",").map((email: string) => email.trim());   
+  }
 
+  var jsondata = JSON.stringify(item);
+  console.log(jsondata);
+  
+  //var url = "";
+  var url =`${process.env.REACT_APP_REMOTE_SERVICE_BASE_URL}PayRetro/disputebuyerapprovalmail`;
+
+  abp.ui.setBusy();
+
+  fetch(url, {
+      method: 'POST',
+      body: jsondata,
+      headers: {
+          'Content-Type': 'application/json'
+      }
+  }).then(function (response) {
+      //return response.json();
+      return console.log(response.body);
+  }).then(function (data) {
+      abp.ui.clearBusy();
+      message.success(`Supplier Query Raised Intimation -  ${item.buyerShortId}`);
+  }).catch(function (error) {
+      abp.ui.clearBusy();
+      abp.message.error(error.message || error);
+  });
+}
 
 
   const supplementaryInvoiceSubmit = (item: any) => {
     console.log('Processing item:', item);
-    // Your logic here
+    if (item.buyerEmailAddress) {
+      item.buyerEmailAddress = item.buyerEmailAddress.split(",").map((email: string) => email.trim());
+    }
+    if (item.supplierEmailAddress) {
+      item.supplierEmailAddress = item.supplierEmailAddress.split(",").map((email: string) => email.trim());
+    }
+  
+    if (item.accountantEmailAddress) {
+      item.accountantEmailAddress = item.accountantEmailAddress.split(",").map((email: string) => email.trim());
+    }
+    const jsondata = JSON.stringify(item);
+    console.log('item', jsondata);
+    const url = `${process.env.REACT_APP_REMOTE_SERVICE_BASE_URL}RetroPay/Buyer_Approval_Workflow`;
+    fetch(url, {
+      method: 'POST',
+      body: jsondata,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((data) => {
+        abp.ui.clearBusy();
+        message.success(`Approve Mail Sent to - ${item.buyerName}`);
+      })
+      .catch((error) => {
+        abp.ui.clearBusy();
+        abp.message.error(error.message || error);
+      });
+
   };
   const handleSupplementaryDropdownAction = (buttonName: string, rowId: string, event: React.MouseEvent) => {
     event.stopPropagation();
