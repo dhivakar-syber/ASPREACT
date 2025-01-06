@@ -5,7 +5,7 @@ import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../components/AppComponentBase';
 // import SupplierLookUpData from './components/SupplierLookUpData';
-import Edit from '../Suppliers/components/edit';
+import Edit from './components/createorupdatesuppliers';
 import { EntityDto } from '../../services/dto/entityDto';
 import { L } from '../../lib/abpUtility';
 import Stores from '../../stores/storeIdentifier';
@@ -172,6 +172,13 @@ class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState> {
                 key: 'code',
                 width: 150,
                 render: (text: string, record: any) => <div>{record.supplier?.code || ''}</div>,
+            },
+            {
+                title: L('UserName'),
+                dataIndex: 'userName',
+                key: 'userName',
+                width: 150,
+                render: (text: string, record: any) => <div>{record.userName || ''}</div>,
             },
             // {
             //     title: L('DisplayName'),

@@ -1,7 +1,6 @@
 import React ,{useRef,useState} from "react";
 
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
-import annexureDetailsService from "../../../../services/annexureDetails/annexureDetailsService";
 import { SupplierDashboardInput } from "./SupplierDashboardInput";
 import  DashboardCards  from "../PayRetroSupplierDashboard/DashboardCards";
 import { Row, Col, Input, Form,Select,message } from 'antd';
@@ -9,7 +8,8 @@ import SupplierSubmitModal from './SupplierSubmitModal';
 import SupplementaryInvoiceModal from "./SupplementaryInvoicesModal";
 import DisputesStore from "../../../../stores/DisputesStrore";
 import { FormInstance } from 'antd/lib/form';
-import CreateOrUpdateDisputes from '../../../../scenes/Disputes/components/createOrUpdateDisputes'; // Import the modal component
+//import CreateOrUpdateDisputes from '../../../../scenes/Disputes/components/createOrUpdateDisputes'; // Import the modal component
+import CreateOrUpdateDisputes from '../../../../scenes/Disputes/components/createOrUpdateDashboardDisputes';
 import DisputedataStore from "../../../../stores/DisputesStrore";
 import DisputeHistoryModal from "../../../Dashboard/components/PayRetroSupplierDashboard/DisputeHistoryModal";
 import disputesServices from "../../../../services/Disputes/disputesServices";
@@ -48,16 +48,19 @@ declare var abp: any;
   const [rowsupplierstatus, setrowsupplierstatus] = React.useState<number | null>(0); 
   const [rowBuyerstatus, setrowBuyerstatus] = React.useState<number | null>(0); 
   const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0);
-  const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
-  const [showDownloadButton, setShowDownloadButton] = React.useState<boolean>(false);
   const [dashboardinput, setdashboardinput] = React.useState<SupplierDashboardInput>({
     Supplierid: 0,
     Buyerids: [0],
     Partids: [0],
     invoicetype:0
   });
+  const [initialData, setInitialData] = React.useState({
+    buyerShortId: "",
+    supplierName: "",
+  });
 
   var userid='0';
+  
 
   React.useEffect(() => {
     
@@ -122,9 +125,7 @@ declare var abp: any;
 
     fetchData();
   }, []);
-  React.useEffect(() => {
-    setShowDownloadButton(selectedRows.length > 0);
-  }, [selectedRows]);
+
 
   
   
@@ -255,9 +256,6 @@ declare var abp: any;
     if (!target.closest(".dropdown-container")) {
       setOpenDropdownId(null);
     }
-    if (isModalOpen && !target.closest(".supplier-modal-container")) {
-      handleModalClose(); // Close the modal if clicked outside
-    }
   };
 
   React.useEffect(() => {
@@ -265,7 +263,7 @@ declare var abp: any;
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, [isModalOpen]);
+  }, []);
 
 
   const toggleDropdown = (id:any,event: React.MouseEvent) => {
@@ -327,11 +325,26 @@ declare var abp: any;
   };
 
 
-  const handleRaiseQueryAction = (buttonName: string, rowId: string, event: React.MouseEvent) => {
+  const handleRaiseQueryAction = async (buttonName: string, rowId: string, event: React.MouseEvent) => {
     event.stopPropagation();
     setCurrentRowId(rowId); // Set the rowId when the button is clicked
-    setIsQueryModalVisible(true); // Show the modal    
+  
+    try {
+      const result = await disputesServices.getBuyerAndSupplierNameAsync(rowId); 
+  
+      setInitialData({
+        buyerShortId: result.buyerName || "", // Assign result values
+        supplierName: result.supplierName || "", 
+      });
+  
+      // Show the modal after setting initial data
+      setIsQueryModalVisible(true);
+    } catch (error) {
+      console.error("Error fetching buyer and supplier data", error);
+      // Handle the error accordingly
+    }
   };
+  
   const handleCancel = () => {
     setIsQueryModalVisible(false);        
   };
@@ -516,24 +529,7 @@ const railqueryMail = (item:any) =>
 
   const [hoveredRowId, setHoveredRowId] = React.useState<number | null>(null);
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>, rowId: number) => {
-    e.stopPropagation();
-    const isChecked = e.target.checked;
-  
-    setSelectedRows((prevSelected) => {
-      const updatedSelectedRows = isChecked
-        ? prevSelected.concat(rowId) // Add rowId if checked
-        : prevSelected.filter((id) => id !== rowId); // Remove rowId if unchecked
-  
-      // Update the visibility of the download button based on the updated selected rows
-      setShowDownloadButton(updatedSelectedRows.length > 0);
-  
-      return updatedSelectedRows;
-    });
-  };
-
-  const handleRowClick = async (e: React.MouseEvent<HTMLTableRowElement>,row: any) => {
-    if ((e.target as HTMLElement).tagName !== 'INPUT') {
+  const handleRowClick = async (row: any) => {
     setSelectedRow(row); // Set the clicked row data
     setIsModalOpen(true); // Open the modal
     
@@ -551,7 +547,6 @@ const railqueryMail = (item:any) =>
     } catch (error) {
       console.error('Error fetching data:', error);
     } 
-  }
   };
   const { Item } = Form;
 
@@ -749,72 +744,12 @@ return (
       </div>
     );
   };
-  const handleAnnexureClick = (supplementarysummaryIds: number[]) => {
-    const templatepath = '//assets/SampleFiles/AnnexureDetails.xlsx';
-  
-    // Wrap supplementarysummaryId in an array as the method expects an array
-    //const supplementaryIds = [supplementarysummaryId];
-  
-    // Call the service method with the array of supplementaryIds
-    const idsToPass = Array.isArray(supplementarysummaryIds) ? supplementarysummaryIds : [supplementarysummaryIds];
-
-    annexureDetailsService.GetSupplementarysplitAnnexureDetailsToExcel(idsToPass, templatepath)
-      .then((result) => {
-        // Loop through each file in the result (assuming result is an array of file objects)
-        result.forEach((fileData: any) => {
-          const fileContent = fileData.fileContent;
-          const fileName = fileData.fileName;
-          const fileType = fileData.fileType;
-  
-          // Convert base64 string to a Blob
-          const byteCharacters = atob(fileContent);  // Decode base64 string
-          const byteArray = new Uint8Array(byteCharacters.length);
-  
-          // Convert byte characters into byte array
-          for (let i = 0; i < byteCharacters.length; i++) {
-            byteArray[i] = byteCharacters.charCodeAt(i);
-          }
-  
-          // Create a Blob from the byte array and specify the MIME type
-          const fileBlob = new Blob([byteArray], { type: fileType });
-  
-          // Create a temporary link element
-          const link = document.createElement('a');
-  
-          // Create an object URL for the Blob
-          const url = URL.createObjectURL(fileBlob);
-  
-          // Set the download attribute with the file name
-          link.href = url;
-          link.download = fileName;
-  
-          // Trigger a click event to start the download
-          link.click();
-  
-          // Clean up the URL object after download
-          URL.revokeObjectURL(url);
-        });
-      })
-      .catch((error) => {
-        console.error('Error fetching annexure details:', error);
-      });
-  };
-  
-  
+ 
   const AnnexureTable = ({ data }: { data: any[] }) => {
     console.log('AnnexureTable',data);
     return (
       <div >
         <h3>AnnexureDetails</h3>
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button
-  className="upload-btn"
-  id="downloadannexure"
-  onClick={() => handleAnnexureClick(data[0].supplementarysummaryId)}
->
-  Download Annexure
-</button>
-    </div>
         <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px" }}>
           <thead>
           <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
@@ -927,29 +862,6 @@ function barstatus(status:any) {
         
       optionLabelProp="label"
     />
-    {showDownloadButton && (
-  <div style={{ marginTop: "20px" }}>
-    <button
-      onClick={() => {
-        if (selectedRows.length > 0) {
-          handleAnnexureClick(selectedRows);
-          console.log("Download Annexure clicked for rows:", selectedRows);
-        } else {
-          alert("No rows selected for download!");
-        }
-      }}
-      style={{
-        padding: "10px 20px",
-        backgroundColor: "#005f7f",
-        color: "#fff",
-        border: "none",
-        cursor: "pointer",
-      }}
-    >
-      Download Annexure
-    </button>
-  </div>
-)}
     </div>
       </Col>
       <Col className="gutter-row" span={4}>
@@ -1031,20 +943,6 @@ function barstatus(status:any) {
         <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px" }}>
           <thead>
             <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
-            <th style={{ padding: "10px", border: "1px solid #ddd" }}>
-  <input
-    type="checkbox"
-    onChange={(e) => {
-      const isChecked = e.target.checked;
-
-      if (isChecked) {
-        setSelectedRows(tableData.map((row) => row.id)); // Select all rows
-      } else {
-        setSelectedRows([]); // Deselect all rows
-      }
-    }}
-  />
-</th>
               {[
                 "Buyer Name",
                 "Part No - Version",
@@ -1067,11 +965,11 @@ function barstatus(status:any) {
             </tr>
             <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
 
-            <td  colSpan={11}>
+            <td  colSpan={10}>
   
 </td>
               
-            <td style={{  border: "1px solid #ddd" }} colSpan={4}>
+            <td style={{  border: "1px solid #ddd" }} colSpan={3}>
   <div className="progress-tube">
     <div  style={{  width: "50px",textAlign:"center" }}>{rowsupplierstatus}</div>
     <div  style={{ width: "50px",textAlign:"center" }}>{rowBuyerstatus}</div>
@@ -1084,7 +982,7 @@ function barstatus(status:any) {
             {tableData.map((row) => (
               <tr
                 key={row.id}
-                onClick={(e) => handleRowClick(e,row)} // ts2304
+                onClick={() => handleRowClick(row)} // Add click event here
                 onMouseEnter={() => setHoveredRowId(row.id)}
                 onMouseLeave={() => setHoveredRowId(null)}
                 style={{
@@ -1092,13 +990,6 @@ function barstatus(status:any) {
                   cursor: "pointer",
                 }}
               >
-               <td style={{ padding: "10px", border: "1px solid #ddd" }}>
-                <input
-                  type="checkbox"
-                  checked={selectedRows.includes(row.id)}
-                  onChange={(e) => handleCheckboxChange(e, row.id)}
-                />
-              </td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.buyerName}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.partno}-{row.versionNo}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.createtime)}</td>
@@ -1214,23 +1105,8 @@ function barstatus(status:any) {
         visible={isModalVisible}   // Control visibility of the modal
         onCancel={handleCloseModal} // Function to close modal
       />
-        {isQueryModalVisible && (
-        <CreateOrUpdateDisputes
-          visible={isQueryModalVisible}
-          modalType="view"
-          onCreate={handleCreate}
-          onCancel={handleCancel}
-          disputesStrore={new DisputesStore()}
-          initialData={{
-            deliveryNote: "",
-            deliveryNoteDate: "",
-            transaction: 0,
-            paidAmount: 0,
-            year: 0,
-          }} 
-          formRef={formRef} 
-        />
-      )}
+
+      
       {isHistoryModalVisible && (
         <DisputeHistoryModal
         rowId={submitIdRow}              
@@ -1242,11 +1118,28 @@ function barstatus(status:any) {
       )}
         
 
+
       {isModalOpen && modalData && Suppliermodalview(selectedRow)}
+      {isQueryModalVisible && (
+          <CreateOrUpdateDisputes
+          visible={isQueryModalVisible}
+          modalType="view"
+          onCreate={handleCreate}
+          onCancel={handleCancel}
+          disputesStrore={new DisputesStore()}
+          initialData={{
+            supplierName:initialData.supplierName,
+            buyerName:initialData.buyerShortId,
+          }} 
+          formRef={formRef} 
+          />
+      )}
+     
     </div>
+    
   );
 
-
+  
 };
 
 export default PayRetroSupplierDashboard;
