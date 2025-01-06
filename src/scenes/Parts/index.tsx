@@ -22,6 +22,11 @@ export interface IPartsState {
   skipCount: number;
   userId: number;
   filter: string;
+  PartNoFilter:string;
+  DescriptionFilter:string;
+  BuyerNameFilter:string;
+  SupplierNameFilter:string;
+  showAdvancedFilters: boolean;
 }
 type LookupItem = {
   id: number;
@@ -49,9 +54,15 @@ class Parts extends AppComponentBase<IPartsProps, IPartsState> {
     skipCount: 0,
     userId: 0,
     filter: '',
+    PartNoFilter:'',
+    DescriptionFilter:'',
+    BuyerNameFilter:'',
+    SupplierNameFilter:'',
+    showAdvancedFilters: false,
     selectedLookupItem: null as LookupItem | null,
     selectedSupplierLookupItem: null as SupplierLookupItem | null,
     selectedBuyerLookupItem: null as BuyerLookupItem | null,
+
   };
 
   async componentDidMount() {
@@ -63,7 +74,18 @@ class Parts extends AppComponentBase<IPartsProps, IPartsState> {
         console.error('partstore is undefined');
         return;
     }
-    await this.props.partsStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
+    const filters = {
+      maxResultCount: this.state.maxResultCount,
+      skipCount: this.state.skipCount,
+      keyword: this.state.filter, // global filter (if any)
+      filter:this.state.filter,
+      PartNoFilter:this.state.PartNoFilter,
+      DescriptionFilter:this.state.DescriptionFilter,
+      BuyerNameFilter:this.state.BuyerNameFilter,
+      SupplierNameFilter:this.state.SupplierNameFilter
+    }
+    await this.props.partsStore.getAll(filters);
+    //await this.props.partsStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
   }
 
   handleTableChange = (pagination: any) => {
@@ -76,6 +98,11 @@ class Parts extends AppComponentBase<IPartsProps, IPartsState> {
     });
   };
 
+  toggleAdvancedFilters = () => {
+    this.setState((prevState) => ({
+      showAdvancedFilters: !prevState.showAdvancedFilters,
+    }));
+  };
   async createOrUpdateModalOpen(entityDto: EntityDto) {
     if (entityDto.id === 0) {
      // await this.props.partsStore.createParts();
@@ -103,6 +130,20 @@ class Parts extends AppComponentBase<IPartsProps, IPartsState> {
       },
     });
   }
+
+  resetFilters = () => {
+    this.setState({
+      PartNoFilter:'',
+      DescriptionFilter:'',
+      BuyerNameFilter:'',
+      SupplierNameFilter:'',
+},
+  
+    () => {
+      this.getAll(); // Call the data-refresh function after resetting the filters
+    }
+  );
+};
 editdata:any = null;
   handleCreate = () => {
     const form = this.formRef.current;
@@ -135,6 +176,33 @@ editdata:any = null;
     this.setState({ filter: value }, async () => await this.getAll());
   };
 
+  handleDescriptionSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ DescriptionFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.DescriptionFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  handlePartPartNoSearch = (value: string) => {
+    this.setState({ PartNoFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.PartNoFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  
+  handleSupplierNameSearch = (value: string) => {
+    this.setState({ SupplierNameFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.SupplierNameFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  
+  handleBuyerNameSearch = (value: string) => {
+    this.setState({ BuyerNameFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.BuyerNameFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
   // handleexcelexport = () =>{
   //   this.props.cbfcdataStore.getExcelExport();
   // }
@@ -192,7 +260,7 @@ editdata:any = null;
             {' '}
             <h2>{L('Parts')}</h2>
           </Col>
-            
+
           <Col
             xs={{ span: 14, offset: 0 }}
             sm={{ span: 15, offset: 0 }}
@@ -201,7 +269,7 @@ editdata:any = null;
             xl={{ span: 1, offset: 21 }}
             xxl={{ span: 1, offset: 21 }}
           >
-            <Button type="primary"  icon={<PlusOutlined/>} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} style={{marginLeft:'-100px'}}>Create Parts</Button>
+            <Button type="primary" icon={<PlusOutlined />} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} style={{ marginLeft: '-100px' }}>Create Parts</Button>
           </Col>
         </Row>
         <Row>
@@ -210,27 +278,82 @@ editdata:any = null;
           </Col>
         </Row>
         <Row style={{ marginTop: 20 }}>
-          <Col
-            xs={{ span: 24, offset: 0 }}
-            sm={{ span: 24, offset: 0 }}
-            md={{ span: 24, offset: 0 }}
-            lg={{ span: 24, offset: 0 }}
-            xl={{ span: 24, offset: 0 }}
-            xxl={{ span: 24, offset: 0 }}
-          >
-            <Table
-              rowKey={(record) => record.Part?.Id.toString()}
-              bordered={true}
-              columns={columns}
-              pagination={{ pageSize: 10, total: parts === undefined ? 0 : parts.totalCount, defaultCurrent: 1 }}
-              loading={parts === undefined ? true : false}
-              dataSource={parts === undefined ? [] : parts.items}
-              onChange={this.handleTableChange}
-              scroll={{ x: 'max-content' }}
-            />
+          <Col sm={{ span: 24 }}>
+            <span
+              className="text-muted clickable-item"
+              onClick={this.toggleAdvancedFilters}
+            >
+              {this.state.showAdvancedFilters ? (
+                <>
+                  <i className="fa fa-angle-up"></i> {L('HideAdvancedFilters')}
+                </>
+              ) : (
+                <>
+                  <i className="fa fa-angle-down"></i> {L('ShowAdvancedFilters')}
+                </>
+              )}
+            </span>
           </Col>
+          {this.state.showAdvancedFilters && (
+            <Row style={{ marginTop: 20 }} gutter={[16, 16]}>
+              <Col md={{ span: 4 }}>
+                <label className="form-label">{L("Description")}</label>
+                <Input
+                  //placeholder={L('Description Filter')}
+                  value = {this.state.DescriptionFilter}
+                  onChange={(e) => this.handleDescriptionSearch(e.target.value)} />
+              </Col>
+              <Col md={{ span: 4 }}>
+                <label className="form-label">{L("Part No")}</label>
+                <Input
+                  //placeholder={L('Part No Filter')
+                  value = {this.state.PartNoFilter}
+                  onChange={(e) => this.handlePartPartNoSearch(e.target.value)} />
+              </Col>
+              <Col md={{ span: 4 }}>
+                <label className="form-label">{L("Supplier Name")}</label>
+                <Input
+                  //placeholder={L('Supplier Name Filter')}
+                  value = {this.state.SupplierNameFilter}
+                  onChange={(e) => this.handleSupplierNameSearch(e.target.value)} />
+              </Col>
+              <Col md={{ span: 4 }}>
+                <label className="form-label">{L("Buyer Name")}</label>
+                <Input
+                  //placeholder={L('Buyer Name Filter')}
+                  value = {this.state.BuyerNameFilter}
+                  onChange={(e) => this.handleBuyerNameSearch(e.target.value)} />
+              </Col>
+                              {/* Reset Button */}
+                               <Col md={24} style={{ textAlign: "right", marginTop: 20 }}>
+                                 <Button type="default" onClick={this.resetFilters}>
+                                   {L("Reset")}
+                                 </Button>
+                               </Col>               
+            </Row>
+          )}
         </Row>
-        <Createorupdateparts
+      <Row style={{ marginTop: 20 }}>
+        <Col
+          xs={{ span: 24, offset: 0 }}
+          sm={{ span: 24, offset: 0 }}
+          md={{ span: 24, offset: 0 }}
+          lg={{ span: 24, offset: 0 }}
+          xl={{ span: 24, offset: 0 }}
+          xxl={{ span: 24, offset: 0 }}
+        >
+          <Table
+            rowKey={(record) => record.Part?.Id.toString()}
+            bordered={true}
+            columns={columns}
+            pagination={{ pageSize: 10, total: parts === undefined ? 0 : parts.totalCount, defaultCurrent: 1 }}
+            loading={parts === undefined ? true : false}
+            dataSource={parts === undefined ? [] : parts.items}
+            onChange={this.handleTableChange}
+            scroll={{ x: 'max-content' }} />
+        </Col>
+      </Row>
+      <Createorupdateparts
           formRef={this.formRef}
           visible={this.state.modalVisible}
           onCancel={() => {
@@ -248,8 +371,8 @@ editdata:any = null;
             paidAmount: 0,
             year: 0,
           }}
-          partStore={this.props.partsStore}
-        />
+          partStore={this.props.partsStore} 
+          />
       </Card>
     );
   }

@@ -1877,4 +1877,7 @@ nodejs/node_modules/npm/node_modules/yallist/iterator.js
 nodejs/node_modules/npm/node_modules/yallist/LICENSE
 nodejs/node_modules/npm/node_modules/yallist/package.json
 nodejs/node_modules/npm/node_modules/yallist/yallist.js
-src/scenes/Suppliers/components/edit.tsx
+.env
+.env.production
+.env
+.env.production

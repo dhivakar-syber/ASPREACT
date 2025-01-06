@@ -3,15 +3,15 @@ import {message}from 'antd';
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
 
 
-interface SupplierSubmitModalProps {
+interface BuyerApprovalModalProps {
   isOpen: boolean;
   onClose: () => void;
   submitIdRow: number; // Assuming this comes as a prop
-  supplementaryInvoiceSubmit: (item: any) => void; 
+  BuyerApproval: (item: any) => void; 
 }
 
-const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({ isOpen, onClose,submitIdRow,
-    supplementaryInvoiceSubmit, }) => {
+const BuyerApprovalModal: React.FC<BuyerApprovalModalProps> = ({ isOpen, onClose,submitIdRow,
+    BuyerApproval, }) => {
     const [submitText, setSubmitText] = useState('');
     const submitRemarksRef = useRef<HTMLTextAreaElement>(null);
 
@@ -30,7 +30,7 @@ const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({ isOpen, onClo
           .supplementaryInvoiceSubmit(submitIdRow, submitRemarks) // Call the API method with the necessary parameters
           .then((result: any[]) => { // Use `then` for promise handling instead of `done`
             result.forEach((item) => {
-              supplementaryInvoiceSubmit(item); // Process each item in the result
+                BuyerApproval(item); // Process each item in the result
             });
       
             message.success("Submission successful.");
@@ -107,4 +107,4 @@ const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({ isOpen, onClo
     );
 };
 
-export default SupplierSubmitModal;
+export default BuyerApprovalModal;
