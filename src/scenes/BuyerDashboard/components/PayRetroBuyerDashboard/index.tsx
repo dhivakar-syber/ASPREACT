@@ -4,7 +4,6 @@ import supplementarySummariesService from "../../../../services/SupplementarySum
 import  DashboardCards  from "./BuyerDashboardCards";
 import { Row, Col,Select, Tabs } from 'antd';
 import SupplierSubmitModal from '../../../Dashboard/components/PayRetroSupplierDashboard/SupplierSubmitModal';
-import SupplementaryInvoiceModal from "../../../Dashboard/components/PayRetroSupplierDashboard/SupplementaryInvoicesModal";
 import { BuyerDashboardInput } from "./BuyerDashboardInput";
 
 declare var abp: any;
@@ -210,6 +209,7 @@ declare var abp: any;
   
     const handlepartChange =async  (selectedValues: any[]) => {
       
+      console.log(isModalVisible,currentRowId);
       setselectedparts(selectedValues);
       console.log('selectedparts',selectedValues)
   
@@ -293,9 +293,9 @@ declare var abp: any;
     setCurrentRowId(rowId); // Set the rowId when the button is clicked
     setIsModalVisible(true); // Show the modal
   };
-  const handleCloseModal = () => {
-    setIsModalVisible(false);        
-  };
+  // const handleCloseModal = () => {
+  //   setIsModalVisible(false);        
+  // };
   function formatDate(d:string) {
     const date = new Date(d);
     const year = date.getFullYear();
@@ -537,11 +537,11 @@ function barstatus(status:any) {
       </div>
       <SupplierSubmitModal isOpen={isSupplierSubmitModalOpen} onClose={closeSupplierSubmitModal} submitIdRow={submitIdRow}
         supplementaryInvoiceSubmit={supplementaryInvoiceSubmit} />
-        <SupplementaryInvoiceModal
+        {/* <SupplementaryInvoiceModal
         rowId={currentRowId}      // Pass rowId to the modal
         visible={isModalVisible}   // Control visibility of the modal
         onCancel={handleCloseModal} // Function to close modal
-      />
+      /> */}
 
     </Tabs.TabPane>
     <Tabs.TabPane tab="Approvals" key="2">
@@ -692,11 +692,11 @@ function barstatus(status:any) {
       </div>
       <SupplierSubmitModal isOpen={isSupplierSubmitModalOpen} onClose={closeSupplierSubmitModal} submitIdRow={submitIdRow}
         supplementaryInvoiceSubmit={supplementaryInvoiceSubmit} />
-        <SupplementaryInvoiceModal
+        {/* <SupplementaryInvoiceModal
         rowId={currentRowId}      // Pass rowId to the modal
         visible={isModalVisible}   // Control visibility of the modal
         onCancel={handleCloseModal} // Function to close modal
-      />
+      /> */}
 
     </Tabs.TabPane>
     <Tabs.TabPane tab="Queries" key="3">

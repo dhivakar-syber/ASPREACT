@@ -73,7 +73,7 @@ class Login extends React.Component<ILoginProps> {
 
     const { loginModel } = this.props.authenticationStore!;
     return (
-      <Form className="" onFinish={this.handleSubmit} ref={this.formRef}>
+      <Form className="" onFinish={this.handleSubmit} ref={this.formRef} >
           <Row style={{ marginTop: 100 }}>
             <Col span={8} offset={8}>
               <Card>
@@ -96,7 +96,7 @@ class Login extends React.Component<ILoginProps> {
             </Col>
           </Row>
 
-          <Row>
+          {/* <Row>
             <Modal
               visible={loginModel.showModal}
               onCancel={loginModel.toggleShowModal}
@@ -117,12 +117,12 @@ class Login extends React.Component<ILoginProps> {
                 </Col>
               </Row>
             </Modal>
-          </Row>
+          </Row> */}
           <Row style={{ marginTop: 10 }}>
             <Col span={8} offset={8}>
               <Card>
                 <div style={{ textAlign: 'center' }}>
-                  <h3>{L('WellcomeMessage')}</h3>
+                  
                 </div>
                 <FormItem name={'userNameOrEmailAddress'} rules={rules.userNameOrEmailAddress}>
                   <Input placeholder={L('UserNameOrEmail')} prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} size="large" />

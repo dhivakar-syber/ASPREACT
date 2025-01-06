@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Card, Col, Dropdown, Input, Menu, Modal, Row, Table} from 'antd';
+import { Button, Card, Col, Dropdown, Input, InputNumber, Menu, Modal, Row, Table} from 'antd';
 import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../components/AppComponentBase';
@@ -10,9 +10,8 @@ import Stores from '../../stores/storeIdentifier';
 import ProcureStore from '../../stores/procuredatastore';
 import { FormInstance } from 'antd/lib/form';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
-
-
-
+//import * as moment from 'moment-timezone';
+//import { Moment } from 'moment-timezone';
 
 export interface IProcureProps {
   procureStore: ProcureStore;
@@ -24,6 +23,23 @@ export interface IProcureState {
   skipCount: number;
   procureId: number;
   filter: string;
+
+  MaxValidFromFilter:Date | null;
+  MinValidFromFilter:Date | null;
+  MaxValidToFilter:Date | null;
+  MinValidToFilter:Date | null;
+  ContractNoFilter:string;
+  MaxContractDateFilter:Date | null;
+  MinContractDateFilter:Date | null;
+  MaxApprovalDateFilter:Date | null;
+  MinApprovalDateFilter:Date | null;
+  PlantCodeFilter:string;
+  MaxVersionNoFilter:number| null;
+  MinVersionNoFilter:number | null;
+  PartPartNoFilter:string;
+  BuyerNameFilter:string;
+  SupplierNameFilter:string;
+  showAdvancedFilters: boolean,
 }
 
 
@@ -42,6 +58,23 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
     skipCount: 0,
     procureId: 0,
     filter: '',
+
+    MaxValidFromFilter:null as Date | null,
+    MinValidFromFilter:null as Date | null,
+    MaxValidToFilter:null as Date | null,
+    MinValidToFilter:null as Date | null,
+    ContractNoFilter:'',
+    MaxContractDateFilter:null as Date | null,
+    MinContractDateFilter:null as Date | null,
+    MaxApprovalDateFilter:null as Date | null,
+    MinApprovalDateFilter:null as Date | null,
+    PlantCodeFilter:'',
+    MaxVersionNoFilter:null as number | null,
+    MinVersionNoFilter:null as number | null,
+    PartPartNoFilter:'',
+    BuyerNameFilter:'',
+    SupplierNameFilter:'',
+    showAdvancedFilters: false
   };
 
   async componentDidMount() {
@@ -49,7 +82,30 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
   }
 
   async getAll() {
-    await this.props.procureStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
+
+     const filters = {
+              maxResultCount: this.state.maxResultCount,
+              skipCount: this.state.skipCount,
+              keyword: this.state.filter, // global filter (if any)
+              filter: this.state.filter,
+              // MaxValidFromFilter: this.state.MaxValidFromFilter, 
+              // MinValidFromFilter: this.state.MinValidFromFilter, 
+              // MaxValidToFilter: this.state.MaxValidToFilter, 
+              // MinValidToFilter: this.state.MinValidToFilter, 
+              ContractNoFilter: this.state.ContractNoFilter, 
+              // MaxContractDateFilter: this.state.MaxContractDateFilter,
+              // MinContractDateFilter: this.state.MinContractDateFilter,
+              // MaxApprovalDateFilter: this.state.MaxApprovalDateFilter,
+              // MinApprovalDateFilter: this.state.MinApprovalDateFilter,
+              PlantCodeFilter: this.state.PlantCodeFilter,
+              MaxVersionNoFilter: this.state.MaxVersionNoFilter,
+              MinVersionNoFilter: this.state.MinVersionNoFilter,
+              PartPartNoFilter: this.state.PartPartNoFilter,
+              BuyerNameFilter: this.state.BuyerNameFilter,
+              SupplierNameFilter: this.state.SupplierNameFilter,
+            };
+            await this.props.procureStore.getAll(filters);
+    //await this.props.procureStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
   }
 
   handleTableChange = (pagination: any) => {
@@ -62,6 +118,11 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
     });
   };
 
+  toggleAdvancedFilters = () => {
+    this.setState((prevState) => ({
+      showAdvancedFilters: !prevState.showAdvancedFilters,
+    }));
+  };
   globalData: any = null;
 
   async createOrEditeModalOpen(entityDto: EntityDto) {
@@ -94,6 +155,23 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
     });
   }
 
+  resetFilters = () => {
+    this.setState({
+      ContractNoFilter:'',
+      PlantCodeFilter:'',
+      MaxVersionNoFilter:null,
+      MinVersionNoFilter:null,
+      PartPartNoFilter:'',
+      BuyerNameFilter:'',
+      SupplierNameFilter:'',
+    },
+  
+    () => {
+      this.getAll(); // Call the data-refresh function after resetting the filters
+    }
+  );
+};
+
   handleCreate = () => {
     const form = this.formRef.current;
 
@@ -114,6 +192,127 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
     this.setState({ filter: value }, async () => await this.getAll());
   };
 
+  // handleMaxValidFromFilterSearch = (date: Moment | null, dateString: string) => {
+  //   const dateValue = date ? date.toDate() : null; // Convert Moment to Date
+  //   this.setState({ MaxValidFromFilter: dateValue }, () => {
+  //     console.log("Updated MaxValidFromFilter:", this.state.MaxValidFromFilter);
+  //     this.getAll(); // Call API or refresh data
+  //   });
+  // };
+  
+  // handleMinValidFromFilterSearch = (date: Moment | null, dateString: string) => {
+  //   const dateValue = date ? date.toDate() : null; // Convert Moment to Date
+  //   this.setState({ MinValidFromFilter: dateValue }, () => {
+  //     console.log("Updated MinValidFromFilter:", this.state.MinValidFromFilter);
+  //     this.getAll();
+  //   });
+  // };
+  
+  // handleMaxValidToFilterSearch = (date: Moment | null, dateString: string) => {
+  //   const dateValue = date ? date.toDate() : null; // Convert Moment to Date
+  //   this.setState({ MaxValidToFilter: dateValue }, () => {
+  //     console.log("Updated MaxValidToFilter:", this.state.MaxValidToFilter);
+  //     this.getAll();
+  //   });
+  // };
+  
+  // handleMinValidToFilterSearch = (date: Moment | null, dateString: string) => {
+  //   const dateValue = date ? date.toDate() : null; // Convert Moment to Date
+  //   this.setState({ MinValidToFilter: dateValue }, () => {
+  //     console.log("Updated MinValidToFilter:", this.state.MinValidToFilter);
+  //     this.getAll();
+  //   });
+  // };
+
+  handleContractNoSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ ContractNoFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.ContractNoFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  // handleMaxContractDateSearch = (date: Moment , dateString: string) => {
+  //   // Update the state and call getAll() once the state is updated
+  //   const dateValue = date ? date.toDate() : null; // Convert Moment to native Date
+  //   this.setState({ MaxContractDateFilter: dateValue }, () => {
+  //     console.log('Updated minDeliveryNoteDateFilter:', this.state.MaxContractDateFilter);
+  //     this.getAll();
+  //   });
+  // };
+  // handleMinContractDateSearch = (date: Moment , dateString: string) => {
+  //   // If a valid date is selected, it will be a Moment object
+  //   const dateValue = date ? date.toDate() : null; // Convert Moment to native Date
+  //   this.setState({ MinContractDateFilter: dateValue }, () => {
+  //     console.log('Updated minDeliveryNoteDateFilter:', this.state.MinContractDateFilter);
+  //     this.getAll();
+  //   });
+  // };
+  // handleMaxApprovalDateSearch = (date: Moment | null, dateString: string) => {
+  //   // Update the state and call getAll() once the state is updated
+  //   const dateValue = date ? date.toDate() : null; // Convert Moment to native Date
+  //   this.setState({ MaxApprovalDateFilter: dateValue }, () => {
+  //     console.log('Updated minDeliveryNoteDateFilter:', this.state.MaxApprovalDateFilter);
+  //     this.getAll();
+  //   });
+  // };
+  // handleMinApprovalDateSearch = (date: Moment | null, dateString: string) => {
+  //   // If a valid date is selected, it will be a Moment object
+  //   const dateValue = date ? date.toDate() : null; // Convert Moment to native Date
+  //   this.setState({ MinApprovalDateFilter: dateValue }, () => {
+  //     console.log('Updated minDeliveryNoteDateFilter:', this.state.MinApprovalDateFilter);
+  //     this.getAll();
+  //   });
+  // };
+
+  handlePlantCodeSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ PlantCodeFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.PlantCodeFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+
+  handleMaxVersionNoSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ MaxVersionNoFilter: Number(value) }, () => {
+      console.log('Updated nameFilter:', this.state.MaxVersionNoFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+
+  handleMinVersionNoSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ MinVersionNoFilter: Number(value) }, () => {
+      console.log('Updated nameFilter:', this.state.MinVersionNoFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+
+
+
+  handlePartPartNoSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ PartPartNoFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.PartPartNoFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+
+  handleBuyerNameSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ BuyerNameFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.BuyerNameFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+
+  handleSupplierNameSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ SupplierNameFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.SupplierNameFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
   // handleexcelexport = () =>{
   //   this.props.procureStore.getExcelExport();
   // }
@@ -239,6 +438,212 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
             <Search placeholder={this.L('Filter')} onSearch={this.handleSearch} />
           </Col>
         </Row>
+
+        <Row style={{ marginTop: 20 }}>
+          <Col sm={{ span: 24 }}>
+            <span
+              className="text-muted clickable-item"
+              onClick={this.toggleAdvancedFilters}
+            >
+              {this.state.showAdvancedFilters ? (
+                <>
+                  <i className="fa fa-angle-up"></i> {L('HideAdvancedFilters')}
+                </>
+              ) : (
+                <>
+                  <i className="fa fa-angle-down"></i> {L('ShowAdvancedFilters')}
+                </>
+              )}
+            </span>
+          </Col>
+
+{this.state.showAdvancedFilters && (
+   <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
+{/* <Col md={9}>
+<div className="my-3">
+    <label className="form-label">{L("Valid From Range")}</label>
+    <div className="input-group">
+      <DatePicker
+        placeholder={L("Min Value")}
+        //onChange={this.handleMinValidFromFilterSearch}
+        style={{ width: "40%" }}
+      />
+      <span style={{ lineHeight: "40px", padding: "0 15px" }}> &mdash; </span>
+      <DatePicker
+        placeholder={L("Max Value")}
+        //onChange={this.handleMaxValidFromFilterSearch}
+        style={{ width: "40%" }}
+      />
+    </div>
+  </div>
+</Col>
+
+<Col md={9}>
+  <div className="my-3">
+    <label className="form-label">{L("Valid To Range")}</label>
+    <div className="input-group">
+      <DatePicker
+        placeholder={L("Min Value")}
+        //onChange={(date, dateString) => this.handleMinValidToFilterSearch(date, dateString)}
+        style={{ width: "40%" }}
+      />
+      <span style={{ lineHeight: "40px", padding: "0 15px" }}> &mdash; </span>
+      <DatePicker
+        placeholder={L("Max Value")}
+        //onChange={(date, dateString) => this.handleMaxValidToFilterSearch(date, dateString)}
+        style={{ width: "40%" }}
+      />
+    </div>
+  </div>
+</Col>
+
+   <Col md={9}>
+  <div className="my-3">
+    <label className="form-label">{L("Valid to Range")}</label>
+    <div className="input-group">
+      <DatePicker
+        placeholder={L("Min Value")}
+        //onChange={(date: Moment | null, dateString: string) => this.handleMaxValidToFilterSearch(date, dateString)}
+        style={{ width: "40%" }}
+      />
+      <span style={{ lineHeight: "40px", padding: "0 15px" }}> &mdash; </span>
+      <DatePicker
+        placeholder={L("Max Value")}
+        //onChange={(date: Moment | null, dateString: string) => this.handleMinValidToFilterSearch(date, dateString)}
+        style={{ width: "40%" }}
+      />
+    </div>
+  </div>
+</Col> */}
+
+   {/* Part No Filter */}
+   <Col md={5}>
+     <div className="my-3">
+       <label className="form-label">{L("Contract No")}</label>
+       <Input
+         //placeholder={L("Part No Filter")}
+         value={this.state.ContractNoFilter}
+         onChange={(e) => this.handleContractNoSearch(e.target.value)}
+       />
+     </div>
+   </Col>
+
+   {/* <Col md={9}>
+  <div className="my-3">
+    <label className="form-label">{L("Contract Date Range")}</label>
+    <div className="input-group">
+      <DatePicker
+        placeholder={L("Min Value")}
+        //onChange={(date: Moment | null, dateString: string) => this.handleMaxContractDateSearch(date, dateString)}
+        style={{ width: "40%" }}
+      />
+      <span style={{ lineHeight: "40px", padding: "0 15px" }}> &mdash; </span>
+      <DatePicker
+        placeholder={L("Max Value")}
+        //onChange={(date: Moment | null, dateString: string) => this.handleMinContractDateSearch(date, dateString)}
+        style={{ width: "40%" }}
+      />
+    </div>
+  </div>
+</Col>
+   <Col md={9}>
+  <div className="my-3">
+    <label className="form-label">{L("Approval Date Range")}</label>
+    <div className="input-group">
+      <DatePicker
+        placeholder={L("Min Value")}
+        //onChange={(date: Moment, dateString: string) => this.handleMaxApprovalDateSearch(date, dateString)}
+        style={{ width: "40%" }}
+      />
+      <span style={{ lineHeight: "40px", padding: "0 15px" }}> &mdash; </span>
+      <DatePicker
+        placeholder={L("Max Value")}
+        //onChange={(date: Moment, dateString: string) => this.handleMinApprovalDateSearch(date, dateString)}
+        style={{ width: "40%" }}
+      />
+    </div>
+  </div>
+</Col> */}
+
+   {/* Part No Filter */}
+   <Col md={5}>
+     <div className="my-3">
+       <label className="form-label">{L("Plant Code")}</label>
+       <Input
+         //placeholder={L("Part No Filter")}
+         value={this.state.PlantCodeFilter}
+         onChange={(e) => this.handlePlantCodeSearch(e.target.value)}
+       />
+     </div>
+   </Col>
+
+   
+   {/* Year Filter */}
+   <Col md={9}>
+    <div className="my-3">
+      <label className="form-label">{L("Version No")}</label>
+      <div className="input-group">
+        <InputNumber
+          placeholder={L("Min Value")}
+          value={this.state.MaxVersionNoFilter?? undefined}
+          onChange={(value) => this.handleMaxVersionNoSearch(value?.toString() || "")}
+          style={{ width: "40%" }}
+        />
+        <InputNumber
+          placeholder={L("Max Value")}
+          value={this.state.MinVersionNoFilter?? undefined}
+          onChange={(value) => this.handleMinVersionNoSearch(value?.toString() || "")}
+          style={{ width: "40%", marginLeft: "10px" }}
+        />
+      </div>
+    </div>
+  </Col>
+   {/* Part No Filter */}
+   <Col md={5}>
+     <div className="my-3">
+       <label className="form-label">{L("Part No")}</label>
+       <Input
+         //placeholder={L("Part No Filter")}
+         value={this.state.PartPartNoFilter}
+         onChange={(e) => this.handlePartPartNoSearch(e.target.value)}
+       />
+     </div>
+   </Col>
+
+   {/* Buyer Filter */}
+   <Col md={5}>
+     <div className="my-3">
+       <label className="form-label">{L("Buyer Name")}</label>
+       <Input
+         //placeholder={L("Buyer Filter")}
+         value={this.state.BuyerNameFilter}
+         onChange={(e) => this.handleBuyerNameSearch(e.target.value)}
+       />
+     </div>
+   </Col>
+
+   {/* Supplier Filter */}
+   <Col md={5}>
+     <div className="my-3">
+       <label className="form-label">{L("Supplier Name")}</label>
+       <Input
+         //placeholder={L("Supplier Filter")}
+         value={this.state.SupplierNameFilter}
+         onChange={(e) => this.handleSupplierNameSearch(e.target.value)}
+       />
+     </div>
+   </Col>
+
+  {/* Reset Button */}
+   <Col md={24} style={{ textAlign: "right", marginTop: 20 }}>
+     <Button type="default" onClick={this.resetFilters}>
+       {L("Reset")}
+     </Button>
+   </Col>
+ </Row> 
+
+  )}
+  </Row>
         <Row style={{ marginTop: 20 }}>
           <Col
             xs={{ span: 24, offset: 0 }}
