@@ -94,6 +94,7 @@ class CreateOrUpdateCBFCdata extends React.Component<ICreateOrUpdateCBFCdataProp
     sorting: 'name',
     keyword:''
   };
+  
   async componentDidMount() {
     await this.getAllPartForLookupTable();
     await this.getAllSupplierForLookupTable();
