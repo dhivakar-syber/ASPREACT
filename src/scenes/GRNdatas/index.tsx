@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 
-import { Button, Card, Col, Dropdown, Input, Menu, Modal, Row, Table} from 'antd';
+import { Button, Card, Col, Dropdown, Input, Menu, Modal, Row, Select, Table} from 'antd';
 import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../components/AppComponentBase';
@@ -27,6 +27,13 @@ export interface IGRNdataState {
   skipCount: number;
   userId: number;
   filter: string;
+  descriptionFilter:string;
+  movementTypeFilter:number| null;
+  invoiceNoFilter:string;
+  partPartNoFilter:string;
+  supplierNameFilter:string;
+  buyerNameFilter:string;
+  showAdvancedFilters: boolean,
 }
 type LookupItem = {
   id: number;
@@ -54,6 +61,13 @@ class GRNDatas extends AppComponentBase<IGRNdataProps, IGRNdataState> {
     skipCount: 0,
     userId: 0,
     filter: '',
+    descriptionFilter:'',
+    movementTypeFilter:null as number | null,
+    invoiceNoFilter:'',
+    partPartNoFilter:'',
+    supplierNameFilter:'',
+    buyerNameFilter:'',
+    showAdvancedFilters: false,
     selectedLookupItem: null as LookupItem | null,
     selectedSupplierLookupItem: null as SupplierLookupItem | null,
     selectedBuyerLookupItem: null as BuyerLookupItem | null,
@@ -68,7 +82,19 @@ class GRNDatas extends AppComponentBase<IGRNdataProps, IGRNdataState> {
         console.error('grndatastore is undefined');
         return;
     }
-    await this.props.grndataStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
+            const filters = {
+              maxResultCount: this.state.maxResultCount,
+              skipCount: this.state.skipCount,
+              keyword: this.state.filter, // global filter (if any)
+              filter:this.state.filter,
+                descriptionFilter: this.state.descriptionFilter, 
+                movementTypeFilter: this.state.movementTypeFilter, 
+                invoiceNoFilter: this.state.invoiceNoFilter, 
+                partPartNoFilter: this.state.partPartNoFilter, 
+                supplierNameFilter: this.state.supplierNameFilter, 
+                buyerNameFilter: this.state.buyerNameFilter,
+            };
+            await this.props.grndataStore.getAll(filters);
   }
 
   handleTableChange = (pagination: any) => {
@@ -81,6 +107,11 @@ class GRNDatas extends AppComponentBase<IGRNdataProps, IGRNdataState> {
     });
   };
 
+  toggleAdvancedFilters = () => {
+    this.setState((prevState) => ({
+      showAdvancedFilters: !prevState.showAdvancedFilters,
+    }));
+  };
   async createOrUpdateModalOpen(entityDto: EntityDto) {
     if (entityDto.id === 0) {
       await this.props.grndataStore.createGRNData();
@@ -108,6 +139,22 @@ class GRNDatas extends AppComponentBase<IGRNdataProps, IGRNdataState> {
       },
     });
   }
+
+  resetFilters = () => {
+    this.setState({
+      descriptionFilter: '',
+      movementTypeFilter: null,
+      invoiceNoFilter: '',
+      partPartNoFilter: '',
+      buyerNameFilter: '',
+      supplierNameFilter: '',
+    },
+  
+    () => {
+      this.getAll(); // Call the data-refresh function after resetting the filters
+    }
+  );
+};
 editdata:any = null;
   handleCreate = () => {
     const form = this.formRef.current;
@@ -140,6 +187,49 @@ editdata:any = null;
     this.setState({ filter: value }, async () => await this.getAll());
   };
 
+  handleDescriptionSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ descriptionFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.descriptionFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  
+  handleMovementTypeSearch = (value: number) => {
+    this.setState({ movementTypeFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.movementTypeFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  
+  handleInvoiceNoSearch = (value: string) => {
+    this.setState({ invoiceNoFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.invoiceNoFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  
+  handlePartPartNoSearch = (value: string) => {
+    this.setState({ partPartNoFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.partPartNoFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  
+  handleSupplierNameSearch = (value: string) => {
+    this.setState({ supplierNameFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.supplierNameFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  
+  handleBuyerNameSearch = (value: string) => {
+    this.setState({ buyerNameFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.buyerNameFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  
   handleFileUpload = (event:any) => {
     const file = event.target.files[0];
     if (file) {
@@ -209,7 +299,7 @@ editdata:any = null;
             {' '}
             <h2>{L('GRNdata')}</h2>
           </Col>
-          <Col
+              <Col
                       xs={{ span: 14, offset: 0 }}
                       sm={{ span: 15, offset: 0 }}
                       md={{ span: 15, offset: 0 }}
@@ -262,6 +352,88 @@ editdata:any = null;
             <Search placeholder={this.L('Filter')} onSearch={this.handleSearch} />
           </Col>
         </Row>
+
+        <Row style={{ marginTop: 20 }}>
+                  <Col sm={{ span: 24 }}>
+                    <span
+                      className="text-muted clickable-item"
+                      onClick={this.toggleAdvancedFilters}
+                    >
+                      {this.state.showAdvancedFilters ? (
+                        <>
+                          <i className="fa fa-angle-up"></i> {L('HideAdvancedFilters')}
+                        </>
+                      ) : (
+                        <>
+                          <i className="fa fa-angle-down"></i> {L('ShowAdvancedFilters')}
+                        </>
+                      )}
+                    </span>
+                  </Col>
+                    {this.state.showAdvancedFilters && (
+                    <Row style={{ marginTop: 20 }} gutter={[16, 16]}>
+                      <Col md={{ span: 4 }}>
+                          <label className="form-label">{L("Description")}</label>
+                        <Input
+                          //placeholder={L('Description Filter')}
+                          value={this.state.descriptionFilter}
+                          onChange={(e) => this.handleDescriptionSearch(e.target.value)}
+                        />
+                      </Col>
+                      <Col md={{ span: 4 }}>
+                      <label className="form-label">{L("Movement Type")}</label>
+                      <Select
+                          //placeholder={L("Transaction Filter")}
+                          value={this.state.movementTypeFilter?.toString()}
+                        onChange={(value) => this.handleMovementTypeSearch(Number(value))}
+                        style={{ width: "100%" }}
+                      >
+                        <Select.Option value="-1">{L("All")}</Select.Option>
+                        <Select.Option value="0">{L("Inward")}</Select.Option>
+                        <Select.Option value="1">{L("Return")}</Select.Option>
+                      </Select>
+                      </Col>
+                      <Col md={{ span: 4 }}>
+                      <label className="form-label">{L("Invoice No")}</label>
+                        <Input
+                          //placeholder={L('Department Filter')}
+                          value={this.state.invoiceNoFilter}
+                          onChange={(e) => this.handleInvoiceNoSearch(e.target.value)}
+                        />
+                      </Col>
+                      <Col md={{ span: 4 }}>
+                      <label className="form-label">{L("part No")}</label>
+                        <Input
+                          //placeholder={L('Part No Filter')}
+                          value={this.state.partPartNoFilter}
+                          onChange={(e) => this.handlePartPartNoSearch(e.target.value)}
+                        />
+                      </Col>
+                      <Col md={{ span: 4 }}>
+                      <label className="form-label">{L("Supplier Name")}</label>
+                        <Input
+                          value={this.state.supplierNameFilter}
+                          //placeholder={L('Supplier Name Filter')}
+                          onChange={(e) => this.handleSupplierNameSearch(e.target.value)}
+                        />
+                      </Col>
+                      <Col md={{ span: 4 }}>
+                      <label className="form-label">{L("Buyer Name")}</label>
+                        <Input
+                           value={this.state.buyerNameFilter}
+                          //placeholder={L('Buyer Name Filter')}
+                          onChange={(e) => this.handleBuyerNameSearch(e.target.value)}
+                        />
+                      </Col>
+                          {/* Reset Button */}
+                          <Col md={24} style={{ textAlign: "right", marginTop: 20 }}>
+                            <Button type="default" onClick={this.resetFilters}>
+                              {L("Reset")}
+                            </Button>
+                          </Col>                     
+                    </Row>
+  )}
+  </Row>
         <Row style={{ marginTop: 20 }}>
           <Col
             xs={{ span: 24, offset: 0 }}
@@ -303,10 +475,10 @@ editdata:any = null;
           }}
           grndataStore={this.props.grndataStore}
         />
-      </Card>
-    );
+        </Card>
+      );
+    }
   }
-}
 
 export default GRNDatas;
 

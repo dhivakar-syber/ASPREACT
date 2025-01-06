@@ -23,6 +23,14 @@ export interface IBuyerStore {
   skipCount: number;
   buyerId: number;
   filter: string;
+  nameFilter:string;
+  shortIdFilter:string;
+  departmentFilter:string;
+  reportingToFilter:string;
+  userNameFilter:string;
+  userName2Filter:string;
+  userName3Filter:string;
+  showAdvancedFilters: boolean;
 }
 interface buyerLookupItem {
   id: number;
@@ -51,6 +59,14 @@ class Buyers extends AppComponentBase<IBuyerProps, IBuyerStore> {
     skipCount: 0,
     buyerId: 0,
     filter: '',
+    nameFilter:'',
+    shortIdFilter:'',
+    departmentFilter:'',
+    reportingToFilter:'',
+    userNameFilter:'',
+    userName2Filter:'',
+    userName3Filter:'',
+    showAdvancedFilters: false,
     //selectedLookupItem: null as LookupItem | null,
     selectedBuyerLookupItem: null as buyerLookupItem | null,
     selectedL3UserLookupItem: null as l3UserLookupItem | null,
@@ -75,7 +91,21 @@ class Buyers extends AppComponentBase<IBuyerProps, IBuyerStore> {
         console.error('buyerStore is undefined');
         return;
     }
-    await this.props.buyerStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
+    const filters = {
+      filter:this.state.filter,
+      maxResultCount: this.state.maxResultCount,
+      skipCount: this.state.skipCount,
+      keyword: this.state.filter, // global filter (if any)
+      nameFilter: this.state.nameFilter, // name filter
+      shortIdFilter: this.state.shortIdFilter, // short ID filter
+      departmentFilter: this.state.departmentFilter, // department filter
+      reportingToFilter: this.state.reportingToFilter, // reportingTo filter
+      userNameFilter: this.state.userNameFilter, // username filter
+      userName2Filter: this.state.userName2Filter, // L3 username filter
+      userName3Filter: this.state.userName3Filter // L4 username filter
+    };
+  
+    await this.props.buyerStore.getAll(filters);
   }
 
   handleTableChange = (pagination: any) => {
@@ -88,6 +118,11 @@ class Buyers extends AppComponentBase<IBuyerProps, IBuyerStore> {
     });
   };
 
+  toggleAdvancedFilters = () => {
+    this.setState((prevState) => ({
+      showAdvancedFilters: !prevState.showAdvancedFilters,
+    }));
+  };
   async createOrUpdateModalOpen(entityDto: EntityDto) {
     if (entityDto.id === 0) {
       await this.props.buyerStore.createBuyer();
@@ -116,6 +151,22 @@ class Buyers extends AppComponentBase<IBuyerProps, IBuyerStore> {
     });
   }
 
+  resetFilters = () => {
+    this.setState({
+      nameFilter: '', // Reset name filter
+      shortIdFilter: '', // Reset short ID filter
+      departmentFilter: '', // Reset department filter
+      reportingToFilter: '', // Reset reportingTo filter
+      userNameFilter: '', // Reset username filter
+      userName2Filter: '', // Reset L3 username filter
+      userName3Filter: '', // Reset L4 username filter
+      // Add additional filters here if needed
+    },
+    () => {
+      this.getAll(); // Call the data-refresh function after resetting the filters
+    }
+  );
+};
   
 editdata:any = null;
   handleCreate = () => {
@@ -148,7 +199,56 @@ editdata:any = null;
   handleSearch = (value: string) => {
     this.setState({ filter: value }, async () => await this.getAll());
   };
-
+  handleNameSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ nameFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.nameFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  
+  handleShortIdSearch = (value: string) => {
+    this.setState({ shortIdFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.shortIdFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  
+  handleDepartmentSearch = (value: string) => {
+    this.setState({ departmentFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.departmentFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  
+  handleReportingToSearch = (value: string) => {
+    this.setState({ reportingToFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.reportingToFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  
+  handleUserNameSearch = (value: string) => {
+    this.setState({ userNameFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.userNameFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  
+  handleL3UserSearch = (value: string) => {
+    this.setState({ userName2Filter: value }, () => {
+      console.log('Updated nameFilter:', this.state.userName2Filter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  
+  handleL4UserSearch = (value: string) => {
+    this.setState({ userName3Filter: value }, () => {
+      console.log('Updated nameFilter:', this.state.userName3Filter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  
   public render() {
     console.log(this.props.buyerStore);
     const { buyer } = this.props.buyerStore;
@@ -268,7 +368,93 @@ editdata:any = null;
         <Col sm={{ span: 10 }}>
           <Search placeholder={L('Filter')} onSearch={this.handleSearch} />
         </Col>
-      </Row>
+        </Row>
+        <Row style={{ marginTop: 20 }}>
+          <Col sm={{ span: 24 }}>
+            <span
+              className="text-muted clickable-item"
+              onClick={this.toggleAdvancedFilters}
+            >
+              {this.state.showAdvancedFilters ? (
+                <>
+                  <i className="fa fa-angle-up"></i> {L('HideAdvancedFilters')}
+                </>
+              ) : (
+                <>
+                  <i className="fa fa-angle-down"></i> {L('ShowAdvancedFilters')}
+                </>
+              )}
+            </span>
+          </Col>
+
+          {this.state.showAdvancedFilters && (
+  <Row style={{ marginTop: 20 }} gutter={[16, 16]}>
+    <Col md={{ span: 4 }}>
+    <label className="form-label">{L("Name")}</label>
+      <Input
+        //placeholder={L('Name Filter')}
+        value={this.state.nameFilter} // Bind to state
+        onChange={(e) => this.handleNameSearch(e.target.value)}
+      />
+    </Col>
+    <Col md={{ span: 4 }}>
+    <label className="form-label">{L("ShortId")}</label>
+      <Input
+        //placeholder={L('ShortId Filter')}
+        value={this.state.shortIdFilter} // Bind to state
+        onChange={(e) => this.handleShortIdSearch(e.target.value)}
+      />
+    </Col>
+    <Col md={{ span: 4 }}>
+    <label className="form-label">{L("Department")}</label>
+      <Input
+        //placeholder={L('Department Filter')}
+        value={this.state.departmentFilter} // Bind to state
+        onChange={(e) => this.handleDepartmentSearch(e.target.value)}
+      />
+    </Col>
+    <Col md={{ span: 4 }}>
+    <label className="form-label">{L("Reporting To")}</label>
+      <Input
+        //placeholder={L('ReportingTo Filter')}
+        value={this.state.reportingToFilter} // Bind to state
+        onChange={(e) => this.handleReportingToSearch(e.target.value)}
+      />
+    </Col>
+    <Col md={{ span: 4 }}>
+    <label className="form-label">{L("UserName")}</label>
+      <Input
+        //placeholder={L('UserName Filter')}
+        value={this.state.userNameFilter} // Bind to state
+        onChange={(e) => this.handleUserNameSearch(e.target.value)}
+      />
+    </Col>
+    <Col md={{ span: 4 }}>
+    <label className="form-label">{L("L3User")}</label>
+      <Input
+        //placeholder={L('L3User Filter')}
+        value={this.state.userName2Filter} // Bind to state
+        onChange={(e) => this.handleL3UserSearch(e.target.value)}
+      />
+    </Col>
+    <Col md={{ span: 4 }}>
+    <label className="form-label">{L("L4User")}</label>
+      <Input
+        //placeholder={L('L4User Filter')}
+        value={this.state.userName3Filter} // Bind to state
+        onChange={(e) => this.handleL4UserSearch(e.target.value)}
+      />
+    </Col>
+       {/* Reset Button */}
+       <Col md={24} style={{ textAlign: "right", marginTop: 20 }}>
+         <Button type="default" onClick={this.resetFilters}>
+           {L("Reset")}
+         </Button>
+       </Col>
+  </Row>
+)}
+
+  </Row>
       <Row style={{ marginTop: 20 }}>
         <Col
           xs={{ span: 24 }}

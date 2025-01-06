@@ -25,6 +25,9 @@ export interface ISupplierRejectionState {
   skipCount: number;
   userId: number;
   filter: string;
+  codeFilter:string;
+  descriptionFilter:string;
+  showAdvancedFilters: boolean;
 }
 const confirm = Modal.confirm;
 const Search = Input.Search;
@@ -40,6 +43,9 @@ class SupplierRejection extends AppComponentBase<ISupplierRejectionProps, ISuppl
     skipCount: 0,
     userId: 0,
     filter: '',
+    codeFilter:'',
+    descriptionFilter:'',
+    showAdvancedFilters: false,
   };
 
   async componentDidMount() {
@@ -51,7 +57,16 @@ class SupplierRejection extends AppComponentBase<ISupplierRejectionProps, ISuppl
         console.error('supplierRejectionStore is undefined');
         return;
     }
-    await this.props.supplierRejectionStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
+    const filters = {
+      maxResultCount: this.state.maxResultCount,
+      skipCount: this.state.skipCount,
+      keyword: this.state.filter, // global filter (if any)
+      filter: this.state.filter,
+      codeFilter:this.state.codeFilter,
+      descriptionFilter:this.state.descriptionFilter,
+    }
+    await this.props.supplierRejectionStore.getAll(filters);
+    //await this.props.supplierRejectionStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
   }
 
   handleTableChange = (pagination: any) => {
@@ -64,6 +79,11 @@ class SupplierRejection extends AppComponentBase<ISupplierRejectionProps, ISuppl
     });
   };
 
+  toggleAdvancedFilters = () => {
+    this.setState((prevState) => ({
+      showAdvancedFilters: !prevState.showAdvancedFilters,
+    }));
+  };
   async createOrUpdateModalOpen(entityDto: EntityDto) {
     if (entityDto.id === 0) {
       await this.props.supplierRejectionStore.createSupplierRejections();
@@ -91,6 +111,18 @@ class SupplierRejection extends AppComponentBase<ISupplierRejectionProps, ISuppl
       },
     });
   }
+
+  resetFilters = () => {
+    this.setState({
+      codeFilter:'',
+      descriptionFilter:'',
+},
+  
+    () => {
+      this.getAll(); // Call the data-refresh function after resetting the filters
+    }
+  );
+};
 editdata:any = null;
   handleCreate = () => {
     const form = this.formRef.current;
@@ -111,6 +143,21 @@ editdata:any = null;
     this.setState({ filter: value }, async () => await this.getAll());
   };
 
+  handleCodeSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ codeFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.codeFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+
+  handleDescriptionSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ descriptionFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.descriptionFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
   // handleexcelexport = () =>{
   //   this.props.cbfcdataStore.getExcelExport();
   // }
@@ -222,6 +269,50 @@ editdata:any = null;
             <Search placeholder={this.L('Filter')} onSearch={this.handleSearch} />
           </Col>
         </Row>
+         <Row style={{ marginTop: 20 }}>
+                            <Col sm={{ span: 24 }}>
+                              <span
+                                className="text-muted clickable-item"
+                                onClick={this.toggleAdvancedFilters}
+                              >
+                                {this.state.showAdvancedFilters ? (
+                                  <>
+                                    <i className="fa fa-angle-up"></i> {L('HideAdvancedFilters')}
+                                  </>
+                                ) : (
+                                  <>
+                                    <i className="fa fa-angle-down"></i> {L('ShowAdvancedFilters')}
+                                  </>
+                                )}
+                              </span>
+                            </Col>
+                  {this.state.showAdvancedFilters && (
+                     <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
+                         <Col md={{ span: 12 }}>
+                            <label className="form-label">{L("Code")}</label>
+                            <Input
+                            //placeholder={L('Buyer Name Filter')}
+                            value = {this.state.codeFilter}
+                            onChange={(e) => this.handleCodeSearch(e.target.value)}
+                            />
+                          </Col>
+                          <Col md={{ span: 12 }}>
+                           <label className="form-label">{L("Description")}</label>
+                           <Input
+                            //placeholder={L('Buyer Name Filter')}
+                            value = {this.state.descriptionFilter}
+                            onChange={(e) => this.handleDescriptionSearch(e.target.value)}
+                            />
+                          </Col>
+                             {/* Reset Button */}
+                              <Col md={24} style={{ textAlign: "right", marginTop: 20 }}>
+                                <Button type="default" onClick={this.resetFilters}>
+                                  {L("Reset")}
+                                </Button>
+                              </Col>                       
+    </Row>
+  )}
+  </Row>
         <Row style={{ marginTop: 20 }}>
           <Col
             xs={{ span: 24, offset: 0 }}
