@@ -337,10 +337,10 @@ const PayRetroAccountsDashboard: React.SFC = () => {
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      <h1 style={{ textAlign: "center", marginBottom: "20px", fontSize: "24px", color: "#333" }}>Accounts DashBoard</h1>
+      
 
       <div style={{ marginTop: "20px" }}>
-        <h2 style={{ fontSize: "20px", color: "#555" }}>Invoice Detials</h2>
+        
         <DashboardCards SupplierDashboardInputs={dashboardinput} />
         <br></br>
 
