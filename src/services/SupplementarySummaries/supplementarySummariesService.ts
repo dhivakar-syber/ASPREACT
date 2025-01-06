@@ -34,7 +34,7 @@ class supplementarySummariesService{
       try {
         
         const result = await http.get(
-          'api/services/app/SupplementarySummaries/GetAllsupplementarySummarypaymentdashboard',{ params: input },
+          'api/services/app/SupplementarySummaries/GetAllsupplementarySummaryaccountdashboard',{ params: input },
            
         );
         return result;
@@ -110,6 +110,19 @@ class supplementarySummariesService{
       console.error('Error fetching supplementary summaries:', error);
       throw error; 
     }
+}
+public async GetAllSuppliersaccountsdashboard(input:number[]) {
+  try {
+    
+    const result = await http.get(
+      'api/services/app/SupplementarySummaries/GetAllSuppliersaccountsdashboard',{ params: { buyerids:input } },
+       
+    );
+    return result;
+  } catch (error) {
+    console.error('Error fetching supplementary summaries:', error);
+    throw error; 
+  }
 }
 public async GetAllBuyersList(input:number) {
   try {

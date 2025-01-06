@@ -1879,3 +1879,5 @@ nodejs/node_modules/npm/node_modules/yallist/package.json
 nodejs/node_modules/npm/node_modules/yallist/yallist.js
 .env
 .env.production
+.env
+.env.production
