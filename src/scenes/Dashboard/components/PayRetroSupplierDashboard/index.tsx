@@ -1,12 +1,19 @@
-import * as React from "react";
+import React ,{useRef,useState} from "react";
+
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
-import { SupplierDashboardInput } from "../PayRetroSupplierDashboard/DashboardInput";
+import annexureDetailsService from "../../../../services/annexureDetails/annexureDetailsService";
+import { SupplierDashboardInput } from "./SupplierDashboardInput";
 import  DashboardCards  from "../PayRetroSupplierDashboard/DashboardCards";
-import { Row, Col, Input, Form,Select } from 'antd';
+import { Row, Col, Input, Form,Select,message } from 'antd';
 import SupplierSubmitModal from './SupplierSubmitModal';
 import SupplementaryInvoiceModal from "./SupplementaryInvoicesModal";
-
-
+import DisputesStore from "../../../../stores/DisputesStrore";
+import { FormInstance } from 'antd/lib/form';
+import CreateOrUpdateDisputes from '../../../../scenes/Disputes/components/createOrUpdateDisputes'; // Import the modal component
+import DisputedataStore from "../../../../stores/DisputesStrore";
+import DisputeHistoryModal from "../../../Dashboard/components/PayRetroSupplierDashboard/DisputeHistoryModal";
+import disputesServices from "../../../../services/Disputes/disputesServices";
+//import { IDisputesdataState } from "../../../Disputes";
 
 
 
@@ -17,6 +24,7 @@ declare var abp: any;
 
     const PayRetroSupplierDashboard: React.SFC = () => {
   const [tableData, setTableData] = React.useState<any[]>([]);
+  const [disputeData,setDisputeData] = useState<any[]>([]);
   const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
   const [selectedRow, setSelectedRow] = React.useState<any | null>(null); // To manage selected row for modal
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false); // To control modal visibility
@@ -24,33 +32,32 @@ declare var abp: any;
   const [modalData, setModalData] = React.useState<any[]>([]);
   const [annexuremodalData, annexuresetModalData] = React.useState<any[]>([]);
   const [suppliers, setSuppliers] =React.useState<any[]>([]);
-  const [selectedsuppliers, setselectedsuppliers] =React.useState<any[]>([]);
+  const [selectedsuppliers, setselectedsuppliers] = React.useState({ name: '', value:0 });
   const [buyers, setBuyers] =React.useState<any[]>([]);
   const [selectedbuyers, setselectedbuyers] =React.useState<any[]>([]);
   const [parts, setParts] =React.useState<any[]>([]);
   const [selectedparts, setselectedparts] =React.useState<any[]>([]);
   const [selectedcategory, setselectedcategory] =React.useState<any>(String);
   const [submitIdRow, setSubmitIdRow] = React.useState<number>(0);
-  const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  
+  const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  // Track modal visibility
+  const [isQueryModalVisible, setIsQueryModalVisible] = React.useState<boolean>(false);  // Track modal visibility
+  const [isHistoryModalVisible, setIsHistoryModalVisible] = React.useState<boolean>(false);  // Track modal visibility
   const [currentRowId, setCurrentRowId] = React.useState<string | null>(null); 
-
-  var userid='0';
-  
-  var supplierDashboardInput: SupplierDashboardInput = {
-    Supplierids: [0],
+  const disputesStore = new DisputedataStore ();
+  const [rowsupplierstatus, setrowsupplierstatus] = React.useState<number | null>(0); 
+  const [rowBuyerstatus, setrowBuyerstatus] = React.useState<number | null>(0); 
+  const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0);
+  const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
+  const [showDownloadButton, setShowDownloadButton] = React.useState<boolean>(false);
+  const [dashboardinput, setdashboardinput] = React.useState<SupplierDashboardInput>({
+    Supplierid: 0,
     Buyerids: [0],
     Partids: [0],
     invoicetype:0
-  };
+  });
 
-  
+  var userid='0';
 
-  
-
-  
-
-
- 
   React.useEffect(() => {
     
 
@@ -71,26 +78,39 @@ declare var abp: any;
         
 
         const suppliers = await supplementarySummariesService.GetAllSuppliers(userid);
+        console.log('suppliers',suppliers)
         setSuppliers(suppliers.data.result || []);
         if(abp.session.userId===1||abp.session.userId===2)
         {
           
-          setselectedsuppliers([])
+          setselectedsuppliers({name:"Select All",value:0})
           setSuppliers(suppliers.data.result || []);
           setselectedcategory(['Select All']);
-          getbuyers([])
-          getparts([],[])
-        const result = await supplementarySummariesService.loadsupplementarySummary(supplierDashboardInput);
-        setTableData(result.data.result || []);
-        console.log("Supplementary_top_table", result.data.result);
-
+          await getbuyers(0)
+          await getparts(0,[])
+          setselectedcategory(0);
+          await LoadsupplementarySummary(dashboardinput);
+       
         }
         else{
+          console.log('Selected_supplier',suppliers.data.result[0].name)
 
           setSuppliers(suppliers.data.result || []);
-          setselectedsuppliers(suppliers.data.result);
-          getbuyers(suppliers.data.result)
-          getparts(suppliers.data.result,[])
+          setselectedsuppliers({name:suppliers.data.result[0].name,value:suppliers.data.result[0].id});
+          getbuyers(suppliers.data.result[0].id)
+          getparts(suppliers.data.result[0].id,[])
+          setselectedcategory(0);
+
+          var supplierDashboardInput: SupplierDashboardInput = {
+            Supplierid: suppliers.data.result[0].id,
+            Buyerids: [0],
+            Partids: [0],
+            invoicetype:0
+          };
+
+          setdashboardinput(supplierDashboardInput);
+
+          await LoadsupplementarySummary(supplierDashboardInput);
         }
         console.log('Suppliers',suppliers.data.result);
         
@@ -101,21 +121,31 @@ declare var abp: any;
 
     fetchData();
   }, []);
-
+  React.useEffect(() => {
+    setShowDownloadButton(selectedRows.length > 0);
+  }, [selectedRows]);
 
   
-
-  const handlesupplierChange =async  (selectedValues: any[]) => {
+  
+  const handlesupplierChange = async  (value:any, option:any) => {
     
-    setselectedsuppliers(selectedValues);
-    console.log('selectedSuppliers',selectedValues)
+    console.log('selectedSuppliers',option,value)
+    setselectedsuppliers({name:option.lable,value:value});
+    
 
-    getbuyers(selectedValues);
+    await getbuyers(value);
+    await getparts(value,[])
+    await setselectedbuyers([]);
+    await setselectedparts([]);
 
-    // const buyers = await supplementarySummariesService.GetAllBuyersList(selectedValues);
-    //     setBuyers(buyers.data.result || []);
-    //     setselectedbuyers(['0'])
-    //     setselectedparts([]);
+    var   supplierDashboardInput: SupplierDashboardInput = {
+      Supplierid: value,
+      Buyerids: [],
+      Partids: [],
+      invoicetype:selectedcategory
+    };
+    setdashboardinput(supplierDashboardInput);
+    await LoadsupplementarySummary(supplierDashboardInput);
 
 
   };
@@ -126,46 +156,61 @@ declare var abp: any;
     setselectedbuyers(selectedValues);
     console.log('selectedbuyers',selectedValues)
 
-    getparts(selectedsuppliers,selectedValues);
+    getparts(selectedsuppliers.value,selectedValues);
 
-    //  const parts = await supplementarySummariesService.GetAllPartNumbersList(selectedsuppliers,selectedValues);
-    //      setParts(parts.data.result || []);
-    //      console.log('parts',parts.data.result) 
-    //      setselectedparts(['Select All'])
+    var   supplierDashboardInput: SupplierDashboardInput = {
+      Supplierid: selectedsuppliers.value,
+      Buyerids: selectedValues,
+      Partids: [],
+      invoicetype:selectedcategory
+    };
+    setdashboardinput(supplierDashboardInput);
+    await LoadsupplementarySummary(supplierDashboardInput);
   };
 
 
-  const getbuyers =async  (suppliers: any[]) => {
+  const getbuyers =async  (buyersuppliers: number) => {
     
     
 
-    const buyers = await supplementarySummariesService.GetAllBuyersList(suppliers);
+    const buyers = await supplementarySummariesService.GetAllBuyersList(buyersuppliers);
         setBuyers(buyers.data.result || []);
         setselectedbuyers([]);
-        setselectedparts([]);
+        
 
       
         
 
   };
 
-  const getparts=async  (suppliers: any[],buyers: any[]) => {
+  const LoadsupplementarySummary=async (supplierDashboardInput:SupplierDashboardInput)=>
+  {
 
-     const parts = await supplementarySummariesService.GetAllPartNumbersList(suppliers,buyers);
+  var  result = await supplementarySummariesService.loadsupplementarySummary(supplierDashboardInput);
+    setTableData(result.data.result || []);
+    console.log("Supplementary_top_table", result.data.result);
+
+    const carddetails = await supplementarySummariesService.carddetails(supplierDashboardInput);
+
+    setrowsupplierstatus(carddetails.data.result.supplierpending.toFixed(2));
+    setrowBuyerstatus(carddetails.data.result.buyerpending.toFixed(2));
+    setrowAccountsStatus(carddetails.data.result.accountspending.toFixed(2));
+
+    
+
+
+
+  }
+
+  
+
+  const getparts=async  (partsuppliers: number,partbuyers: any[]) => {
+
+     const parts = await supplementarySummariesService.GetAllPartNumbersList(partsuppliers,partbuyers);
          setParts(parts.data.result || []);
          console.log('parts',parts.data.result) 
          setselectedparts([]);
 
-         var   supplierDashboardInput: SupplierDashboardInput = {
-          Supplierids: suppliers,
-          Buyerids: buyers,
-          Partids: parts.data.result,
-          invoicetype:0
-        };
-
-        const result = await supplementarySummariesService.loadsupplementarySummary(supplierDashboardInput);
-        setTableData(result.data.result || []);
-        console.log("Supplementary_top_table", result.data.result);
 
   };
 
@@ -176,15 +221,13 @@ declare var abp: any;
     console.log('selectedparts',selectedValues)
 
     var   supplierDashboardInput: SupplierDashboardInput = {
-      Supplierids: selectedsuppliers,
+      Supplierid: selectedsuppliers.value,
       Buyerids: selectedbuyers,
       Partids: selectedValues,
       invoicetype:selectedcategory
     };
-
-    const result = await supplementarySummariesService.loadsupplementarySummary(supplierDashboardInput);
-    setTableData(result.data.result || []);
-    console.log("Supplementary_top_table", result.data.result);
+    setdashboardinput(supplierDashboardInput);
+    await LoadsupplementarySummary(supplierDashboardInput);
   };
 
  
@@ -194,15 +237,13 @@ declare var abp: any;
     setselectedcategory(value);
 
     var   supplierDashboardInput: SupplierDashboardInput = {
-      Supplierids: selectedsuppliers,
+      Supplierid: selectedsuppliers.value,
       Buyerids: selectedbuyers,
       Partids: selectedparts,
       invoicetype:value
     };
-
-    const result = await supplementarySummariesService.loadsupplementarySummary(supplierDashboardInput);
-    setTableData(result.data.result || []);
-    console.log("Supplementary_top_table", result.data.result);
+    setdashboardinput(supplierDashboardInput);
+    await LoadsupplementarySummary(supplierDashboardInput);
     
   };
 
@@ -213,6 +254,9 @@ declare var abp: any;
     if (!target.closest(".dropdown-container")) {
       setOpenDropdownId(null);
     }
+    if (isModalOpen && !target.closest(".supplier-modal-container")) {
+      handleModalClose(); // Close the modal if clicked outside
+    }
   };
 
   React.useEffect(() => {
@@ -220,7 +264,8 @@ declare var abp: any;
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, []);
+  }, [isModalOpen]);
+
 
   const toggleDropdown = (id:any,event: React.MouseEvent) => {
     event.stopPropagation();
@@ -228,10 +273,43 @@ declare var abp: any;
     setOpenDropdownId(openDropdownId === id ? null : id);
   };
 
-  const handleDropdownAction = (action: string, id: number,event: React.MouseEvent) => {
+  
+  const handleDisputeHisotryAction = async (
+    action: string,
+    id: number,
+    event: React.MouseEvent
+  ) => {
     event.stopPropagation();
     console.log(`Action: ${action}, Row ID: ${id}`);
-    // Placeholder for dropdown action logic
+    setSubmitIdRow(id);
+
+
+    // Fetch data from the store or API
+    const fetchedData = await disputesStore.suppliergetAll({
+      SupplementarySummaryId: id,
+      Filter: state.filter || "", // Add required Filter
+      QueryFilter: "", // Default or dynamic value
+      BuyerRemarksFilter: "", // Default or dynamic value
+      StatusFilter: 0, // Default or dynamic value
+      SupplementarySummaryDisplayPropertyFilter:"",
+      SupplierRejectionCodeFilter:"",
+      SupplierCodeFilter:"",
+      BuyerShortIdFilter:"",
+      PagedDisputesResultRequestDto: {
+        maxResultCount: state.maxResultCount,
+        skipCount: state.skipCount,
+        keyword: state.filter,
+      },
+      
+    });
+    console.log(fetchedData); 
+    // Update the state with the fetched data
+   setDisputeData(fetchedData.items);
+    setIsHistoryModalVisible(true);
+  };
+
+  const handlehistoryCancel = () => {
+    setIsHistoryModalVisible(false); // close the modal
   };
 
 
@@ -246,9 +324,168 @@ declare var abp: any;
   const closeSupplierSubmitModal = () => {
     setIsSupplierSubmitModalOpen(false);
   };
+
+
+  const handleRaiseQueryAction = (buttonName: string, rowId: string, event: React.MouseEvent) => {
+    event.stopPropagation();
+    setCurrentRowId(rowId); // Set the rowId when the button is clicked
+    setIsQueryModalVisible(true); // Show the modal    
+  };
+  const handleCancel = () => {
+    setIsQueryModalVisible(false);        
+  };
+
+  type SummariesLookupItem = {
+    id: number;
+    displayName: string;
+  };
+  
+  type SupplierLookupItem = {
+    id: number;
+    displayName: string;
+  };
+  type BuyerLookupItem = {
+    id: number;
+    displayName: string;
+  };
+
+  
+
+  const [state, setState] = useState({
+    modalVisible: false,
+    maxResultCount: 10,
+    skipCount: 0,
+    userId: 0,
+    filter: '',
+    selectedLookupItem: null as SummariesLookupItem | null,
+   // relectedLookupItem: null as RejectionLookupItem | null,
+    selectedSupplierLookupItem: null as SupplierLookupItem | null,
+    selectedBuyerLookupItem: null as BuyerLookupItem | null,
+  });
+
+ 
+
+  const handleCreate = (item:any) => {
+    const form = formRef.current;
+    const { selectedLookupItem, selectedBuyerLookupItem, selectedSupplierLookupItem, userId } = state;
+
+    if (selectedLookupItem?.id) {
+      form?.setFieldsValue({ summariesId: selectedLookupItem.id });
+    }
+
+    
+
+    if (selectedBuyerLookupItem?.id) {
+      form?.setFieldsValue({ buyerId: selectedBuyerLookupItem.id });
+    }
+
+    if (selectedSupplierLookupItem?.id) {
+      form?.setFieldsValue({ buyerId: selectedSupplierLookupItem.id });
+    }
+
+    form!.validateFields().then(async (values: any) => {
+      // Check and assign SupplementarySummaryId if it's null or undefined
+      if (values.SupplementarySummaryId == null) {
+        values.SupplementarySummaryId = currentRowId;
+      }
+      
+      if (userId === 0) {
+         await disputesStore.create(values).then(function(docid){
+          disputesServices
+          .buyermail(docid) 
+          .then((item) => { 
+            
+              railqueryMail(item); 
+            
+      
+            message.success("Submission successful.");
+          })
+          .catch((error: any) => {
+            console.error("Error during submission:", error); // Handle errors
+          });
+        });  // Create new record
+      } else {
+        await disputesStore.update({ ...values, id: userId });  // Update existing record with userId
+      }
+    
+      // Close the modal and reset the form
+      setState(prevState => ({ ...prevState, modalVisible: false }));
+      form!.resetFields();
+    });
+
+    
+  
+ 
+       
+    setIsQueryModalVisible(false);
+  };
+
+  const formRef = useRef<FormInstance>(null); 
+const railqueryMail = (item:any) =>
+{
+  console.log(item);  
+  if (item.buyerMail) {
+    item.buyerMail = item.buyerMail.split(",").map((email: string) => email.trim());   
+  }
+
+  var jsondata = JSON.stringify(item);
+  console.log(jsondata);
+  
+  //var url = "";
+  var url =`${process.env.REACT_APP_REMOTE_SERVICE_BASE_URL}PayRetro/disputebuyerapprovalmail`;
+
+  abp.ui.setBusy();
+
+  fetch(url, {
+      method: 'POST',
+      body: jsondata,
+      headers: {
+          'Content-Type': 'application/json'
+      }
+  }).then(function (response) {
+      //return response.json();
+      return console.log(response.body);
+  }).then(function (data) {
+      abp.ui.clearBusy();
+      message.success(`Supplier Query Raised Intimation -  ${item.buyerShortId}`);
+  }).catch(function (error) {
+      abp.ui.clearBusy();
+      abp.message.error(error.message || error);
+  });
+}
+
+
   const supplementaryInvoiceSubmit = (item: any) => {
     console.log('Processing item:', item);
-    // Your logic here
+    if (item.buyerEmailAddress) {
+      item.buyerEmailAddress = item.buyerEmailAddress.split(",").map((email: string) => email.trim());
+    }
+    if (item.supplierEmailAddress) {
+      item.supplierEmailAddress = item.supplierEmailAddress.split(",").map((email: string) => email.trim());
+    }
+  
+    if (item.accountantEmailAddress) {
+      item.accountantEmailAddress = item.accountantEmailAddress.split(",").map((email: string) => email.trim());
+    }
+    const jsondata = JSON.stringify(item);
+    console.log('item', jsondata);
+    const url = `${process.env.REACT_APP_REMOTE_SERVICE_BASE_URL}RetroPay/Buyer_Approval_Workflow`;
+    fetch(url, {
+      method: 'POST',
+      body: jsondata,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((data) => {
+        abp.ui.clearBusy();
+        message.success(`Approve Mail Sent to - ${item.buyerName}`);
+      })
+      .catch((error) => {
+        abp.ui.clearBusy();
+        abp.message.error(error.message || error);
+      });
+
   };
   const handleSupplementaryDropdownAction = (buttonName: string, rowId: string, event: React.MouseEvent) => {
     event.stopPropagation();
@@ -277,7 +514,24 @@ declare var abp: any;
 
   const [hoveredRowId, setHoveredRowId] = React.useState<number | null>(null);
 
-  const handleRowClick = async (row: any) => {
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>, rowId: number) => {
+    e.stopPropagation();
+    const isChecked = e.target.checked;
+  
+    setSelectedRows((prevSelected) => {
+      const updatedSelectedRows = isChecked
+        ? prevSelected.concat(rowId) // Add rowId if checked
+        : prevSelected.filter((id) => id !== rowId); // Remove rowId if unchecked
+  
+      // Update the visibility of the download button based on the updated selected rows
+      setShowDownloadButton(updatedSelectedRows.length > 0);
+  
+      return updatedSelectedRows;
+    });
+  };
+
+  const handleRowClick = async (e: React.MouseEvent<HTMLTableRowElement>,row: any) => {
+    if ((e.target as HTMLElement).tagName !== 'INPUT') {
     setSelectedRow(row); // Set the clicked row data
     setIsModalOpen(true); // Open the modal
     
@@ -295,6 +549,7 @@ declare var abp: any;
     } catch (error) {
       console.error('Error fetching data:', error);
     } 
+  }
   };
   const { Item } = Form;
 
@@ -303,6 +558,12 @@ declare var abp: any;
     setSelectedRow(null);  // Clear the selected row data
   };
   
+  //const disputestores = new DisputesStore;
+
+  // const handleRaiseQueryAction = (actionName: string, entityId: number) => {
+    
+  //   disputestores.createDisputeData();
+  // }
 
   const Suppliermodalview = (selectedRow: any) => {
     
@@ -426,6 +687,7 @@ return (
                   </Form>
                   <InvoiceTable data={modalData} />
                   <AnnexureTable data={annexuremodalData} />
+                 
                 </div>
                 
           </div>
@@ -442,8 +704,10 @@ return (
   //   InvoiceTable(result);
   //   console.log('grndata-',result)
   // };
+  
 
 
+  
 
   const InvoiceTable = ({ data }: { data: any[] }) => {
     console.log('invoiceTable',data);
@@ -483,32 +747,91 @@ return (
       </div>
     );
   };
- 
+  const handleAnnexureClick = (supplementarysummaryIds: number[]) => {
+    const templatepath = '//assets/SampleFiles/AnnexureDetails.xlsx';
+  
+    // Wrap supplementarysummaryId in an array as the method expects an array
+    //const supplementaryIds = [supplementarysummaryId];
+  
+    // Call the service method with the array of supplementaryIds
+    const idsToPass = Array.isArray(supplementarysummaryIds) ? supplementarysummaryIds : [supplementarysummaryIds];
+
+    annexureDetailsService.GetSupplementarysplitAnnexureDetailsToExcel(idsToPass, templatepath)
+      .then((result) => {
+        // Loop through each file in the result (assuming result is an array of file objects)
+        result.forEach((fileData: any) => {
+          const fileContent = fileData.fileContent;
+          const fileName = fileData.fileName;
+          const fileType = fileData.fileType;
+  
+          // Convert base64 string to a Blob
+          const byteCharacters = atob(fileContent);  // Decode base64 string
+          const byteArray = new Uint8Array(byteCharacters.length);
+  
+          // Convert byte characters into byte array
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteArray[i] = byteCharacters.charCodeAt(i);
+          }
+  
+          // Create a Blob from the byte array and specify the MIME type
+          const fileBlob = new Blob([byteArray], { type: fileType });
+  
+          // Create a temporary link element
+          const link = document.createElement('a');
+  
+          // Create an object URL for the Blob
+          const url = URL.createObjectURL(fileBlob);
+  
+          // Set the download attribute with the file name
+          link.href = url;
+          link.download = fileName;
+  
+          // Trigger a click event to start the download
+          link.click();
+  
+          // Clean up the URL object after download
+          URL.revokeObjectURL(url);
+        });
+      })
+      .catch((error) => {
+        console.error('Error fetching annexure details:', error);
+      });
+  };
+  
+  
   const AnnexureTable = ({ data }: { data: any[] }) => {
     console.log('AnnexureTable',data);
     return (
       <div >
         <h3>AnnexureDetails</h3>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button
+  className="upload-btn"
+  id="downloadannexure"
+  onClick={() => handleAnnexureClick(data[0].supplementarysummaryId)}
+>
+  Download Annexure
+</button>
+    </div>
         <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px" }}>
           <thead>
           <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
           
-    <th>S.No</th>
-    <th>Annexure Group</th>
-    <th>Part No</th>
-    <th>Invoice No</th>
-    <th style={{width:"120px"}}>InvoiceDate</th>
-    <th>Old Contract</th>
-    <th>New Contract</th>
-    <th>Paid Price(CBFC)</th>
-    <th>Diff Value</th>
-    <th>Qty</th>
-    <th>Total</th>
-    <th>Currency</th>
-    <th>Supp.Inv.No/Credit Note</th>
-    <th>Supp.Inv.Date/Credit Note Date</th>
-
-</tr>
+            <th>S.No</th>
+            <th>Annexure Group</th>
+            <th>Part No</th>
+            <th>Invoice No</th>
+            <th style={{width:"120px"}}>InvoiceDate</th>
+            <th>Old Contract</th>
+            <th>New Contract</th>
+            <th>Paid Price(CBFC)</th>
+            <th>Diff Value</th>
+            <th>Qty</th>
+            <th>Total</th>
+            <th>Currency</th>
+            <th>Supp.Inv.No/Credit Note</th>
+            <th>Supp.Inv.Date/Credit Note Date</th>
+          </tr>
             
           </thead>
           <tbody >
@@ -577,27 +900,54 @@ function barstatus(status:any) {
     <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
       <p>Current User id:{abp.session.userId}</p>
       
-      <DashboardCards SupplierDashboardInputs={supplierDashboardInput} />
+      <DashboardCards SupplierDashboardInputs={dashboardinput} />
       <br></br>
       
     <Row gutter={11}>
+    
       <Col className="gutter-row" span={4}>
       <div style={{ textAlign: 'left' }}>
       <h3>Suppliers</h3>
       <Select
       
       style={{ width: '200px' }}
-      placeholder="Select one or more suppliers"
+      placeholder="Select supplier"
       options={
         suppliers.map((supplier) => ({
           label: supplier.name,
-          value: supplier.value,
+          value: supplier.id,
         }))
       }
-      value={selectedsuppliers} 
+      value={selectedsuppliers.name} 
+      // value={} 
       onChange={handlesupplierChange} 
+     // onChange={(value:any, option:any) => {
+        
       optionLabelProp="label"
     />
+    {showDownloadButton && (
+  <div style={{ marginTop: "20px" }}>
+    <button
+      onClick={() => {
+        if (selectedRows.length > 0) {
+          handleAnnexureClick(selectedRows);
+          console.log("Download Annexure clicked for rows:", selectedRows);
+        } else {
+          alert("No rows selected for download!");
+        }
+      }}
+      style={{
+        padding: "10px 20px",
+        backgroundColor: "#005f7f",
+        color: "#fff",
+        border: "none",
+        cursor: "pointer",
+      }}
+    >
+      Download Annexure
+    </button>
+  </div>
+)}
     </div>
       </Col>
       <Col className="gutter-row" span={4}>
@@ -639,7 +989,8 @@ function barstatus(status:any) {
         label: buyer.name,
         value: buyer.value,
       }))}
-      value={selectedbuyers} 
+       value={selectedbuyers}
+      //value={[]} 
       onChange={handlebuyerChange} 
       showSearch 
       optionLabelProp="label"
@@ -655,12 +1006,13 @@ function barstatus(status:any) {
       <Select
         mode="multiple"
         style={{ width: '200px' }}
-        placeholder="Select one or more suppliers"
+        placeholder="Select one or more Parts"
         options={parts.map((part) => ({
           label: part.name,
           value: part.value,
         }))}
-        value={selectedparts} 
+         value={selectedparts}
+        //value={[]} 
         onChange={handlepartChange}
         filterOption={(input:any, parts:any) =>
           parts?.label.toLowerCase().includes(input.toLowerCase())}
@@ -677,6 +1029,20 @@ function barstatus(status:any) {
         <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px" }}>
           <thead>
             <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
+            <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+  <input
+    type="checkbox"
+    onChange={(e) => {
+      const isChecked = e.target.checked;
+
+      if (isChecked) {
+        setSelectedRows(tableData.map((row) => row.id)); // Select all rows
+      } else {
+        setSelectedRows([]); // Deselect all rows
+      }
+    }}
+  />
+</th>
               {[
                 "Buyer Name",
                 "Part No - Version",
@@ -697,12 +1063,26 @@ function barstatus(status:any) {
                 </th>
               ))}
             </tr>
+            <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
+
+            <td  colSpan={11}>
+  
+</td>
+              
+            <td style={{  border: "1px solid #ddd" }} colSpan={4}>
+  <div className="progress-tube">
+    <div  style={{  width: "50px",textAlign:"center" }}>{rowsupplierstatus}</div>
+    <div  style={{ width: "50px",textAlign:"center" }}>{rowBuyerstatus}</div>
+    <div  style={{ width: "50px",textAlign:"center" }}>{rowAccountsStatus}</div>
+  </div>
+</td>
+            </tr>
           </thead>
           <tbody>
             {tableData.map((row) => (
               <tr
                 key={row.id}
-                onClick={() => handleRowClick(row)} // Add click event here
+                onClick={(e) => handleRowClick(e,row)} // ts2304
                 onMouseEnter={() => setHoveredRowId(row.id)}
                 onMouseLeave={() => setHoveredRowId(null)}
                 style={{
@@ -710,24 +1090,31 @@ function barstatus(status:any) {
                   cursor: "pointer",
                 }}
               >
+               <td style={{ padding: "10px", border: "1px solid #ddd" }}>
+                <input
+                  type="checkbox"
+                  checked={selectedRows.includes(row.id)}
+                  onChange={(e) => handleCheckboxChange(e, row.id)}
+                />
+              </td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.buyerName}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.partno}-{row.versionNo}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.createtime)}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.ageing}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
-                  <div className="dropdown-container" style={{ position: "relative" }}>
-                    <button
-                      style={{
-                        backgroundColor: "#005f7f",
-                        color: "#fff",
-                        border: "none",
-                        padding: "5px 10px",
-                        cursor: "pointer",
-                      }}
-                      onClick={(event) => toggleDropdown(row.id,event)}
-                    >
-                      ⚙️
-                    </button>
+                <div className="dropdown-container" style={{ position: "relative" }}>
+                <button
+                  style={{
+                    backgroundColor: "#005f7f",
+                    color: "#fff",
+                    border: "none",
+                    padding: "5px 10px",
+                    cursor: "pointer",
+                  }}
+                  onClick={(event) => toggleDropdown(row.id, event)} // Ensure this function handles the dropdown toggle
+                >
+                  ⚙️
+                </button>
                     {openDropdownId === row.id && (
                       <div
                         style={{
@@ -749,6 +1136,7 @@ function barstatus(status:any) {
                             border: "none",
                             padding: "10px",
                             marginBottom: "5px",
+                            textAlign:"left"
                           }}
                           onClick={(event) => handleSupplementaryDropdownAction("Supplementary Invoice/Credit Note Details", row.id,event)}
                         >
@@ -761,6 +1149,7 @@ function barstatus(status:any) {
                             color: "#071437",
                             border: "none",
                             padding: "10px",
+                            textAlign:"left"
                           }}
                           onClick={(event) => handleSupplierSubmitAction("Submit", row.id,event)}
                         >
@@ -773,8 +1162,9 @@ function barstatus(status:any) {
                             color: "#071437",
                             border: "none",
                             padding: "10px",
+                            textAlign:"left"
                           }}
-                          onClick={(event) => handleDropdownAction("Raise Query", row.id,event)}
+                          onClick={(event) => handleRaiseQueryAction("Raise Query", row.id,event)}
                         >
                           Raise Query
                         </button>
@@ -785,14 +1175,16 @@ function barstatus(status:any) {
                             color: "#071437",
                             border: "none",
                             padding: "10px",
+                            textAlign:"left"
                           }}
-                          onClick={(event) => handleDropdownAction("History of Query", row.id,event)}
+                          onClick={(event) => handleDisputeHisotryAction("History of Query", row.id,event)}
                         >
                           History of Query
                         </button>
                       </div>
                     )}
-                  </div>
+              </div>
+
                 </td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryInvoiceNo}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryinvoicedatestring}</td>
@@ -802,9 +1194,9 @@ function barstatus(status:any) {
                 
                 <td style={{ padding: "10px", border: "1px solid #ddd" }} colSpan={3}>
   <div className="progress-tube">
-    <div className={supplierstatus(row.documentStatus)} style={{ width: "33%" }}></div>
-    <div className={barstatus(row.buyerApprovalStatus)} style={{ width: "33%" }}></div>
-    <div className={barstatus(row.accountantApprovalStatus)} style={{ width: "33%" }}></div>
+    <div className={supplierstatus(row.documentStatus)} style={{ width: "50px" }}></div>
+    <div className={barstatus(row.buyerApprovalStatus)} style={{ width: "50px" }}></div>
+    <div className={barstatus(row.accountantApprovalStatus)} style={{ width: "50px" }}></div>
   </div>
 </td>
               </tr>
@@ -819,9 +1211,39 @@ function barstatus(status:any) {
         visible={isModalVisible}   // Control visibility of the modal
         onCancel={handleCloseModal} // Function to close modal
       />
+        {isQueryModalVisible && (
+        <CreateOrUpdateDisputes
+          visible={isQueryModalVisible}
+          modalType="view"
+          onCreate={handleCreate}
+          onCancel={handleCancel}
+          disputesStrore={new DisputesStore()}
+          initialData={{
+            deliveryNote: "",
+            deliveryNoteDate: "",
+            transaction: 0,
+            paidAmount: 0,
+            year: 0,
+          }} 
+          formRef={formRef} 
+        />
+      )}
+      {isHistoryModalVisible && (
+        <DisputeHistoryModal
+        rowId={submitIdRow}              
+        visible={isHistoryModalVisible}          
+        onCancel={handlehistoryCancel}      
+        data={disputeData}                               
+         // Function to close modal
+      />
+      )}
+        
+
       {isModalOpen && modalData && Suppliermodalview(selectedRow)}
     </div>
   );
+
+
 };
 
 export default PayRetroSupplierDashboard;

@@ -1,8 +1,7 @@
 export interface SupplierDashboardInput {
-    Supplierids:number[];
+  Supplierid:number;
     Buyerids: number[];
     Partids:number[];
     invoicetype:number;
 
   }
-  

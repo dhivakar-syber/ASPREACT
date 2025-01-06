@@ -10,7 +10,9 @@ import {SupplementarySummarySupplierLookupTableDto} from './dto/supplementarySum
 //import {SupplementaryData} from './dto/checkSignatureInputDto';
 import http from '../httpService';
 
-import {SupplierDashboardInput} from '../../scenes/Dashboard/components/PayRetroSupplierDashboard/DashboardInput'
+import {SupplierDashboardInput} from '../../scenes/Dashboard/components/PayRetroSupplierDashboard/SupplierDashboardInput'
+import { BuyerDashboardInput } from '../../scenes/BuyerDashboard/components/PayRetroBuyerDashboard/BuyerDashboardInput';
+import { AccountDashboardInput } from '../../scenes/Accounts Dashboard/components/PayRetroaccountsDashboard/AccountsDashboardInput';
 
 class supplementarySummariesService{
 
@@ -27,11 +29,12 @@ class supplementarySummariesService{
           throw error; 
         }
     }
-    public async GetAllSuppliers(input:string) {
+
+    public async accountsDashboardSummaries(input: AccountDashboardInput) {
       try {
         
         const result = await http.get(
-          'api/services/app/SupplementarySummaries/GetAllSuppliers',{ params: input },
+          'api/services/app/SupplementarySummaries/GetAllsupplementarySummarypaymentdashboard',{ params: input },
            
         );
         return result;
@@ -40,6 +43,61 @@ class supplementarySummariesService{
         throw error; 
       }
   }
+    public async BuyerdashboardloadsupplementarySummary(input: BuyerDashboardInput) {
+      try {
+        
+        const result = await http.get(
+          'api/services/app/SupplementarySummaries/GetAllsupplementarySummarybuyerdashboard',{ params: input },
+           
+        );
+        return result;
+      } catch (error) {
+        console.error('Error fetching supplementary summaries:', error);
+        throw error; 
+      }
+  }
+    public async Buyer_approvaltab_loadsupplementarySummary(input: SupplierDashboardInput) {
+      try {
+        
+        const result = await http.get(
+          'api/services/app/SupplementarySummaries/GetAllsupplementarySummaryTest',{ params: input },
+           
+        );
+        return result;
+      } catch (error) {
+        console.error('Error fetching supplementary summaries:', error);
+        throw error; 
+      }
+  }
+    public async GetAllSuppliers(input:string) {
+      try {
+        
+        const result = await http.get(
+          'api/services/app/SupplementarySummaries/GetLoginSupplier2',{ params:{input:input}  },
+           
+        );
+        return result;
+      } catch (error) {
+        console.error('Error fetching supplementary summaries:', error);
+        throw error; 
+      }
+  }
+
+  public async GetLoginBuyer(input:string) {
+    try {
+      
+      const result = await http.get(
+        'api/services/app/SupplementarySummaries/GetLoginBuyer2',{ params:{input:input}  },
+         
+      );
+      return result;
+    } catch (error) {
+      console.error('Error fetching supplementary summaries:', error);
+      throw error; 
+    }
+}
+
+
   public async GetAllBuyers(input:string) {
     try {
       
@@ -53,11 +111,11 @@ class supplementarySummariesService{
       throw error; 
     }
 }
-public async GetAllBuyersList(input:number[]) {
+public async GetAllBuyersList(input:number) {
   try {
     
     const result = await http.get(
-      'api/services/app/SupplementarySummaries/Getallbuyers',{ params: { supplierids:input } },
+      'api/services/app/SupplementarySummaries/Getallbuyers',{ params: { supplierid:input } },
        
     );
     return result;
@@ -66,11 +124,50 @@ public async GetAllBuyersList(input:number[]) {
     throw error; 
   }
 }
-public async GetAllPartNumbersList(supplierids:number[],buyerids:number[]) {
+public async GetAllSupplierListBuyerDashboard(input:number) {
   try {
     
     const result = await http.get(
-      'api/services/app/SupplementarySummaries/GetAllPartNumbersList',{ params: { buyerids:buyerids,supplierids:supplierids } },
+      'api/services/app/SupplementarySummaries/Getallbuyerdashboardsuppliers',{ params: { buyerid:input } },
+       
+    );
+    return result;
+  } catch (error) {
+    console.error('Error fetching supplementary summaries:', error);
+    throw error; 
+  }
+}
+public async GetAllPartNumbersList(supplierid:number,buyerids:number[]) {
+  try {
+    
+    const result = await http.get(
+      'api/services/app/SupplementarySummaries/GetAllPartNumbersList',{ params: { buyerids:buyerids,supplierid:supplierid } },
+       
+    );
+    return result;
+  } catch (error) {
+    console.error('Error fetching supplementary summaries:', error);
+    throw error; 
+  }
+}
+public async BuyerDashboardGetAllPartNumbersList(buyerid:number,Supplierids:number[]) {
+  try {
+    
+    const result = await http.get(
+      'api/services/app/SupplementarySummaries/GetAllPartNumbersListbuyerdashboard',{ params: { supplierids:Supplierids,buyerid:buyerid } },
+       
+    );
+    return result;
+  } catch (error) {
+    console.error('Error fetching supplementary summaries:', error);
+    throw error; 
+  }
+}
+public async AccountDashboardGetAllPartNumbersList(buyerids:number[],Supplierids:number[]) {
+  try {
+    
+    const result = await http.get(
+      'api/services/app/SupplementarySummaries/GetAllPartNumbersListaccountdashboard',{ params: { supplierids:Supplierids,buyerids:buyerids } },
        
     );
     return result;
@@ -107,6 +204,33 @@ public async GetAllParts(supplierid:string,buyerid:string) {
       }
   }
 
+  public async accounntcarddetails(input: AccountDashboardInput) {
+    try {
+      
+      const result = await http.get(
+        'api/services/app/SupplementarySummaries/GetAllsupplementarySummaryContractDataTestvalue',{ params: input },
+         
+      );
+      return result;
+    } catch (error) {
+      console.error('Error fetching supplementary summaries:', error);
+      throw error; 
+    }
+}
+
+  public async Buyerdashboardcarddetails(input: BuyerDashboardInput) {
+    try {
+      
+      const result = await http.get(
+        'api/services/app/SupplementarySummaries/GetAllsupplementarySummaryContractDataTestvaluebuyerdahboard',{ params: input },
+         
+      );
+      return result;
+    } catch (error) {
+      console.error('Error fetching supplementary summaries:', error);
+      throw error; 
+    }
+}
       public async grndata(id: number) {
         try {
           
@@ -134,11 +258,11 @@ public async GetAllParts(supplierid:string,buyerid:string) {
           throw error; 
         }
       }
-      public async supplementaryuploadeddetails(id: number) {
+      public async GetFile(filepath: string) {
         try {
           
-          const result = await http.post(
-            'api/services/app/SupplementarySummaries/Supplementaryuploadeddetails',{ params: { supplementaryid:id } },
+          const result = await http.get(
+            'api/services/app/SupplementarySummaries/GetFile',{ params: { filepath:filepath } },
              
           );
           return result.data.result;
@@ -147,11 +271,91 @@ public async GetAllParts(supplierid:string,buyerid:string) {
           throw error; 
         }
       }
+      public async DownloadExcel(filepath: string) {
+        try {
+          
+          const result = await http.post(
+            `api/services/app/SupplementarySummaries/DownloadExcel?filepath=${filepath}`,'' ,
+            {
+              headers: {
+                  'accept': 'text/plain',
+              }
+          }
+             
+          );
+          return result.data.result;
+        } catch (error) {
+          console.error('Error fetching supplementary summaries:', error);
+          throw error; 
+        }
+      }
+      public async supplementaryuploadeddetails(id: string) {
+        try {
+            const result = await http.post(
+                `api/services/app/SupplementarySummaries/Supplementaryuploadeddetails?supplementaryid=${id}`, // Use the query parameter in the URL
+                '', // Empty body
+                {
+                    headers: {
+                        'accept': 'text/plain',
+                    }
+                }
+            );
+            return result.data.result;
+        } catch (error) {
+            console.error('Error fetching supplementary summaries:', error);
+            throw error;
+        }
+    }
       public async supplementaryInvoiceSubmit(id: number,remarks:string) {
         try {
           
           const result = await http.post(
-            'api/services/app/SupplementarySummaries/supplementaryInvoiceSubmit',{ params: { supplementaryid:id,submitRemarks:remarks } },
+            `api/services/app/SupplementarySummaries/supplementaryInvoiceSubmit?supplementaryid=${id}&submitRemarks=${remarks}`,
+            '',
+            {
+              headers: {
+                'accept': 'text/plain',
+            }
+          }
+             
+          );
+          return result.data.result;
+        } catch (error) {
+          console.error('Error fetching supplementary summaries:', error);
+          throw error; 
+        }
+      }
+
+      public async supplementaryInvoiceAccountApprove(id: number,remarks:string,accNo:string,accdate:any) {
+        try {
+          
+          const result = await http.post(
+            `api/services/app/SupplementarySummaries/supplementaryInvoiceaccountapprove?fileid=${id}&accountsapproveremarks=${remarks}&accNo=${accNo}&accdate=${accdate}`,'',
+            {
+              headers: {
+                'accept': 'text/plain',
+            }
+          }
+             
+          );
+          return result.data.result;
+        } catch (error) {
+          console.error('Error fetching supplementary summaries:', error);
+          throw error; 
+        }
+      }
+
+      public async supplementaryInvoiceAccountReject(id: number,remarks:string,accNo:string,accdate:any) {
+        try {
+          
+          const result = await http.post(
+            `api/services/app/SupplementarySummaries/supplementaryInvoiceaccountreject?fileid=${id}&accountsapproveremarks=${remarks}&accNo=${accNo}&accdate=${accdate}`,'',
+            
+            {
+              headers: {
+                'accept': 'text/plain',
+            }
+          }
              
           );
           return result.data.result;

@@ -62,6 +62,30 @@ class annexureDetailsService {
 
     return result.data.result;
   }
+  public async GetSupplementarysplitAnnexureDetailsToExcel(supplementaryids: number[], TemplatePath: string) {
+    try {
+      console.log("Input supplementaryids:", supplementaryids); // Log supplementaryids
+      console.log("Input TemplatePath:", TemplatePath); // Log TemplatePath
+  
+      if (!Array.isArray(supplementaryids) || typeof TemplatePath !== 'string') {
+        throw new Error('Invalid input parameters');
+      }
+  
+      // Create the query parameters
+      const params = {
+        supplementaryids: supplementaryids, // Pass the array as it is
+        TemplatePath: TemplatePath,
+      };
+  
+      const result = await http.get('api/services/app/AnnexureDetails/GetSupplementarysplitAnnexureDetailsToExcel', { params });
+      
+      return result.data.result;
+    } catch (error) {
+      console.error('Error fetching supplementary annexure details:', error);
+      throw error;
+    }
+  }
+  
 }
 
 export default new annexureDetailsService();

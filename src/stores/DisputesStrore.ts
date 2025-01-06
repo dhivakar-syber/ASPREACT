@@ -4,6 +4,7 @@ import { CreateOrEditDisputeDto } from '../services/Disputes/dto/CreateOrEditDis
 import { EntityDto } from '../services/dto/entityDto';
 import { PagedResultDto } from '../services/dto/pagedResultDto';
 import { PagedUserResultRequestDto } from '../services/user/dto/PagedUserResultRequestDto';
+import { GetAllDisputesInput } from '../services/Disputes/dto/GetAllDisputesInput';
 import { GetDisputeForEditOutput } from '../services/Disputes/dto/GetDisputeForEditOutput';
 import { GetDisputeForViewDto } from '../services/Disputes/dto/GetDisputeForViewDto';
 import { DisputeSupplementarySummaryLookupTableDto } from '../services/Disputes/dto/DisputeSupplementarySummaryLookupTableDto';
@@ -15,6 +16,7 @@ import { EnumDisputeStatus } from '../enum';
 
 class DisputedataStore {
   @observable disputedata!: PagedResultDto<GetDisputeForViewDto>;
+  @observable disputedatas!: PagedResultDto<GetAllDisputesInput>;
   @observable supplementarylookupdata!: PagedResultDto<DisputeSupplementarySummaryLookupTableDto>;
   @observable rejectionlookupdata!: PagedResultDto<DisputeSupplierRejectionLookupTableDto>;
   @observable buyerlookupdata!: PagedResultDto<DisputeBuyerLookupTableDto>;
@@ -24,7 +26,9 @@ class DisputedataStore {
   @action
   async create(CreateOrEditDisputeDto: CreateOrEditDisputeDto) {
     let result = await disputesService.create(CreateOrEditDisputeDto);
-    this.disputedata.items.push(result);
+    
+    return result;
+    
   }
 
   @action
@@ -96,36 +100,40 @@ class DisputedataStore {
   @action
   async createDisputeData() {
     this.editDispute = {
-        CreateOrEditDisputeDto: {
-            id:0,
-            Query:'',
-            BuyerRemarks:'',
-            AccountsRemarks:'',
-            Status:EnumDisputeStatus.Open,
-            ResponseTime:new Date(),
-            SupplementarySummaryId:0,
-            SupplierRejectionId:0,
-            SupplierId:0,
-            BuyerId:0,
-          },
-          SupplementarySummaryDisplayProperty: '',
-          SupplierRejectionCode: '',
-          SupplierCode: '',
-          BuyerShortId:'',
-          id: 0
+            CreateOrEditDisputeDto: {
+                id:0,
+                Query:'',
+                BuyerRemarks:'',
+                AccountsRemarks:'',
+                Status:EnumDisputeStatus.Open,
+                ResponseTime:new Date(),
+                SupplementarySummaryId:0,
+                SupplierRejectionId:0,
+                SupplierId:0,
+                BuyerId:0,
+            },
+            SupplementarySummaryDisplayProperty: '',
+            SupplierRejectionCode: '',
+            SupplierCode: '',
+            BuyerShortId:'',
+            id: 0
         };
-  }
+    }
 
   @action
   async getAll(pagedFilterAndSortedRequest: PagedUserResultRequestDto) {
     let result = await disputesService.getAll(pagedFilterAndSortedRequest);
     this.disputedata = result;
+    return result; 
+
   }
 
   @action
-  async suppliergetAll(pagedFilterAndSortedRequest: PagedUserResultRequestDto) {
-    let result = await disputesService.suppliergetAll(pagedFilterAndSortedRequest);
-    this.disputedata = result;
+  async suppliergetAll(getAllDisputesInput: GetAllDisputesInput) {
+    let result = await disputesService.suppliergetAll(getAllDisputesInput);
+    this.disputedatas = result;
+    return result; 
+
   }
 
   @action
@@ -179,4 +187,4 @@ class DisputedataStore {
 // }
 }
 
-export default DisputedataStore;
+export default  DisputedataStore;

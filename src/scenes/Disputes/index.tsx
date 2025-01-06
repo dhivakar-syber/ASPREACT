@@ -45,7 +45,7 @@ const Search = Input.Search;
 
 @inject(Stores.DisputesStore)
 @observer
-class CBFCDatas extends AppComponentBase<IDisputesProps, IDisputesdataState> {
+class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState> {
   formRef = React.createRef<FormInstance>();
 
   state = {
@@ -274,4 +274,4 @@ editdata:any = null;
   }
 }
 
-export default CBFCDatas;
+export default DisputesDatas;

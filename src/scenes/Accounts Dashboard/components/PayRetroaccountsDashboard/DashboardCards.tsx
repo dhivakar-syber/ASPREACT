@@ -1,19 +1,19 @@
 import React from "react";
 import { Card, Badge, Row, Col } from "antd";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
-import { SupplierDashboardInput } from "./SupplierDashboardInput";
+import { AccountDashboardInput } from "./AccountsDashboardInput";
 
 interface DashboardCardsProps {
-    SupplierDashboardInputs: SupplierDashboardInput; // Explicitly define expected props
+  AccountDashboardInput: AccountDashboardInput; // Explicitly define expected props
 }
 
-const DashboardCards: React.FC<DashboardCardsProps> = ({ SupplierDashboardInputs }) => {
+const DashboardCards: React.FC<DashboardCardsProps> = ({ AccountDashboardInput }) => {
     const [carddata, setcarddata] = React.useState<any>({});
 
     React.useEffect(() => {
         const fetchData = async () => {
             try {
-                const result = await supplementarySummariesService.carddetails(SupplierDashboardInputs);
+                const result = await supplementarySummariesService.accounntcarddetails(AccountDashboardInput);
                 console.log('Dashboard_card_details', result);
                 setcarddata(result.data.result || {});
             } catch (error) {
@@ -21,7 +21,7 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ SupplierDashboardInputs
             }
         };
         fetchData();
-    }, [SupplierDashboardInputs]);
+    }, [AccountDashboardInput]);
 
     const cardDetails = [
         { key: "totalInvoicePending", title: "Pending Supplementary Invoice" },

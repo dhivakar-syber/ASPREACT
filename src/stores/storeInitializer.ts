@@ -17,6 +17,9 @@ import SupplierRaisedQueryStore from './supplierRaisedQueryStore';
 import SupplierRejectionStore from './supplierRejectionStore';
 import DisputesStore from './DisputesStrore';
 import ApprovalWorkflowStore from './approvalWorkflowStore';
+import SupplierStore from './supplierStore';
+
+
 
 
 
@@ -33,6 +36,7 @@ export default function initializeStores() {
     grndataStore: new GRNDataStore(),
     procureStore: new ProcureStore(),
     buyerStore: new BuyerStore(),
+    supplierStore: new SupplierStore(),
 
 
     supplementarySummariesStore: new SupplementarySummariesStore(),
@@ -46,3 +50,4 @@ export default function initializeStores() {
     approvalWorkflowStore: new ApprovalWorkflowStore(),
   };
 }
+
