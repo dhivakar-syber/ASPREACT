@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Button, Card, Col, Dropdown, Input, Menu, Modal, Row, Table} from 'antd';
+import { Button, Card, Col, Dropdown, Input, Menu, Modal, Row, Select, Table} from 'antd';
 import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../components/AppComponentBase';
@@ -22,10 +22,36 @@ export interface IAnnexureDetailsProps {
 
 export interface IAnnexureDetailsState {
   modalVisible: boolean;
-  maxResultCount: number;
-  skipCount: number;
-  userId: number;
+  maxResultCount: number|null;
+  skipCount: number|null;
+  userId: number|null;
   filter: string;
+  invoiceNoFilter:string,
+  minInvoiceDateFilter:Date | null,
+  maxInvoiceDateFilter:Date | null,
+  maxContractValidFromFilter:Date | null,
+  minContractValidFromFilter:Date | null,
+  maxContractValidToFilter:Date | null,
+  minContractValidToFilter:Date | null,
+  contractNoFilter:string,
+  maxOldValueFilter:number |null,
+  minOldValueFilter:number|null,
+  maxNewValueFilter:number|null,
+  minNewValueFilter:number|null,
+  maxDiffValueFilter:number|null,
+  minDiffValueFilter:number|null,
+  maxQtyFilter:number|null,
+  minQtyFilter:number|null,
+  maxTotalFilter:number|null,
+  minTotalFilter:number|null,
+  currencyFilter:number|null,
+  supplementaryInvoiceNoFilter:string,
+  maxSupplementaryInvoiceDateFilter:Date | null,
+  minSupplementaryInvoiceDateFilter:Date | null,
+  partPartNoFilter:string,
+  buyerNameFilter:string,
+  supplierNameFilter:string,
+  showAdvancedFilters: boolean
 }
 type LookupItem = {
   id: number;
@@ -53,6 +79,32 @@ class AnnexureDetails extends AppComponentBase<IAnnexureDetailsProps, IAnnexureD
     skipCount: 0,
     userId: 0,
     filter: '',
+    invoiceNoFilter:'',
+    minInvoiceDateFilter:null as Date | null,
+    maxInvoiceDateFilter:null as Date | null,
+    maxContractValidFromFilter:null as Date | null,
+    minContractValidFromFilter:null as Date | null,
+    maxContractValidToFilter:null as Date | null,
+    minContractValidToFilter:null as Date | null,
+    contractNoFilter:'',
+    maxOldValueFilter:null as number |null,
+    minOldValueFilter:null as number|null,
+    maxNewValueFilter:null as number|null,
+    minNewValueFilter:null as number|null,
+    maxDiffValueFilter:null as number|null,
+    minDiffValueFilter:null as number|null,
+    maxQtyFilter:null as number|null,
+    minQtyFilter:null as number|null,
+    maxTotalFilter:null as number|null,
+    minTotalFilter:null as number|null,
+    currencyFilter:null as number|null,
+    supplementaryInvoiceNoFilter:'',
+    maxSupplementaryInvoiceDateFilter:null as Date | null,
+    minSupplementaryInvoiceDateFilter:null as Date | null,
+    partPartNoFilter:'',
+    buyerNameFilter:'',
+    supplierNameFilter:'',
+    showAdvancedFilters: false,
     selectedLookupItem: null as LookupItem | null,
     selectedSupplierLookupItem: null as SupplierLookupItem | null,
     selectedBuyerLookupItem: null as BuyerLookupItem | null,
@@ -67,7 +119,21 @@ class AnnexureDetails extends AppComponentBase<IAnnexureDetailsProps, IAnnexureD
         console.error('annexureDetailsStore is undefined');
         return;
     }
-    await this.props.annexureDetailsStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
+    const filters = {
+      filter:this.state.filter,
+      maxResultCount: this.state.maxResultCount,
+      skipCount: this.state.skipCount,
+      keyword: this.state.filter, // global filter (if any)
+      invoiceNoFilter :this.state.invoiceNoFilter,
+      contractNoFilter:this.state.contractNoFilter,
+      currencyFilter:this.state.currencyFilter,
+      supplementaryInvoiceNoFilter:this.state.supplementaryInvoiceNoFilter,
+      partPartNoFilter:this.state.partPartNoFilter,
+      buyerNameFilter:this.state.buyerNameFilter,
+      supplierNameFilter:this.state.supplierNameFilter
+    }
+    await this.props.annexureDetailsStore.getAll(filters);
+    //await this.props.annexureDetailsStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
   }
 
   handleTableChange = (pagination: any) => {
@@ -80,6 +146,11 @@ class AnnexureDetails extends AppComponentBase<IAnnexureDetailsProps, IAnnexureD
     });
   };
 
+  toggleAdvancedFilters = () => {
+    this.setState((prevState) => ({
+      showAdvancedFilters: !prevState.showAdvancedFilters,
+    }));
+  };
   async createOrUpdateModalOpen(entityDto: EntityDto) {
     if (entityDto.id === 0) {
       await this.props.annexureDetailsStore.createAnnexureDetail();
@@ -107,6 +178,23 @@ class AnnexureDetails extends AppComponentBase<IAnnexureDetailsProps, IAnnexureD
       },
     });
   }
+  
+  resetFilters = () => {
+    this.setState({
+      supplementaryInvoiceNoFilter:'',    
+      partPartNoFilter:'',
+      buyerNameFilter:'',
+      supplierNameFilter:'',
+      currencyFilter:-1,
+      contractNoFilter:'',
+      invoiceNoFilter:'',
+    },
+    () => {
+      this.getAll(); // Call the data-refresh function after resetting the filters
+    }
+  );
+};
+  
 editdata:any = null;
   handleCreate = () => {
     const form = this.formRef.current;
@@ -139,6 +227,175 @@ editdata:any = null;
     this.setState({ filter: value }, async () => await this.getAll());
   };
 
+  handleInvoiceNoSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ invoiceNoFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.invoiceNoFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  // handleMinDeliveryNoteSearch = (date: Moment | null, dateString: string) => {
+  //   // If a valid date is selected, it will be a Moment object
+  //   const dateValue = date ? date.toDate() : null; // Convert Moment to native Date
+  //   this.setState({ minInvoiceDateFilter: dateValue }, () => {
+  //     console.log('Updated minDeliveryNoteDateFilter:', this.state.minInvoiceDateFilter);
+  //     this.getAll();
+  //   });
+  // };
+  
+  // handleMaxInvoiceDateSearch = (date: Moment | null, dateString: string) => {
+  //   const dateValue = date ? date.toDate() : null; // Convert Moment to native Date
+  //   this.setState({ maxInvoiceDateFilter: dateValue }, () => {
+  //     console.log('Updated maxDeliveryNoteDateFilter:', this.state.maxInvoiceDateFilter);
+  //     this.getAll();
+  //   });
+  // };
+  // handleMaxContractValidFromSearch = (date: Moment | null, dateString: string) => {
+  //   // If a valid date is selected, it will be a Moment object
+  //   const dateValue = date ? date.toDate() : null; // Convert Moment to native Date
+  //   this.setState({ maxContractValidFromFilter: dateValue }, () => {
+  //     console.log('Updated minDeliveryNoteDateFilter:', this.state.maxContractValidFromFilter);
+  //     this.getAll();
+  //   });
+  // };
+
+  
+  // handleMaxDeliveryNoteSearch = (date: Moment | null, dateString: string) => {
+  //   const dateValue = date ? date.toDate() : null; // Convert Moment to native Date
+  //   this.setState({ minContractValidToFilter: dateValue }, () => {
+  //     console.log('Updated maxDeliveryNoteDateFilter:', this.state.minContractValidToFilter);
+  //     this.getAll();
+  //   });
+  // };
+  // handleMaxContractValidFromSearch = (date: Moment | null, dateString: string) => {
+  //   // If a valid date is selected, it will be a Moment object
+  //   const dateValue = date ? date.toDate() : null; // Convert Moment to native Date
+  //   this.setState({ maxContractValidToFilter: dateValue }, () => {
+  //     console.log('Updated minDeliveryNoteDateFilter:', this.state.maxContractValidToFilter);
+  //     this.getAll();
+  //   });
+  // };
+
+  
+  // handleMaxDeliveryNoteSearch = (date: Moment | null, dateString: string) => {
+  //   const dateValue = date ? date.toDate() : null; // Convert Moment to native Date
+  //   this.setState({ minContractValidToFilter: dateValue }, () => {
+  //     console.log('Updated maxDeliveryNoteDateFilter:', this.state.minContractValidToFilter);
+  //     this.getAll();
+  //   });
+  // };
+  
+  handleContractNoSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ contractNoFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.contractNoFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+
+  
+  handleCurrencySearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ currencyFilter: Number(value) }, () => {
+      console.log('Updated nameFilter:', this.state.currencyFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  // handleMovementTypeSearch = (value: number) => {
+  //   this.setState({ maxOldValueFilter: value }, () => {
+  //     console.log('Updated nameFilter:', this.state.maxOldValueFilter); // Verify the state update
+  //     this.getAll(); // Correctly call getAll() after the state update
+  //   });
+  // };
+  // handleMovementTypeSearch = (value: number) => {
+  //   this.setState({ minOldValueFilter: value }, () => {
+  //     console.log('Updated nameFilter:', this.state.minOldValueFilter); // Verify the state update
+  //     this.getAll(); // Correctly call getAll() after the state update
+  //   });
+  // };
+  // handleMovementTypeSearch = (value: number) => {
+  //   this.setState({ maxNewValueFilter: value }, () => {
+  //     console.log('Updated nameFilter:', this.state.maxNewValueFilter); // Verify the state update
+  //     this.getAll(); // Correctly call getAll() after the state update
+  //   });
+  // };
+  // handleMovementTypeSearch = (value: number) => {
+  //   this.setState({ minNewValueFilter: value }, () => {
+  //     console.log('Updated nameFilter:', this.state.minNewValueFilter); // Verify the state update
+  //     this.getAll(); // Correctly call getAll() after the state update
+  //   });
+  // };
+  // handleMovementTypeSearch = (value: number) => {
+  //   this.setState({ maxDiffValueFilter: value }, () => {
+  //     console.log('Updated nameFilter:', this.state.maxDiffValueFilter); // Verify the state update
+  //     this.getAll(); // Correctly call getAll() after the state update
+  //   });
+  // };
+  // handleMovementTypeSearch = (value: number) => {
+  //   this.setState({ minDiffValueFilter: value }, () => {
+  //     console.log('Updated nameFilter:', this.state.minDiffValueFilter); // Verify the state update
+  //     this.getAll(); // Correctly call getAll() after the state update
+  //   });
+  // };
+  // handleMovementTypeSearch = (value: number) => {
+  //   this.setState({ maxQtyFilter: value }, () => {
+  //     console.log('Updated nameFilter:', this.state.maxQtyFilter); // Verify the state update
+  //     this.getAll(); // Correctly call getAll() after the state update
+  //   });
+  // };
+  // handleMovementTypeSearch = (value: number) => {
+  //   this.setState({ minQtyFilter: value }, () => {
+  //     console.log('Updated nameFilter:', this.state.minQtyFilter); // Verify the state update
+  //     this.getAll(); // Correctly call getAll() after the state update
+  //   });
+  // };
+  // handleMovementTypeSearch = (value: number) => {
+  //   this.setState({ maxTotalFilter: value }, () => {
+  //     console.log('Updated nameFilter:', this.state.maxTotalFilter); // Verify the state update
+  //     this.getAll(); // Correctly call getAll() after the state update
+  //   });
+  // };
+  // handleMovementTypeSearch = (value: number) => {
+  //   this.setState({ minTotalFilter: value }, () => {
+  //     console.log('Updated nameFilter:', this.state.minTotalFilter); // Verify the state update
+  //     this.getAll(); // Correctly call getAll() after the state update
+  //   });
+  // };
+  // handleMovementTypeSearch = (value: number) => {
+  //   this.setState({ currencyFilter: value }, () => {
+  //     console.log('Updated nameFilter:', this.state.currencyFilter); // Verify the state update
+  //     this.getAll(); // Correctly call getAll() after the state update
+  //   });
+  // };
+  handleSupplementarySearch = (value: string) => {
+    this.setState({ supplementaryInvoiceNoFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.supplementaryInvoiceNoFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  handlePartPartNoSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ partPartNoFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.partPartNoFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+
+  handleBuyerNameSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ buyerNameFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.buyerNameFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+
+  handleSupplierNameSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ supplierNameFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.supplierNameFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
   // handleexcelexport = () =>{
   //   this.props.cbfcdataStore.getExcelExport();
   // }
@@ -279,6 +536,121 @@ editdata:any = null;
             <Search placeholder={this.L('Filter')} onSearch={this.handleSearch} />
           </Col>
         </Row>
+
+        
+                <Row style={{ marginTop: 20 }}>
+                  <Col sm={{ span: 24 }}>
+                    <span
+                      className="text-muted clickable-item"
+                      onClick={this.toggleAdvancedFilters}
+                    >
+                      {this.state.showAdvancedFilters ? (
+                        <>
+                          <i className="fa fa-angle-up"></i> {L('HideAdvancedFilters')}
+                        </>
+                      ) : (
+                        <>
+                          <i className="fa fa-angle-down"></i> {L('ShowAdvancedFilters')}
+                        </>
+                      )}
+                    </span>
+                  </Col>
+        
+        {this.state.showAdvancedFilters && (
+           <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
+               <Col md={5}>
+                 <div className="my-3">
+                   <label className="form-label">{L("Invoice No")}</label>
+                   <Input
+                     //placeholder={L("Part No Filter")}
+                     value = {this.state.invoiceNoFilter}
+                     onChange={(e) => this.handleInvoiceNoSearch(e.target.value)}
+                   />
+                 </div>
+               </Col>
+
+                  <Col md={5}>
+                    <div className="my-3">
+                      <label className="form-label">{L("Contract No")}</label>
+                      <Input
+                        //placeholder={L("Part No Filter")}
+                        value = {this.state.contractNoFilter}
+                        onChange={(e) => this.handleContractNoSearch(e.target.value)}
+                      />
+                    </div>
+                  </Col>
+                  <Col md={5}>
+                    <div className="my-3">
+                      <label className="form-label">{L("Currency")}</label>
+                      <Select
+                        //placeholder={L("Transaction Filter")}
+                        value={this.state.currencyFilter?.toString()} 
+                        onChange={(value) => this.handleCurrencySearch(value?.toString() || "")}
+                        style={{ width: "100%" }}
+                      >
+                        <Select.Option value="-1">{L("All")}</Select.Option>
+                        <Select.Option value="0">{L("INR")}</Select.Option>
+                        <Select.Option value="1">{L("USD")}</Select.Option>
+                      </Select>
+                    </div>
+                  </Col>
+
+                  <Col md={5}>
+                    <div className="my-3">
+                      <label className="form-label">{L("Supplementary Invoice No")}</label>
+                      <Input
+                        //placeholder={L("Part No Filter")}
+                        value = {this.state.supplementaryInvoiceNoFilter}
+                        onChange={(e) => this.handleSupplementarySearch(e.target.value)}
+                      />
+                    </div>
+                  </Col>
+
+                     {/* Part No Filter */}
+                     <Col md={5}>
+                       <div className="my-3">
+                         <label className="form-label">{L("Part No")}</label>
+                         <Input
+                           //placeholder={L("Part No Filter")}
+                           value = {this.state.partPartNoFilter}
+                           onChange={(e) => this.handlePartPartNoSearch(e.target.value)}
+                         />
+                       </div>
+                     </Col>
+                  
+                     {/* Buyer Filter */}
+                     <Col md={5}>
+                       <div className="my-3">
+                         <label className="form-label">{L("Buyer Name")}</label>
+                         <Input
+                           //placeholder={L("Buyer Filter")}
+                           value = {this.state.buyerNameFilter}
+                           onChange={(e) => this.handleBuyerNameSearch(e.target.value)}
+                         />
+                       </div>
+                     </Col>
+                  
+                     {/* Supplier Filter */}
+                     <Col md={5}>
+                       <div className="my-3">
+                         <label className="form-label">{L("Supplier Name")}</label>
+                         <Input
+                           //placeholder={L("Supplier Filter")}
+                           value = {this.state.supplierNameFilter}
+                           onChange={(e) => this.handleSupplierNameSearch(e.target.value)}
+                         />
+                       </div>
+                     </Col>
+                        {/* Reset Button */}
+                        <Col md={24} style={{ textAlign: "right", marginTop: 20 }}>
+                          <Button type="default" onClick={this.resetFilters}>
+                          {L("Reset")}
+                          </Button>
+                        </Col>
+            </Row> 
+           
+             )}
+             </Row>
         <Row style={{ marginTop: 20 }}>
           <Col
             xs={{ span: 24, offset: 0 }}

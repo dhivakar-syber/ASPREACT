@@ -23,6 +23,9 @@ export interface IPlantState {
   skipCount: number;
   plantId: number;
   filter: string;
+  nameFilter:string;
+  descriptionFilter:string;
+  showAdvancedFilters: boolean;
 }
 
 
@@ -41,6 +44,9 @@ class Plant extends AppComponentBase<IPlantProps, IPlantState> {
     skipCount: 0,
     plantId: 0,
     filter: '',
+    nameFilter:'',
+    descriptionFilter:'',
+    showAdvancedFilters: false
   };
 
   async componentDidMount() {
@@ -48,7 +54,17 @@ class Plant extends AppComponentBase<IPlantProps, IPlantState> {
   }
 
   async getAll() {
-    await this.props.plantsStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
+
+    const filters = {
+      filter:this.state.filter,
+      maxResultCount: this.state.maxResultCount,
+      skipCount: this.state.skipCount,
+      keyword: this.state.filter, // global filter (if any)
+      nameFilter: this.state.nameFilter, // name filter
+      descriptionFilter: this.state.descriptionFilter,
+    }
+    await this.props.plantsStore.getAll(filters);
+   // await this.props.plantsStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
   }
 
   handleTableChange = (pagination: any) => {
@@ -61,6 +77,11 @@ class Plant extends AppComponentBase<IPlantProps, IPlantState> {
     });
   };
 
+  toggleAdvancedFilters = () => {
+    this.setState((prevState) => ({
+      showAdvancedFilters: !prevState.showAdvancedFilters,
+    }));
+  };
   globalData: any = null;
 
   async createOrEditeModalOpen(entityDto: EntityDto) {
@@ -93,6 +114,18 @@ class Plant extends AppComponentBase<IPlantProps, IPlantState> {
     });
   }
 
+  resetFilters = () => {
+    this.setState({
+      nameFilter: '',
+      descriptionFilter: '',
+
+    },
+  
+    () => {
+      this.getAll(); // Call the data-refresh function after resetting the filters
+    }
+  );
+};
   handleCreate = () => {
     const form = this.formRef.current;
 
@@ -113,6 +146,19 @@ class Plant extends AppComponentBase<IPlantProps, IPlantState> {
     this.setState({ filter: value }, async () => await this.getAll());
   };
 
+  handleNameSearch = (value: string) => {
+    this.setState({ nameFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.nameFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  
+  handleDescriptionSearch = (value: string) => {
+    this.setState({ descriptionFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.descriptionFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
   // handleexcelexport = () =>{
   //   this.props.procureStore.getExcelExport();
   // }
@@ -230,6 +276,54 @@ class Plant extends AppComponentBase<IPlantProps, IPlantState> {
             <Search placeholder={this.L('Filter')} onSearch={this.handleSearch} />
           </Col>
         </Row>
+         <Row style={{ marginTop: 20 }}>
+                  <Col sm={{ span: 24 }}>
+                    <span
+                      className="text-muted clickable-item"
+                      onClick={this.toggleAdvancedFilters}
+                    >
+                      {this.state.showAdvancedFilters ? (
+                        <>
+                          <i className="fa fa-angle-up"></i> {L('HideAdvancedFilters')}
+                        </>
+                      ) : (
+                        <>
+                          <i className="fa fa-angle-down"></i> {L('ShowAdvancedFilters')}
+                        </>
+                      )}
+                    </span>
+                  </Col>
+        
+        {this.state.showAdvancedFilters && (
+          <Row style={{ marginTop: 20 }} gutter={[16, 16]}>
+            <Col md={{ span: 12 }}>
+            <label className="form-label">{L("Name")}</label>
+              <Input
+                //placeholder={L('Name Filter')}
+                value={this.state.nameFilter}
+                onChange={(e) => this.handleNameSearch(e.target.value)}
+                //style={{ width: "40%" }}
+              />
+            </Col>
+            <Col md={{ span: 12 }}>
+            <label className="form-label">{L("Description")}</label>
+              <Input
+                //placeholder={L('ShortId Filter')}
+                value={this.state.descriptionFilter}
+                onChange={(e) => this.handleDescriptionSearch(e.target.value)}
+                //style={{ width: "40%" }}
+              />
+            </Col>
+             {/* Reset Button */}
+             <Col md={24} style={{ textAlign: "right", marginTop: 20 }}>
+              <Button type="default" onClick={this.resetFilters}>
+               {L("Reset")}
+              </Button>
+             </Col> 
+          </Row>
+        )}
+
+      </Row>
         <Row style={{ marginTop: 20 }}>
           <Col
             xs={{ span: 24, offset: 0 }}
