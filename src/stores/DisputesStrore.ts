@@ -111,6 +111,9 @@ class DisputedataStore {
                 SupplierRejectionId:0,
                 SupplierId:0,
                 BuyerId:0,
+                SupplierRejection:'',
+                SupplierName:'',
+                BuyerName:'',
             },
             SupplementarySummaryDisplayProperty: '',
             SupplierRejectionCode: '',
@@ -157,7 +160,7 @@ class DisputedataStore {
   @action
   async getAllsupplierrejectionForLookupTable(pagedFilterAndSortedRequest: PagedUserResultRequestDto) {
     let result = await disputesService.getAllsupplierrejectionForLookupTable(pagedFilterAndSortedRequest);
-    this.rejectionlookupdata = result;
+    return result;
   }
   @action
   async getAllBuyerForLookupTable(pagedFilterAndSortedRequest: PagedUserResultRequestDto) {

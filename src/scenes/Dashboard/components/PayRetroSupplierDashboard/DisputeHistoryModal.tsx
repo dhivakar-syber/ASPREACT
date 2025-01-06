@@ -1,6 +1,5 @@
 import React from "react";
-import { Modal } from "antd";
-//import { EnumDisputeStatus } from "../../../../enum";
+import { Modal, Table } from "antd";
 
 // Define the type for the props
 interface DisputeTableProps {
@@ -10,10 +9,10 @@ interface DisputeTableProps {
   data: Array<{
     dispute: {
       query: string;
-      status:any;
-      buyerRemarks:string;
-      accountsRemarks:string;
-      responseTime:string;
+      status: number;
+      buyerRemarks: string;
+      accountsRemarks: string;
+      responseTime: string;
     };
     supplierRejectionCode: string;
     supplierCode: string;
@@ -21,8 +20,93 @@ interface DisputeTableProps {
   }>;
 }
 
+// Map dispute status to meaningful labels
+const getStatusLabel = (status: number): string => {
+  switch (status) {
+    case 0:
+      return "Open";
+    case 1:
+      return "ForwardedToFandC";
+    case 2:
+      return "Close";
+    case 3:
+      return "InimatedToBuyer";
+    default:
+      return "Unknown";
+  }
+};
+
 // DisputeTable component
 const DisputeTable: React.FC<DisputeTableProps> = ({ rowId, visible, onCancel, data }) => {
+  // Columns definition for the Table component
+  const columns = [
+    {
+      title: "Buyer Short ID",
+      dataIndex: "buyerShortId",
+      key: "buyerShortId",
+      width: "fix-content",
+      align: "center" as "center",
+    },
+    {
+      title: "Rejection Code",
+      dataIndex: "supplierRejectionCode",
+      key: "supplierRejectionCode",
+      width: "auto",
+      align: "center" as "center",
+    },
+    {
+      title: "Query",
+      dataIndex: "dispute.query",
+      key: "query",
+      render: (text: any, record: any) => (
+        <div>{record.dispute?.query || "No query available"}</div> // Render dispute.query directly
+      ),
+      width: "auto",
+      align: "center" as "center",
+    },
+    {
+      title: "Status",
+      key: "status", // Use `key` instead of `dataIndex` for nested data
+      render: (text: any, record: any) => {
+        // Access the dispute status from the record
+        const status = record.dispute?.status;
+        return getStatusLabel(status); // Call the helper function to display the status label
+      },
+      width: "fix-content",
+      align: "center" as "center",
+    },
+    {
+      title: "Buyer Remarks",
+      dataIndex: "dispute.buyerRemarks",
+      key: "buyerRemarks",
+      render: (text: any, record: any) => (
+        <div>{record.dispute?.buyerRemarks || ""}</div> // Render dispute.query directly
+      ),
+      width: 100,
+      align: "center" as "center",
+    },
+    {
+      title: "Accounts Remarks",
+      dataIndex: "dispute.accountsRemarks",
+      key: "accountsRemarks",
+      render: (text: any, record: any) => (
+        <div>{record.dispute?.accountsRemarks || ""}</div> // Render dispute.query directly
+      ),
+      width: 100,
+      align: "center" as "center",
+    },
+    {
+      title: "Response Time",
+      dataIndex: "dispute.responseTime",
+      key: "responseTime",
+      render: (text: any, record: any) => (
+        <div>{record.dispute?.responseTime || ""}</div> // Render dispute.query directly
+      ),
+      width: 100,
+      align: "center" as "center",
+    },
+  ];
+
   return (
     <Modal
       title={`Dispute History`}
@@ -31,71 +115,17 @@ const DisputeTable: React.FC<DisputeTableProps> = ({ rowId, visible, onCancel, d
       footer={null} // Remove the default footer
       width={800} // Adjust modal width as needed
     >
-      <div>
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            marginTop: "20px",
-            fontSize: "14px",
-          }}
-        >
-          <thead>
-            <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
-              <th>BuyerShortId</th>
-              <th>SupplierRejectionCode</th>
-              <th>Query</th>
-              <th>Status</th>
-              <th>Buyer Remarks</th>
-              <th>Accounts Remarks</th>
-              <th>Response Time</th>
-            </tr>
-          </thead>
-          <tbody>
-  {data && data.length > 0 ? (
-    data.map((item, index) => {
-      // Update the dispute status based on the value
-      switch (item.dispute.status) {
-        case 0:
-          item.dispute.status = "Open";
-          break;
-        case 1:
-          item.dispute.status = "ForwardedToFandC";
-          break;
-        case 2:
-          item.dispute.status = "Close";
-          break;
-        case 3:
-          item.dispute.status = "InimatedToBuyer";
-          break;
-        default:
-          break;
-      }
-
-      // Return the table row
-      return (
-        <tr key={index}>
-          <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.buyerShortId}</td>
-          <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.supplierRejectionCode}</td>
-          <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.dispute.query}</td>
-          <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.dispute.status}</td>
-          <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.dispute.buyerRemarks}</td>
-          <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.dispute.accountsRemarks}</td>
-          <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.dispute.responseTime}</td>
-        </tr>
-      );
-    })
-  ) : (
-    <tr>
-      <td colSpan={7} style={{ textAlign: "center", padding: "10px", border: "1px solid #ddd" }}>
-        No data available
-      </td>
-    </tr>
-  )}
-</tbody>
-
-        </table>
-      </div>
+      <Table        
+        columns={columns}
+        dataSource={data}
+        pagination={{
+          pageSize: 5, // Set how many rows per page you want
+          total: data.length,
+          showTotal: (total: number) => `Total ${total} items`, // Custom total text
+        }}
+        rowKey={(record) => record.supplierRejectionCode} // Use a unique key for each row
+        scroll={{ y: 400 }} // Optional: set a fixed height for the table body with scroll
+      />
     </Modal>
   );
 };
