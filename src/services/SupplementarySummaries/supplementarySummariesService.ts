@@ -12,6 +12,7 @@ import http from '../httpService';
 
 import {SupplierDashboardInput} from '../../scenes/Dashboard/components/PayRetroSupplierDashboard/SupplierDashboardInput'
 import { BuyerDashboardInput } from '../../scenes/BuyerDashboard/components/PayRetroBuyerDashboard/BuyerDashboardInput';
+import { AccountDashboardInput } from '../../scenes/Accounts Dashboard/components/PayRetroaccountsDashboard/AccountsDashboardInput';
 
 class supplementarySummariesService{
 
@@ -29,7 +30,7 @@ class supplementarySummariesService{
         }
     }
 
-    public async accountsDashboardSummaries(input: BuyerDashboardInput) {
+    public async accountsDashboardSummaries(input: AccountDashboardInput) {
       try {
         
         const result = await http.get(
@@ -162,6 +163,19 @@ public async BuyerDashboardGetAllPartNumbersList(buyerid:number,Supplierids:numb
     throw error; 
   }
 }
+public async AccountDashboardGetAllPartNumbersList(buyerids:number[],Supplierids:number[]) {
+  try {
+    
+    const result = await http.get(
+      'api/services/app/SupplementarySummaries/GetAllPartNumbersListaccountdashboard',{ params: { supplierids:Supplierids,buyerids:buyerids } },
+       
+    );
+    return result;
+  } catch (error) {
+    console.error('Error fetching supplementary summaries:', error);
+    throw error; 
+  }
+}
 public async GetAllParts(supplierid:string,buyerid:string) {
   try {
     
@@ -190,7 +204,7 @@ public async GetAllParts(supplierid:string,buyerid:string) {
       }
   }
 
-  public async accounntcarddetails(input: BuyerDashboardInput) {
+  public async accounntcarddetails(input: AccountDashboardInput) {
     try {
       
       const result = await http.get(

@@ -1,8 +1,8 @@
 import * as React from "react";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
-import { SupplierDashboardInput } from "../../../Dashboard/components/PayRetroSupplierDashboard/SupplierDashboardInput";
+import { AccountDashboardInput } from "./AccountsDashboardInput";
 import { Row, Col,Select, message} from 'antd';
-import DashboardCards from "../../../Dashboard/components/PayRetroSupplierDashboard/DashboardCards";
+import  DashboardCards  from "../PayRetroaccountsDashboard/DashboardCards";
 import ApproveorRejectModal from "../ApproveorRejectModal"
 
 
@@ -11,165 +11,187 @@ declare var abp: any;
 const PayRetroAccountsDashboard: React.SFC = () => {
   const [tableData, setTableData] = React.useState<any[]>([]);
   const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
-  const [selectedsuppliers, setselectedsuppliers] = React.useState({ name: '', value:0 });
+  const [selectedsuppliers, setselectedsuppliers] =React.useState<any[]>([]);  
   const [suppliers, setSuppliers] =React.useState<any[]>([]);
   const [selectedcategory, setselectedcategory] =React.useState<any>(String);
   const [buyers, setBuyers] =React.useState<any[]>([]);
-  const [selectedbuyers, setselectedbuyers] =React.useState<any[]>([]);
+    const [selectedbuyers, setselectedbuyers] =React.useState<any[]>([]);
   const [parts, setParts] =React.useState<any[]>([]);
   const [selectedparts, setselectedparts] =React.useState<any[]>([]);
   const [rowsupplierstatus, setrowsupplierstatus] = React.useState<number | null>(0); 
   const [rowBuyerstatus, setrowBuyerstatus] = React.useState<number | null>(0); 
   const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0);
     const [submitIdRow, setSubmitIdRow] = React.useState<number>(0);
+      const [selectedDate, setSelectedDate] = React.useState("");
   const [isSupplierSubmitModalOpen, setIsSupplierSubmitModalOpen] = React.useState<boolean>(false); // To control modal visibility
   
   
   
-  const [dashboardinput, setdashboardinput] = React.useState<SupplierDashboardInput>({
-      Supplierid: 0,
-      Buyerids: [0],
-      Partids: [0],
-      invoicetype:0
+  const [dashboardinput, setdashboardinput] = React.useState<AccountDashboardInput>({
+    Buyerids: [0],
+    Supplierids: [0],
+    Partids:[0],
+    invoicetype:0, 
+    Date:new Date,
+    Document:'',
     });
   // const [selectedRow, setSelectedRow] = React.useState<any | null>(null); // To manage selected row for modal
   // const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false); // To control modal visibility
   // const [modalData, setModalData] = React.useState<any[]>([]);
   // const [annexuremodalData, annexuresetModalData] = React.useState<any[]>([]);
 
-  var userid='0';
+  //var userid='0';
 
-  React.useEffect(() => {
+  // React.useEffect(() => {
     
-    
-
     
 
-     const fetchData = async () => {
-          try {
     
-            if(abp.session.userId==2||abp.session.userId==1)
-            {
+
+  //    const fetchData = async () => {
+  //         try {
     
-             userid='0';
-            }
-            else{
+  //           if(abp.session.userId==2||abp.session.userId==1)
+  //           {
     
-              userid=abp.session.userId;
+  //            userid='0';
+  //           }
+  //           else{
     
-            }
+  //             userid=abp.session.userId;
+    
+  //           }
             
             
     
-            const suppliers = await supplementarySummariesService.GetAllSuppliers(userid);
-            console.log('suppliers',suppliers)
-            setSuppliers(suppliers.data.result || []);
-            if(abp.session.userId===1||abp.session.userId===2)
-            {
+  //           const suppliers = await supplementarySummariesService.GetAllSuppliers(userid);
+  //           console.log('suppliers',suppliers)
+  //           setSuppliers(suppliers.data.result || []);
+  //           if(abp.session.userId===1||abp.session.userId===2)
+  //           {
               
-              setselectedsuppliers({name:"Select All",value:0})
-              setSuppliers(suppliers.data.result || []);
-              setselectedcategory(['Select All']);
-              await getbuyers(0)
-              await getparts(0,[])
-              setselectedcategory(0);
-              await LoadsupplementarySummary(dashboardinput);
+  //             setselectedsuppliers({name:"Select All",value:0})
+  //             setSuppliers(suppliers.data.result || []);
+  //             setselectedcategory(['Select All']);
+  //             await getbuyers(0)
+  //             await getparts(0,[])
+  //             setselectedcategory(0);
+  //             await LoadsupplementarySummary(dashboardinput);
            
-            }
-            else{
-              console.log('Selected_supplier',suppliers.data.result[0].name)
+  //           }
+  //           else{
+  //             console.log('Selected_supplier',suppliers.data.result[0].name)
     
-              setSuppliers(suppliers.data.result || []);
-              setselectedsuppliers({name:suppliers.data.result[0].name,value:suppliers.data.result[0].id});
-              getbuyers(suppliers.data.result[0].id)
-              getparts(suppliers.data.result[0].id,[])
-              setselectedcategory(0);
+  //             setSuppliers(suppliers.data.result || []);
+  //             setselectedsuppliers({name:suppliers.data.result[0].name,value:suppliers.data.result[0].id});
+  //             getbuyers(suppliers.data.result[0].id)
+  //             getparts(suppliers.data.result[0].id,[])
+  //             setselectedcategory(0);
     
-              var supplierDashboardInput: SupplierDashboardInput = {
-                Supplierid: suppliers.data.result[0].id,
-                Buyerids: [0],
-                Partids: [0],
-                invoicetype:0
-              };
+  //             var buyerDashboardInput : BuyerDashboardInput = {
+  //               Supplierid: suppliers.data.result[0].id,
+  //               Buyerids: [0],
+  //               Partids: [0],
+  //               invoicetype:0
+  //             };
     
-              setdashboardinput(supplierDashboardInput);
+  //             setdashboardinput(supplierDashboardInput);
     
-              await LoadsupplementarySummary(supplierDashboardInput);
-            }
-            console.log('Suppliers',suppliers.data.result);
+  //             await LoadsupplementarySummary(supplierDashboardInput);
+  //           }
+  //           console.log('Suppliers',suppliers.data.result);
             
-          } catch (error) {
-            console.error("Error fetching supplementary summaries:", error);
-          }
+  //         } catch (error) {
+  //           console.error("Error fetching supplementary summaries:", error);
+  //         }
+  //       };
+
+  //   fetchData();
+  // }, []);
+
+  const handlesupplierchange =async  (selectedValues: any[]) => {
+        
+        setselectedsuppliers(selectedValues);
+        console.log('selectedsuppliers',selectedValues)
+    
+        getparts(selectedValues,selectedbuyers);
+    
+        var   accountDashboardInput: AccountDashboardInput = {
+          Supplierids: selectedsuppliers,
+        Buyerids: selectedbuyers,
+        Partids: selectedValues,
+        invoicetype:selectedcategory,
+        Date:new Date,
+        Document : ''
         };
-
-    fetchData();
-  }, []);
-
-  const handlesupplierChange = async  (value:any, option:any) => {
-      
-      console.log('selectedSuppliers',option,value)
-      setselectedsuppliers({name:option.lable,value:value});
-      
-  
-      await getbuyers(value);
-      await getparts(value,[])
-      await setselectedbuyers([]);
-      await setselectedparts([]);
-  
-      var   supplierDashboardInput: SupplierDashboardInput = {
-        Supplierid: value,
-        Buyerids: [],
-        Partids: [],
-        invoicetype:selectedcategory
+        setdashboardinput(accountDashboardInput);
+        await AccountsDashboardSummaries(accountDashboardInput);
       };
-      setdashboardinput(supplierDashboardInput);
-      await LoadsupplementarySummary(supplierDashboardInput);
-  
-  
-    };
   
   
     const handlebuyerChange =async  (selectedValues: any[]) => {
-      
-      setselectedbuyers(selectedValues);
-      console.log('selectedbuyers',selectedValues)
-  
-      getparts(selectedsuppliers.value,selectedValues);
-  
-      var   supplierDashboardInput: SupplierDashboardInput = {
-        Supplierid: selectedsuppliers.value,
-        Buyerids: selectedValues,
-        Partids: [],
-        invoicetype:selectedcategory
+        
+        setselectedbuyers(selectedValues);
+        console.log('selectedbuyers',selectedValues)
+    
+        getparts(selectedsuppliers,selectedValues);
+    
+        var   accountDashboardInput: AccountDashboardInput = {
+          Supplierids: selectedsuppliers,
+        Buyerids: selectedbuyers,
+        Partids: selectedValues,
+        invoicetype:selectedcategory,
+        Date:new Date,
+        Document : ''
+        };
+        setdashboardinput(accountDashboardInput);
+        await AccountsDashboardSummaries(accountDashboardInput);
       };
-      setdashboardinput(supplierDashboardInput);
-      await LoadsupplementarySummary(supplierDashboardInput);
+  const handledatechange = async (value:any)=>{
+     console.log('Selected Date',value)
+      setSelectedDate(value)
+  
+      const dateObject =value && value.trim() !== "" ? new Date(value) : null;
+  
+      var   accountDashboardInput: AccountDashboardInput = {
+        Supplierids:selectedsuppliers,
+        Buyerids:selectedbuyers,
+        Partids: selectedparts,
+        invoicetype:selectedcategory,
+        Date:dateObject,
+        Document:null
+      };
+  
+      setdashboardinput(accountDashboardInput);
+        await AccountsDashboardSummaries(accountDashboardInput);
+  
     };
   
-  
+    
     const getbuyers =async  (buyersuppliers: number) => {
       
       
   
-      const buyers = await supplementarySummariesService.GetAllBuyersList(buyersuppliers);
+      const buyers = await supplementarySummariesService.GetAllSupplierListBuyerDashboard(buyersuppliers);
           setBuyers(buyers.data.result || []);
           setselectedbuyers([]);
+          await getsuppliers(buyersuppliers);
+
           
   
         
           
   
     };
-  
-    const LoadsupplementarySummary=async (supplierDashboardInput:SupplierDashboardInput)=>
+    getbuyers(0);
+    const AccountsDashboardSummaries=async (accountDashboardInput:AccountDashboardInput)=>
     {
   
-    var  result = await supplementarySummariesService.loadsupplementarySummary(supplierDashboardInput);
+    var  result = await supplementarySummariesService.accountsDashboardSummaries(accountDashboardInput);
       setTableData(result.data.result || []);
       console.log("Supplementary_top_table", result.data.result);
   
-      const carddetails = await supplementarySummariesService.carddetails(supplierDashboardInput);
+      const carddetails = await supplementarySummariesService.accounntcarddetails(accountDashboardInput);
   
       setrowsupplierstatus(carddetails.data.result.supplierpending.toFixed(2));
       setrowBuyerstatus(carddetails.data.result.buyerpending.toFixed(2));
@@ -181,17 +203,29 @@ const PayRetroAccountsDashboard: React.SFC = () => {
   
     }
   
-    
+    const getsuppliers =async  (supplybuyers: number) => {
+          
+          
+      
+          const suppliers = await supplementarySummariesService.GetAllSupplierListBuyerDashboard(supplybuyers);
+              setSuppliers(suppliers.data.result || []);
+              setselectedsuppliers([]);
+              
+      
+            
+              
+      
+        };
   
-    const getparts=async  (partsuppliers: number,partbuyers: any[]) => {
-  
-       const parts = await supplementarySummariesService.GetAllPartNumbersList(partsuppliers,partbuyers);
-           setParts(parts.data.result || []);
-           console.log('parts',parts.data.result) 
-           setselectedparts([]);
-  
-  
-    };
+    const getparts=async  (partsuppliers: any[],partbuyers: any[]) => {
+      
+           const parts = await supplementarySummariesService.AccountDashboardGetAllPartNumbersList(partbuyers,partsuppliers);
+               setParts(parts.data.result || []);
+               console.log('parts',parts.data.result) 
+               setselectedparts([]);
+      
+      
+        };
   
   
     const handlepartChange =async  (selectedValues: any[]) => {
@@ -199,30 +233,34 @@ const PayRetroAccountsDashboard: React.SFC = () => {
       setselectedparts(selectedValues);
       console.log('selectedparts',selectedValues)
   
-      var   supplierDashboardInput: SupplierDashboardInput = {
-        Supplierid: selectedsuppliers.value,
+      var   accountDashboardInput: AccountDashboardInput = {
+        Supplierids: selectedsuppliers,
         Buyerids: selectedbuyers,
         Partids: selectedValues,
-        invoicetype:selectedcategory
+        invoicetype:selectedcategory,
+        Date:new Date,
+        Document : ''
       };
-      setdashboardinput(supplierDashboardInput);
-      await LoadsupplementarySummary(supplierDashboardInput);
+      setdashboardinput(accountDashboardInput);
+      await AccountsDashboardSummaries(accountDashboardInput);
     };
   
    
   
-    const handlecategorychange = async(value: number) => {
-      console.log(`selected ${value}`);
-      setselectedcategory(value);
+    const handlecategorychange = async(selectedValues: any[]) => {
+      console.log('selected', selectedValues);
+      setselectedcategory(selectedValues);
   
-      var   supplierDashboardInput: SupplierDashboardInput = {
-        Supplierid: selectedsuppliers.value,
+      var   accountDashboardInput: AccountDashboardInput = {
+        Supplierids: selectedsuppliers,
         Buyerids: selectedbuyers,
-        Partids: selectedparts,
-        invoicetype:value
+        Partids: selectedValues,
+        invoicetype:selectedcategory,
+        Date:new Date,
+        Document : ''
       };
-      setdashboardinput(supplierDashboardInput);
-      await LoadsupplementarySummary(supplierDashboardInput);
+      setdashboardinput(accountDashboardInput);
+      await AccountsDashboardSummaries(accountDashboardInput);
       
     };
   
@@ -341,105 +379,131 @@ const PayRetroAccountsDashboard: React.SFC = () => {
 
       <div style={{ marginTop: "20px" }}>
         
-        <DashboardCards SupplierDashboardInputs={dashboardinput} />
+        <DashboardCards AccountDashboardInput={dashboardinput} />
         <br></br>
 
         <Row gutter={11}>
-    
-    <Col className="gutter-row" span={4}>
-    <div style={{ textAlign: 'left' }}>
-    <h3>Suppliers</h3>
-    <Select
-    
-    style={{ width: '200px' }}
-    placeholder="Select supplier"
-    options={
-      suppliers.map((supplier) => ({
-        label: supplier.name,
-        value: supplier.id,
-      }))
-    }
-    value={selectedsuppliers.name} 
-    // value={} 
-    onChange={handlesupplierChange} 
-   // onChange={(value:any, option:any) => {
-      
-    optionLabelProp="label"
-  />
-  </div>
-    </Col>
-    <Col className="gutter-row" span={4}>
-    <div style={{ textAlign: 'left' }}>
-    <h3>Category</h3>
-    <Select
-      
-      style={{ width: '200px' }}
-      placeholder="Select one or more suppliers"
-      options={[
-        {
-          label: 'Select All',
-          value: 0,
-        },
-        {
-        label: 'Supplementary Invoice',
-        value: 1,
-      },
-      {
-        label: 'Credit Note',
-        value: 2,
-
-      }
-    ]}
-    value={selectedcategory}
-      onChange={handlecategorychange}
-      optionLabelProp="label"
-    />
-  </div>
-    </Col>
-    <Col className="gutter-row" span={4}>
-    <div style={{ textAlign: 'left' }}>
-    <h3>Buyers</h3>
-    <Select
-    mode="multiple"
-    style={{ width: '200px' }}
-    placeholder="Select one or more Buyers"
-    options={buyers.map((buyer) => ({
-      label: buyer.name,
-      value: buyer.value,
-    }))}
-     value={selectedbuyers}
-    //value={[]} 
-    onChange={handlebuyerChange} 
-    showSearch 
-    optionLabelProp="label"
-    filterOption={(input:any, buyers:any) =>
-      buyers?.label.toLowerCase().includes(input.toLowerCase())
-    } 
-  />
-  </div>
-    </Col>
-    <Col className="gutter-row" span={4}>
-    <div style={{ textAlign: 'left' }}>
-    <h3>Parts</h3>
-    <Select
-      mode="multiple"
-      style={{ width: '200px' }}
-      placeholder="Select one or more Parts"
-      options={parts.map((part) => ({
-        label: part.name,
-        value: part.value,
-      }))}
-       value={selectedparts}
-      //value={[]} 
-      onChange={handlepartChange}
-      filterOption={(input:any, parts:any) =>
-        parts?.label.toLowerCase().includes(input.toLowerCase())}
-      optionLabelProp="label"
-    />
-  </div>
-    </Col>
-    
-  </Row>
+            <Col className="gutter-row" span={4}>
+              <div style={{ textAlign: 'left' }}>
+              <h3>Buyer</h3>
+              <Select
+              
+              style={{ width: '200px' }}
+              placeholder="Select one or more Buyers"
+              options={buyers.map((buyer) => ({
+                label: buyer.name,
+                value: buyer.value,
+              }))}
+              value={selectedbuyers} 
+              onChange={handlebuyerChange} 
+              showSearch 
+              optionLabelProp="label"
+              filterOption={(input:any, buyers:any) =>
+                buyers?.label.toLowerCase().includes(input.toLowerCase())
+              } 
+            />
+            </div>
+              </Col>
+              <Col className="gutter-row" span={4}>
+              <div style={{ textAlign: 'left' }}>
+              <h3>Suppliers</h3>
+              <Select
+              
+              style={{ width: '200px' }}
+              placeholder="Select one or more suppliers"
+              mode="multiple"
+              options={
+                suppliers.map((supplier) => ({
+                  label: supplier.name,
+                  value: supplier.value,
+                }))
+              }
+              value={selectedsuppliers} 
+              onChange={handlesupplierchange} 
+              optionLabelProp="label"
+            />
+            </div>
+              </Col>
+              <Col className="gutter-row" span={4}>
+              <div style={{ textAlign: 'left' }}>
+              <h3>Category</h3>
+              <Select
+                
+                style={{ width: '200px' }}
+                placeholder="Select one or more suppliers"
+                options={[
+                  {
+                    label: 'Select All',
+                    value: 0,
+                  },
+                  {
+                  label: 'Supplementary Invoice',
+                  value: 1,
+                },
+                {
+                  label: 'Credit Note',
+                  value: 2,
+        
+                }
+              ]}
+              value={selectedcategory}
+                onChange={handlecategorychange}
+                optionLabelProp="label"
+              />
+            </div>
+              </Col>
+              
+              <Col className="gutter-row" span={4}>
+              <div style={{ textAlign: 'left' }}>
+              <h3>Parts</h3>
+              <Select
+                mode="multiple"
+                style={{ width: '200px' }}
+                placeholder="Select one or more suppliers"
+                options={parts.map((part) => ({
+                  label: part.name,
+                  value: part.value,
+                }))}
+                value={selectedparts} 
+                onChange={handlepartChange}
+                filterOption={(input:any, parts:any) =>
+                  parts?.label.toLowerCase().includes(input.toLowerCase())}
+                optionLabelProp="label"
+              />
+            </div>
+              </Col>
+              {/* <Col className="gutter-row" span={4}>
+              <div style={{ textAlign: 'left' }}>
+              <h3>Document</h3>
+              <Select
+                mode="multiple"
+                style={{ width: '200px' }}
+                placeholder="Select one or more suppliers"
+                options={parts.map((part) => ({
+                  label: part.name,
+                  value: part.value,
+                }))}
+                value={selectedparts} 
+                onChange={handlepartChange}
+                filterOption={(input:any, parts:any) =>
+                  parts?.label.toLowerCase().includes(input.toLowerCase())}
+                optionLabelProp="label"
+              />
+            </div>
+              </Col> */}
+              
+              <Col className="gutter-row" span={4}>
+            <div style={{ textAlign: 'left' }}>
+              <h3>Date</h3>
+              <input 
+                type="date" 
+                value={selectedDate} 
+                onChange={(e) => handledatechange(e.target.value)} 
+                style={{ width: '100%' }} 
+              />
+            </div>
+          </Col> 
+            </Row>
         <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px" }}>
           <thead>
             <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
