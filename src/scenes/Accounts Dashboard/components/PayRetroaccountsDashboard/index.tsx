@@ -1,7 +1,7 @@
 import * as React from "react";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
 import { AccountDashboardInput } from "./AccountsDashboardInput";
-import { Row, Col,Select, message} from 'antd';
+import { Row, Col,Select, message,Tabs} from 'antd';
 import  DashboardCards  from "../PayRetroaccountsDashboard/DashboardCards";
 import ApproveorRejectModal from "../ApproveorRejectModal"
 
@@ -350,6 +350,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
   return (
     <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
       
+      
 
       <div style={{ marginTop: "20px" }}>
         
@@ -446,25 +447,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
               />
             </div>
               </Col>
-              {/* <Col className="gutter-row" span={4}>
-              <div style={{ textAlign: 'left' }}>
-              <h3>Document</h3>
-              <Select
-                mode="multiple"
-                style={{ width: '200px' }}
-                placeholder="Select one or more suppliers"
-                options={parts.map((part) => ({
-                  label: part.name,
-                  value: part.value,
-                }))}
-                value={selectedparts} 
-                onChange={handlepartChange}
-                filterOption={(input:any, parts:any) =>
-                  parts?.label.toLowerCase().includes(input.toLowerCase())}
-                optionLabelProp="label"
-              />
-            </div>
-              </Col> */}
+              
               
               <Col className="gutter-row" span={4}>
             <div style={{ textAlign: 'left' }}>
@@ -478,7 +461,11 @@ const PayRetroAccountsDashboard: React.SFC = () => {
             </div>
           </Col> 
             </Row>
-        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px" }}>
+
+
+            <Tabs defaultActiveKey="1">
+    <Tabs.TabPane tab="Home" key="1">
+    <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px" }}>
           <thead>
             <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
               {[
@@ -590,11 +577,17 @@ const PayRetroAccountsDashboard: React.SFC = () => {
             ))}
           </tbody>
         </table>
-      </div>
-      <ApproveorRejectModal isOpen={isSupplierSubmitModalOpen} onClose={closeSupplierSubmitModal} submitIdRow={submitIdRow}
+        <ApproveorRejectModal isOpen={isSupplierSubmitModalOpen} onClose={closeSupplierSubmitModal} submitIdRow={submitIdRow}
         approveSubmit={approveSubmit} rejectSubmit={rejectSubmit} />
-        
-     {/* {isModalOpen && modalData && Suppliermodalview(selectedRow)} */}
+      	</Tabs.TabPane>
+    <Tabs.TabPane tab="Queries" key="3">
+      Content of Tab Pane 3
+    </Tabs.TabPane>
+  </Tabs> 
+     
+      </div>
+      
+     
     </div>
   );
 };
