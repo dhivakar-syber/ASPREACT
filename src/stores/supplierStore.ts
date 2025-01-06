@@ -31,7 +31,7 @@ class supplierStore {
   async createSupplierData() {
     this.editUser = {
         supplier: {
-            userid: '',
+            userId: 0,
             name: '',
             code:''
           },
@@ -54,13 +54,14 @@ class supplierStore {
   async get(entityDto: EntityDto) {
     let result = await supplierservice.get(entityDto);
     this.editUser = result;
+  console.log("hello! Its me");
+
   }
   @action
   async delete(entityDto: EntityDto) {
     await supplierservice.delete(entityDto);
     this.supplier.items = this.supplier.items.filter((x: GetSupplierForViewDto) => x.id !== entityDto.id);
   }
-
 
 }
 export default supplierStore;

@@ -23,6 +23,15 @@ export interface IDisputesdataState {
   skipCount: number;
   userId: number;
   filter: string;
+  QueryFilter:string;
+  BuyerRemarksFilter:string;
+  StatusFilter: number|null;
+  SupplementarySummaryDisplayPropertyFilter:string;
+  SupplierRejectionCodeFilter:string;
+  SupplierCodeFilter:string;
+  BuyerShortIdFilter:string;
+  SupplementarySummaryId:number|null;
+  filterVisible: boolean;
 }
 type SummariesLookupItem = {
   id: number;
@@ -54,10 +63,19 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
     skipCount: 0,
     userId: 0,
     filter: '',
+    QueryFilter:'',
+    BuyerRemarksFilter:'',
+    StatusFilter: 0,
+    SupplementarySummaryDisplayPropertyFilter:'',
+    SupplierRejectionCodeFilter:'',
+    SupplierCodeFilter:'',
+    BuyerShortIdFilter:'',
+    SupplementarySummaryId:0,
     selectedLookupItem: null as SummariesLookupItem | null,
     relectedLookupItem: null as RejectionLookupItem | null,
     selectedSupplierLookupItem: null as SupplierLookupItem | null,
     selectedBuyerLookupItem: null as BuyerLookupItem | null,
+    filterVisible:false,
   };
 
   async componentDidMount() {
@@ -69,17 +87,77 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
         console.error('cbfcdatastore is undefined');
         return;
     }
-    await this.props.disputesStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
+    const filter ={
+      QueryFilter:this.state.QueryFilter,
+      BuyerRemarksFilter:this.state.BuyerRemarksFilter,
+      StatusFilter:this.state.StatusFilter,
+      SupplementarySummaryDisplayPropertyFilter:this.state.SupplementarySummaryDisplayPropertyFilter,
+      SupplierRejectionCodeFilter:this.state.SupplierRejectionCodeFilter,
+      SupplierCodeFilter:this.state.SupplierCodeFilter,
+      BuyerShortIdFilter:this.state.BuyerShortIdFilter,
+      SupplementarySummaryId:this.state.SupplementarySummaryId,
+      maxResultCount:this.state.maxResultCount,
+      skipCount:this.state.skipCount,
+      keyword:this.state.filter,
+    }
+    await this.props.disputesStore.getAll( filter);
+
   }
 
   handleTableChange = (pagination: any) => {
     this.setState({ skipCount: (pagination.current - 1) * this.state.maxResultCount! }, async () => await this.getAll());
   };
 
+handleQueryChange = (value: string) => {
+  this.setState({QueryFilter:value }, async () => await this.getAll());
+};
+handleBuyerChange = (value: string) => {
+  this.setState({BuyerRemarksFilter:value }, async () => await this.getAll());
+};
+handleStatusChange = (value: any) => {
+  this.setState({StatusFilter:value }, async () => await this.getAll());
+};
+handleSupplementaryChange = (value: any) => {
+  this.setState({SupplementarySummaryDisplayPropertyFilter:value }, async () => await this.getAll());
+};
+handleRejectionChange = (value: any) => {
+  this.setState({SupplierRejectionCodeFilter:value }, async () => await this.getAll());
+};
+handleCodeChange = (value: any) => {
+  this.setState({SupplierCodeFilter:value }, async () => await this.getAll());
+};
+handleShortChange = (value: any) => {
+  this.setState({BuyerShortIdFilter:value }, async () => await this.getAll());
+};
+handleSummaryChange = (value: any) => {
+  this.setState({SupplementarySummaryId:value }, async () => await this.getAll());
+};
+toggleFilterBox = () => {
+  this.setState({ filterVisible: !this.state.filterVisible });
+};
+
   Modal = () => {
     this.setState({
       modalVisible: !this.state.modalVisible,
     });
+  };
+
+  resetFilters = async () => {
+    this.setState(
+      {
+        QueryFilter: '', // Reset filter values
+        BuyerRemarksFilter: '',
+        StatusFilter: -1,
+        SupplementarySummaryDisplayPropertyFilter: '',
+        SupplierRejectionCodeFilter: '',
+        SupplierCodeFilter: '',
+        BuyerShortIdFilter: '',
+        filter: '', // Reset other filters as needed
+      },
+      async () => {
+        await this.getAll(); // Fetch data with no filters applied
+      }
+    );
   };
 
   async createOrUpdateModalOpen(entityDto: EntityDto) {
@@ -209,7 +287,7 @@ editdata:any = null;
             xxl={{ span: 2, offset: 0 }}
           >
             {' '}
-            <h2>{L('Procuredata')}</h2>
+            <h2>{L('Dispute')}</h2>
           </Col>
             
           <Col
@@ -228,6 +306,118 @@ editdata:any = null;
             <Search placeholder={this.L('Filter')} onSearch={this.handleSearch} />
           </Col>
         </Row>
+        <div>
+        <span
+                    style={{ cursor: 'pointer'}}
+                    onClick={() => this.setState({ filterVisible: !this.state.filterVisible })}
+                    >
+                    <span
+                    style={{ cursor: 'pointer', marginBottom: '10px', display: 'inline-block' }}
+                    onClick={this.toggleFilterBox}
+                    >
+                    {this.state.filterVisible ? 'Hide Advance Filters' : 'Show Advance Filters'}
+                    </span>
+
+                    </span>
+        </div>
+        
+        {this.state.filterVisible && (
+                <Row gutter={16} style={{ marginTop: '10px' }}>
+                <Col xs={{span:5,offset:0}}>
+                <label className="form-label">{L('Query')}</label>
+                <input 
+                    value={this.state.QueryFilter} // Correctly bind the value to the state
+                    onChange={(e) =>this.handleQueryChange (e.target.value) // Update the state on change
+                  }
+                />
+                </Col>
+
+                 {/* Filter */}
+
+                <Col xs={{span:5,offset:0}}>
+                <label className="form-label">{L('BuyerRemarks')}</label>
+                <input 
+                    value={this.state.BuyerRemarksFilter} // Correctly bind the value to the state
+                    onChange={(e) =>this.handleBuyerChange  (e.target.value ) // Update the state on change
+                  }
+                />
+                </Col>
+
+                <Col xs={{span:5,offset:0}}>
+                <label className="form-label">{L('Status')}</label>
+                <select 
+                className="form-select reload-on-change" 
+                 name="StatusFilter" 
+                 id="StatusFilterId"  
+                 value={this.state.StatusFilter}
+
+                style={{
+                          width: '100%',
+                          padding: '4px',
+                          borderRadius: '2px',
+                          border: '1px solid #000000',
+                          fontSize: '14px',
+                        }}>
+                <option value="-1">{L("All")}</option>
+                <option value="0">{L("Open")}</option>
+                <option value="1">{L("Close")}</option>
+
+                </select>
+                    {/* <input onChange={(e) => this.handleStatusChange(e.target.value)}/> */}
+                </Col>
+
+                <Col xs={{span:5,offset:0}}>
+                <label className="form-label">{L('SupplementarySummaryDisplayProperty')}</label>
+                <input 
+                    value={this.state.SupplementarySummaryDisplayPropertyFilter} // Correctly bind the value to the state
+                    onChange={(e) =>this.handleStatusChange  ( e.target.value ) // Update the state on change
+                  }
+                />
+                </Col>
+
+                <Col xs={{span:5,offset:0}}>
+                <label className="form-label">{L('SupplierRejectionCode')}</label>
+                <input 
+                    value={this.state.SupplierRejectionCodeFilter} // Correctly bind the value to the state
+                    onChange={(e) => this.handleSupplementaryChange (e.target.value ) // Update the state on change
+                  }
+                />
+                </Col>
+
+                <Col xs={{span:5,offset:0}}>
+                <label className="form-label">{L('SupplierCode')}</label>
+                <input 
+                    value={this.state.SupplierCodeFilter} // Correctly bind the value to the state
+                    onChange={(e) =>this.handleRejectionChange (e.target.value ) // Update the state on change
+                  }
+                />
+                </Col>
+
+                <Col xs={{span:5,offset:0}}>
+                <label className="form-label">{L('BuyerShortId')}</label>
+                <input 
+                    value={this.state.BuyerShortIdFilter} // Correctly bind the value to the state
+                    onChange={(e) => this.handleCodeChange ( e.target.value ) // Update the state on change
+                  }
+                />
+                </Col>
+
+                <Col xs={{ span: 4 }} style={{
+                position: 'absolute',
+                top: '150px',
+                right: '24px',
+                width: '10%',
+              }}>
+                <Button
+                  type="default"
+                  onClick={this.resetFilters}
+                  style={{ marginTop: '24px', width: '100%' }}
+                >
+                  Reset
+                </Button>
+              </Col>
+                </Row>
+)}
         <Row style={{ marginTop: 20 }}>
           <Col
             xs={{ span: 24, offset: 0 }}

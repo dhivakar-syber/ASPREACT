@@ -77,8 +77,8 @@ class edit extends React.Component<SupplierdataProps> {
     
 
     const formItemLayout = {
-      labelCol: { span: 6 },
-      wrapperCol: { span: 18 },
+      labelCol: { span: 3 },
+      wrapperCol: { span: 16 },
     };
 
     const { visible, onCancel, onCreate, formRef, initialData } = this.props;
@@ -108,16 +108,20 @@ class edit extends React.Component<SupplierdataProps> {
             supplierNo: SupplierLookupItem.id,
         });
       }
-    }}>
+      console.log("hello! Its me");
+          }}>
       <Form.Item label={L('Name')} name={'Name'} {...formItemLayout}>
               <Input
                 onClick={this.SupplierLookupItem} // Trigger supplier lookup modal
                 value={SupplierLookupItem?.displayName || ''}
                 readOnly
               />
+             <Form.Item label={L('Code')} name={'code'} {...formItemLayout}>
+              <Input/>
             </Form.Item>
-            <Form.Item label={L('Code')} name="Code" {...formItemLayout} hidden>
-      <Input />
+            <Form.Item label={L('User Id')} name={'userid'} {...formItemLayout}>
+              <Input/>
+            </Form.Item>
       </Form.Item>
           </Form>
         </Modal>
