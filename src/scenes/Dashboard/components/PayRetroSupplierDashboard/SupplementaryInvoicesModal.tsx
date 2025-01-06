@@ -8,6 +8,7 @@ import supplementarySummariesService from "../../../../services/SupplementarySum
 interface SupplementaryInvoiceModalProps {
   rowId: string | null;
   visible: boolean;
+  AnnexureVersion:number;
   onCancel: () => void;
 }
 
@@ -24,6 +25,7 @@ interface TableData {
 
 const SupplementaryInvoiceModal: React.FC<SupplementaryInvoiceModalProps> = ({
   rowId,
+  AnnexureVersion,
   visible,
   onCancel,
 }) => {
@@ -40,7 +42,12 @@ const SupplementaryInvoiceModal: React.FC<SupplementaryInvoiceModalProps> = ({
     setTableData([]);      // Clear table data
     onCancel();            // Call the parent-provided onCancel
   };
-  const annexureOptions = [1, 2, 3]; // Example annexure groups
+  let t = AnnexureVersion;
+let v = [];
+for (let i = 1; i <= t; i++) {
+  v.push(i);
+}
+  const annexureOptions = v; // Example annexure groups
   const updateTableData = async (rowId: string) => {
     try {
       const uploadData = await supplementarySummariesService.supplementaryuploadeddetails(rowId);

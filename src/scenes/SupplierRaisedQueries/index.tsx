@@ -25,6 +25,13 @@ export interface ISupplierRaisedQueryState {
   skipCount: number;
   userId: number;
   filter: string;
+  buyerRemarksFilter:string;
+  statusFilter:string;
+  attachementFilter:string;
+  partPartNoFilter:string;
+  buyerNameFilter:string;
+  supplierNameFilter:string;
+  showAdvancedFilters: boolean;
 }
 type LookupItem = {
   id: number;
@@ -52,6 +59,13 @@ class SupplierRaisedQuery extends AppComponentBase<ISupplierRaisedQueryProps, IS
     skipCount: 0,
     userId: 0,
     filter: '',
+    buyerRemarksFilter:'',
+    statusFilter:'',
+    attachementFilter:'',
+    partPartNoFilter:'',
+    buyerNameFilter:'',
+    supplierNameFilter:'',
+    showAdvancedFilters: false,
     selectedLookupItem: null as LookupItem | null,
     selectedSupplierLookupItem: null as SupplierLookupItem | null,
     selectedBuyerLookupItem: null as BuyerLookupItem | null,
@@ -66,7 +80,22 @@ class SupplierRaisedQuery extends AppComponentBase<ISupplierRaisedQueryProps, IS
         console.error('supplierRaisedQueryStore is undefined');
         return;
     }
-    await this.props.supplierRaisedQueryStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
+
+        const filters = {
+          maxResultCount: this.state.maxResultCount,
+          skipCount: this.state.skipCount,
+          keyword: this.state.filter, // global filter (if any)
+          filter: this.state.filter,
+          buyerRemarksFilter:this.state.buyerRemarksFilter,
+          statusFilter:this.state.statusFilter,
+          attachementFilter:this.state.attachementFilter,
+          partPartNoFilter:this.state.partPartNoFilter,
+          buyerNameFilter:this.state.buyerNameFilter,
+          supplierNameFilter:this.state.supplierNameFilter,
+          
+        }
+        await this.props.supplierRaisedQueryStore.getAll(filters);
+    //await this.props.supplierRaisedQueryStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
   }
 
   handleTableChange = (pagination: any) => {
@@ -79,6 +108,11 @@ class SupplierRaisedQuery extends AppComponentBase<ISupplierRaisedQueryProps, IS
     });
   };
 
+  toggleAdvancedFilters = () => {
+    this.setState((prevState) => ({
+      showAdvancedFilters: !prevState.showAdvancedFilters,
+    }));
+  };
   async createOrUpdateModalOpen(entityDto: EntityDto) {
     if (entityDto.id === 0) {
       await this.props.supplierRaisedQueryStore.createSupplierRaisedQuery();
@@ -106,6 +140,24 @@ class SupplierRaisedQuery extends AppComponentBase<ISupplierRaisedQueryProps, IS
       },
     });
   }
+
+  
+  resetFilters = () => {
+    this.setState({
+      buyerRemarksFilter:'',
+      statusFilter:'',
+      attachementFilter:'',
+      partPartNoFilter:'',
+      buyerNameFilter:'',
+      supplierNameFilter:'',      
+
+},
+  
+    () => {
+      this.getAll(); // Call the data-refresh function after resetting the filters
+    }
+  );
+};
 editdata:any = null;
   handleCreate = () => {
     const form = this.formRef.current;
@@ -137,7 +189,50 @@ editdata:any = null;
   handleSearch = (value: string) => {
     this.setState({ filter: value }, async () => await this.getAll());
   };
+  handleBuyerRemarksSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ buyerRemarksFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.buyerRemarksFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  handleStatusSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ statusFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.statusFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
 
+  handleAttachmentSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ attachementFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.attachementFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  handlePartNoSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ partPartNoFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.partPartNoFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+
+  handleBuyerNameSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ buyerNameFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.buyerNameFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
+  handleSupplierNameSearch = (value: string) => {
+    // Update the state and call getAll() once the state is updated
+    this.setState({ supplierNameFilter: value }, () => {
+      console.log('Updated nameFilter:', this.state.supplierNameFilter); // Verify the state update
+      this.getAll(); // Correctly call getAll() after the state update
+    });
+  };
   // handleexcelexport = () =>{
   //   this.props.cbfcdataStore.getExcelExport();
   // }
@@ -265,6 +360,91 @@ editdata:any = null;
             <Search placeholder={this.L('Filter')} onSearch={this.handleSearch} />
           </Col>
         </Row>
+        <Row style={{ marginTop: 20 }}>
+                                    <Col sm={{ span: 24 }}>
+                                      <span
+                                        className="text-muted clickable-item"
+                                        onClick={this.toggleAdvancedFilters}
+                                      >
+                                        {this.state.showAdvancedFilters ? (
+                                          <>
+                                            <i className="fa fa-angle-up"></i> {L('HideAdvancedFilters')}
+                                          </>
+                                        ) : (
+                                          <>
+                                            <i className="fa fa-angle-down"></i> {L('ShowAdvancedFilters')}
+                                          </>
+                                        )}
+                                      </span>
+                                    </Col>
+                          {this.state.showAdvancedFilters && (
+                             <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
+                         <Col md={{ span: 4 }}>
+                            <label className="form-label">{L("Buyer Remarks")}</label>
+                            <Input
+                            //placeholder={L('Buyer Name Filter')}
+                            value = {this.state.buyerRemarksFilter}
+                            onChange={(e) => this.handleBuyerRemarksSearch(e.target.value)}
+                            />
+                          </Col>
+                          <Col md={{ span: 4 }}>
+                           <label className="form-label">{L("Buyer Name")}</label>
+                           <Input
+                            //placeholder={L('Buyer Name Filter')}
+                            value = {this.state.buyerNameFilter}
+                            onChange={(e) => this.handleBuyerNameSearch(e.target.value)}
+                            />
+                          </Col>
+                             <Col md={{ span: 4 }}>
+                                <label className="form-label">{L("Status")}</label>
+                                <Input
+                                //placeholder={L('Buyer Name Filter')}
+                                value = {this.state.statusFilter}
+                                onChange={(e) => this.handleStatusSearch(e.target.value)}
+                                />
+                            </Col>
+                            <Col md={{ span: 4 }}>
+                               <label className="form-label">{L("Attachment")}</label>
+                               <Input
+                                //placeholder={L('Buyer Name Filter')}
+                                value = {this.state.attachementFilter}
+                                onChange={(e) => this.handleAttachmentSearch(e.target.value)}
+                                />
+                              </Col>
+                           <Col md={{ span: 4 }}>
+                              <label className="form-label">{L("Part No")}</label>
+                              <Input
+                              //placeholder={L('Buyer Name Filter')}
+                              value = {this.state.partPartNoFilter}
+                              onChange={(e) => this.handlePartNoSearch(e.target.value)}
+                              />
+                            </Col>
+                            <Col md={{ span: 4 }}>
+                            
+                             <label className="form-label">{L("Buyer Name")}</label>
+                             <Input
+                              //placeholder={L('Buyer Name Filter')}
+                              value = {this.state.buyerNameFilter}
+                              onChange={(e) => this.handleBuyerNameSearch(e.target.value)}
+                              />
+                            </Col>                              
+                            <Col md={{ span: 4 }}>
+                             <label className="form-label">{L("Supplier Name")}</label>
+                             <Input
+                              //placeholder={L('Buyer Name Filter')}
+                              value = {this.state.supplierNameFilter}
+                              onChange={(e) => this.handleSupplierNameSearch(e.target.value)}
+                              />
+                            </Col>                              
+                          {/* Reset Button */}
+                           <Col md={24} style={{ textAlign: "right", marginTop: 20 }}>
+                             <Button type="default" onClick={this.resetFilters}>
+                               {L("Reset")}
+                             </Button>
+                           </Col>
+    </Row>
+  )}
+  </Row>
         <Row style={{ marginTop: 20 }}>
           <Col
             xs={{ span: 24, offset: 0 }}

@@ -22,7 +22,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
   const [rowBuyerstatus, setrowBuyerstatus] = React.useState<number | null>(0); 
   const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0);
     const [submitIdRow, setSubmitIdRow] = React.useState<number>(0);
-      const [selectedDate, setSelectedDate] = React.useState("");
+      const [selectedDate, setSelectedDate] = React.useState<string>('');
   const [isSupplierSubmitModalOpen, setIsSupplierSubmitModalOpen] = React.useState<boolean>(false); // To control modal visibility
   
   
@@ -42,72 +42,56 @@ const PayRetroAccountsDashboard: React.SFC = () => {
 
   //var userid='0';
 
-  // React.useEffect(() => {
+  React.useEffect(() => {
     
     
 
     
 
-  //    const fetchData = async () => {
-  //         try {
+     const fetchData = async () => {
+          try {
     
-  //           if(abp.session.userId==2||abp.session.userId==1)
-  //           {
-    
-  //            userid='0';
-  //           }
-  //           else{
-    
-  //             userid=abp.session.userId;
-    
-  //           }
-            
-            
-    
-  //           const suppliers = await supplementarySummariesService.GetAllSuppliers(userid);
-  //           console.log('suppliers',suppliers)
-  //           setSuppliers(suppliers.data.result || []);
-  //           if(abp.session.userId===1||abp.session.userId===2)
-  //           {
-              
-  //             setselectedsuppliers({name:"Select All",value:0})
-  //             setSuppliers(suppliers.data.result || []);
-  //             setselectedcategory(['Select All']);
-  //             await getbuyers(0)
-  //             await getparts(0,[])
-  //             setselectedcategory(0);
-  //             await LoadsupplementarySummary(dashboardinput);
            
-  //           }
-  //           else{
-  //             console.log('Selected_supplier',suppliers.data.result[0].name)
+            const suppliers = await supplementarySummariesService.GetAllSuppliersaccountsdashboard([0]);
+            console.log('suppliers',suppliers)
+            setSuppliers(suppliers.data.result || []);
+            setselectedsuppliers([]);
+           
+            const buyers = await supplementarySummariesService.GetAllBuyers('0');
+            console.log('buyers',buyers)
+            setBuyers(buyers.data.result || []);
+            setselectedsuppliers([]);
+           
+            setselectedcategory(0);
+              
     
-  //             setSuppliers(suppliers.data.result || []);
-  //             setselectedsuppliers({name:suppliers.data.result[0].name,value:suppliers.data.result[0].id});
-  //             getbuyers(suppliers.data.result[0].id)
-  //             getparts(suppliers.data.result[0].id,[])
-  //             setselectedcategory(0);
+              
+              getparts([0],[0])
+              setselectedcategory(0);
     
-  //             var buyerDashboardInput : BuyerDashboardInput = {
-  //               Supplierid: suppliers.data.result[0].id,
-  //               Buyerids: [0],
-  //               Partids: [0],
-  //               invoicetype:0
-  //             };
-    
-  //             setdashboardinput(supplierDashboardInput);
-    
-  //             await LoadsupplementarySummary(supplierDashboardInput);
-  //           }
-  //           console.log('Suppliers',suppliers.data.result);
-            
-  //         } catch (error) {
-  //           console.error("Error fetching supplementary summaries:", error);
-  //         }
-  //       };
+              var accountsdashboardinput : AccountDashboardInput = {
+                Supplierids: [0],
+                Buyerids: [0],
+                Partids: [0],
+                invoicetype:0,
+                Date:null,
+                Document:null
 
-  //   fetchData();
-  // }, []);
+              };
+    
+              setdashboardinput(accountsdashboardinput);
+    
+              await AccountsDashboardSummaries(accountsdashboardinput);
+          
+            console.log('Suppliers',suppliers.data.result);
+            
+          } catch (error) {
+            console.error("Error fetching supplementary summaries:", error);
+          }
+        };
+
+    fetchData();
+  }, []);
 
   const handlesupplierchange =async  (selectedValues: any[]) => {
         
@@ -121,7 +105,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
         Buyerids: selectedbuyers,
         Partids: selectedValues,
         invoicetype:selectedcategory,
-        Date:new Date,
+        Date:null,
         Document : ''
         };
         setdashboardinput(accountDashboardInput);
@@ -135,6 +119,8 @@ const PayRetroAccountsDashboard: React.SFC = () => {
         console.log('selectedbuyers',selectedValues)
     
         getparts(selectedsuppliers,selectedValues);
+
+        getsuppliers(selectedValues)
     
         var   accountDashboardInput: AccountDashboardInput = {
           Supplierids: selectedsuppliers,
@@ -149,10 +135,12 @@ const PayRetroAccountsDashboard: React.SFC = () => {
       };
   const handledatechange = async (value:any)=>{
      console.log('Selected Date',value)
-      setSelectedDate(value)
+      
   
       const dateObject =value && value.trim() !== "" ? new Date(value) : null;
   
+      setSelectedDate(value);
+
       var   accountDashboardInput: AccountDashboardInput = {
         Supplierids:selectedsuppliers,
         Buyerids:selectedbuyers,
@@ -168,22 +156,8 @@ const PayRetroAccountsDashboard: React.SFC = () => {
     };
   
     
-    const getbuyers =async  (buyersuppliers: number) => {
-      
-      
-  
-      const buyers = await supplementarySummariesService.GetAllSupplierListBuyerDashboard(buyersuppliers);
-          setBuyers(buyers.data.result || []);
-          setselectedbuyers([]);
-          await getsuppliers(buyersuppliers);
-
-          
-  
-        
-          
-  
-    };
-    getbuyers(0);
+    
+    
     const AccountsDashboardSummaries=async (accountDashboardInput:AccountDashboardInput)=>
     {
   
@@ -203,11 +177,11 @@ const PayRetroAccountsDashboard: React.SFC = () => {
   
     }
   
-    const getsuppliers =async  (supplybuyers: number) => {
+    const getsuppliers =async  (supplybuyers: any[]) => {
           
           
       
-          const suppliers = await supplementarySummariesService.GetAllSupplierListBuyerDashboard(supplybuyers);
+          const suppliers = await supplementarySummariesService.GetAllSuppliersaccountsdashboard(supplybuyers);
               setSuppliers(suppliers.data.result || []);
               setselectedsuppliers([]);
               
@@ -387,7 +361,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
               <div style={{ textAlign: 'left' }}>
               <h3>Buyer</h3>
               <Select
-              
+              mode="multiple"
               style={{ width: '200px' }}
               placeholder="Select one or more Buyers"
               options={buyers.map((buyer) => ({

@@ -32,6 +32,7 @@ declare var abp: any;
   const [modalData, setModalData] = React.useState<any[]>([]);
   const [annexuremodalData, annexuresetModalData] = React.useState<any[]>([]);
   const [suppliers, setSuppliers] =React.useState<any[]>([]);
+  const [AnnexureVersionNo, setAnnexureVersionNo] =React.useState<number>(0);
   const [selectedsuppliers, setselectedsuppliers] = React.useState({ name: '', value:0 });
   const [buyers, setBuyers] =React.useState<any[]>([]);
   const [selectedbuyers, setselectedbuyers] =React.useState<any[]>([]);
@@ -487,8 +488,9 @@ const railqueryMail = (item:any) =>
       });
 
   };
-  const handleSupplementaryDropdownAction = (buttonName: string, rowId: string, event: React.MouseEvent) => {
+  const handleSupplementaryDropdownAction = (buttonName: string, rowId: string, AnnexureVersionNo:number, event: React.MouseEvent) => {
     event.stopPropagation();
+    setAnnexureVersionNo(AnnexureVersionNo);
     setCurrentRowId(rowId); // Set the rowId when the button is clicked
     setIsModalVisible(true); // Show the modal
   };
@@ -1138,7 +1140,7 @@ function barstatus(status:any) {
                             marginBottom: "5px",
                             textAlign:"left"
                           }}
-                          onClick={(event) => handleSupplementaryDropdownAction("Supplementary Invoice/Credit Note Details", row.id,event)}
+                          onClick={(event) => handleSupplementaryDropdownAction("Supplementary Invoice/Credit Note Details", row.id,row.AnnexureVersionNo,event)}
                         >
                           Supplementary Invoice/Credit Note Details
                         </button>
@@ -1207,7 +1209,8 @@ function barstatus(status:any) {
       <SupplierSubmitModal isOpen={isSupplierSubmitModalOpen} onClose={closeSupplierSubmitModal} submitIdRow={submitIdRow}
         supplementaryInvoiceSubmit={supplementaryInvoiceSubmit} />
         <SupplementaryInvoiceModal
-        rowId={currentRowId}      // Pass rowId to the modal
+        rowId={currentRowId}
+        AnnexureVersion={AnnexureVersionNo}      // Pass rowId to the modal
         visible={isModalVisible}   // Control visibility of the modal
         onCancel={handleCloseModal} // Function to close modal
       />
