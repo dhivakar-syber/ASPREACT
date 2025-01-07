@@ -1,5 +1,5 @@
 import LoadableComponent from './../Loadable/index';
-import { HomeOutlined, UserOutlined, TagsOutlined, AppstoreOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { HomeOutlined, UserOutlined, TagsOutlined, AppstoreOutlined, } from '@ant-design/icons';
 
 export const userRouter: any = [
   {
@@ -33,7 +33,7 @@ export const appRouters: any = [
   {
     path: '/dashboard',
     name: 'dashboard',
-    permission: '',
+    permission: 'Pages.Tenant.Dashboard',
     title: 'Supplier Dashboard',
     icon: HomeOutlined,
     showInMenu: true,
@@ -42,7 +42,7 @@ export const appRouters: any = [
   {
     path: '/buyerdashboard',
     name: 'buyerdashboard',
-    permission: '',
+    permission: 'Pages.Buyer.Dashboard',
     title: 'Buyer Dashboard',
     icon: HomeOutlined,
     showInMenu: true,
@@ -51,7 +51,7 @@ export const appRouters: any = [
   {
     path: '/accountsdashboard',
     name: 'accountsdashboard',
-    permission: '',
+    permission: 'Pages.Accounts.Dashboard',
     title: 'Accounts Dashboard',
     icon: HomeOutlined,
     showInMenu: true,
@@ -77,7 +77,7 @@ export const appRouters: any = [
   },
   {
     path: '/Buyers',
-    permission: '',
+    permission: 'Pages.Administration.Buyers',
     title: 'Buyers',
     name: 'buyer',
     icon: UserOutlined,
@@ -214,15 +214,15 @@ export const appRouters: any = [
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/Tenants')),
   },
-  {
-    path: '/about',
-    permission: '',
-    title: 'About',
-    name: 'about',
-    icon: InfoCircleOutlined,
-    showInMenu: true,
-    component: LoadableComponent(() => import('../../scenes/About')),
-  },
+  // {
+  //   path: '/about',
+  //   permission: '',
+  //   title: 'About',
+  //   name: 'about',
+  //   icon: InfoCircleOutlined,
+  //   showInMenu: true,
+  //   component: LoadableComponent(() => import('../../scenes/About')),
+  // },
   {
     path: '/logout',
     permission: '',
@@ -241,4 +241,4 @@ export const appRouters: any = [
   },
 ];
 
-export const routers = [...userRouter, ...appRouters];
+export const routers = [userRouter, appRouters];

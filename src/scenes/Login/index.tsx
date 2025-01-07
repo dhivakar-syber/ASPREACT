@@ -2,7 +2,7 @@ import './index.less';
 
 import * as React from 'react';
 
-import { Button, Card, Checkbox, Col, Form, Input, Modal, Row } from 'antd';
+import { Button, Checkbox, Col, Form, Input, Modal, Row } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { inject, observer } from 'mobx-react';
 
@@ -15,6 +15,8 @@ import SessionStore from '../../stores/sessionStore';
 import Stores from '../../stores/storeIdentifier';
 import TenantAvailabilityState from '../../services/account/dto/tenantAvailabilityState';
 import rules from './index.validation';
+
+import logo from '../../images/abp-logo-long.png';
 
 const FormItem = Form.Item;
 declare var abp: any;
@@ -74,27 +76,7 @@ class Login extends React.Component<ILoginProps> {
     const { loginModel } = this.props.authenticationStore!;
     return (
       <Form className="" onFinish={this.handleSubmit} ref={this.formRef} >
-          <Row style={{ marginTop: 100 }}>
-            <Col span={8} offset={8}>
-              <Card>
-                <Row>
-                  {!!this.props.sessionStore!.currentLogin.tenant ? (
-                    <Col span={24} offset={0} style={{ textAlign: 'center' }}>
-                      <Button type="link" onClick={loginModel.toggleShowModal}>
-                        {L('CurrentTenant')} : {this.props.sessionStore!.currentLogin.tenant.tenancyName}
-                      </Button>
-                    </Col>
-                  ) : (
-                    <Col span={24} offset={0} style={{ textAlign: 'center' }}>
-                      <Button type="link" onClick={loginModel.toggleShowModal}>
-                        {L('NotSelected')}
-                      </Button>
-                    </Col>
-                  )}
-                </Row>
-              </Card>
-            </Col>
-          </Row>
+ 
 
           {/* <Row>
             <Modal
@@ -118,37 +100,164 @@ class Login extends React.Component<ILoginProps> {
               </Row>
             </Modal>
           </Row> */}
-          <Row style={{ marginTop: 10 }}>
-            <Col span={8} offset={8}>
-              <Card>
-                <div style={{ textAlign: 'center' }}>
-                  
-                </div>
-                <FormItem name={'userNameOrEmailAddress'} rules={rules.userNameOrEmailAddress}>
-                  <Input placeholder={L('UserNameOrEmail')} prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} size="large" />
-                </FormItem>
 
-                <FormItem name={'password'} rules={rules.password}>
-                  <Input placeholder={L('Password')} prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" size="large" />
-                </FormItem>
-                <Row style={{ margin: '0px 0px 10px 15px ' }}>
-                  <Col span={12} offset={0}>
-                    <Checkbox checked={loginModel.rememberMe} onChange={loginModel.toggleRememberMe} style={{ paddingRight: 8 }} />
-                    {L('RememberMe')}
-                    <br />
-                    <a>{L('ForgotPassword')}</a>
-                  </Col>
+             
+<div className="login login-1 login-signin-on d-flex flex-column flex-lg-row flex-column-fluid bg-white" style={{ paddingRight: '20%' }}>
+  <div className="login-content flex-row-fluid d-flex flex-column justify-content-center position-relative overflow-hidden p-7 mx-auto">
+    <div className="d-flex flex-column-fluid flex-center" style={{ height: '100vh' }}>
+      <div className="login-form-container" style={{
+        maxWidth: '400px',
+        width: '100%',
+        position: 'absolute', // Position the form absolutely
+        top: '50%',
+        right: '50px',
+        transform: 'translateY(-50%)', // Center vertically
+        padding: '20px',
+        boxSizing: 'border-box',
+        backgroundColor: 'transparent', // Transparent background for the form
+        borderRadius: '4px', // Rounded corners
+        border: '.5px solid #BCE8F3', // Light outline
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Subtle shadow effect
+      }}>
 
-                  <Col span={8} offset={4}>
-                    <Button style={{ backgroundColor: '#f5222d', color: 'white' }} htmlType={'submit'} danger>
-                      {L('LogIn')}
+        {/* Begin::Logo (Placed above Tenant Info Box) */}
+        <div style={{ textAlign: 'center' }}>
+          <img 
+            src={logo} 
+            alt="Account Logo" 
+            style={{ 
+              maxWidth: '400px', // Increased maximum width
+              width: '90%',     // Adjusts to container width
+              height: 'auto'     // Maintains aspect ratio
+            }} 
+          />
+        </div>
+        {/* End::Logo */}
+
+        {/* Begin::Tenant Info Box */}
+        {/* <Row style={{
+          position: 'absolute',
+          top: '-70px', // Adjust as needed to position relative to the logo
+          width: 'calc(100% - 40px)', // Account for padding
+          paddingRight: '20px',
+          marginRight: '20px', // Add space to the right side of the info box
+        }}>
+          <Col span={24} style={{ textAlign: 'center', paddingBottom: '20px' }}>
+            <Card style={{ paddingRight: '20px' }}> 
+              <Row>
+                {!!this.props.sessionStore!.currentLogin.tenant ? (
+                  <Col span={24} style={{ textAlign: 'center' }}>
+                    <Button type="link" onClick={loginModel.toggleShowModal}>
+                      {L('CurrentTenant')} : {this.props.sessionStore!.currentLogin.tenant.tenancyName}
                     </Button>
                   </Col>
-                </Row>
-              </Card>
+                ) : (
+                  <Col span={24} style={{ textAlign: 'center' }}>
+                    <Button type="link" onClick={loginModel.toggleShowModal}>
+                      {L('NotSelected')}
+                    </Button>
+                  </Col>
+                )}
+              </Row>
+            </Card>
+          </Col>
+        </Row> */}
+        {/* End::Tenant Info Box */}
+
+        {/* Begin::Aside Title */}
+        <span className="font-weight-bolder text-center font-size-h5-md" style={{ color: '#5097AB', display: 'block', marginBottom: '30px' ,textAlign: 'center'}}>
+          PAY RETRO
+        </span>
+        {/* End::Aside Title */}
+
+        {/* Begin::Form */}
+        <FormItem name="userNameOrEmailAddress" rules={rules.userNameOrEmailAddress}>
+          <div style={{
+            display: 'flex',           // Use flexbox to center the content
+            justifyContent: 'center',  // Centers horizontally
+            alignItems: 'center',      // Centers vertically
+            height: '100%',            // Ensure the container takes up full height
+            margin: '0',               // Remove any default margin
+          }}>
+            <Input
+              placeholder={L('UserNameOrEmail')}
+              prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+              size="large"
+              style={{
+                width: '90%',               // Input takes 90% of the container's width
+                backgroundColor: '#fff',    // White background for the input
+                maxWidth: '400px',          // Optionally limit the width of the input
+              }}
+            />
+          </div>
+        </FormItem>
+
+
+        <FormItem name="password" rules={rules.password}>
+        <div style={{
+            display: 'flex',           // Use flexbox to center the content
+            justifyContent: 'center',  // Centers horizontally
+            alignItems: 'center',      // Centers vertically
+            height: '100%',            // Ensure the container takes up full height
+            margin: '0',               // Remove any default margin
+          }}>
+          <Input
+            placeholder={L('Password')}
+            prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+            type="password"
+            size="large"
+            style={{
+              width: '90%',  // Ensure the input takes full width within the container
+              backgroundColor: '#fff', // White background for the input
+              
+            }}
+          />
+          </div>
+        </FormItem>
+
+        <Row style={{ margin: '0px 0 10px 15px', alignItems: 'center' }}>
+            <Col span={12} style={{ display: 'flex', alignItems: 'center' }}>
+              <Checkbox 
+                checked={loginModel.rememberMe} 
+                onChange={loginModel.toggleRememberMe} 
+                style={{ paddingRight: 8 }}
+              />
+              <span style={{ color: '#1ca47c' }}>
+                {L('Remember Me')}
+              </span>
+            </Col>
+            <Col span={12} style={{ textAlign: 'right' }}>
+              <a href="#" style={{ color: '#1c916c', textDecoration: 'none' }}>
+                {L('ForgotPassword')}
+              </a>
             </Col>
           </Row>
-      </Form>
+          <br></br>
+          <Row style={{ textAlign: 'center', marginTop: '10px' }}>
+            <Col span={24}>
+              <Button 
+                style={{ 
+                  backgroundColor: '#1c916c', 
+                  color: 'white', 
+                  display: 'block', 
+                  margin: '0 auto' // Center the button
+                }} 
+                htmlType="submit" 
+                
+              >
+
+                {L('LogIn')}
+              </Button>
+            </Col>
+          </Row>
+
+        {/* End::Form */}
+      </div>
+    </div>
+  </div>
+</div>
+
+        </Form>
     );
   }
 }

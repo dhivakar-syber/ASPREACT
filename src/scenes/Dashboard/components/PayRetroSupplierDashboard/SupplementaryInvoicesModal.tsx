@@ -52,17 +52,27 @@ for (let i = 1; i <= t; i++) {
     try {
       const uploadData = await supplementarySummariesService.supplementaryuploadeddetails(rowId);
   
-      const newData: TableData = {
-        annexureVersionNo:uploadData.annexureVersionNo,
-  annexuregroup:uploadData.list[0].annexuregroup,
-  supplementaryinvoiceNo:uploadData.list[0].supplementaryinvoiceNo,
-  supplementaryinvoicedate:uploadData.list[0].supplementaryinvoicedate,
-  supplementaryinvoicepath:uploadData.list[0].supplementaryannexurepath,
-  annexurepdfpath:uploadData.list[0].annexurepath,
-  annexureexcelpath:uploadData.list[0].attachment3,
-    };
+      const newData: TableData[] = uploadData.list
+  .filter((item: any) => 
+    item.annexuregroup !== null &&
+    item.supplementaryinvoiceNo !== null &&
+    item.supplementaryinvoicedate !== null &&
+    item.supplementaryannexurepath !== null &&
+    item.annexurepath !== null &&
+    item.attachment3 !== null
+  )
+  .map((item: any) => ({
+    annexureVersionNo: uploadData.annexureVersionNo,
+    annexuregroup: item.annexuregroup,
+    supplementaryinvoiceNo: item.supplementaryinvoiceNo,
+    supplementaryinvoicedate: item.supplementaryinvoicedate,
+    supplementaryinvoicepath: item.supplementaryannexurepath,
+    annexurepdfpath: item.annexurepath,
+    annexureexcelpath: item.attachment3,
+  }));
   
       // Use concat instead of spread
+      console.log('NewData',newData);
       setTableData((prevData: TableData[]) => prevData.concat(newData));
     } catch (error) {
       message.error("Failed to fetch and update table data.");
@@ -70,11 +80,11 @@ for (let i = 1; i <= t; i++) {
     }
   };
 
-  // useEffect(() => {
-  //   if (visible && rowId) {
-  //     updateTableData(rowId);
-  //   }
-  // }, [visible, rowId]); 
+  React.useEffect(() => {
+    if (visible && rowId) {
+      updateTableData(rowId);
+    }
+  }, [visible, rowId]); 
   
   const handleUpload = async () => {
     if (!invoiceNo || !invoiceDate || !annexureFile || !attachmentFile || !annexureAttachmentFile) {
