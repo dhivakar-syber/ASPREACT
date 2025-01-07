@@ -1031,7 +1031,7 @@ function barstatus(status:any) {
                             marginBottom: "5px",
                             textAlign:"left"
                           }}
-                          onClick={(event) => handleSupplementaryDropdownAction("Supplementary Invoice/Credit Note Details", row.id,row.AnnexureVersionNo,event)}
+                          onClick={(event) => handleSupplementaryDropdownAction("Supplementary Invoice/Credit Note Details", row.id,row.annexureVersionNo,event)}
                         >
                           Supplementary Invoice/Credit Note Details
                         </button>
