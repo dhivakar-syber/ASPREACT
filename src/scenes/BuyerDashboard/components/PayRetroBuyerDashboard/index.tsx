@@ -2,9 +2,16 @@ import * as React from "react";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
 
 import  DashboardCards  from "./BuyerDashboardCards";
+import { Row, Col,Select, Tabs,Button } from 'antd';
+import { FilePdfOutlined } from "@ant-design/icons";
+import SupplierSubmitModal from '../../../Dashboard/components/PayRetroSupplierDashboard/SupplierSubmitModal';
 import { Row, Col,Select, Tabs,Button,Modal,message } from 'antd';
 import { FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
 import { BuyerDashboardInput } from "./BuyerDashboardInput";
+import BuyerQueryModal from "./BuyerQueryModal"
+import DisputedataStore from "../../../../stores/DisputesStrore";
+//import { keys } from "mobx";
+
 import ApproveorRejectModal from "../ApproveorRejectModal"
 
 declare var abp: any;
@@ -20,11 +27,14 @@ declare var abp: any;
   const [selectedparts, setselectedparts] =React.useState<any[]>([]);
   const [selectedcategory, setselectedcategory] =React.useState<any>(String);
   const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  
+ // const [isQueryModalVisible, setIsQueryModalVisible] = React.useState<boolean>(false);  
+  const [currentRowId, setCurrentRowId] = React.useState<string | null>(null); 
   const [submitIdRow, setSubmitIdRow] = React.useState<number>(0);
   const [rowsupplierstatus, setrowsupplierstatus] = React.useState<number | null>(0); 
   const [rowBuyerstatus, setrowBuyerstatus] = React.useState<number | null>(0); 
   const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0); 
   const [selectedDate, setSelectedDate] = React.useState("");
+  const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   const [isApproveRejectModalOpen, setIsApproveRejectModalOpen] = React.useState<boolean>(false); // To control modal visibility
   const [dashboardinput, setdashboardinput] = React.useState<BuyerDashboardInput>({
@@ -76,9 +86,23 @@ declare var abp: any;
         else{
 
           setBuyers(buyers.data.result || []);
-          setselectedbuyers(buyers.data.result);
+          setselectedbuyers({name:buyers.data.result[0].name,value:buyers.data.result[0].id});
           getsuppliers(buyers.data.result)
+          setselectedcategory(0);
           getparts([],buyers.data.result)
+
+          var   buyerdashboard: BuyerDashboardInput = {
+            Supplierids:[0],
+            Buyerid:buyers.data.result[0].id,
+            Partids: [0],
+            invoicetype:0,
+            Date:null,
+            Document:null
+          };
+      
+          setdashboardinput(buyerdashboard);
+            await LoadsupplementarySummary(buyerdashboard);
+      
         }
         console.log('buyers',buyers.data.result);
         
@@ -466,6 +490,25 @@ declare var abp: any;
 
 }
 
+const handleSupplementrypdfButtonClick = async (pdfPath: string) => {
+    try {
+        
+        const response = await supplementarySummariesService.GetFile(pdfPath);
+
+        if (response && response.fileBytes && response.fileType) {
+            // Convert the fileBytes (base64 string) into a data URL
+            const dataUrl = `data:${response.fileType};base64,${response.fileBytes}`;
+            
+            // Set the generated data URL to display in the iframe
+            setPdfUrl(dataUrl);
+            setIsModalVisible(true); // Open the modal
+        } else {
+            console.error("Invalid file response:", response);
+        }
+    } catch (error) {
+        console.error("Error fetching the PDF file:", error);
+    }
+};
 
 function barstatus(status:any) {
 
@@ -727,6 +770,50 @@ function barstatus(status:any) {
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryInvoiceDate?formatDate(row.supplementaryInvoiceDate):''}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.total}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.ageing}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
+                <span style={{ marginRight: "10px" }}>
+  {row.supplementaryInvoicePath ? <Button type="link" onClick={() => handleSupplementrypdfButtonClick(row.supplementaryInvoicePath)}>
+          <FilePdfOutlined style={{ marginRight: 8 }} />
+        </Button> : null}
+        {pdfUrl && (
+          <iframe
+            src={pdfUrl}
+            width="100%"
+            height="600px"
+            title="PDF Viewer"
+            style={{ border: 'none' }}
+          />
+        )}
+</span>
+<span style={{ marginRight: "10px" }}>
+  {row.annecurePath ? (
+    <button
+      id="annexurebuyerpdfview"
+      title="Download Annexure"
+      style={{ border: "none", background: "none", cursor: "pointer" }}
+    >
+      <i
+        className="fa-solid fa-file-pdf"
+        style={{ fontSize: "20px", color: "red" }}
+      ></i>
+    </button>
+  ) : null}
+</span>
+<span>
+  {row.supplementaryInvoicePath3 ? (
+    <button
+      id="annexurebuyerexceldownload"
+      title="Download Annexure"
+      style={{ border: "none", background: "none", cursor: "pointer" }}
+    >
+      <i
+        className="fa-solid fa-file-excel"
+        style={{ fontSize: "20px", color: "green" }}
+      ></i>
+    </button>
+  ) : null}
+</span>
+    </td>
                 <td style={{ padding: "10px", border: "1px solid #ddd", width: "175px" }}>
                   <span>
                     {row.supplementaryInvoicePath && (
@@ -850,9 +937,11 @@ function barstatus(status:any) {
       </Modal>
     </Tabs.TabPane>
     <Tabs.TabPane tab="Queries" key="3">
-      Content of Tab Pane 3
-    </Tabs.TabPane>
+    <BuyerQueryModal disputesStore={ new DisputedataStore} />
+</Tabs.TabPane>
+
   </Tabs>
+  
       
           
     </div>

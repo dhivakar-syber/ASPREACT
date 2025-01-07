@@ -541,8 +541,17 @@ const railqueryMail = (item:any) =>
     setCurrentRowId(rowId); // Set the rowId when the button is clicked
     setIsModalVisible(true); // Show the modal
   };
-  const handleCloseModal = () => {
-    setIsModalVisible(false);        
+  const handleCloseModal = async () => {
+    setIsModalVisible(false);   
+    
+    var   supplierDashboardInput: SupplierDashboardInput = {
+      Supplierid: selectedsuppliers.value,
+      Buyerids: selectedbuyers,
+      Partids: selectedparts,
+      invoicetype:selectedcategory
+    };
+    setdashboardinput(supplierDashboardInput);
+    await LoadsupplementarySummary(supplierDashboardInput);
   };
   function formatDate(d:string) {
     const date = new Date(d);
