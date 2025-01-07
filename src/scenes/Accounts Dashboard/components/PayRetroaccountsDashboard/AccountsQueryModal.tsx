@@ -4,7 +4,7 @@ import { Button, Card, Col, Dropdown, Menu, Modal, Row, Table} from 'antd';
 import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../../../components/AppComponentBase';
-import BuyerUpdateQueryModal from './BuyerUpdateQueryModal';
+import AccountUpdateQuery from './AccountUpdateQueryModal';
 import { EntityDto } from '../../../../services/dto/entityDto';
 import { L } from '../../../../lib/abpUtility';
 import Stores from '../../../../stores/storeIdentifier';
@@ -90,7 +90,7 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
         console.error('cbfcdatastore is undefined');
         return;
     }
-    await this.props.disputesStore.buyergetAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
+    await this.props.disputesStore.accountgetAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
   }
 
   handleTableChange = (pagination: any) => {
@@ -153,30 +153,10 @@ editdata:any = null;
     const form = this.formRef.current;
    
     form!.validateFields().then(async (values: any) => {
-      if (values.status !== 1) {
-        values.status = 1;
-      }
+        if(values.status !== 3){
+            values.status = 3;
+        }
       if (this.state.userId === 0) {
-        await this.props.disputesStore.create(values);
-      } else {
-        await this.props.disputesStore.update({ ...values, id: this.state.userId });
-      }
-
-      await this.getAll();
-      this.setState({ modalVisible: false });
-      form!.resetFields();
-    });
-  };
-
-  handleSubmit = () => {
-    const form = this.formRef.current;
-   
-    form!.validateFields().then(async (values: any) => {
-      if (values.status !== 2) {
-        values.status = 2;
-      }
-      if (this.state.userId === 0) {
-        
         await this.props.disputesStore.create(values);
       } else {
         await this.props.disputesStore.update({ ...values, id: this.state.userId });
@@ -256,7 +236,7 @@ editdata:any = null;
             xxl={{ span: 2, offset: 0 }}
           >
             {' '}
-            <h2 style={{whiteSpace:'nowrap'}}>{L('Buyer Query')}</h2>
+            <h2 style={{whiteSpace:'nowrap'}}>{L('Accounts Query')}</h2>
           </Col>
             
           <Col
@@ -295,18 +275,17 @@ editdata:any = null;
             />
           </Col>
         </Row>
-        <BuyerUpdateQueryModal
+        <AccountUpdateQuery
           formRef={this.formRef}
           visible={this.state.modalVisible}
-          onsubmit={this.handleSubmit}
-          modalType={this.state.userId === 0 ? 'edit' : 'create'}
-          onCreate={this.handleCreate}
-          onclose={() => {
+          onCancel={() => {
             this.setState({
               modalVisible: false,
             });
             this.formRef.current?.resetFields();
           }}
+          modalType={this.state.userId === 0 ? 'edit' : 'create'}
+          onCreate={this.handleCreate}
           initialData={this.state.initialData}
           disputesStrore={this.props.disputesStore}
         />

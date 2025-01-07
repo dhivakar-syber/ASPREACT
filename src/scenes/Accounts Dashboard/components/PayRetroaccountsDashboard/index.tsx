@@ -4,6 +4,9 @@ import { AccountDashboardInput } from "./AccountsDashboardInput";
 import { Row, Col,Select, message,Tabs} from 'antd';
 import  DashboardCards  from "../PayRetroaccountsDashboard/DashboardCards";
 import ApproveorRejectModal from "../ApproveorRejectModal"
+import AccountQueryModal from "./AccountsQueryModal"
+import DisputedataStore from "../../../../stores/DisputesStrore";
+
 
 
 declare var abp: any;
@@ -581,7 +584,8 @@ const PayRetroAccountsDashboard: React.SFC = () => {
         approveSubmit={approveSubmit} rejectSubmit={rejectSubmit} />
       	</Tabs.TabPane>
     <Tabs.TabPane tab="Queries" key="3">
-      Content of Tab Pane 3
+    <AccountQueryModal disputesStore={new DisputedataStore} />
+
     </Tabs.TabPane>
   </Tabs> 
      
