@@ -77,6 +77,7 @@ class DisputedataStore {
   async get(entityDto: EntityDto) {
     let result = await disputesService.get(entityDto);
     this.editDispute = result;
+    return result;
   }
 
   @action
@@ -95,6 +96,11 @@ class DisputedataStore {
   async accountget(entityDto: EntityDto) {
     let result = await disputesService.get(entityDto);
     this.editDispute = result;
+  }
+
+  public async getView(id:number) {
+    let result = await disputesService.getAllView(id)    
+    return result.data.result; 
   }
 
   @action

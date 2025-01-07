@@ -80,7 +80,7 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
 
   async componentDidMount() {
     await this.getAll();
-  }
+  } 
 
   async getAll() {
     if (!this.props.disputesStore) {
