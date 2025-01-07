@@ -15,4 +15,5 @@ export interface CreateOrEditDisputeDto
     SupplierName:string;
     BuyerName:string;
 
+
 }

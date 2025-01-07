@@ -2,22 +2,20 @@ import * as React from "react";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
 
 import  DashboardCards  from "./BuyerDashboardCards";
-import { Row, Col,Select, Tabs,Button } from 'antd';
-import { FilePdfOutlined } from "@ant-design/icons";
-import SupplierSubmitModal from '../../../Dashboard/components/PayRetroSupplierDashboard/SupplierSubmitModal';
+import { Row, Col,Select, Tabs,Button,Modal,message } from 'antd';
+import { FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
 import { BuyerDashboardInput } from "./BuyerDashboardInput";
 import BuyerQueryModal from "./BuyerQueryModal"
 import DisputedataStore from "../../../../stores/DisputesStrore";
 //import { keys } from "mobx";
 
+import ApproveorRejectModal from "../ApproveorRejectModal"
 
 declare var abp: any;
 
   const PayRetroBuyerDashboard: React.SFC = () => {
   const [tableData, setTableData] = React.useState<any[]>([]);
   const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
-  const [isSupplierSubmitModalOpen, setIsSupplierSubmitModalOpen] = React.useState<boolean>(false); // To control modal visibility
-  
   const [suppliers, setSuppliers] =React.useState<any[]>([]);
   const [selectedsuppliers, setselectedsuppliers] =React.useState<any[]>([]);   
   const [buyers, setBuyers] =React.useState<any[]>([]);
@@ -25,15 +23,15 @@ declare var abp: any;
   const [parts, setParts] =React.useState<any[]>([]);
   const [selectedparts, setselectedparts] =React.useState<any[]>([]);
   const [selectedcategory, setselectedcategory] =React.useState<any>(String);
-  const [submitIdRow, setSubmitIdRow] = React.useState<number>(0);
   const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  
  // const [isQueryModalVisible, setIsQueryModalVisible] = React.useState<boolean>(false);  
-  const [currentRowId, setCurrentRowId] = React.useState<string | null>(null); 
+  const [submitIdRow, setSubmitIdRow] = React.useState<number>(0);
   const [rowsupplierstatus, setrowsupplierstatus] = React.useState<number | null>(0); 
   const [rowBuyerstatus, setrowBuyerstatus] = React.useState<number | null>(0); 
   const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0); 
   const [selectedDate, setSelectedDate] = React.useState("");
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
+  const [isApproveRejectModalOpen, setIsApproveRejectModalOpen] = React.useState<boolean>(false); // To control modal visibility
   const [dashboardinput, setdashboardinput] = React.useState<BuyerDashboardInput>({
     Supplierids:[0],
     Buyerid:0,
@@ -180,8 +178,166 @@ declare var abp: any;
       setdashboardinput(buyerdashboardinput);
       await LoadsupplementarySummary(buyerdashboardinput);
     };
+  const handleSupplementrypdfButtonClick = async (pdfPath: string) => {
+      try {
+          // Fetch file data from the API
+          const response = await supplementarySummariesService.GetFile(pdfPath);
+  
+          if (response && response.fileBytes && response.fileType) {
+              // Convert the fileBytes (base64 string) into a data URL
+              const dataUrl = `data:${response.fileType};base64,${response.fileBytes}`;
+              
+              // Set the generated data URL to display in the iframe
+              setPdfUrl(dataUrl);
+              setIsModalVisible(true); // Open the modal
+          } else {
+              console.error("Invalid file response:", response);
+          }
+      } catch (error) {
+          console.error("Error fetching the PDF file:", error);
+      }
+  };
+  const handleSupplementryPathCancel = () => {
+    setIsModalVisible(false); // Close the modal
+  };
+  const handleAnnexurepdfButtonClick = async (pdfPath: string) => {
+      try {
+          // Fetch file data from the API
+          const response = await supplementarySummariesService.GetFile(pdfPath);
+  
+          if (response && response.fileBytes && response.fileType) {
+              // Convert the fileBytes (base64 string) into a data URL
+              const dataUrl = `data:${response.fileType};base64,${response.fileBytes}`;
+              
+              // Set the generated data URL to display in the iframe
+              setPdfUrl(dataUrl);
+              setIsModalVisible(true); // Open the modal
+          } else {
+              console.error("Invalid file response:", response);
+          }
+      } catch (error) {
+          console.error("Error fetching the PDF file:", error);
+      }
+  };
+  async function downloadFile({ path }: { path: string }): Promise<void> {
+    try {
+      // Call the service method to get the file details
+      const file = await supplementarySummariesService.DownloadExcel(path);
+  
+      // Check if the required properties exist
+      if (!file.fileContent || !file.fileType || !file.fileName) {
+        throw new Error("Invalid file data received.");
+      }
+  
+      // Convert the file content (Base64) into a Blob
+      const byteCharacters = atob(file.fileContent);
+      const byteNumbers = Array.from(byteCharacters, char => char.charCodeAt(0));
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: file.fileType });
+  
+      // Create a temporary anchor element to trigger the download
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob); // Create a Blob URL
+      link.download = file.fileName || "Annexure.xlsx"; // Use provided filename or default
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+  
+      // Revoke the Blob URL to free up memory
+      URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.error("Error downloading the file:", error);
+    }
+  }
   
   
+    const handleAnnexurePathCancel = async () => {
+      setIsModalVisible(false); // Close the modal
+    };
+    const approveSubmit = async(item: any) => {
+      console.log('Processing item:', item);
+      if (item.buyerEmailAddress) {
+        item.buyerEmailAddress = item.buyerEmailAddress.split(",").map((email: string) => email.trim());
+      }
+      if (item.supplierEmailAddress) {
+        item.supplierEmailAddress = item.supplierEmailAddress.split(",").map((email: string) => email.trim());
+      }
+    
+      if (item.accountantEmailAddress) {
+        item.accountantEmailAddress = item.accountantEmailAddress.split(",").map((email: string) => email.trim());
+      }
+      const jsondata = JSON.stringify(item);
+      console.log('item', jsondata);
+      const url = `${process.env.REACT_APP_REMOTE_SERVICE_BASE_URL}RetroPay/BuyerApprovalWorkflow/Approved`;
+      fetch(url, {
+        method: 'POST',
+        body: jsondata,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((data) => {
+          abp.ui.clearBusy();
+          message.success(`Approve Mail Sent to - ${item.buyerName}`);
+        })
+        .catch((error) => {
+          abp.ui.clearBusy();
+          abp.message.error(error.message || error);
+        });
+        var   buyerdashboard: BuyerDashboardInput = {
+          Supplierids:selectedsuppliers,
+          Buyerid:selectedbuyers.value,
+          Partids: selectedparts,
+          invoicetype:selectedcategory,
+          Date:null,
+          Document:null
+        };
+    
+        setdashboardinput(buyerdashboard);
+          await LoadsupplementarySummary(buyerdashboard);          
+    };
+    const rejectSubmit = async(item: any) => {
+      console.log('Processing item:', item);
+      if (item.buyerEmailAddress) {
+        item.buyerEmailAddress = item.buyerEmailAddress.split(",").map((email: string) => email.trim());
+      }
+      if (item.supplierEmailAddress) {
+        item.supplierEmailAddress = item.supplierEmailAddress.split(",").map((email: string) => email.trim());
+      }
+    
+      if (item.accountantEmailAddress) {
+        item.accountantEmailAddress = item.accountantEmailAddress.split(",").map((email: string) => email.trim());
+      }
+      const jsondata = JSON.stringify(item);
+      console.log('item', jsondata);
+      const url = `${process.env.REACT_APP_REMOTE_SERVICE_BASE_URL}RetroPay/BuyerApprovalWorkflow/Rejected`;
+      fetch(url, {
+        method: 'POST',
+        body: jsondata,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((data) => {
+          abp.ui.clearBusy();
+          message.success(`Approve Mail Sent to - ${item.buyerName}`);
+        })
+        .catch((error) => {
+          abp.ui.clearBusy();
+          abp.message.error(error.message || error);
+        });
+        var   buyerdashboard: BuyerDashboardInput = {
+          Supplierids:selectedsuppliers,
+          Buyerid:selectedbuyers.value,
+          Partids: selectedparts,
+          invoicetype:selectedcategory,
+          Date:null,
+          Document:null
+        };
+    
+        setdashboardinput(buyerdashboard);
+          await LoadsupplementarySummary(buyerdashboard);     
+    };
     const getsuppliers =async  (supplybuyers: number) => {
       
       
@@ -230,7 +386,7 @@ declare var abp: any;
   
     const handlepartChange =async  (selectedValues: any[]) => {
       
-      console.log(isModalVisible,currentRowId);
+      // console.log(isModalVisible,currentRowId);
       setselectedparts(selectedValues);
       console.log('selectedparts',selectedValues)
   
@@ -284,39 +440,20 @@ declare var abp: any;
   const toggleDropdown = (id:any,event: React.MouseEvent) => {
     event.stopPropagation();
     // Toggle the dropdown for the clicked row
-    setOpenDropdownId(openDropdownId === id ? null : id);
+    setOpenDropdownId((prevId) => (prevId === id ? null : id));
   };
 
   const handleDropdownAction = (action: string, id: number,event: React.MouseEvent) => {
     event.stopPropagation();
     console.log(`Action: ${action}, Row ID: ${id}`);
+    setSubmitIdRow(id);
+    setIsApproveRejectModalOpen(true);
     // Placeholder for dropdown action logic
   };
-
-
+  const closeApproveRejectModal = () => {
+    setIsApproveRejectModalOpen(false);
+  };
   
-  const handleSupplierSubmitAction = (action: string, id: number, event: React.MouseEvent) => {
-    event.stopPropagation();
-    console.log(action, id);
-    setSubmitIdRow(id);
-    // Open the modal
-    setIsSupplierSubmitModalOpen(true);
-  };
-  const closeSupplierSubmitModal = () => {
-    setIsSupplierSubmitModalOpen(false);
-  };
-  const supplementaryInvoiceSubmit = (item: any) => {
-    console.log('Processing item:', item);
-    // Your logic here
-  };
-  const handleSupplementaryDropdownAction = (buttonName: string, rowId: string, event: React.MouseEvent) => {
-    event.stopPropagation();
-    setCurrentRowId(rowId); // Set the rowId when the button is clicked
-    setIsModalVisible(true); // Show the modal
-  };
-  // const handleCloseModal = () => {
-  //   setIsModalVisible(false);        
-  // };
   function formatDate(d:string) {
     const date = new Date(d);
     const year = date.getFullYear();
@@ -348,25 +485,25 @@ declare var abp: any;
 
 }
 
-const handleSupplementrypdfButtonClick = async (pdfPath: string) => {
-    try {
+// const handleSupplementrypdfButtonClick = async (pdfPath: string) => {
+//     try {
         
-        const response = await supplementarySummariesService.GetFile(pdfPath);
+//         const response = await supplementarySummariesService.GetFile(pdfPath);
 
-        if (response && response.fileBytes && response.fileType) {
-            // Convert the fileBytes (base64 string) into a data URL
-            const dataUrl = `data:${response.fileType};base64,${response.fileBytes}`;
+//         if (response && response.fileBytes && response.fileType) {
+//             // Convert the fileBytes (base64 string) into a data URL
+//             const dataUrl = `data:${response.fileType};base64,${response.fileBytes}`;
             
-            // Set the generated data URL to display in the iframe
-            setPdfUrl(dataUrl);
-            setIsModalVisible(true); // Open the modal
-        } else {
-            console.error("Invalid file response:", response);
-        }
-    } catch (error) {
-        console.error("Error fetching the PDF file:", error);
-    }
-};
+//             // Set the generated data URL to display in the iframe
+//             setPdfUrl(dataUrl);
+//             setIsModalVisible(true); // Open the modal
+//         } else {
+//             console.error("Invalid file response:", response);
+//         }
+//     } catch (error) {
+//         console.error("Error fetching the PDF file:", error);
+//     }
+// };
 
 function barstatus(status:any) {
 
@@ -575,13 +712,6 @@ function barstatus(status:any) {
           </tbody>
         </table>
       </div>
-      <SupplierSubmitModal isOpen={isSupplierSubmitModalOpen} onClose={closeSupplierSubmitModal} submitIdRow={submitIdRow}
-        supplementaryInvoiceSubmit={supplementaryInvoiceSubmit} />
-        {/* <SupplementaryInvoiceModal
-        rowId={currentRowId}      // Pass rowId to the modal
-        visible={isModalVisible}   // Control visibility of the modal
-        onCancel={handleCloseModal} // Function to close modal
-      /> */}
 
     </Tabs.TabPane>
     <Tabs.TabPane tab="Approvals" key="2">
@@ -679,6 +809,33 @@ function barstatus(status:any) {
   ) : null}
 </span>
     </td>
+                <td style={{ padding: "10px", border: "1px solid #ddd", width: "175px" }}>
+                  <span>
+                    {row.supplementaryInvoicePath && (
+                      <Button
+                        type="link"
+                        onClick={() => handleSupplementrypdfButtonClick(row.supplementaryInvoicePath)}
+                      >
+                        <FilePdfOutlined />
+                      </Button>
+                    )}
+                    {row.annecurePath && (
+                      <Button
+                        type="link"
+                        onClick={() => handleAnnexurepdfButtonClick(row.annecurePath)}
+                      >
+                        <FilePdfOutlined />
+                      </Button>
+                    )}
+                    {row.supplementaryInvoicePath3 && (
+                      <Button
+                        type="link"
+                        onClick={() =>downloadFile({path: row.supplementaryInvoicePath3 })}>
+                        <FileExcelOutlined />
+                      </Button>
+                    )}
+                  </span>
+                </td>
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.accountingNo}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.accountingDate?formatDate(row.accountingDate):''}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
@@ -698,14 +855,14 @@ function barstatus(status:any) {
                     {openDropdownId === row.id && (
                       <div
                         style={{
-                          position: "absolute",
+                          //position: "absolute",
                           top: "100%",
                           left: "0",
                           backgroundColor: "#fff",
                           boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                          zIndex: 999,
+                          zIndex: 2000,
                           padding: "10px",
-                          width: "325px",
+                          width: "150px",
                         }}
                       >
                         <button
@@ -717,46 +874,10 @@ function barstatus(status:any) {
                             padding: "10px",
                             marginBottom: "5px",
                           }}
-                          onClick={(event) => handleSupplementaryDropdownAction("Supplementary Invoice/Credit Note Details", row.id,event)}
+                          onClick={(event) => handleDropdownAction("Action 1", row.id,event)}
                         >
-                          Supplementary Invoice/Credit Note Details
-                        </button>
-                        <button
-                          style={{
-                            width: "100%",
-                            backgroundColor: "#fff",
-                            color: "#071437",
-                            border: "none",
-                            padding: "10px",
-                          }}
-                          onClick={(event) => handleSupplierSubmitAction("Submit", row.id,event)}
-                        >
-                          Submit
-                        </button>
-                        <button
-                          style={{
-                            width: "100%",
-                            backgroundColor: "#fff",
-                            color: "#071437",
-                            border: "none",
-                            padding: "10px",
-                          }}
-                          onClick={(event) => handleDropdownAction("Raise Query", row.id,event)}
-                        >
-                          Raise Query
-                        </button>
-                        <button
-                          style={{
-                            width: "100%",
-                            backgroundColor: "#fff",
-                            color: "#071437",
-                            border: "none",
-                            padding: "10px",
-                          }}
-                          onClick={(event) => handleDropdownAction("History of Query", row.id,event)}
-                        >
-                          History of Query
-                        </button>
+                          Approve/Reject
+                        </button>                       
                       </div>
                     )}
                   </div>
@@ -772,15 +893,43 @@ function barstatus(status:any) {
             ))}
           </tbody>
         </table>
+        <ApproveorRejectModal isOpen={isApproveRejectModalOpen} onClose={closeApproveRejectModal} submitIdRow={submitIdRow}
+        approveSubmit={approveSubmit} rejectSubmit={rejectSubmit} />
       </div>
-      <SupplierSubmitModal isOpen={isSupplierSubmitModalOpen} onClose={closeSupplierSubmitModal} submitIdRow={submitIdRow}
-        supplementaryInvoiceSubmit={supplementaryInvoiceSubmit} />
-        {/* <SupplementaryInvoiceModal
-        rowId={currentRowId}      // Pass rowId to the modal
-        visible={isModalVisible}   // Control visibility of the modal
-        onCancel={handleCloseModal} // Function to close modal
-      /> */}
-
+<Modal
+        title="View PDF"
+        visible={isModalVisible}
+        onCancel={handleSupplementryPathCancel}
+        footer={null}
+        width="60%"
+      >
+        {pdfUrl && (
+          <iframe
+            src={pdfUrl}
+            width="100%"
+            height="600px"
+            title="PDF Viewer"
+            style={{ border: 'none' }}
+          />
+        )}
+      </Modal>
+      <Modal
+        title="View PDF"
+        visible={isModalVisible}
+        onCancel={handleAnnexurePathCancel}
+        footer={null}
+        width="60%"
+      >
+        {pdfUrl && (
+          <iframe
+            src={pdfUrl}
+            width="100%"
+            height="600px"
+            title="PDF Viewer"
+            style={{ border: 'none' }}
+          />
+        )}
+      </Modal>
     </Tabs.TabPane>
     <Tabs.TabPane tab="Queries" key="3">
     <BuyerQueryModal disputesStore={ new DisputedataStore} />
