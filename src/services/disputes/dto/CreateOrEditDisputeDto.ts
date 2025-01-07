@@ -11,7 +11,7 @@ export interface CreateOrEditDisputeDto
     SupplierRejectionId:number;
     SupplierId:number;
     BuyerId:number;
-    SupplierRejection:string;
+SupplierRejection:string;
     SupplierName:string;
     BuyerName:string;
 
