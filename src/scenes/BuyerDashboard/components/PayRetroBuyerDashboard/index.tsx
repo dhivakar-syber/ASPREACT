@@ -6,6 +6,9 @@ import { Row, Col,Select, Tabs,Button } from 'antd';
 import { FilePdfOutlined } from "@ant-design/icons";
 import SupplierSubmitModal from '../../../Dashboard/components/PayRetroSupplierDashboard/SupplierSubmitModal';
 import { BuyerDashboardInput } from "./BuyerDashboardInput";
+import BuyerQueryModal from "./BuyerQueryModal"
+import DisputedataStore from "../../../../stores/DisputesStrore";
+//import { keys } from "mobx";
 
 
 declare var abp: any;
@@ -24,6 +27,7 @@ declare var abp: any;
   const [selectedcategory, setselectedcategory] =React.useState<any>(String);
   const [submitIdRow, setSubmitIdRow] = React.useState<number>(0);
   const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  
+ // const [isQueryModalVisible, setIsQueryModalVisible] = React.useState<boolean>(false);  
   const [currentRowId, setCurrentRowId] = React.useState<string | null>(null); 
   const [rowsupplierstatus, setrowsupplierstatus] = React.useState<number | null>(0); 
   const [rowBuyerstatus, setrowBuyerstatus] = React.useState<number | null>(0); 
@@ -779,9 +783,11 @@ function barstatus(status:any) {
 
     </Tabs.TabPane>
     <Tabs.TabPane tab="Queries" key="3">
-      Content of Tab Pane 3
-    </Tabs.TabPane>
+    <BuyerQueryModal disputesStore={ new DisputedataStore} />
+</Tabs.TabPane>
+
   </Tabs>
+  
       
           
     </div>

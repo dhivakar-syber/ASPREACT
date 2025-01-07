@@ -42,10 +42,13 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ SupplierDashboardInputs
         >
           <div className="card-content" style={{ textAlign: "center" }}>
             <Badge
-              count={((carddata[card.key] || 0).toFixed(2))}
+              count={((card.key === "totalqueryraised"
+                ? (carddata[card.key] || 0) // Check explicitly for string or number 0
+                : (carddata[card.key] !== undefined && carddata[card.key] !== null ? carddata[card.key].toFixed(2) : 0) // Format other keys to 2 decimal places, default to 0 if null/undefined
+    ))}
               style={{ backgroundColor: "#006780", fontSize: "12px", padding: "0 8px" }}
             />
-           <b> Cr</b> 
+           <b> {card.key !== "totalqueryraised" && <b> Cr</b>} </b> 
           </div>
         </Card>
       </Col>

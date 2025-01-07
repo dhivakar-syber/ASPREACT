@@ -97,10 +97,18 @@ class disputesService {
     let result = await http.post('api/services/app/Disputes/BuyercloseEdit', createOrEditDisputeDto);
     return result.data.result;
   }
+  
 
   public async accountupdate(createOrEditDisputeDto: CreateOrEditDisputeDto) {
     let result = await http.post('api/services/app/Disputes/AccountsEdit', createOrEditDisputeDto);
     return result.data.result;
+  }
+
+  public async getAllView(id:number) {
+    const result = await http.get('api/services/app/Disputes/GetDisputeForView', {
+      params: { id } // Use an object to pass parameters
+    });
+    return result.data.result; 
   }
 
   public async getAllsuppliersummariesForLookupTable(pagedFilterAndSortedRequest: PagedDisputesResultRequestDto): Promise<PagedResultDto<DisputeSupplementarySummaryLookupTableDto>>{
