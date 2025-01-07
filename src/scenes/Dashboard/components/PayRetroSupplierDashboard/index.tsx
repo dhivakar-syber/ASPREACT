@@ -48,6 +48,7 @@ declare var abp: any;
   const [rowsupplierstatus, setrowsupplierstatus] = React.useState<number | null>(0); 
   const [rowBuyerstatus, setrowBuyerstatus] = React.useState<number | null>(0); 
   const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0);
+  const [implementationDate, setImplementationDate] = React.useState(selectedRow?.implementationDate || '');
   const [dashboardinput, setdashboardinput] = React.useState<SupplierDashboardInput>({
     Supplierid: 0,
     Buyerids: [0],
@@ -126,9 +127,42 @@ declare var abp: any;
     fetchData();
   }, []);
 
+  const handleDateChange = async (rowid:any,implementationDate:any,row:any) => {
+    const newDate= implementationDate
+    setImplementationDate(newDate);
+    console.log('New implementation date:', newDate);
+    console.log('Row Id:', rowid);
+    var result = await supplementarySummariesService.Implementationeffect(rowid,newDate);
+    console.log(result);
+    Suppliermodalview(row)
+    try {
+      const result = await supplementarySummariesService.grndata(rowid); // Await the Promise
+      setModalData(result);
+      console.log('setmodaldata',result) // Assuming the result contains the data in 'data' field
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+    try {
+      const annexureresult = await supplementarySummariesService.annexuredata(rowid); // Await the Promise
+      annexuresetModalData(annexureresult);
+      console.log('annexuresetmodaldata',annexureresult) // Assuming the result contains the data in 'data' field
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } 
+    message.success('Implementation Date changed Successfully Synced');
+  };
+  const handleBlur = () => {
+    // Handle the blur event when the user has finished interacting with the input
+    console.log('Input lost focus, final date:', implementationDate);
+    // Add any additional logic, like saving the date to a database, if needed
+};
+const handleInputChange = (event:React.ChangeEvent<HTMLInputElement>) => {
+  setImplementationDate(event.target.value); // Update state when date changes
+};
 
-  
-  
+const handleButtonClick = () => {
+  handleDateChange(selectedRow.id, implementationDate,selectedRow);
+};
   const handlesupplierChange = async  (value:any, option:any) => {
     
     console.log('selectedSuppliers',option,value)
@@ -632,12 +666,19 @@ return (
                           <Input readOnly value={formatDate(selectedRow.contractToDate)} />
                         </Item>
                         <Item label="Implemented On:">
-                        
-                        <Input type="Date" value={formatDateToInput(selectedRow.implementationDate)}/>
-          
-          
-
-                        </Item>
+      <Input
+        type="date"
+        value={formatDateToInput(selectedRow.implementationDate)}
+        onChange={handleInputChange} // Update state on input change
+        onBlur={handleBlur} // Optional blur handler
+      />
+      <button
+        type="button"
+        onClick={handleButtonClick} // Call handler on button click
+      >
+        Submit Date
+      </button>
+    </Item>
                         <Item label="Contract No:">
                           <Input readOnly value={selectedRow.contractNo} />
                         </Item>

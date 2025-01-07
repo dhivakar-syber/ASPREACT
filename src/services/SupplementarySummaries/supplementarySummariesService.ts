@@ -338,7 +338,62 @@ public async GetAllParts(supplierid:string,buyerid:string) {
           throw error; 
         }
       }
-
+      public async supplementaryInvoicebuyerapprove(id: number,remarks:string) {
+        try {
+          
+          const result = await http.post(
+            `api/services/app/SupplementarySummaries/supplementaryInvoicebuyerapprove?fileid=${id}&accountsapproveremarks=${remarks}`,'',
+            {
+              headers: {
+                'accept': 'text/plain',
+            }
+          }
+             
+          );
+          return result.data.result;
+        } catch (error) {
+          console.error('Error fetching supplementary summaries:', error);
+          throw error; 
+        }
+      }
+      public async supplementaryInvoicebuyerreject(id: number,remarks:string) {
+        try {
+          
+          const result = await http.post(
+            `api/services/app/SupplementarySummaries/supplementaryInvoiceaccountreject?fileid=${id}&accountsapproveremarks=${remarks}`,'',
+            
+            {
+              headers: {
+                'accept': 'text/plain',
+            }
+          }
+             
+          );
+          return result.data.result;
+        } catch (error) {
+          console.error('Error fetching supplementary summaries:', error);
+          throw error; 
+        }
+      }
+      public async Implementationeffect(id: number,date:string) {
+        try {
+          
+          const result = await http.post(
+            `api/services/app/SupplementarySummaries/Implementationeffect?supplementaryId=${id}&implementationdate=${date}`,'',
+            
+            {
+              headers: {
+                'accept': 'text/plain',
+            }
+          }
+             
+          );
+          return result.data.result;
+        } catch (error) {
+          console.error('Error fetching supplementary summaries:', error);
+          throw error; 
+        }
+      }
       public async supplementaryInvoiceAccountApprove(id: number,remarks:string,accNo:string,accdate:any) {
         try {
           
