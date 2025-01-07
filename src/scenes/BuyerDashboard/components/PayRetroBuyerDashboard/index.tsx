@@ -2,9 +2,6 @@ import * as React from "react";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
 
 import  DashboardCards  from "./BuyerDashboardCards";
-import { Row, Col,Select, Tabs,Button } from 'antd';
-import { FilePdfOutlined } from "@ant-design/icons";
-import SupplierSubmitModal from '../../../Dashboard/components/PayRetroSupplierDashboard/SupplierSubmitModal';
 import { Row, Col,Select, Tabs,Button,Modal,message } from 'antd';
 import { FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
 import { BuyerDashboardInput } from "./BuyerDashboardInput";
@@ -28,13 +25,11 @@ declare var abp: any;
   const [selectedcategory, setselectedcategory] =React.useState<any>(String);
   const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  
  // const [isQueryModalVisible, setIsQueryModalVisible] = React.useState<boolean>(false);  
-  const [currentRowId, setCurrentRowId] = React.useState<string | null>(null); 
   const [submitIdRow, setSubmitIdRow] = React.useState<number>(0);
   const [rowsupplierstatus, setrowsupplierstatus] = React.useState<number | null>(0); 
   const [rowBuyerstatus, setrowBuyerstatus] = React.useState<number | null>(0); 
   const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0); 
   const [selectedDate, setSelectedDate] = React.useState("");
-  const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   const [isApproveRejectModalOpen, setIsApproveRejectModalOpen] = React.useState<boolean>(false); // To control modal visibility
   const [dashboardinput, setdashboardinput] = React.useState<BuyerDashboardInput>({
@@ -490,25 +485,25 @@ declare var abp: any;
 
 }
 
-const handleSupplementrypdfButtonClick = async (pdfPath: string) => {
-    try {
+// const handleSupplementrypdfButtonClick = async (pdfPath: string) => {
+//     try {
         
-        const response = await supplementarySummariesService.GetFile(pdfPath);
+//         const response = await supplementarySummariesService.GetFile(pdfPath);
 
-        if (response && response.fileBytes && response.fileType) {
-            // Convert the fileBytes (base64 string) into a data URL
-            const dataUrl = `data:${response.fileType};base64,${response.fileBytes}`;
+//         if (response && response.fileBytes && response.fileType) {
+//             // Convert the fileBytes (base64 string) into a data URL
+//             const dataUrl = `data:${response.fileType};base64,${response.fileBytes}`;
             
-            // Set the generated data URL to display in the iframe
-            setPdfUrl(dataUrl);
-            setIsModalVisible(true); // Open the modal
-        } else {
-            console.error("Invalid file response:", response);
-        }
-    } catch (error) {
-        console.error("Error fetching the PDF file:", error);
-    }
-};
+//             // Set the generated data URL to display in the iframe
+//             setPdfUrl(dataUrl);
+//             setIsModalVisible(true); // Open the modal
+//         } else {
+//             console.error("Invalid file response:", response);
+//         }
+//     } catch (error) {
+//         console.error("Error fetching the PDF file:", error);
+//     }
+// };
 
 function barstatus(status:any) {
 
