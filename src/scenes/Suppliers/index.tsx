@@ -5,11 +5,7 @@ import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../components/AppComponentBase';
 // import SupplierLookUpData from './components/SupplierLookUpData';
-<<<<<<< HEAD
-import Edit from './components/createOrUpdateSupplier';
-=======
 import Edit from './components/createorupdatesuppliers';
->>>>>>> 89f607e105cb1c565d1e82f76259eccd2692fd60
 import { EntityDto } from '../../services/dto/entityDto';
 import { L } from '../../lib/abpUtility';
 import Stores from '../../stores/storeIdentifier';
@@ -223,9 +219,6 @@ class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState> {
                 width: 150,
                 render: (text: string, record: any) => <div>{record.supplier?.code || ''}</div>,
             },
-<<<<<<< HEAD
-
-=======
             {
                 title: L('UserName'),
                 dataIndex: 'userName',
@@ -247,7 +240,6 @@ class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState> {
             //     width: 150,
             //     render: (text: string, record: any) => <div>{record.supplier?.rid || ''}</div>,
             // },
->>>>>>> 89f607e105cb1c565d1e82f76259eccd2692fd60
           ];
 
         return (
