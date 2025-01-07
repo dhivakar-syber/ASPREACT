@@ -13,7 +13,7 @@ import http from '../httpService';
 
 class RoleService {
   public async create(createRoleInput: CreateRoleInput): Promise<PagedResultDto<CreateRoleOutput>> {
-    let result = await http.post('api/services/app/Role/Create', createRoleInput);
+    let result = await http.post('api/services/app/Role/CreateRoleAsync', createRoleInput);
     return result.data.result;
   }
 
