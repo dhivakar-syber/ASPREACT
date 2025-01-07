@@ -12,7 +12,7 @@ interface ApproveRejectModalModalProps {
   rejectSubmit: (item: any) => void; 
 }
 
-const SupplierSubmitModal: React.FC<ApproveRejectModalModalProps> = ({ isOpen, onClose,submitIdRow,
+const AccountsApproval: React.FC<ApproveRejectModalModalProps> = ({ isOpen, onClose,submitIdRow,
     approveSubmit,rejectSubmit }) => {
     const [submitText, setSubmitText] = useState('');
     const submitRemarksRef = useRef<HTMLTextAreaElement>(null);
@@ -219,4 +219,4 @@ const SupplierSubmitModal: React.FC<ApproveRejectModalModalProps> = ({ isOpen, o
     );
 };
 
-export default SupplierSubmitModal;
+export default AccountsApproval;

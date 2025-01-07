@@ -77,6 +77,7 @@ class DisputedataStore {
   async get(entityDto: EntityDto) {
     let result = await disputesService.get(entityDto);
     this.editDispute = result;
+    return result;
   }
 
   @action
@@ -97,6 +98,11 @@ class DisputedataStore {
     this.editDispute = result;
   }
 
+  public async getView(id:number) {
+    let result = await disputesService.getAllView(id)    
+    return result.data.result; 
+  }
+
   @action
   async createDisputeData() {
     this.editDispute = {
@@ -111,6 +117,9 @@ class DisputedataStore {
                 SupplierRejectionId:0,
                 SupplierId:0,
                 BuyerId:0,
+                SupplierRejection:'',
+                SupplierName:'',
+                BuyerName:'',
             },
             SupplementarySummaryDisplayProperty: '',
             SupplierRejectionCode: '',
@@ -157,7 +166,7 @@ class DisputedataStore {
   @action
   async getAllsupplierrejectionForLookupTable(pagedFilterAndSortedRequest: PagedUserResultRequestDto) {
     let result = await disputesService.getAllsupplierrejectionForLookupTable(pagedFilterAndSortedRequest);
-    this.rejectionlookupdata = result;
+    return result;
   }
   @action
   async getAllBuyerForLookupTable(pagedFilterAndSortedRequest: PagedUserResultRequestDto) {

@@ -59,12 +59,18 @@ class disputesService {
         SupplementarySummaryDisplayPropertyFilter: getAllDisputesInput.SupplementarySummaryDisplayPropertyFilter,
         SupplierRejectionCodeFilter: getAllDisputesInput.SupplierRejectionCodeFilter,
         SupplierCodeFilter: getAllDisputesInput.SupplierCodeFilter,
-        BuyerShortIdFilter: getAllDisputesInput.BuyerShortIdFilter
+        BuyerShortIdFilter: getAllDisputesInput.BuyerShortIdFilter,
+        PagedDisputesResultRequestDto: {
+            maxResultCount: getAllDisputesInput.PagedDisputesResultRequestDto.maxResultCount,
+            skipCount: getAllDisputesInput.PagedDisputesResultRequestDto.skipCount,
+            keyword: getAllDisputesInput.PagedDisputesResultRequestDto.keyword
+        }
     };
 
     const result = await http.post('api/services/app/Disputes/SupplierSummaryGetAll', input);
     return result.data.result;
 }
+
 
 
   public async buyergetAll(pagedFilterAndSortedRequest: PagedDisputesResultRequestDto): Promise<PagedResultDto<GetDisputeForViewDto>> {
@@ -91,10 +97,18 @@ class disputesService {
     let result = await http.post('api/services/app/Disputes/BuyercloseEdit', createOrEditDisputeDto);
     return result.data.result;
   }
+  
 
   public async accountupdate(createOrEditDisputeDto: CreateOrEditDisputeDto) {
     let result = await http.post('api/services/app/Disputes/AccountsEdit', createOrEditDisputeDto);
     return result.data.result;
+  }
+
+  public async getAllView(id:number) {
+    const result = await http.get('api/services/app/Disputes/GetDisputeForView', {
+      params: { id } // Use an object to pass parameters
+    });
+    return result.data.result; 
   }
 
   public async getAllsuppliersummariesForLookupTable(pagedFilterAndSortedRequest: PagedDisputesResultRequestDto): Promise<PagedResultDto<DisputeSupplementarySummaryLookupTableDto>>{
@@ -110,6 +124,9 @@ class disputesService {
     let result = await http.get('api/services/app/Disputes/GetAllBuyerForLookupTable', { params: pagedFilterAndSortedRequest });
     return result.data.result;
   }
+  
+  
+
   public async getAllSupplierForLookupTable(pagedFilterAndSortedRequest: PagedDisputesResultRequestDto): Promise<PagedResultDto<DisputeSupplierLookupTableDto>>{
     let result = await http.get('api/services/app/Disputes/GetAllSupplierForLookupTable', { params: pagedFilterAndSortedRequest });
     return result.data.result;
@@ -124,6 +141,18 @@ class disputesService {
     } catch (error) {
       console.error('Error fetching buyer mail:', error);
       throw error; // Re-throw the error for further handling
+    }
+  }
+
+  public async getBuyerAndSupplierNameAsync(id: number | string): Promise<any> {
+    try {
+      const response = await http.get('api/services/app/Disputes/GetBuyerAndSupplierName', {
+        params: { id },
+      });
+      return response.data.result;
+    } catch (error) {
+      console.error('Error fetching buyer and supplier name:', error);
+      throw error; // Rethrow the error to let the caller handle it
     }
   }
   

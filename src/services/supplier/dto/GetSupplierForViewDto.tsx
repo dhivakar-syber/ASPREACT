@@ -5,5 +5,5 @@ export interface GetSupplierForViewDto{
 id:number;
 name:string;
 code:string;
-userid:number;
+userId:number;
 } 

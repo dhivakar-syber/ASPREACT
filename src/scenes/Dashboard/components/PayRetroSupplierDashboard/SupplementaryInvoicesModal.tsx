@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState } from "react";
 import { Modal, Button, Input, Select, DatePicker, Upload, message, Table } from "antd";
 import { UploadOutlined,FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/es/upload";
@@ -70,11 +70,11 @@ for (let i = 1; i <= t; i++) {
     }
   };
 
-  useEffect(() => {
-    if (visible && rowId) {
-      updateTableData(rowId);
-    }
-  }, [visible, rowId]); 
+  // useEffect(() => {
+  //   if (visible && rowId) {
+  //     updateTableData(rowId);
+  //   }
+  // }, [visible, rowId]); 
   
   const handleUpload = async () => {
     if (!invoiceNo || !invoiceDate || !annexureFile || !attachmentFile || !annexureAttachmentFile) {

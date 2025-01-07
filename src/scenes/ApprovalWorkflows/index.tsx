@@ -25,6 +25,14 @@ export interface IApprovalWorkflowsState {
   skipCount: number;
   userId: number;
   filter: string;
+  buyerShortIdFilter:string,
+  supplierCodeFilter:string,
+  userNameFilter:string,
+  userName2Filter:string,
+  userName3Filter:string,
+  buyerid:number,
+  supplierid:number,
+  filterVisible: boolean;
 }
 type BuyerLookupItem = {
   id: number;
@@ -60,11 +68,19 @@ class ApprovalWorkflows extends AppComponentBase<IApprovalWorkflowsProps, IAppro
     skipCount: 0,
     userId: 0,
     filter: '',
+    buyerShortIdFilter:'',
+    supplierCodeFilter:'',
+    userNameFilter:'',
+    userName2Filter:'',
+    userName3Filter:'',
+    buyerid:0,
+    supplierid:0,
     selectedUserLookupItem: null as UserLookupItem | null,
     selectedUser2LookupItem: null as User2LookupItem | null,
     selectedUser3LookupItem: null as User3LookupItem | null,
     selectedSupplierLookupItem: null as SupplierLookupItem | null,
     selectedBuyerLookupItem: null as BuyerLookupItem | null,
+    filterVisible:false,
   };
 
   async componentDidMount() {
@@ -76,19 +92,65 @@ class ApprovalWorkflows extends AppComponentBase<IApprovalWorkflowsProps, IAppro
         console.error('approvalWorkflowStore is undefined');
         return;
     }
-    await this.props.approvalWorkflowStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
+    const filter ={
+      buyerShortIdFilter:this.state.buyerShortIdFilter,
+      supplierCodeFilter:this.state.supplierCodeFilter,
+      userNameFilter:this.state.userNameFilter,
+      userName2Filter:this.state.userName2Filter,
+      userName3Filter:this.state.userName3Filter,
+      buyerid:this.state.buyerid,
+      supplierid:this.state.supplierid,
+      maxResultCount:this.state.maxResultCount,
+      skipCount:this.state.skipCount,
+      keyword:this.state.filter,
+    }
+    await this.props.approvalWorkflowStore.getAll( filter);
+
   }
 
   handleTableChange = (pagination: any) => {
     this.setState({ skipCount: (pagination.current - 1) * this.state.maxResultCount! }, async () => await this.getAll());
   };
-
+  handleBuyerChange = (value: string) => {
+    this.setState({buyerShortIdFilter:value}, async () => await this.getAll());
+};
+handleCodeChange = (value: string) => {
+  this.setState({supplierCodeFilter:value}, async () => await this.getAll());
+};
+handleNameChange = (value: string) => {
+  this.setState({userNameFilter:value}, async () => await this.getAll());
+};
+handleName2Change = (value: string) => {
+  this.setState({userName2Filter:value}, async () => await this.getAll());
+};
+handleName3Change = (value: string) => {
+  this.setState({userName3Filter:value}, async () => await this.getAll());
+};
+toggleFilterBox = () => {
+  this.setState({ filterVisible: !this.state.filterVisible });
+};
   Modal = () => {
     this.setState({
       modalVisible: !this.state.modalVisible,
     });
   };
 
+  resetFilters = async () => {
+    this.setState(
+      {
+        buyerShortIdFilter: '', // Reset filter values
+        supplierCodeFilter: '',
+        userNameFilter: '',
+        userName2Filter: '',
+        userName3Filter: '',
+        filter: '', // Reset other filters as needed
+      },
+      async () => {
+        await this.getAll(); // Fetch data with no filters applied
+      }
+    );
+  };
+  
   async createOrUpdateModalOpen(entityDto: EntityDto) {
     if (entityDto.id === 0) {
       await this.props.approvalWorkflowStore.createApprovalWorkflow();
@@ -102,7 +164,7 @@ class ApprovalWorkflows extends AppComponentBase<IApprovalWorkflowsProps, IAppro
     setTimeout(() => {
       this.formRef.current?.setFieldsValue({ ...this.props.approvalWorkflowStore.editUser });
     }, 100);
-  }
+  } 
 
   delete(input: EntityDto) {
     const self = this;
@@ -268,6 +330,89 @@ editdata:any = null;
             <Search placeholder={this.L('Filter')} onSearch={this.handleSearch} />
           </Col>
         </Row>
+        <Col>
+          <span
+            style={{ cursor: 'pointer'}}
+            onClick={() => this.setState({ filterVisible: !this.state.filterVisible })}
+          >
+            <span
+             style={{ cursor: 'pointer', marginBottom: '10px', display: 'inline-block' }}
+              onClick={this.toggleFilterBox}
+            >
+              {this.state.filterVisible ? 'Hide Advance Filters' : 'Show Advance Filters'}
+            </span>
+
+          </span>
+        </Col>
+        
+        {/* Filter */}
+
+        {this.state.filterVisible && (
+       <Row gutter={16} style={{ marginTop: '10px' }}>
+
+        <Col xs={{span:5,offset:0}}>
+          <label className="form-label">{L('Buyer')}</label>
+          <input 
+              value={this.state.buyerShortIdFilter} // Correctly bind the value to the state
+              onChange={(e) =>this.handleBuyerChange ( e.target.value ) // Update the state on change
+            }
+          />
+          
+        </Col>
+
+           <Col xs={{span:5,offset:0}}>
+              <label className="form-label">{L('Code')}</label>
+              <input 
+              value={this.state.supplierCodeFilter} // Correctly bind the value to the state
+              onChange={(e) =>this.handleCodeChange ( e.target.value ) // Update the state on change
+              }
+            />
+          </Col>
+
+          <Col xs={{span:5,offset:0}}>
+            <label className="form-label">{L('Buyer Email Address')}</label>
+            <input 
+                  value={this.state.userNameFilter} // Correctly bind the value to the state
+                  onChange={(e) => this.handleNameChange ( e.target.value ) // Update the state on change
+                }
+              />
+            </Col>
+
+                 
+           <Col xs={{span:5,offset:0}}>
+            <label className="form-label">{L('F&C Email Address')}</label>
+            <input 
+                    value={this.state.userName2Filter} // Correctly bind the value to the state
+                    onChange={(e) =>this.handleName2Change ( e.target.value ) // Update the state on change
+                  }
+                />
+            </Col>
+
+           <Col xs={{span:5,offset:0}}>
+            <label className="form-label">{L('CBFC Email Address')}</label>
+            <input 
+                    value={this.state.userName3Filter} // Correctly bind the value to the state
+                    onChange={(e) =>this.handleName3Change ( e.target.value ) // Update the state on change
+                  }
+                />
+            </Col>
+
+            <Col xs={{ span: 4 }} style={{
+                position: 'absolute',
+                top: '150px',
+                right: '24px',
+                width: '10%',
+              }}>
+                <Button
+                  type="default"
+                  onClick={this.resetFilters}
+                  style={{ marginTop: '24px', width: '100%' }}
+                >
+                  Reset
+                </Button>
+              </Col>
+        </Row>
+            )}
         <Row style={{ marginTop: 20 }}>
           <Col
             xs={{ span: 24, offset: 0 }}
