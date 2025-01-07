@@ -322,8 +322,8 @@ editdata:any = null;
         </div>
         
         {this.state.filterVisible && (
-                <Row gutter={16} style={{ marginTop: '10px' }}>
-                <Col xs={{span:5,offset:0}}>
+                <Row gutter={10} style={{ marginTop: '10px' }}>
+                <Col xs={{span:4,offset:0}}>
                 <label className="form-label">{L('Query')}</label>
                 <input 
                     value={this.state.QueryFilter} // Correctly bind the value to the state
@@ -334,7 +334,7 @@ editdata:any = null;
 
                  {/* Filter */}
 
-                <Col xs={{span:5,offset:0}}>
+                <Col xs={{span:4,offset:0}}>
                 <label className="form-label">{L('BuyerRemarks')}</label>
                 <input 
                     value={this.state.BuyerRemarksFilter} // Correctly bind the value to the state
@@ -343,7 +343,7 @@ editdata:any = null;
                 />
                 </Col>
 
-                <Col xs={{span:5,offset:0}}>
+                <Col xs={{span:4,offset:0}}>
                 <label className="form-label">{L('Status')}</label>
                 <select 
                 className="form-select reload-on-change" 
@@ -366,7 +366,7 @@ editdata:any = null;
                     {/* <input onChange={(e) => this.handleStatusChange(e.target.value)}/> */}
                 </Col>
 
-                <Col xs={{span:5,offset:0}}>
+                <Col xs={{span:4,offset:0}}>
                 <label className="form-label">{L('SupplementarySummaryDisplayProperty')}</label>
                 <input 
                     value={this.state.SupplementarySummaryDisplayPropertyFilter} // Correctly bind the value to the state
@@ -375,7 +375,8 @@ editdata:any = null;
                 />
                 </Col>
 
-                <Col xs={{span:5,offset:0}}>
+                
+                <Col xs={{span:4,offset:0}}>
                 <label className="form-label">{L('SupplierRejectionCode')}</label>
                 <input 
                     value={this.state.SupplierRejectionCodeFilter} // Correctly bind the value to the state
@@ -384,7 +385,7 @@ editdata:any = null;
                 />
                 </Col>
 
-                <Col xs={{span:5,offset:0}}>
+                <Col xs={{span:4,offset:0}}>
                 <label className="form-label">{L('SupplierCode')}</label>
                 <input 
                     value={this.state.SupplierCodeFilter} // Correctly bind the value to the state
@@ -393,7 +394,7 @@ editdata:any = null;
                 />
                 </Col>
 
-                <Col xs={{span:5,offset:0}}>
+                <Col xs={{span:4,offset:0}}>
                 <label className="form-label">{L('BuyerShortId')}</label>
                 <input 
                     value={this.state.BuyerShortIdFilter} // Correctly bind the value to the state
@@ -411,7 +412,7 @@ editdata:any = null;
                 <Button
                   type="default"
                   onClick={this.resetFilters}
-                  style={{ marginTop: '24px', width: '100%' }}
+                  style={{ marginTop: '24px', width: '50%' }}
                 >
                   Reset
                 </Button>

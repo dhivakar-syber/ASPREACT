@@ -406,7 +406,7 @@ editdata:any = null;
                 <Button
                   type="default"
                   onClick={this.resetFilters}
-                  style={{ marginTop: '24px', width: '100%' }}
+                  style={{ marginTop: '24px', width: '50%' }}
                 >
                   Reset
                 </Button>
