@@ -1,5 +1,5 @@
 export interface CreateOrEditSupplierDto{
-    userid:string;
+    userId:number;
     name:string;
     code:string;
 }

@@ -5,7 +5,11 @@ import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../components/AppComponentBase';
 // import SupplierLookUpData from './components/SupplierLookUpData';
+<<<<<<< HEAD
+import Edit from './components/createOrUpdateSupplier';
+=======
 import Edit from './components/createorupdatesuppliers';
+>>>>>>> 89f607e105cb1c565d1e82f76259eccd2692fd60
 import { EntityDto } from '../../services/dto/entityDto';
 import { L } from '../../lib/abpUtility';
 import Stores from '../../stores/storeIdentifier';
@@ -21,8 +25,12 @@ export interface SupplierdataState {
     modalVisible: boolean;
     maxResultCount: number;
     skipCount: number;
-    userId: number;
+    userId:number;
     filter: string;
+    NameFilter:string;
+    CodeFilter:string;
+    UserNameFilter:string;
+    filterVisible: boolean;
 }
 
 type SupplierUserLookupTableDto = {
@@ -43,8 +51,15 @@ class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState> {
         maxResultCount: 10,
         skipCount: 0,
         userId: 0,
+        name:'',
+        code:'',
         filter: '',
+        NameFilter:'',
+        CodeFilter:'',
+        UserNameFilter:'',
+        filterVisible:false,
         SupplierLookupItem: null as SupplierUserLookupTableDto | null,
+
     };
 
     async componentDidMount() {
@@ -56,22 +71,57 @@ class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState> {
             console.error('supplierStore is undefined');
             return;
         }
-        await this.props.supplierStore.getAll({
-            maxResultCount: this.state.maxResultCount,
-            skipCount: this.state.skipCount,
-            keyword: this.state.filter
-        });
+        const filter ={
+            NameFilter:this.state.NameFilter,
+            CodeFilter:this.state.CodeFilter,
+            UserNameFilter:this.state.UserNameFilter,
+            maxResultCount:this.state.maxResultCount,
+            skipCount:this.state.skipCount,
+            keyword:this.state.filter,
+          }
+        await this.props.supplierStore.getAll(filter);
     }
 
     handleTableChange = (pagination: any) => {
         this.setState({ skipCount: (pagination.current - 1) * this.state.maxResultCount! }, async () => await this.getAll());
     };
+    // handleUseridChange = async (value: number) => {
+    //     this.setState({ userId: value }); 
+    //     await this.getAll(); 
+    //   };
+    handleNameChange = (value: string) => {
+        this.setState({NameFilter:value }, async () => await this.getAll());
+    };
+    handleCodeChange = (value: string) => {
+        this.setState({CodeFilter:value }, async () => await this.getAll());
+    };
+    handleUserChange = (value: string) => {
+        this.setState({UserNameFilter:value }, async () => await this.getAll());
+    };
+    toggleFilterBox = () => {
+        this.setState({ filterVisible: !this.state.filterVisible });
+      };
+
 
     Modal = () => {
         this.setState({
             modalVisible: !this.state.modalVisible,
         });
     };
+
+    resetFilters = async () => {
+        this.setState(
+          {
+            NameFilter: '', // Reset filter values
+            CodeFilter: '',
+            UserNameFilter: '',
+            filter: '', // Reset other filters as needed
+          },
+          async () => {
+            await this.getAll(); // Fetch data with no filters applied
+          }
+        );
+      };
 
     async createOrUpdateModalOpen(entityDto: EntityDto) {
         if (entityDto.id === 0) {
@@ -152,13 +202,13 @@ class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState> {
                     </div>
                 ),
             },
-            // {
-            //     title: L('Userid'),
-            //     dataIndex: 'supplier.userid',
-            //     key: 'userid',
-            //     width: 150,
-            //     render: (text: string, record: any) => <div>{record.supplier?.userid || ''}</div>,
-            // },
+            {
+                title: L('UserName'),
+                dataIndex: 'supplier.userid',
+                key: 'userid',
+                width: 150,
+                render: (text: string, record: any) => <div>{record.supplier?.userid || ''}</div>,
+            },
             {
                 title: L('Name'),
                 dataIndex: 'supplier.name',
@@ -173,6 +223,9 @@ class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState> {
                 width: 150,
                 render: (text: string, record: any) => <div>{record.supplier?.code || ''}</div>,
             },
+<<<<<<< HEAD
+
+=======
             {
                 title: L('UserName'),
                 dataIndex: 'userName',
@@ -194,6 +247,7 @@ class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState> {
             //     width: 150,
             //     render: (text: string, record: any) => <div>{record.supplier?.rid || ''}</div>,
             // },
+>>>>>>> 89f607e105cb1c565d1e82f76259eccd2692fd60
           ];
 
         return (
@@ -212,6 +266,66 @@ class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState> {
                         <Search placeholder={this.L('Filter')} onSearch={this.handleSearch} />
                     </Col>
                 </Row>
+                <div>
+                    <span
+                    style={{ cursor: 'pointer'}}
+                    onClick={() => this.setState({ filterVisible: !this.state.filterVisible })}
+                    >
+                    <span
+                    style={{ cursor: 'pointer', marginBottom: '10px', display: 'inline-block' }}
+                    onClick={this.toggleFilterBox}
+                    >
+                    {this.state.filterVisible ? 'Hide Advance Filters ' : 'Show Advance Filters'}
+                    </span>
+
+                    </span>
+                </div>
+
+            {this.state.filterVisible && (
+                <Row gutter={16} style={{ marginTop: '10px' }}>
+                <Col xs={{span:5,offset:0}}>
+                <label className="form-label">{L('Name')}</label>
+                <input 
+              value={this.state.NameFilter} // Correctly bind the value to the state
+              onChange={(e) =>this.handleNameChange ( e.target.value ) // Update the state on change
+            }
+          />
+                </Col>
+
+                <Col xs={{span:5,offset:0}}>
+                <label className="form-label">{L('UserId')}</label>
+                <input 
+              value={this.state.CodeFilter} // Correctly bind the value to the state
+              onChange={(e) =>this.handleCodeChange (e.target.value ) // Update the state on change
+            }
+          />
+                </Col>
+
+                <Col xs={{span:5,offset:0}}>
+                <label className="form-label">{L('Code')}</label>
+                <input 
+              value={this.state.UserNameFilter} // Correctly bind the value to the state
+              onChange={(e) =>this.handleUserChange (e.target.value) // Update the state on change
+            }
+          />
+                </Col>
+
+                <Col xs={{ span: 4 }} style={{
+                position: 'absolute',
+                top: '150px',
+                right: '24px',
+                width: '10%',
+              }}>
+                <Button
+                  type="default"
+                  onClick={this.resetFilters}
+                  style={{ marginTop: '24px', width: '100%' }}
+                >
+                  Reset
+                </Button>
+              </Col>
+                </Row>
+)}
                 <Row style={{ marginTop: 20 }}>
                     <Col xs={{ span: 24, offset: 0 }} sm={{ span: 24, offset: 0 }} md={{ span: 24, offset: 0 }} lg={{ span: 24, offset: 0 }} xl={{ span: 24, offset: 0 }} xxl={{ span: 24, offset: 0 }}>
                         <Table

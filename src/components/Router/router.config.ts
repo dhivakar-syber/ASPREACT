@@ -104,7 +104,7 @@ export const appRouters: any = [
   },
   {
     path: '/Suppliers',
-    permission: '',
+    permission: 'Pages.Administration.Suppliers',
     title: 'Suppliers',
     name: 'supplier',
     icon: TagsOutlined,
