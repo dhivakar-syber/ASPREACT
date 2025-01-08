@@ -1,10 +1,10 @@
+import {UserEditDto} from './userEditDto'
+
 export interface CreateOrUpdateUserInput {
-  userName: string;
-  name: string;
-  surname: string;
-  emailAddress: string;
-  isActive: boolean;
-  roleNames: string[];
-  password: string;
-  id: number;
+  user: UserEditDto; // UserEditDto from the previous definition
+  assignedRoleNames: string[];
+  sendActivationEmail: boolean;
+  setRandomPassword: boolean;
+  organizationUnits: number[];
+  id:number;
 }
