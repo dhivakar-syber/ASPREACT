@@ -187,7 +187,7 @@ IntimateToBuyerMail = async (item: any) => {
       const jsondata = JSON.stringify(item);
       console.log(jsondata);
   
-      const url = `${process.env.REACT_APP_REMOTE_SERVICE_BASE_URL}PayRetro/disputeaccoutantapprovalmail`;
+      const url = `${process.env.REACT_APP_REMOTE_SERVICE_BASE_URL}PayRetro/AccountantResolveWorkflow`;
   
       abp.ui.setBusy();
   
