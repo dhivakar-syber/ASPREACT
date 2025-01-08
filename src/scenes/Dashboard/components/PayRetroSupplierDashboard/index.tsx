@@ -132,11 +132,14 @@ declare var abp: any;
     setImplementationDate(newDate);
     console.log('New implementation date:', newDate);
     console.log('Row Id:', rowid);
-    var result = await supplementarySummariesService.Implementationeffect(rowid,newDate);
-    console.log(result);
-    Suppliermodalview(row)
+     await supplementarySummariesService.Implementationeffect(rowid,newDate);
+
+     row = await supplementarySummariesService.GetAllsupplementarySummarybyId(rowid);
+    console.log('ImplementationDateChange',row[0]);
+    setSelectedRow(row[0]);
     try {
-      const result = await supplementarySummariesService.grndata(rowid); // Await the Promise
+      const result = await supplementarySummariesService.grndata(rowid);
+      setModalData([]); // Await the Promise
       setModalData(result);
       console.log('setmodaldata',result) // Assuming the result contains the data in 'data' field
     } catch (error) {
@@ -144,6 +147,7 @@ declare var abp: any;
     }
     try {
       const annexureresult = await supplementarySummariesService.annexuredata(rowid); // Await the Promise
+      annexuresetModalData([]);
       annexuresetModalData(annexureresult);
       console.log('annexuresetmodaldata',annexureresult) // Assuming the result contains the data in 'data' field
     } catch (error) {
