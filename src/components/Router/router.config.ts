@@ -241,4 +241,4 @@ export const appRouters: any = [
   },
 ];
 
-export const routers = [userRouter, appRouters];
+export const routers = [...userRouter, ...appRouters];
