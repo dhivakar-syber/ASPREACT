@@ -529,7 +529,7 @@ function barstatus(status:any) {
       <p>Current User id:{abp.session.userId}</p>
 <DashboardCards BuyerDashboardinputs={dashboardinput} />
 <br></br>
-<Row gutter={11}>
+<Row gutter={11} style={{ marginRight:'-200.5px'}}>
     <Col className="gutter-row" span={4}>
       <div style={{ textAlign: 'left' }}>
       <h3>Buyer</h3>
@@ -657,7 +657,7 @@ function barstatus(status:any) {
     <Tabs.TabPane tab="Home" key="1">
       <div style={{ marginTop: "20px" }}>
         
-        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px",whiteSpace:'nowrap' }}>
           <thead>
             <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "center" }}>
               {[
