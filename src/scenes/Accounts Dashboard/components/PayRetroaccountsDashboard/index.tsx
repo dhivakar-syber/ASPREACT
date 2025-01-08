@@ -1,9 +1,10 @@
 import * as React from "react";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
 import { AccountDashboardInput } from "./AccountsDashboardInput";
-import { Row, Col,Select, message,Tabs} from 'antd';
+import { Row, Col,Select, message,Tabs,Button,Modal} from 'antd';
 import  DashboardCards  from "../PayRetroaccountsDashboard/DashboardCards";
 import ApproveorRejectModal from "../ApproveorRejectModal"
+import { FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
 import AccountQueryModal from "./AccountsQueryModal"
 import DisputedataStore from "../../../../stores/DisputesStrore";
 
@@ -26,6 +27,8 @@ const PayRetroAccountsDashboard: React.SFC = () => {
   const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0);
     const [submitIdRow, setSubmitIdRow] = React.useState<number>(0);
       const [selectedDate, setSelectedDate] = React.useState<string>('');
+      const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  
+      const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   const [isSupplierSubmitModalOpen, setIsSupplierSubmitModalOpen] = React.useState<boolean>(false); // To control modal visibility
   
   
@@ -166,7 +169,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
   
     var  result = await supplementarySummariesService.accountsDashboardSummaries(accountDashboardInput);
       setTableData(result.data.result || []);
-      console.log("Supplementary_top_table", result.data.result);
+      console.log("Account_Supplementary_top_table", result.data.result);
   
       const carddetails = await supplementarySummariesService.accounntcarddetails(accountDashboardInput);
   
@@ -282,7 +285,113 @@ const PayRetroAccountsDashboard: React.SFC = () => {
     return `${day}-${month}-${year}`; 
 }
 
-  
+function supplierstatus(status:any) {
+
+  switch (status) {
+      case 0:
+          return 'progress-segment pending'; //yellow
+      default:
+          return 'progress-segment approved';//green
+  }
+
+
+
+}
+
+function barstatus(status:any) {
+
+  switch (status) {
+      case 0:
+          return 'progress-segment default'; //yellow
+      case 1:
+          return 'progress-segment pending';
+      case 2:
+          return 'progress-segment approved';
+      case 3:
+          return 'progress-segment rejected';
+      default:
+          return '';
+  }
+
+
+
+}
+  const handleSupplementrypdfButtonClick = async (pdfPath: string) => {
+        try {
+            // Fetch file data from the API
+            const response = await supplementarySummariesService.GetFile(pdfPath);
+    
+            if (response && response.fileBytes && response.fileType) {
+                // Convert the fileBytes (base64 string) into a data URL
+                const dataUrl = `data:${response.fileType};base64,${response.fileBytes}`;
+                
+                // Set the generated data URL to display in the iframe
+                setPdfUrl(dataUrl);
+                setIsModalVisible(true); // Open the modal
+            } else {
+                console.error("Invalid file response:", response);
+            }
+        } catch (error) {
+            console.error("Error fetching the PDF file:", error);
+        }
+    };
+    const handleSupplementryPathCancel = () => {
+      setIsModalVisible(false); // Close the modal
+    };
+    const handleAnnexurepdfButtonClick = async (pdfPath: string) => {
+        try {
+            // Fetch file data from the API
+            const response = await supplementarySummariesService.GetFile(pdfPath);
+    
+            if (response && response.fileBytes && response.fileType) {
+                // Convert the fileBytes (base64 string) into a data URL
+                const dataUrl = `data:${response.fileType};base64,${response.fileBytes}`;
+                
+                // Set the generated data URL to display in the iframe
+                setPdfUrl(dataUrl);
+                setIsModalVisible(true); // Open the modal
+            } else {
+                console.error("Invalid file response:", response);
+            }
+        } catch (error) {
+            console.error("Error fetching the PDF file:", error);
+        }
+    };
+    async function downloadFile({ path }: { path: string }): Promise<void> {
+      try {
+        // Call the service method to get the file details
+        const file = await supplementarySummariesService.DownloadExcel(path);
+    
+        // Check if the required properties exist
+        if (!file.fileContent || !file.fileType || !file.fileName) {
+          throw new Error("Invalid file data received.");
+        }
+    
+        // Convert the file content (Base64) into a Blob
+        const byteCharacters = atob(file.fileContent);
+        const byteNumbers = Array.from(byteCharacters, char => char.charCodeAt(0));
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: file.fileType });
+    
+        // Create a temporary anchor element to trigger the download
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob); // Create a Blob URL
+        link.download = file.fileName || "Annexure.xlsx"; // Use provided filename or default
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    
+        // Revoke the Blob URL to free up memory
+        URL.revokeObjectURL(link.href);
+      } catch (error) {
+        console.error("Error downloading the file:", error);
+      }
+    }
+    
+    
+      const handleAnnexurePathCancel = async () => {
+        setIsModalVisible(false); // Close the modal
+      };
 
   const approveSubmit = (item: any) => {
     console.log('Processing item:', item);
@@ -474,6 +583,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
               {[
                 "S.No",
                 "Document",
+                "Document Number",
                 "Date",
                 "Value",
                 "Ageing",
@@ -492,7 +602,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
             </tr>
             <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
 
-              <td  colSpan={9}>
+              <td  colSpan={10}>
 
               </td>
                 
@@ -506,7 +616,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
            </tr>
           </thead>
           <tbody>
-            {tableData.map((row) => (
+            {tableData.map((row,index) => (
               <tr
                 key={row.id}
                /// onClick={() => handleRowClick(row)} // Add click event here
@@ -517,14 +627,41 @@ const PayRetroAccountsDashboard: React.SFC = () => {
                 //   cursor: "pointer",
                 // }}
               >
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.id}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{index+1}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.document}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.createtime)}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.value}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryInvoiceNo}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.supplementaryInvoiceDate)}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.total}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.ageing}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.Documents}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.accountantnumber}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.AccountDate}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd", width: "175px" }}>
+                  <span>
+                    {row.supplementaryInvoicePath && (
+                      <Button
+                        type="link"
+                        onClick={() => handleSupplementrypdfButtonClick(row.supplementaryInvoicePath)}
+                      >
+                        <FilePdfOutlined />
+                      </Button>
+                    )}
+                    {row.annecurePath && (
+                      <Button
+                        type="link"
+                        onClick={() => handleAnnexurepdfButtonClick(row.annecurePath)}
+                      >
+                        <FilePdfOutlined />
+                      </Button>
+                    )}
+                    {row.supplementaryInvoicePath3 && (
+                      <Button
+                        type="link"
+                        onClick={() =>downloadFile({path: row.supplementaryInvoicePath3 })}>
+                        <FileExcelOutlined />
+                      </Button>
+                    )}
+                  </span>
+                </td>
+                <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.accountingNo}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.accountingDate?formatDate(row.accountingDate):''}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
                   <div className="dropdown-container" style={{ position: "relative" }}>
                     <button
@@ -570,11 +707,11 @@ const PayRetroAccountsDashboard: React.SFC = () => {
                   </div>
                 </td>                          
                 <td style={{ padding: "10px", border: "1px solid #ddd" }} colSpan={3}>
-  <div className="progress-tube">
-    <div className="progress-segment approved" style={{ width: "33%" }}></div>
-    <div className="progress-segment rejected" style={{ width: "33%" }}></div>
-    <div className="progress-segment pending" style={{ width: "33%" }}></div>
-  </div>
+                <div className="progress-tube">
+                      <div className={supplierstatus(row.documentStatus)} style={{ width: "50px" }}></div>
+                      <div className={barstatus(row.buyerApprovalStatus)} style={{ width: "50px" }}></div>
+                      <div className={barstatus(row.accountantApprovalStatus)} style={{ width: "50px" }}></div>
+                    </div>
 </td>
               </tr>
             ))}
@@ -582,6 +719,40 @@ const PayRetroAccountsDashboard: React.SFC = () => {
         </table>
         <ApproveorRejectModal isOpen={isSupplierSubmitModalOpen} onClose={closeSupplierSubmitModal} submitIdRow={submitIdRow}
         approveSubmit={approveSubmit} rejectSubmit={rejectSubmit} />
+        <Modal
+        title="View PDF"
+        visible={isModalVisible}
+        onCancel={handleSupplementryPathCancel}
+        footer={null}
+        width="60%"
+      >
+        {pdfUrl && (
+          <iframe
+            src={pdfUrl}
+            width="100%"
+            height="600px"
+            title="PDF Viewer"
+            style={{ border: 'none' }}
+          />
+        )}
+      </Modal>
+      <Modal
+        title="View PDF"
+        visible={isModalVisible}
+        onCancel={handleAnnexurePathCancel}
+        footer={null}
+        width="60%"
+      >
+        {pdfUrl && (
+          <iframe
+            src={pdfUrl}
+            width="100%"
+            height="600px"
+            title="PDF Viewer"
+            style={{ border: 'none' }}
+          />
+        )}
+      </Modal>
       	</Tabs.TabPane>
     <Tabs.TabPane tab="Queries" key="3">
     <AccountQueryModal disputesStore={new DisputedataStore} />
