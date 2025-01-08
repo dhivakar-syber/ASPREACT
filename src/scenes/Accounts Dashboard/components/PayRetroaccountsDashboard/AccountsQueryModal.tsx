@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Button, Card, Col, Dropdown, Menu, Modal, Row, Table} from 'antd';
+import { Button, Card, Col, Dropdown, Menu, Modal, Row, Table,message} from 'antd';
 import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../../../components/AppComponentBase';
@@ -10,6 +10,7 @@ import { L } from '../../../../lib/abpUtility';
 import Stores from '../../../../stores/storeIdentifier';
 import DisputesStrore from '../../../../stores/DisputesStrore';
 import { FormInstance } from 'antd/lib/form';
+import disputesServices from '../../../../services/Disputes/disputesServices';
 //import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
 //import { EnumCurrency,EnumTransaction } from '../../../src/enum'
 
@@ -30,6 +31,8 @@ export interface IDisputesdataState {
     status: string;
     buyerRemarks: string;
     accountsRemarks: string;
+    supplementarySummaryId:number;
+    supplementarySummary:string;
   };
   filter: string;
 }
@@ -50,7 +53,23 @@ type BuyerLookupItem = {
   displayName: string;
 };
 const confirm = Modal.confirm;
+declare var abp: any;
 //const Search = Input.Search;
+
+const getStatusLabel = (status: number): string => {
+    switch (status) {
+      case 0:
+        return "Open";
+      case 1:
+        return "ForwardedToFandC";
+      case 2:
+        return "Close";
+      case 3:
+        return "InimatedToBuyer";
+      default:
+        return "Unknown";
+    }
+  };
 
 @inject(Stores.DisputesStore)
 @observer
@@ -72,6 +91,8 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
     status: "",
     buyerRemarks: "",
     accountsRemarks: "",
+    supplementarySummaryId:0,
+    supplementarySummary:"",
       },
     filter: '',
     selectedLookupItem: null as SummariesLookupItem | null,
@@ -122,7 +143,9 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
         query: returnedValue.dispute.query || '',
         status: returnedValue.dispute.status || 0,
         buyerRemarks: returnedValue.dispute.buyerRemarks || '',
-        accountsRemarks: returnedValue.dispute.accountsRemarks || ''
+        accountsRemarks: returnedValue.dispute.accountsRemarks || '',
+        supplementarySummaryId: returnedValue.dispute.supplementarySummaryId || '',
+        supplementarySummary:returnedValue.supplementarySummaryDisplayProperty || ''
       }
     });
 
@@ -149,6 +172,46 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
   }
   
 editdata:any = null;
+IntimateToBuyerMail = async (item: any) => {
+   
+      console.log(item);
+  
+      if (item.buyerMail) {
+        item.buyerMail = item.buyerMail.split(',').map((email: string) => email.trim());
+      }
+
+      if (item.accoutantMail) {
+        item.accoutantMail = item.accoutantMail.split(',').map((email: string) => email.trim());
+      }
+  
+      const jsondata = JSON.stringify(item);
+      console.log(jsondata);
+  
+      const url = `${process.env.REACT_APP_REMOTE_SERVICE_BASE_URL}PayRetro/disputeaccoutantapprovalmail`;
+  
+      abp.ui.setBusy();
+  
+      const response = await fetch(url, {
+        method: 'POST',
+        body: jsondata,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      abp.ui.clearBusy();
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+    //   const result = await response.json();
+    //   console.log(result);
+  
+      message.success(`Buyer to F&C Forwarded Query Intimation  Mail Sent to - ${item.accoutantName}`);
+
+  };
+
   handleCreate = () => {
     const form = this.formRef.current;
    
@@ -159,7 +222,16 @@ editdata:any = null;
       if (this.state.userId === 0) {
         await this.props.disputesStore.create(values);
       } else {
+        const dispute = { ...values, id: this.state.userId };
         await this.props.disputesStore.update({ ...values, id: this.state.userId });
+        disputesServices.buyermail(dispute.id)
+                    .then((result) => {
+                        this.IntimateToBuyerMail(result);
+                    })
+                    .catch((error) => {
+                        console.error('Error in sending email:', error);
+                    });
+       
       }
 
       await this.getAll();
@@ -215,10 +287,17 @@ editdata:any = null;
           { title: L('Rejection'), dataIndex: 'supplierRejectionCode', key: 'SupplierRejectionFk.supplierRejectionCode', width: 150, render: (text: string) => <div>{text}</div> },
       { title: L('Query'), dataIndex: 'disputedata.query', key: 'query', width: 150, render: (text: string, record: any) =>
         <div>{record.dispute?.query || ''}</div> },
+        { title: L('Status'), dataIndex: 'disputedata.status', key: 'query', width: 150, render: (text: string, record: any) =>
+         <div>{getStatusLabel(record.dispute?.status) || ''}</div> },
       { title: L('BuyerRemarks'), dataIndex: 'disputedata.buyerRemarks', key: 'query', width: 150, render: (text: string, record: any) =>
         <div>{record.dispute?.buyerRemarks || ''}</div> },      
       { title: L('AccountsRemarks'), dataIndex: 'disputedata.accountsRemarks', key: 'accountsRemarks', width: 150, render: (text: string, record: any) =>
-        <div>{record.dispute?.accountsRemarks || ''}</div> },   
+        <div>{record.dispute?.accountsRemarks || ''}</div> },  
+        { title: L('Response Time'), dataIndex: 'disputedata.responseTime', key: 'responseTime', width: 150, render: (text: string, record: any) => {
+            const date = record.dispute?.responseTime;
+            return <div>{date ? new Date(date).toLocaleString("en-US") : ''}</div>;
+          },
+        },
       // { title: L('Summaries'), dataIndex: 'supplementarySummaryDisplayProperty', key: 'supplementarySummaryFk.SupplementarySummaryDisplayProperty', width: 150, render: (text: string) => <div>{text}</div> },
       
       
@@ -227,7 +306,7 @@ editdata:any = null;
     return (
       <Card>
         <Row>
-          <Col
+          {/* <Col
             xs={{ span: 4, offset: 0 }}
             sm={{ span: 4, offset: 0 }}
             md={{ span: 4, offset: 0 }}
@@ -237,7 +316,7 @@ editdata:any = null;
           >
             {' '}
             <h2 style={{whiteSpace:'nowrap'}}>{L('Accounts Query')}</h2>
-          </Col>
+          </Col> */}
             
           <Col
             xs={{ span: 14, offset: 0 }}

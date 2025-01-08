@@ -433,8 +433,8 @@ const handleButtonClick = () => {
 
     form!.validateFields().then(async (values: any) => {
       // Check and assign SupplementarySummaryId if it's null or undefined
-      if (values.SupplementarySummaryId == null) {
-        values.SupplementarySummaryId = currentRowId;
+      if (values.supplementarySummaryId == null) {
+        values.supplementarySummaryId = currentRowId;
       }
       
       if (userId === 0) {
