@@ -765,50 +765,7 @@ function barstatus(status:any) {
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryInvoiceDate?formatDate(row.supplementaryInvoiceDate):''}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.total}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.ageing}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
-                <span style={{ marginRight: "10px" }}>
-  {row.supplementaryInvoicePath ? <Button type="link" onClick={() => handleSupplementrypdfButtonClick(row.supplementaryInvoicePath)}>
-          <FilePdfOutlined style={{ marginRight: 8 }} />
-        </Button> : null}
-        {pdfUrl && (
-          <iframe
-            src={pdfUrl}
-            width="100%"
-            height="600px"
-            title="PDF Viewer"
-            style={{ border: 'none' }}
-          />
-        )}
-</span>
-<span style={{ marginRight: "10px" }}>
-  {row.annecurePath ? (
-    <button
-      id="annexurebuyerpdfview"
-      title="Download Annexure"
-      style={{ border: "none", background: "none", cursor: "pointer" }}
-    >
-      <i
-        className="fa-solid fa-file-pdf"
-        style={{ fontSize: "20px", color: "red" }}
-      ></i>
-    </button>
-  ) : null}
-</span>
-<span>
-  {row.supplementaryInvoicePath3 ? (
-    <button
-      id="annexurebuyerexceldownload"
-      title="Download Annexure"
-      style={{ border: "none", background: "none", cursor: "pointer" }}
-    >
-      <i
-        className="fa-solid fa-file-excel"
-        style={{ fontSize: "20px", color: "green" }}
-      ></i>
-    </button>
-  ) : null}
-</span>
-    </td>
+                
                 <td style={{ padding: "10px", border: "1px solid #ddd", width: "175px" }}>
                   <span>
                     {row.supplementaryInvoicePath && (
