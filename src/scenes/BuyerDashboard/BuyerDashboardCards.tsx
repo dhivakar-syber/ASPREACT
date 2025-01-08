@@ -45,7 +45,7 @@ const BuyerDashboardCards: React.FC<DashboardCardsProps> = ({ BuyerDashboardinpu
               count={((carddata[card.key] || 0).toFixed(2))}
               style={{ backgroundColor: "#006780", fontSize: "12px", padding: "0 8px" }}
             />
-           <b> Cr</b> 
+           
           </div>
         </Card>
       </Col>

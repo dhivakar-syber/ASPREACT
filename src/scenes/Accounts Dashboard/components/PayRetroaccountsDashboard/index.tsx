@@ -469,7 +469,7 @@ function barstatus(status:any) {
         <DashboardCards AccountDashboardInput={dashboardinput} />
         <br></br>
 
-        <Row gutter={11}>
+        <Row gutter={11} style={{ marginRight:'-200.5px'}}>
             <Col className="gutter-row" span={4}>
               <div style={{ textAlign: 'left' }}>
               <h3>Buyer</h3>
@@ -560,7 +560,7 @@ function barstatus(status:any) {
             </div>
               </Col>
               
-              
+              <br></br>
               <Col className="gutter-row" span={4}>
             <div style={{ textAlign: 'left' }}>
               <h3>Date</h3>
@@ -577,7 +577,7 @@ function barstatus(status:any) {
 
             <Tabs defaultActiveKey="1">
     <Tabs.TabPane tab="Home" key="1">
-    <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px" }}>
+    <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px" ,whiteSpace:"nowrap"}}>
           <thead>
             <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
               {[
@@ -679,12 +679,12 @@ function barstatus(status:any) {
                     {openDropdownId === row.id && (
                       <div
                         style={{
-                          position: "absolute",
+                          //position: "absolute",
                           top: "100%",
                           left: "0",
                           backgroundColor: "#fff",
                           boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                          zIndex: 999,
+                          //zIndex: 999,
                           padding: "10px",
                           width: "150px",
                         }}

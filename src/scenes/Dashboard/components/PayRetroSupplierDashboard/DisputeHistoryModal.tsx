@@ -26,11 +26,11 @@ const getStatusLabel = (status: number): string => {
     case 0:
       return "Open";
     case 1:
-      return "ForwardedToFandC";
+      return "Forwarded To FandC";
     case 2:
       return "Close";
     case 3:
-      return "InimatedToBuyer";
+      return "Inimated To Buyer";
     default:
       return "Unknown";
   }
@@ -99,9 +99,10 @@ const DisputeTable: React.FC<DisputeTableProps> = ({ rowId, visible, onCancel, d
       title: "Response Time",
       dataIndex: "dispute.responseTime",
       key: "responseTime",
-      render: (text: any, record: any) => (
-        <div>{record.dispute?.responseTime || ""}</div> // Render dispute.query directly
-      ),
+      render: (text: any, record: any) => {
+        const date = record.dispute?.responseTime;
+        return <div>{date ? new Date(date).toLocaleString("en-US") : ""}</div>;
+      },
       width: 100,
       align: "center" as "center",
     },

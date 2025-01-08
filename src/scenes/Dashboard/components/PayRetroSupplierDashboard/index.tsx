@@ -437,8 +437,8 @@ const handleButtonClick = () => {
 
     form!.validateFields().then(async (values: any) => {
       // Check and assign SupplementarySummaryId if it's null or undefined
-      if (values.SupplementarySummaryId == null) {
-        values.SupplementarySummaryId = currentRowId;
+      if (values.supplementarySummaryId == null) {
+        values.supplementarySummaryId = currentRowId;
       }
       
       if (userId === 0) {
@@ -894,7 +894,7 @@ function barstatus(status:any) {
       <DashboardCards SupplierDashboardInputs={dashboardinput} />
       <br></br>
       
-    <Row gutter={11}>
+    <Row gutter={11} style={{ marginRight:'-200.5px'}}>
     
       <Col className="gutter-row" span={4}>
       <div style={{ textAlign: 'left' }}>
@@ -992,9 +992,9 @@ function barstatus(status:any) {
     </Row>
     
       <br></br>
-      <div style={{ marginTop: "20px" }}>
+      <div style={{ marginTop: "20px",overflowX: "auto" }}>
         
-        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px",whiteSpace:'nowrap' }}>
           <thead>
             <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
               {[
@@ -1049,7 +1049,8 @@ function barstatus(status:any) {
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.createtime)}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.ageing}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
-                <div className="dropdown-container" style={{ position: "relative" }}>
+                
+                <div className="dropdown-container" style={{ position: "relative",whiteSpace:'normal' }}>
                 <button
                   style={{
                     backgroundColor: "#005f7f",

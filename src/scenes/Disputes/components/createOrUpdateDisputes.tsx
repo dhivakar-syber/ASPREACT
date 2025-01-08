@@ -89,7 +89,7 @@ class CreateOrUpdatedisputedata extends React.Component<ICreateOrUpdateDisputesD
         return;
     }
     
-  this.props.disputesStrore.getAllSupplierForLookupTable(this.pagedFilterAndSortedRequest); 
+   this.props.disputesStrore.getAllSupplierForLookupTable(this.pagedFilterAndSortedRequest); 
 }
 
   async getAllBuyerForLookupTable() {
