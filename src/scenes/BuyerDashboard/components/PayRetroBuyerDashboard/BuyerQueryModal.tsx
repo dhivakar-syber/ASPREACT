@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Button, Card, Col, Dropdown, Menu, Modal, Row, Table} from 'antd';
+import { Button, Card, Col, Dropdown, Menu, Modal, Row, Table,message} from 'antd';
 import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../../../components/AppComponentBase';
@@ -9,6 +9,7 @@ import { EntityDto } from '../../../../services/dto/entityDto';
 import { L } from '../../../../lib/abpUtility';
 import Stores from '../../../../stores/storeIdentifier';
 import DisputesStrore from '../../../../stores/DisputesStrore';
+import disputesServices from '../../../../services/Disputes/disputesServices';
 import { FormInstance } from 'antd/lib/form';
 //import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
 //import { EnumCurrency,EnumTransaction } from '../../../src/enum'
@@ -21,7 +22,7 @@ export interface IDisputesdataState {
   modalVisible: boolean;
   maxResultCount: number;
   skipCount: number;
-  userId: number;
+  disputeId: number;
   initialData: {
     supplierName: string;
     buyerName: string;
@@ -30,6 +31,8 @@ export interface IDisputesdataState {
     status: string;
     buyerRemarks: string;
     accountsRemarks: string;
+    supplementarySummaryId:number;
+
   };
   filter: string;
 }
@@ -49,8 +52,24 @@ type BuyerLookupItem = {
   id: number;
   displayName: string;
 };
+declare var abp: any;
 const confirm = Modal.confirm;
 //const Search = Input.Search;
+
+const getStatusLabel = (status: number): string => {
+  switch (status) {
+    case 0:
+      return "Open";
+    case 1:
+      return "ForwardedToFandC";
+    case 2:
+      return "Close";
+    case 3:
+      return "InimatedToBuyer";
+    default:
+      return "Unknown";
+  }
+};
 
 @inject(Stores.DisputesStore)
 @observer
@@ -63,7 +82,7 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
     modalVisible: false,
     maxResultCount: 10,
     skipCount: 0,
-    userId: 0,
+    disputeId: 0,
     initialData: {
     supplierName: "",
     buyerName: "",
@@ -72,6 +91,7 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
     status: "",
     buyerRemarks: "",
     accountsRemarks: "",
+    supplementarySummaryId:0,
       },
     filter: '',
     selectedLookupItem: null as SummariesLookupItem | null,
@@ -114,7 +134,7 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
     }
 
     this.setState({
-      userId: entityDto.id,
+      disputeId: entityDto.id,
       initialData: {
         supplierName: returnedValue.supplierCode || '',
         buyerName: returnedValue.buyerShortId || '',
@@ -122,7 +142,8 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
         query: returnedValue.dispute.query || '',
         status: returnedValue.dispute.status || 0,
         buyerRemarks: returnedValue.dispute.buyerRemarks || '',
-        accountsRemarks: returnedValue.dispute.accountsRemarks || ''
+        accountsRemarks: returnedValue.dispute.accountsRemarks || '',
+        supplementarySummaryId:returnedValue.dispute.supplementarySummaryId || 0,
       }
     });
 
@@ -149,6 +170,47 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
   }
   
 editdata:any = null;
+
+
+ForwardFandCMail = async (item: any) => {
+    
+  console.log(item);
+
+  if (item.buyerMail) {
+    item.buyerMail = item.buyerMail.split(',').map((email: string) => email.trim());
+  }
+
+  if (item.accoutantMail) {
+    item.accoutantMail = item.accoutantMail.split(',').map((email: string) => email.trim());
+  }
+
+  const jsondata = JSON.stringify(item);
+  console.log(jsondata);
+
+  const url = `${process.env.REACT_APP_REMOTE_SERVICE_BASE_URL}PayRetro/disputeaccoutantapprovalmail`;
+
+  abp.ui.setBusy();
+
+  const response = await fetch(url, {
+    method: 'POST',
+    body: jsondata,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  abp.ui.clearBusy();
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+ // const result = await response.json();
+  //console.log(result);
+
+  message.success(`Buyer to F&C Forwarded Query Intimation  Mail Sent to - ${item.accoutantName}`);
+
+};
   handleCreate = () => {
     const form = this.formRef.current;
    
@@ -156,10 +218,18 @@ editdata:any = null;
       if (values.status !== 1) {
         values.status = 1;
       }
-      if (this.state.userId === 0) {
+      if (this.state.disputeId === 0) {
         await this.props.disputesStore.create(values);
       } else {
-        await this.props.disputesStore.update({ ...values, id: this.state.userId });
+        await this.props.disputesStore.update({ ...values, id: this.state.disputeId });
+        const dispute = { ...values, id: this.state.disputeId };
+        disputesServices.buyermail(dispute.id)
+        .then((result) => {
+            this.ForwardFandCMail(result);
+        })
+        .catch((error) => {
+            console.error('Error in sending email:', error);
+        });
       }
 
       await this.getAll();
@@ -168,25 +238,87 @@ editdata:any = null;
     });
   };
 
-  handleSubmit = () => {
+  ClosrQueryMail = async (item: any) => {
+  
+    console.log(item);
+
+    if (item.buyerMail) {
+      item.buyerMail = item.buyerMail.split(',').map((email: string) => email.trim());
+    }
+
+    if (item.accoutantMail) {
+      item.accoutantMail = item.accoutantMail.split(',').map((email: string) => email.trim());
+    }
+
+    if (item.supplierMail) {
+      item.supplierMail = item.supplierMail.split(',').map((email: string) => email.trim());
+    }
+
+    const jsondata = JSON.stringify(item);
+    console.log(jsondata);
+
+    const url = `${process.env.REACT_APP_REMOTE_SERVICE_BASE_URL}PayRetro/BuyerResolveWorkflow`;
+
+    abp.ui.setBusy();
+
+    const response = await fetch(url, {
+      method: 'POST',
+      body: jsondata,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    abp.ui.clearBusy();
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    // const result = await response.json();
+    // console.log(result);
+
+    message.success(`Supplier Query Raised Intimation - ${item.supplierName}`);
+  
+};
+  
+  handleSubmit = async () => {
     const form = this.formRef.current;
-   
-    form!.validateFields().then(async (values: any) => {
-      if (values.status !== 2) {
+  
+    if (!form) {
+        throw new Error('Form reference is not defined.');
+    }
+  
+    const values: any = await form.validateFields();
+  
+    if (values.status !== 2) {
         values.status = 2;
-      }
-      if (this.state.userId === 0) {
-        
+    }
+  
+    if (this.state.disputeId === 0) {
         await this.props.disputesStore.create(values);
-      } else {
-        await this.props.disputesStore.update({ ...values, id: this.state.userId });
-      }
+    } else {
+        const updatedItem = { ...values, id: this.state.disputeId };
+        await this.props.disputesStore.update(updatedItem);
 
-      await this.getAll();
-      this.setState({ modalVisible: false });
-      form!.resetFields();
-    });
-  };
+        // Corrected function name and syntax for the 'done' callback
+        disputesServices.buyermail(updatedItem.id)
+            .then((result) => {
+                this.ClosrQueryMail(result);
+            })
+            .catch((error) => {
+                console.error('Error in sending email:', error);
+            });
+    }
+  
+    await this.getAll();
+  
+    this.setState({ modalVisible: false });
+    form.resetFields();
+};
+
+  
+  
 
   handleSearch = (value: string) => {
     this.setState({ filter: value }, async () => await this.getAll());
@@ -213,21 +345,22 @@ editdata:any = null;
             width: 150,
             render: (text: string, item: any) => (
               <div>
-                <Dropdown
-                  trigger={['click']}
-                  overlay={
-                    <Menu>
-                       {/* <Menu.Item onClick={() => this.delete({ id: item.disputedata?.id })}>{L('view')}</Menu.Item> */}
-                      <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.dispute?.id })}>{L('Edit')}</Menu.Item>                      
-                    </Menu>
-                  }
-                  placement="bottomLeft"
-                >
-                  <Button type="primary" >
-                    {L('Actions')}
-                  </Button>
-                </Dropdown>
-              </div>
+           {item.dispute?.status !== 2 ? (
+          <Dropdown
+            trigger={['click']}
+            overlay={
+              <Menu>
+                <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.dispute?.id })}>
+                  {L('Edit')}
+                </Menu.Item>
+              </Menu>
+            }
+            placement="bottomLeft"
+          >
+            <Button type="primary">{L('Actions')}</Button>
+          </Dropdown>
+        ) : <Button type="primary" disabled>{L('Actions')}</Button>}
+            </div>
             ),
           },
           { title: L('BuyerName'), dataIndex: 'buyerShortId', key: 'buyerFk.buyerShortId', width: 150, render: (text: string) => <div>{text}</div> },
@@ -235,10 +368,17 @@ editdata:any = null;
           { title: L('Rejection'), dataIndex: 'supplierRejectionCode', key: 'SupplierRejectionFk.supplierRejectionCode', width: 150, render: (text: string) => <div>{text}</div> },
       { title: L('Query'), dataIndex: 'disputedata.query', key: 'query', width: 150, render: (text: string, record: any) =>
         <div>{record.dispute?.query || ''}</div> },
+        { title: L('Status'), dataIndex: 'disputedata.status', key: 'query', width: 150, render: (text: string, record: any) =>
+          <div>{getStatusLabel(record.dispute?.status) || ''}</div> },
       { title: L('BuyerRemarks'), dataIndex: 'disputedata.buyerRemarks', key: 'query', width: 150, render: (text: string, record: any) =>
         <div>{record.dispute?.buyerRemarks || ''}</div> },      
       { title: L('AccountsRemarks'), dataIndex: 'disputedata.accountsRemarks', key: 'accountsRemarks', width: 150, render: (text: string, record: any) =>
-        <div>{record.dispute?.accountsRemarks || ''}</div> },   
+        <div>{record.dispute?.accountsRemarks || ''}</div> }, 
+        { title: L('Response Time'), dataIndex: 'disputedata.responseTime', key: 'responseTime', width: 150, render: (text: string, record: any) => {
+          const date = record.dispute?.responseTime;
+          return <div>{date ? new Date(date).toLocaleString("en-US") : ''}</div>;
+        },
+      },
       // { title: L('Summaries'), dataIndex: 'supplementarySummaryDisplayProperty', key: 'supplementarySummaryFk.SupplementarySummaryDisplayProperty', width: 150, render: (text: string) => <div>{text}</div> },
       
       
@@ -247,7 +387,7 @@ editdata:any = null;
     return (
       <Card>
         <Row>
-          <Col
+          {/* <Col
             xs={{ span: 4, offset: 0 }}
             sm={{ span: 4, offset: 0 }}
             md={{ span: 4, offset: 0 }}
@@ -258,7 +398,7 @@ editdata:any = null;
             {' '}
             <h2 style={{whiteSpace:'nowrap'}}>{L('Buyer Query')}</h2>
           </Col>
-            
+             */}
           <Col
             xs={{ span: 14, offset: 0 }}
             sm={{ span: 15, offset: 0 }}
@@ -296,10 +436,11 @@ editdata:any = null;
           </Col>
         </Row>
         <BuyerUpdateQueryModal
+
           formRef={this.formRef}
           visible={this.state.modalVisible}
           onsubmit={this.handleSubmit}
-          modalType={this.state.userId === 0 ? 'edit' : 'create'}
+          modalType={this.state.disputeId === 0 ? 'edit' : 'create'}
           onCreate={this.handleCreate}
           onclose={() => {
             this.setState({

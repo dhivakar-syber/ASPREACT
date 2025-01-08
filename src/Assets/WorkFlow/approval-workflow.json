@@ -1,0 +1,1788 @@
+{
+  "$id": "1",
+  "definitionId": "5757c43df58f41a5b7ac8a8b248209c6",
+  "versionId": "c77f1d3e24d04257965c5af1d06a93c5",
+  "name": "Approval Workflow",
+  "displayName": "Approval Workflow",
+  "version": 3,
+  "variables": {
+    "$id": "2",
+    "data": {}
+  },
+  "customAttributes": {
+    "$id": "3",
+    "data": {}
+  },
+  "isSingleton": false,
+  "persistenceBehavior": "WorkflowBurst",
+  "deleteCompletedInstances": false,
+  "isPublished": true,
+  "isLatest": true,
+  "createdAt": "2024-12-20T04:34:26.7549102Z",
+  "activities": [
+    {
+      "$id": "4",
+      "activityId": "4ffe82fd-d3d6-4445-8504-f799a4b4467e",
+      "type": "HttpEndpoint",
+      "name": "Document01",
+      "displayName": "HTTP Endpoint",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "5",
+          "name": "Path",
+          "expressions": {
+            "$id": "6",
+            "Literal": "/RetroPay/Buyer_Approval_Workflow"
+          }
+        },
+        {
+          "$id": "7",
+          "name": "Methods",
+          "expressions": {
+            "$id": "8",
+            "Json": "[\"POST\"]"
+          }
+        },
+        {
+          "$id": "9",
+          "name": "ReadContent",
+          "expressions": {
+            "$id": "10",
+            "Literal": "true"
+          }
+        },
+        {
+          "$id": "11",
+          "name": "TargetType",
+          "expressions": {
+            "$id": "12",
+            "Literal": "Buyer Workflow"
+          }
+        },
+        {
+          "$id": "13",
+          "name": "Schema",
+          "syntax": "Literal",
+          "expressions": {
+            "$id": "14",
+            "Literal": ""
+          }
+        },
+        {
+          "$id": "15",
+          "name": "Authorize",
+          "expressions": {
+            "$id": "16"
+          }
+        },
+        {
+          "$id": "17",
+          "name": "Policy",
+          "expressions": {
+            "$id": "18"
+          }
+        },
+        {
+          "$id": "19",
+          "name": "AuthorizeWithCustomHeader",
+          "expressions": {
+            "$id": "20"
+          }
+        },
+        {
+          "$id": "21",
+          "name": "CustomHeaderName",
+          "expressions": {
+            "$id": "22"
+          }
+        },
+        {
+          "$id": "23",
+          "name": "CustomHeaderValue",
+          "expressions": {
+            "$id": "24"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "25"
+      }
+    },
+    {
+      "$id": "26",
+      "activityId": "fa0d3203-606d-403f-bb98-530bd8c960ae",
+      "type": "SetVariable",
+      "displayName": "Set Variable",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "27",
+          "name": "VariableName",
+          "expressions": {
+            "$id": "28",
+            "Literal": "Document"
+          }
+        },
+        {
+          "$id": "29",
+          "name": "Value",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "30",
+            "JavaScript": "input.Body"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "31"
+      }
+    },
+    {
+      "$id": "32",
+      "activityId": "e3e285b4-e892-47b8-ba1b-3d9cfc45f506",
+      "type": "SendEmail",
+      "name": "Buyer Approval Mail",
+      "displayName": "Buyer Approval Mail",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "33",
+          "name": "From",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "34",
+            "Literal": "mohamedsakkeel.r@teamsybergate.com",
+            "JavaScript": "activities.Document01.Output().Body.fromEmail",
+            "Liquid": "mohamedsakkeel.r@teamsybergate.com"
+          }
+        },
+        {
+          "$id": "35",
+          "name": "To",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "36",
+            "JavaScript": "activities.Document01.Output().Body.buyerEmailAddress",
+            "Json": "[\"dhivakar.p@teamsybergate.com\"]"
+          }
+        },
+        {
+          "$id": "37",
+          "name": "Subject",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "38",
+            "Literal": "Intimation: To Approve - Supplier Name uploaded invoice & credit notes for your approval",
+            "JavaScript": "",
+            "Liquid": "Intimation: To Approve - {{Variables.Document.suppliername}} uploaded invoice & credit notes for your approval"
+          }
+        },
+        {
+          "$id": "39",
+          "name": "Attachments",
+          "expressions": {
+            "$id": "40",
+            "Liquid": "",
+            "JavaScript": "activities.Document01.Output().Body.supplementrayfilepath\r\nactivities.Document01.Output().Body.annexurefilePath"
+          }
+        },
+        {
+          "$id": "41",
+          "name": "Body",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "42",
+            "Literal": "Hi",
+            "Liquid": "<p>Hello,</P>\r\n\r\n<p>{{ Variables.Document.document }}: {{ Variables.Document.supplementaryInvoiceNo }}</p>\r\n<p>{{ Variables.Document.document }} Date : {{ Variables.Document.supplementaryInvoiceDate }}</p>\r\n\r\n<p>You are kindly requested to approve the above mentioned item. <br>\r\nTo approve and for detailed information <a href=\"{{ Variables.Document.buyerName | signalwfbuy_url: docid: Variables.Document.id}}\">Click here</a>: </P>\r\n\r\n<p>Regards,  <br>\r\nProcurement & Supply Chain Digitalization Team <br>\r\nDaimler India Commercial Vehicles Private Limited</P>"
+          }
+        },
+        {
+          "$id": "43",
+          "name": "Cc",
+          "expressions": {
+            "$id": "44"
+          }
+        },
+        {
+          "$id": "45",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "46"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "47"
+      }
+    },
+    {
+      "$id": "48",
+      "activityId": "7aaefbb7-a9f9-408f-8032-da63bf5e8290",
+      "type": "Correlate",
+      "displayName": "Correlate",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "49",
+          "name": "Value",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "50",
+            "Liquid": "{{Variables.Document.correlationid}}"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "51"
+      }
+    },
+    {
+      "$id": "52",
+      "activityId": "0a3e4a9b-4a12-47fd-9170-e6ca2dd14a80",
+      "type": "Fork",
+      "name": "Buyer Approve/Reject",
+      "displayName": "Buyer Approve/Reject",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "53",
+          "name": "Branches",
+          "expressions": {
+            "$id": "54",
+            "Json": "[\"Approve\",\"Reject\",\"Remainder\"]"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "55"
+      }
+    },
+    {
+      "$id": "56",
+      "activityId": "a26cdcb3-dc71-4337-b6ee-853926dce946",
+      "type": "Fork",
+      "name": "Approve Fork",
+      "displayName": "Approve Fork",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "57",
+          "name": "Branches",
+          "expressions": {
+            "$id": "58",
+            "Json": "[\"Signal\",\"Correlation\"]"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "59"
+      }
+    },
+    {
+      "$id": "60",
+      "activityId": "f7bfac77-9aeb-475c-817a-51c0d5108871",
+      "type": "Fork",
+      "name": "Reject Fork",
+      "displayName": "Reject Fork",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "61",
+          "name": "Branches",
+          "expressions": {
+            "$id": "62",
+            "Json": "[\"Signal\",\"Correlation\"]"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "63"
+      }
+    },
+    {
+      "$id": "64",
+      "activityId": "2bcff5c6-a78e-4257-a388-aa75e170c82d",
+      "type": "Cron",
+      "name": "Cron",
+      "displayName": "Cron",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "65",
+          "name": "CronExpression",
+          "expressions": {
+            "$id": "66",
+            "Literal": "0 30 10 1/3 * ? *"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "67"
+      }
+    },
+    {
+      "$id": "68",
+      "activityId": "39d7055a-790e-4371-8676-d099ce8cee51",
+      "type": "SignalReceived",
+      "name": "Approve Signal",
+      "displayName": "Approve Signal",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "69",
+          "name": "Signal",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "70",
+            "Literal": "Reject-{{Variables.Document.buyer.buyerName}}",
+            "Liquid": "Approve-{{Variables.Document.buyerName}}"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "71"
+      }
+    },
+    {
+      "$id": "72",
+      "activityId": "5fa49faa-19b8-4604-9cfc-6035a46a2b6c",
+      "type": "HttpEndpoint",
+      "name": "Approve Correlation",
+      "displayName": "Approve Correlation",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "73",
+          "name": "Path",
+          "expressions": {
+            "$id": "74",
+            "Literal": "/RetroPay/BuyerApprovalWorkflow/Approved"
+          }
+        },
+        {
+          "$id": "75",
+          "name": "Methods",
+          "expressions": {
+            "$id": "76",
+            "Json": "[\"GET\"]"
+          }
+        },
+        {
+          "$id": "77",
+          "name": "ReadContent",
+          "expressions": {
+            "$id": "78",
+            "Literal": "true"
+          }
+        },
+        {
+          "$id": "79",
+          "name": "TargetType",
+          "expressions": {
+            "$id": "80"
+          }
+        },
+        {
+          "$id": "81",
+          "name": "Schema",
+          "syntax": "Literal",
+          "expressions": {
+            "$id": "82",
+            "Literal": ""
+          }
+        },
+        {
+          "$id": "83",
+          "name": "Authorize",
+          "expressions": {
+            "$id": "84"
+          }
+        },
+        {
+          "$id": "85",
+          "name": "Policy",
+          "expressions": {
+            "$id": "86"
+          }
+        },
+        {
+          "$id": "87",
+          "name": "AuthorizeWithCustomHeader",
+          "expressions": {
+            "$id": "88"
+          }
+        },
+        {
+          "$id": "89",
+          "name": "CustomHeaderName",
+          "expressions": {
+            "$id": "90"
+          }
+        },
+        {
+          "$id": "91",
+          "name": "CustomHeaderValue",
+          "expressions": {
+            "$id": "92"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "93"
+      }
+    },
+    {
+      "$id": "94",
+      "activityId": "f9aa37bd-5093-4c3e-838d-aa4fd3d6d2ab",
+      "type": "Join",
+      "name": "Account Approval Status",
+      "displayName": "Account Approval Status",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "95",
+          "name": "EagerJoin",
+          "expressions": {
+            "$id": "96"
+          }
+        },
+        {
+          "$id": "97",
+          "name": "Mode",
+          "expressions": {
+            "$id": "98",
+            "Literal": "WaitAny"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "99"
+      }
+    },
+    {
+      "$id": "100",
+      "activityId": "c86a2355-1c1a-4678-8dd6-db7e22132a3c",
+      "type": "SignalReceived",
+      "name": "Reject Signal",
+      "displayName": "Reject Signal",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "101",
+          "name": "Signal",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "102",
+            "Liquid": "Reject-{{Variables.Document.buyerName}}"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "103"
+      }
+    },
+    {
+      "$id": "104",
+      "activityId": "10d95bb6-b91b-47ee-a2dc-e77f0dbbab5f",
+      "type": "HttpEndpoint",
+      "name": "Reject Correlation",
+      "displayName": "Reject Correlation",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "105",
+          "name": "Path",
+          "expressions": {
+            "$id": "106",
+            "Literal": "/RetroPay/BuyerApprovalWorkflow/Rejected"
+          }
+        },
+        {
+          "$id": "107",
+          "name": "Methods",
+          "expressions": {
+            "$id": "108",
+            "Json": "[\"GET\"]"
+          }
+        },
+        {
+          "$id": "109",
+          "name": "ReadContent",
+          "expressions": {
+            "$id": "110",
+            "Literal": "true"
+          }
+        },
+        {
+          "$id": "111",
+          "name": "TargetType",
+          "expressions": {
+            "$id": "112"
+          }
+        },
+        {
+          "$id": "113",
+          "name": "Schema",
+          "syntax": "Literal",
+          "expressions": {
+            "$id": "114",
+            "Literal": ""
+          }
+        },
+        {
+          "$id": "115",
+          "name": "Authorize",
+          "expressions": {
+            "$id": "116"
+          }
+        },
+        {
+          "$id": "117",
+          "name": "Policy",
+          "expressions": {
+            "$id": "118"
+          }
+        },
+        {
+          "$id": "119",
+          "name": "AuthorizeWithCustomHeader",
+          "expressions": {
+            "$id": "120"
+          }
+        },
+        {
+          "$id": "121",
+          "name": "CustomHeaderName",
+          "expressions": {
+            "$id": "122"
+          }
+        },
+        {
+          "$id": "123",
+          "name": "CustomHeaderValue",
+          "expressions": {
+            "$id": "124"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "125"
+      }
+    },
+    {
+      "$id": "126",
+      "activityId": "cf96fdb0-92fe-425a-a93b-28914dd0a9de",
+      "type": "SendEmail",
+      "name": "Buyer Remainder Mail",
+      "displayName": "Buyer Remainder Mail",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "127",
+          "name": "From",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "128",
+            "Literal": "mohamedsakkeel.r@teamsybergate.com",
+            "JavaScript": "activities.Document01.Output().Body.fromEmail"
+          }
+        },
+        {
+          "$id": "129",
+          "name": "To",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "130",
+            "JavaScript": "activities.Document01.Output().Body.buyerEmailAddress"
+          }
+        },
+        {
+          "$id": "131",
+          "name": "Subject",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "132",
+            "Literal": "Remainder Buyer Approval Mail",
+            "Liquid": "Reminder: To Approve - {{Variables.Document.suppliername}} uploaded invoice & credit notes for your approval"
+          }
+        },
+        {
+          "$id": "133",
+          "name": "Attachments",
+          "expressions": {
+            "$id": "134",
+            "JavaScript": ""
+          }
+        },
+        {
+          "$id": "135",
+          "name": "Body",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "136",
+            "Literal": "Hi",
+            "Liquid": "<p>Hello,</P>\r\n<p>{{ Variables.Document.document }}: {{ Variables.Document.supplementaryInvoiceNo }}</p>\r\n<p>{{ Variables.Document.document }} Date : {{ Variables.Document.supplementaryInvoiceDate }}</p>\r\n\r\n<p>You are kindly requested to approve the above mentioned item. <br>\r\nTo approve and for detailed information <a href=\"{{ Variables.Document.buyerName | signalwfbuy_url: docid: Variables.Document.id}}\">Click here</a>: </P>\r\n\r\n<p>Regards,  <br>\r\nProcurement & Supply Chain Digitalization Team <br>\r\nDaimler India Commercial Vehicles Private Limited</P>"
+          }
+        },
+        {
+          "$id": "137",
+          "name": "Cc",
+          "expressions": {
+            "$id": "138"
+          }
+        },
+        {
+          "$id": "139",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "140"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "141"
+      }
+    },
+    {
+      "$id": "142",
+      "activityId": "c15d3bb8-abbd-4288-9eb5-2e3e64384f21",
+      "type": "Join",
+      "name": "Reject Join",
+      "displayName": "Reject Join",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "143",
+          "name": "EagerJoin",
+          "expressions": {
+            "$id": "144"
+          }
+        },
+        {
+          "$id": "145",
+          "name": "Mode",
+          "expressions": {
+            "$id": "146",
+            "Literal": "WaitAny"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "147"
+      }
+    },
+    {
+      "$id": "148",
+      "activityId": "fd287642-dd15-449d-92f5-9a5de1b51c2f",
+      "type": "Finish",
+      "displayName": "Finish",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "149",
+          "name": "ActivityOutput",
+          "expressions": {
+            "$id": "150",
+            "Literal": "Success"
+          }
+        },
+        {
+          "$id": "151",
+          "name": "OutcomeNames",
+          "expressions": {
+            "$id": "152"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "153"
+      }
+    },
+    {
+      "$id": "154",
+      "activityId": "ec71d13e-d199-4b36-9ad0-5b7416bb7152",
+      "type": "Fork",
+      "displayName": "Fork",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "155",
+          "name": "Branches",
+          "expressions": {
+            "$id": "156",
+            "Json": "[\"Approve\",\"Remainder\"]"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "157"
+      }
+    },
+    {
+      "$id": "158",
+      "activityId": "cec4ad30-5d45-423b-8e7d-ee0632c7c1d7",
+      "type": "SendEmail",
+      "name": "Accountant Mail",
+      "displayName": "Accountant Mail",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "159",
+          "name": "From",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "160",
+            "Literal": "mohamedsakkeel.r@teamsybergate.com",
+            "JavaScript": "activities.Document01.Output().Body.fromEmail"
+          }
+        },
+        {
+          "$id": "161",
+          "name": "To",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "162",
+            "JavaScript": "activities.Document01.Output().Body.accountantEmailAddress"
+          }
+        },
+        {
+          "$id": "163",
+          "name": "Subject",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "164",
+            "Literal": "",
+            "Liquid": "Intimation: To Approve - {{Variables.Document.suppliername}} uploaded invoice & credit notes for your approval"
+          }
+        },
+        {
+          "$id": "165",
+          "name": "Attachments",
+          "expressions": {
+            "$id": "166",
+            "JavaScript": ""
+          }
+        },
+        {
+          "$id": "167",
+          "name": "Body",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "168",
+            "Literal": "Hi",
+            "Liquid": "<p>Hello,</P>\r\n\r\n<p>{{ Variables.Document.document }}: {{ Variables.Document.supplementaryInvoiceNo }}</p>\r\n<p>{{ Variables.Document.document }} Date : {{ Variables.Document.supplementaryInvoiceDate }}</p>\r\n\r\n<p>You are kindly requested to approve the above mentioned item. <br>\r\nTo approve and for detailed information <a href=\"{{ Variables.Document.buyerName | signalwfacc_url: docid: Variables.Document.id}}\">Click here</a>: </P>\r\n\r\n<p>Regards,  <br>\r\nProcurement & Supply Chain Digitalization Team <br>\r\nDaimler India Commercial Vehicles Private Limited</P>"
+          }
+        },
+        {
+          "$id": "169",
+          "name": "Cc",
+          "expressions": {
+            "$id": "170"
+          }
+        },
+        {
+          "$id": "171",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "172"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "173"
+      }
+    },
+    {
+      "$id": "174",
+      "activityId": "6bdc8745-4e8e-44d1-a38d-ea5c64e35e9a",
+      "type": "Fork",
+      "name": "Account Approve/Reject",
+      "displayName": "Account Approve/Reject",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "175",
+          "name": "Branches",
+          "expressions": {
+            "$id": "176",
+            "Json": "[\"Approve\",\"Reject\"]"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "177"
+      }
+    },
+    {
+      "$id": "178",
+      "activityId": "a009a9f7-64e1-411a-a4a2-13200206799b",
+      "type": "Fork",
+      "displayName": "Fork",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "179",
+          "name": "Branches",
+          "expressions": {
+            "$id": "180",
+            "Json": "[\"Signal\",\"Correlation\"]"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "181"
+      }
+    },
+    {
+      "$id": "182",
+      "activityId": "5f571b67-fd6c-41c9-803d-e057c8c96dc2",
+      "type": "SignalReceived",
+      "name": "Approve Signal",
+      "displayName": "Approve Signal",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "183",
+          "name": "Signal",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "184",
+            "Liquid": "Approve-{{Variables.Document.accountantName}}"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "185"
+      }
+    },
+    {
+      "$id": "186",
+      "activityId": "27c9b55f-328c-4166-8f70-2e4ebd3cbb26",
+      "type": "HttpEndpoint",
+      "name": "Approve Correlation",
+      "displayName": "Approve Correlation",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "187",
+          "name": "Path",
+          "expressions": {
+            "$id": "188",
+            "Literal": "/RetroPay/AccountantApprovalWorkflow/Approved"
+          }
+        },
+        {
+          "$id": "189",
+          "name": "Methods",
+          "expressions": {
+            "$id": "190",
+            "Json": "[\"GET\"]"
+          }
+        },
+        {
+          "$id": "191",
+          "name": "ReadContent",
+          "expressions": {
+            "$id": "192",
+            "Literal": "true"
+          }
+        },
+        {
+          "$id": "193",
+          "name": "TargetType",
+          "expressions": {
+            "$id": "194"
+          }
+        },
+        {
+          "$id": "195",
+          "name": "Schema",
+          "syntax": "Literal",
+          "expressions": {
+            "$id": "196",
+            "Literal": ""
+          }
+        },
+        {
+          "$id": "197",
+          "name": "Authorize",
+          "expressions": {
+            "$id": "198"
+          }
+        },
+        {
+          "$id": "199",
+          "name": "Policy",
+          "expressions": {
+            "$id": "200"
+          }
+        },
+        {
+          "$id": "201",
+          "name": "AuthorizeWithCustomHeader",
+          "expressions": {
+            "$id": "202"
+          }
+        },
+        {
+          "$id": "203",
+          "name": "CustomHeaderName",
+          "expressions": {
+            "$id": "204"
+          }
+        },
+        {
+          "$id": "205",
+          "name": "CustomHeaderValue",
+          "expressions": {
+            "$id": "206"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "207"
+      }
+    },
+    {
+      "$id": "208",
+      "activityId": "63a7db47-56c2-48c8-bed2-634b3b794fce",
+      "type": "Join",
+      "name": "Account Approve Join",
+      "displayName": "Account Approve Join",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "209",
+          "name": "EagerJoin",
+          "expressions": {
+            "$id": "210"
+          }
+        },
+        {
+          "$id": "211",
+          "name": "Mode",
+          "expressions": {
+            "$id": "212",
+            "Literal": "WaitAny"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "213"
+      }
+    },
+    {
+      "$id": "214",
+      "activityId": "2ffcd522-b862-4777-b4d2-964105fa9090",
+      "type": "Fork",
+      "displayName": "Fork",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "215",
+          "name": "Branches",
+          "expressions": {
+            "$id": "216",
+            "Json": "[\"Signal\",\"Correlation\"]"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "217"
+      }
+    },
+    {
+      "$id": "218",
+      "activityId": "a08304bc-37f0-42ba-b86d-1db89766e73b",
+      "type": "SignalReceived",
+      "name": "Reject Signal",
+      "displayName": "Reject Signal",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "219",
+          "name": "Signal",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "220",
+            "Literal": "Reject-{{Variables.Document.buyer.buyerName}}",
+            "Liquid": "Reject-{{Variables.Document.accountantName}}"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "221"
+      }
+    },
+    {
+      "$id": "222",
+      "activityId": "dc0ea4d2-789a-4f35-9857-8d2ee04bbe5c",
+      "type": "HttpEndpoint",
+      "name": "Reject Correlation",
+      "displayName": "Reject Correlation",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "223",
+          "name": "Path",
+          "expressions": {
+            "$id": "224",
+            "Literal": "/RetroPay/AccontantApprovalWorkflow/Rejected"
+          }
+        },
+        {
+          "$id": "225",
+          "name": "Methods",
+          "expressions": {
+            "$id": "226",
+            "Json": "[\"GET\"]"
+          }
+        },
+        {
+          "$id": "227",
+          "name": "ReadContent",
+          "expressions": {
+            "$id": "228",
+            "Literal": "true"
+          }
+        },
+        {
+          "$id": "229",
+          "name": "TargetType",
+          "expressions": {
+            "$id": "230"
+          }
+        },
+        {
+          "$id": "231",
+          "name": "Schema",
+          "syntax": "Literal",
+          "expressions": {
+            "$id": "232",
+            "Literal": ""
+          }
+        },
+        {
+          "$id": "233",
+          "name": "Authorize",
+          "expressions": {
+            "$id": "234"
+          }
+        },
+        {
+          "$id": "235",
+          "name": "Policy",
+          "expressions": {
+            "$id": "236"
+          }
+        },
+        {
+          "$id": "237",
+          "name": "AuthorizeWithCustomHeader",
+          "expressions": {
+            "$id": "238"
+          }
+        },
+        {
+          "$id": "239",
+          "name": "CustomHeaderName",
+          "expressions": {
+            "$id": "240"
+          }
+        },
+        {
+          "$id": "241",
+          "name": "CustomHeaderValue",
+          "expressions": {
+            "$id": "242"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "243"
+      }
+    },
+    {
+      "$id": "244",
+      "activityId": "d613b098-3420-4cc8-8b60-7a1e9989df30",
+      "type": "Join",
+      "displayName": "Join",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "245",
+          "name": "EagerJoin",
+          "expressions": {
+            "$id": "246"
+          }
+        },
+        {
+          "$id": "247",
+          "name": "Mode",
+          "expressions": {
+            "$id": "248",
+            "Literal": "WaitAny"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "249"
+      }
+    },
+    {
+      "$id": "250",
+      "activityId": "a4db26c0-bb22-4207-bc14-b485eda253e6",
+      "type": "Finish",
+      "displayName": "Finish",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "251",
+          "name": "ActivityOutput",
+          "expressions": {
+            "$id": "252",
+            "Literal": "Success"
+          }
+        },
+        {
+          "$id": "253",
+          "name": "OutcomeNames",
+          "expressions": {
+            "$id": "254"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "255"
+      }
+    },
+    {
+      "$id": "256",
+      "activityId": "dbe3d5d6-efe6-40bf-a0f0-94a5ffa97a7b",
+      "type": "Cron",
+      "displayName": "Cron",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "257",
+          "name": "CronExpression",
+          "expressions": {
+            "$id": "258",
+            "Literal": "0 30 10 ? * * *"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "259"
+      }
+    },
+    {
+      "$id": "260",
+      "activityId": "aecb7087-6ede-4fce-aa03-129f286db022",
+      "type": "SendEmail",
+      "name": "Accountant Remainder Mail",
+      "displayName": "Accountant Remainder Mail",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "261",
+          "name": "From",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "262",
+            "JavaScript": "activities.Document01.Output().Body.fromEmail"
+          }
+        },
+        {
+          "$id": "263",
+          "name": "To",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "264",
+            "JavaScript": "activities.Document01.Output().Body.accountantEmailAddress"
+          }
+        },
+        {
+          "$id": "265",
+          "name": "Subject",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "266",
+            "Literal": "Accountant Remainder Mail",
+            "Liquid": "Reminder: To Approve - {{Variables.Document.suppliername}} uploaded invoice & credit notes for your approval"
+          }
+        },
+        {
+          "$id": "267",
+          "name": "Attachments",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "268",
+            "JavaScript": ""
+          }
+        },
+        {
+          "$id": "269",
+          "name": "Body",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "270",
+            "Literal": "Hi",
+            "Liquid": "<p>Hello,</P>\r\n\r\n<p>{{ Variables.Document.document }}: {{ Variables.Document.supplementaryInvoiceNo }}</p>\r\n<p>{{ Variables.Document.document }} Date : {{ Variables.Document.supplementaryInvoiceDate }}</p>\r\n\r\n<p>You are kindly requested to approve the above mentioned item. <br>\r\nTo approve and for detailed information <a href=\"{{ Variables.Document.buyerName | signalwfacc_url: docid: Variables.Document.id}}\">Click here</a>: </P>\r\n\r\n<p>Regards,  <br>\r\nProcurement & Supply Chain Digitalization Team <br>\r\nDaimler India Commercial Vehicles Private Limited</P>"
+          }
+        },
+        {
+          "$id": "271",
+          "name": "Cc",
+          "expressions": {
+            "$id": "272"
+          }
+        },
+        {
+          "$id": "273",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "274"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "275"
+      }
+    },
+    {
+      "$id": "276",
+      "activityId": "bd241863-c89c-42b5-9406-1c61c363a8ce",
+      "type": "Finish",
+      "displayName": "Finish",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "277",
+          "name": "ActivityOutput",
+          "expressions": {
+            "$id": "278",
+            "Literal": "Success"
+          }
+        },
+        {
+          "$id": "279",
+          "name": "OutcomeNames",
+          "expressions": {
+            "$id": "280"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "281"
+      }
+    },
+    {
+      "$id": "282",
+      "activityId": "fad81e14-3119-40d8-8fe7-228876cc28c8",
+      "type": "SendEmail",
+      "displayName": "Send Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "283",
+          "name": "From",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "284",
+            "JavaScript": "activities.Document01.Output().Body.fromEmail",
+            "Liquid": "activities.Document01.Output().Body.fromEmail"
+          }
+        },
+        {
+          "$id": "285",
+          "name": "To",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "286",
+            "JavaScript": "activities.Document01.Output().Body.supplierEmailAddress"
+          }
+        },
+        {
+          "$id": "287",
+          "name": "Subject",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "288",
+            "Liquid": "Intimation: Your Document {{Variables.Document.document}} - {{Variables.Document.supplementaryInvoiceNo}} Submission is Rejected"
+          }
+        },
+        {
+          "$id": "289",
+          "name": "Attachments",
+          "expressions": {
+            "$id": "290"
+          }
+        },
+        {
+          "$id": "291",
+          "name": "Body",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "292",
+            "Literal": "<p>Hello,</P>\n\n<p>{{ Variables.Document.document }}: {{ Variables.Document.supplementaryInvoiceNo }}</p>\n<p>{{ Variables.Document.document }} Date : {{ Variables.Document.supplementaryInvoiceDate }}</p>\n\n\n<p>The Supplementary Invoice / Credit note submitted is rejected with comment {{ Variables.Document.buyerRemarks }} by {{ Variables.Document.buyerName }}<br>\nClick the link to review the document and upload the corrected invoice / credit notes immediately.<br>\nPlease contact the buyer for further clarifications.</p>\n\n\n<p>Regards,  <br>\nProcurement & Supply Chain Digitalization Team <br>\nDaimler India Commercial Vehicles Private Limited</P>\n",
+            "Liquid": "<p>Hello,</P>\r\n\r\n<p>{{ Variables.Document.document }}: {{ Variables.Document.supplementaryInvoiceNo }}</p>\r\n<p>{{ Variables.Document.document }} Date : {{ Variables.Document.supplementaryInvoiceDate }}</p>\r\n\r\n\r\n<p>The Supplementary Invoice / Credit note submitted is rejected with comment {{ Variables.Document.buyerRemarks }} by {{ Variables.Document.buyerName }}<br>\r\nClick the link to review the document and upload the corrected invoice / credit notes immediately.<br>\r\nPlease contact the buyer for further clarifications.</p>\r\n\r\n\r\n<p>Regards,  <br>\r\nProcurement & Supply Chain Digitalization Team <br>\r\nDaimler India Commercial Vehicles Private Limited</P>\r\n"
+          }
+        },
+        {
+          "$id": "293",
+          "name": "Cc",
+          "expressions": {
+            "$id": "294"
+          }
+        },
+        {
+          "$id": "295",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "296"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "297"
+      }
+    },
+    {
+      "$id": "298",
+      "activityId": "d81ef8f7-1e59-4e01-8a0f-bd9ca2dc6f58",
+      "type": "SendEmail",
+      "displayName": "Send Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "299",
+          "name": "From",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "300",
+            "JavaScript": "activities.Document01.Output().Body.fromEmail"
+          }
+        },
+        {
+          "$id": "301",
+          "name": "To",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "302",
+            "JavaScript": "activities.Document01.Output().Body.supplierEmailAddress"
+          }
+        },
+        {
+          "$id": "303",
+          "name": "Subject",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "304",
+            "Liquid": "Intimation: Your Document {{Variables.Document.document}} - {{Variables.Document.supplementaryInvoiceNo}} Submission is Rejected"
+          }
+        },
+        {
+          "$id": "305",
+          "name": "Attachments",
+          "expressions": {
+            "$id": "306"
+          }
+        },
+        {
+          "$id": "307",
+          "name": "Body",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "308",
+            "Liquid": "<p>Hello,</P>\r\n\r\n<p>{{ Variables.Document.document }}: {{ Variables.Document.supplementaryInvoiceNo }}</p>\r\n<p>{{ Variables.Document.document }} Date : {{ Variables.Document.supplementaryInvoiceDate }}</p>\r\n\r\n\r\n<p>The Supplementary Invoice / Credit note submitted is rejected with comment {{ Variables.Document.accountRemarks }} by Accounts<br>\r\nClick the link to review the document and upload the corrected invoice / credit notes immediately.<br>\r\nPlease contact the buyer for further clarifications.</p>\r\n\r\n\r\n<p>Regards,  <br>\r\nProcurement & Supply Chain Digitalization Team <br>\r\nDaimler India Commercial Vehicles Private Limited</P>\r\n"
+          }
+        },
+        {
+          "$id": "309",
+          "name": "Cc",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "310",
+            "JavaScript": "activities.Document01.Output().Body.buyerEmailAddress"
+          }
+        },
+        {
+          "$id": "311",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "312"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "313"
+      }
+    },
+    {
+      "$id": "314",
+      "activityId": "5a8a1e1d-4f67-4188-b10e-17eb4c0cc43e",
+      "type": "SendEmail",
+      "displayName": "Send Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "315",
+          "name": "From",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "316",
+            "JavaScript": "activities.Document01.Output().Body.fromEmail"
+          }
+        },
+        {
+          "$id": "317",
+          "name": "To",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "318",
+            "JavaScript": "activities.Document01.Output().Body.supplierEmailAddress"
+          }
+        },
+        {
+          "$id": "319",
+          "name": "Subject",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "320",
+            "Liquid": "Intimation: Your Document {{Variables.Document.document}} - {{Variables.Document.supplementaryInvoiceNo}} Submission is Approved"
+          }
+        },
+        {
+          "$id": "321",
+          "name": "Attachments",
+          "expressions": {
+            "$id": "322"
+          }
+        },
+        {
+          "$id": "323",
+          "name": "Body",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "324",
+            "Liquid": "<p>Hello,</P>\r\n\r\n<p>{{ Variables.Document.document }}: {{ Variables.Document.supplementaryInvoiceNo }}</p>\r\n<p>{{ Variables.Document.document }} Date : {{ Variables.Document.supplementaryInvoiceDate }}</p>\r\n\r\n\r\n<p>The Supplementary Invoice / Credit note submitted is Approved with comment {{ Variables.Document.accountRemarks }} by Accounts<br>\r\nClick the link to review the document and upload the corrected invoice / credit notes immediately.<br>\r\nPlease contact the buyer for further clarifications.</p>\r\n\r\n\r\n<p>Regards,  <br>\r\nProcurement & Supply Chain Digitalization Team <br>\r\nDaimler India Commercial Vehicles Private Limited</P>\r\n"
+          }
+        },
+        {
+          "$id": "325",
+          "name": "Cc",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "326",
+            "JavaScript": "activities.Document01.Output().Body.buyerEmailAddress"
+          }
+        },
+        {
+          "$id": "327",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "328"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "329"
+      }
+    }
+  ],
+  "connections": [
+    {
+      "$id": "330",
+      "sourceActivityId": "4ffe82fd-d3d6-4445-8504-f799a4b4467e",
+      "targetActivityId": "fa0d3203-606d-403f-bb98-530bd8c960ae",
+      "outcome": "Done"
+    },
+    {
+      "$id": "331",
+      "sourceActivityId": "fa0d3203-606d-403f-bb98-530bd8c960ae",
+      "targetActivityId": "e3e285b4-e892-47b8-ba1b-3d9cfc45f506",
+      "outcome": "Done"
+    },
+    {
+      "$id": "332",
+      "sourceActivityId": "e3e285b4-e892-47b8-ba1b-3d9cfc45f506",
+      "targetActivityId": "7aaefbb7-a9f9-408f-8032-da63bf5e8290",
+      "outcome": "Done"
+    },
+    {
+      "$id": "333",
+      "sourceActivityId": "7aaefbb7-a9f9-408f-8032-da63bf5e8290",
+      "targetActivityId": "0a3e4a9b-4a12-47fd-9170-e6ca2dd14a80",
+      "outcome": "Done"
+    },
+    {
+      "$id": "334",
+      "sourceActivityId": "0a3e4a9b-4a12-47fd-9170-e6ca2dd14a80",
+      "targetActivityId": "a26cdcb3-dc71-4337-b6ee-853926dce946",
+      "outcome": "Approve"
+    },
+    {
+      "$id": "335",
+      "sourceActivityId": "0a3e4a9b-4a12-47fd-9170-e6ca2dd14a80",
+      "targetActivityId": "f7bfac77-9aeb-475c-817a-51c0d5108871",
+      "outcome": "Reject"
+    },
+    {
+      "$id": "336",
+      "sourceActivityId": "0a3e4a9b-4a12-47fd-9170-e6ca2dd14a80",
+      "targetActivityId": "2bcff5c6-a78e-4257-a388-aa75e170c82d",
+      "outcome": "Remainder"
+    },
+    {
+      "$id": "337",
+      "sourceActivityId": "a26cdcb3-dc71-4337-b6ee-853926dce946",
+      "targetActivityId": "39d7055a-790e-4371-8676-d099ce8cee51",
+      "outcome": "Signal"
+    },
+    {
+      "$id": "338",
+      "sourceActivityId": "a26cdcb3-dc71-4337-b6ee-853926dce946",
+      "targetActivityId": "5fa49faa-19b8-4604-9cfc-6035a46a2b6c",
+      "outcome": "Correlation"
+    },
+    {
+      "$id": "339",
+      "sourceActivityId": "39d7055a-790e-4371-8676-d099ce8cee51",
+      "targetActivityId": "f9aa37bd-5093-4c3e-838d-aa4fd3d6d2ab",
+      "outcome": "Done"
+    },
+    {
+      "$id": "340",
+      "sourceActivityId": "5fa49faa-19b8-4604-9cfc-6035a46a2b6c",
+      "targetActivityId": "f9aa37bd-5093-4c3e-838d-aa4fd3d6d2ab",
+      "outcome": "Done"
+    },
+    {
+      "$id": "341",
+      "sourceActivityId": "f7bfac77-9aeb-475c-817a-51c0d5108871",
+      "targetActivityId": "c86a2355-1c1a-4678-8dd6-db7e22132a3c",
+      "outcome": "Signal"
+    },
+    {
+      "$id": "342",
+      "sourceActivityId": "f7bfac77-9aeb-475c-817a-51c0d5108871",
+      "targetActivityId": "10d95bb6-b91b-47ee-a2dc-e77f0dbbab5f",
+      "outcome": "Correlation"
+    },
+    {
+      "$id": "343",
+      "sourceActivityId": "2bcff5c6-a78e-4257-a388-aa75e170c82d",
+      "targetActivityId": "cf96fdb0-92fe-425a-a93b-28914dd0a9de",
+      "outcome": "Done"
+    },
+    {
+      "$id": "344",
+      "sourceActivityId": "c86a2355-1c1a-4678-8dd6-db7e22132a3c",
+      "targetActivityId": "c15d3bb8-abbd-4288-9eb5-2e3e64384f21",
+      "outcome": "Done"
+    },
+    {
+      "$id": "345",
+      "sourceActivityId": "10d95bb6-b91b-47ee-a2dc-e77f0dbbab5f",
+      "targetActivityId": "c15d3bb8-abbd-4288-9eb5-2e3e64384f21",
+      "outcome": "Done"
+    },
+    {
+      "$id": "346",
+      "sourceActivityId": "f9aa37bd-5093-4c3e-838d-aa4fd3d6d2ab",
+      "targetActivityId": "ec71d13e-d199-4b36-9ad0-5b7416bb7152",
+      "outcome": "Done"
+    },
+    {
+      "$id": "347",
+      "sourceActivityId": "ec71d13e-d199-4b36-9ad0-5b7416bb7152",
+      "targetActivityId": "cec4ad30-5d45-423b-8e7d-ee0632c7c1d7",
+      "outcome": "Approve"
+    },
+    {
+      "$id": "348",
+      "sourceActivityId": "cec4ad30-5d45-423b-8e7d-ee0632c7c1d7",
+      "targetActivityId": "6bdc8745-4e8e-44d1-a38d-ea5c64e35e9a",
+      "outcome": "Done"
+    },
+    {
+      "$id": "349",
+      "sourceActivityId": "6bdc8745-4e8e-44d1-a38d-ea5c64e35e9a",
+      "targetActivityId": "a009a9f7-64e1-411a-a4a2-13200206799b",
+      "outcome": "Approve"
+    },
+    {
+      "$id": "350",
+      "sourceActivityId": "a009a9f7-64e1-411a-a4a2-13200206799b",
+      "targetActivityId": "5f571b67-fd6c-41c9-803d-e057c8c96dc2",
+      "outcome": "Signal"
+    },
+    {
+      "$id": "351",
+      "sourceActivityId": "a009a9f7-64e1-411a-a4a2-13200206799b",
+      "targetActivityId": "27c9b55f-328c-4166-8f70-2e4ebd3cbb26",
+      "outcome": "Correlation"
+    },
+    {
+      "$id": "352",
+      "sourceActivityId": "5f571b67-fd6c-41c9-803d-e057c8c96dc2",
+      "targetActivityId": "63a7db47-56c2-48c8-bed2-634b3b794fce",
+      "outcome": "Done"
+    },
+    {
+      "$id": "353",
+      "sourceActivityId": "6bdc8745-4e8e-44d1-a38d-ea5c64e35e9a",
+      "targetActivityId": "2ffcd522-b862-4777-b4d2-964105fa9090",
+      "outcome": "Reject"
+    },
+    {
+      "$id": "354",
+      "sourceActivityId": "2ffcd522-b862-4777-b4d2-964105fa9090",
+      "targetActivityId": "a08304bc-37f0-42ba-b86d-1db89766e73b",
+      "outcome": "Signal"
+    },
+    {
+      "$id": "355",
+      "sourceActivityId": "2ffcd522-b862-4777-b4d2-964105fa9090",
+      "targetActivityId": "dc0ea4d2-789a-4f35-9857-8d2ee04bbe5c",
+      "outcome": "Correlation"
+    },
+    {
+      "$id": "356",
+      "sourceActivityId": "a08304bc-37f0-42ba-b86d-1db89766e73b",
+      "targetActivityId": "d613b098-3420-4cc8-8b60-7a1e9989df30",
+      "outcome": "Done"
+    },
+    {
+      "$id": "357",
+      "sourceActivityId": "ec71d13e-d199-4b36-9ad0-5b7416bb7152",
+      "targetActivityId": "dbe3d5d6-efe6-40bf-a0f0-94a5ffa97a7b",
+      "outcome": "Remainder"
+    },
+    {
+      "$id": "358",
+      "sourceActivityId": "dbe3d5d6-efe6-40bf-a0f0-94a5ffa97a7b",
+      "targetActivityId": "aecb7087-6ede-4fce-aa03-129f286db022",
+      "outcome": "Done"
+    },
+    {
+      "$id": "359",
+      "sourceActivityId": "dc0ea4d2-789a-4f35-9857-8d2ee04bbe5c",
+      "targetActivityId": "d613b098-3420-4cc8-8b60-7a1e9989df30",
+      "outcome": "Done"
+    },
+    {
+      "$id": "360",
+      "sourceActivityId": "27c9b55f-328c-4166-8f70-2e4ebd3cbb26",
+      "targetActivityId": "63a7db47-56c2-48c8-bed2-634b3b794fce",
+      "outcome": "Done"
+    },
+    {
+      "$id": "361",
+      "sourceActivityId": "c15d3bb8-abbd-4288-9eb5-2e3e64384f21",
+      "targetActivityId": "fad81e14-3119-40d8-8fe7-228876cc28c8",
+      "outcome": "Done"
+    },
+    {
+      "$id": "362",
+      "sourceActivityId": "fad81e14-3119-40d8-8fe7-228876cc28c8",
+      "targetActivityId": "fd287642-dd15-449d-92f5-9a5de1b51c2f",
+      "outcome": "Done"
+    },
+    {
+      "$id": "363",
+      "sourceActivityId": "d613b098-3420-4cc8-8b60-7a1e9989df30",
+      "targetActivityId": "d81ef8f7-1e59-4e01-8a0f-bd9ca2dc6f58",
+      "outcome": "Done"
+    },
+    {
+      "$id": "364",
+      "sourceActivityId": "d81ef8f7-1e59-4e01-8a0f-bd9ca2dc6f58",
+      "targetActivityId": "a4db26c0-bb22-4207-bc14-b485eda253e6",
+      "outcome": "Done"
+    },
+    {
+      "$id": "365",
+      "sourceActivityId": "63a7db47-56c2-48c8-bed2-634b3b794fce",
+      "targetActivityId": "5a8a1e1d-4f67-4188-b10e-17eb4c0cc43e",
+      "outcome": "Done"
+    },
+    {
+      "$id": "366",
+      "sourceActivityId": "5a8a1e1d-4f67-4188-b10e-17eb4c0cc43e",
+      "targetActivityId": "bd241863-c89c-42b5-9406-1c61c363a8ce",
+      "outcome": "Done"
+    }
+  ],
+  "id": "c77f1d3e24d04257965c5af1d06a93c5"
+}

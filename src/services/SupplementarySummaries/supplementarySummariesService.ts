@@ -43,6 +43,20 @@ class supplementarySummariesService{
         throw error; 
       }
   }
+
+  public async GetAllsupplementarySummarybyId(input: number) {
+    try {
+      
+      const result = await http.get(
+        'api/services/app/SupplementarySummaries/GetAllsupplementarySummarybyId',{ params:{DocId:input}},
+         
+      );
+      return result.data.result;
+    } catch (error) {
+      console.error('Error fetching supplementary summaries:', error);
+      throw error; 
+    }
+}
     public async BuyerdashboardloadsupplementarySummary(input: BuyerDashboardInput) {
       try {
         

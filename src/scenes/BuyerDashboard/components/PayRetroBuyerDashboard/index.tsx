@@ -529,7 +529,7 @@ function barstatus(status:any) {
       <p>Current User id:{abp.session.userId}</p>
 <DashboardCards BuyerDashboardinputs={dashboardinput} />
 <br></br>
-<Row gutter={11}>
+<Row gutter={11} style={{ marginRight:'-200.5px'}}>
     <Col className="gutter-row" span={4}>
       <div style={{ textAlign: 'left' }}>
       <h3>Buyer</h3>
@@ -657,7 +657,7 @@ function barstatus(status:any) {
     <Tabs.TabPane tab="Home" key="1">
       <div style={{ marginTop: "20px" }}>
         
-        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px",whiteSpace:'nowrap' }}>
           <thead>
             <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "center" }}>
               {[
@@ -765,50 +765,7 @@ function barstatus(status:any) {
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryInvoiceDate?formatDate(row.supplementaryInvoiceDate):''}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.total}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.ageing}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
-                <span style={{ marginRight: "10px" }}>
-  {row.supplementaryInvoicePath ? <Button type="link" onClick={() => handleSupplementrypdfButtonClick(row.supplementaryInvoicePath)}>
-          <FilePdfOutlined style={{ marginRight: 8 }} />
-        </Button> : null}
-        {pdfUrl && (
-          <iframe
-            src={pdfUrl}
-            width="100%"
-            height="600px"
-            title="PDF Viewer"
-            style={{ border: 'none' }}
-          />
-        )}
-</span>
-<span style={{ marginRight: "10px" }}>
-  {row.annecurePath ? (
-    <button
-      id="annexurebuyerpdfview"
-      title="Download Annexure"
-      style={{ border: "none", background: "none", cursor: "pointer" }}
-    >
-      <i
-        className="fa-solid fa-file-pdf"
-        style={{ fontSize: "20px", color: "red" }}
-      ></i>
-    </button>
-  ) : null}
-</span>
-<span>
-  {row.supplementaryInvoicePath3 ? (
-    <button
-      id="annexurebuyerexceldownload"
-      title="Download Annexure"
-      style={{ border: "none", background: "none", cursor: "pointer" }}
-    >
-      <i
-        className="fa-solid fa-file-excel"
-        style={{ fontSize: "20px", color: "green" }}
-      ></i>
-    </button>
-  ) : null}
-</span>
-    </td>
+                
                 <td style={{ padding: "10px", border: "1px solid #ddd", width: "175px" }}>
                   <span>
                     {row.supplementaryInvoicePath && (

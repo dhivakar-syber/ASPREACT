@@ -28,11 +28,11 @@ class CreateOrUpdateDahBoarddisputedata extends React.Component<ICreateOrUpdateD
           case 0:
             return "Open";
           case 1:
-            return "ForwardedToFandC";
+            return "Forwarded To FandC";
           case 2:
             return "Close";
           case 3:
-            return "InimatedToBuyer";
+            return "Inimated T oBuyer";
           default:
             return "Unknown";
         }
@@ -55,9 +55,6 @@ class CreateOrUpdateDahBoarddisputedata extends React.Component<ICreateOrUpdateD
             <Button key="ok" type="primary" onClick={() => formRef.current?.submit()}>
             Inimated To Buyer
           </Button>,
-            <Button key="cancel" onClick={onCancel}>
-              Close
-            </Button>,
            
           ]}
         
@@ -94,7 +91,7 @@ class CreateOrUpdateDahBoarddisputedata extends React.Component<ICreateOrUpdateD
             <Row gutter={16}>
                 <Col span={12}>
                 <Form.Item label={L('Supplementary Summary')} name="supplementarySummaryId" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} style={{ fontWeight: 'bold' }}>
-                    <Input disabled value = {''} style={{  color: 'black' }}/>
+                    <Input disabled value = {initialData.supplementarySummaryId} style={{  color: 'black' }}/>
                     </Form.Item>
                 </Col>
                 <Col span={12}>
