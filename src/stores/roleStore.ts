@@ -1,6 +1,6 @@
 import { action, observable } from 'mobx';
 
-import { CreateRoleInput } from '../services/role/dto/createRoleInput';
+import { CreateOrUpdateRoleInput } from '../services/role/dto/createOrUpdateRoleInput';
 import { EntityDto } from '../services/dto/entityDto';
 import { GetAllPermissionsOutput } from '../services/role/dto/getAllPermissionsOutput';
 import { GetAllRoleOutput } from '../services/role/dto/getAllRoleOutput';
@@ -8,7 +8,7 @@ import { GetRoleAsyncInput } from '../services/role/dto/getRoleAsyncInput';
 import { PagedResultDto } from '../services/dto/pagedResultDto';
 import { PagedRoleResultRequestDto } from '../services/role/dto/PagedRoleResultRequestDto';
 import RoleEditModel from '../models/Roles/roleEditModel';
-import { UpdateRoleInput } from '../services/role/dto/updateRoleInput';
+//import { UpdateRoleInput } from '../services/role/dto/updateRoleInput';
 import roleService from '../services/role/roleService';
 
 class RoleStore {
@@ -17,7 +17,7 @@ class RoleStore {
   @observable allPermissions: GetAllPermissionsOutput[] = [];
 
   @action
-  async create(createRoleInput: CreateRoleInput) {
+  async create(createRoleInput: CreateOrUpdateRoleInput) {
     await roleService.create(createRoleInput);
   }
 
@@ -41,19 +41,27 @@ class RoleStore {
   }
 
   @action
-  async update(updateRoleInput: UpdateRoleInput) {
+  async update(updateRoleInput: CreateOrUpdateRoleInput) {
+    if (!updateRoleInput || !updateRoleInput.role || !updateRoleInput.role.id) {
+        console.error("Invalid updateRoleInput. Ensure it has the required properties.");
+        return;
+    }
+
     await roleService.update(updateRoleInput);
-    this.roles.items
-      .filter((x: GetAllRoleOutput) => x.id === updateRoleInput.id)
-      .map((x: GetAllRoleOutput) => {
-        return (x = updateRoleInput);
-      });
-  }
+
+    this.roles.items = this.roles.items.map((x: GetAllRoleOutput) => {
+        // Safely check if x.role and x.role.id exist
+        if (x && x.id === updateRoleInput.role.id) {
+            return { ...x, role: updateRoleInput.role }; // Update only the matching item
+        }
+        return x; // Keep other items unchanged
+    });
+}
 
   @action
   async delete(entityDto: EntityDto) {
     await roleService.delete(entityDto);
-    this.roles.items = this.roles.items.filter((x: GetAllRoleOutput) => x.id !== entityDto.id);
+    this.roles.items = this.roles.items.filter((x: GetAllRoleOutput) => x.role.id !== entityDto.id);
   }
 
   @action

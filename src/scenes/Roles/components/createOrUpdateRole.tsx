@@ -93,7 +93,7 @@ class CreateOrUpdateRole extends React.Component<ICreateOrUpdateRoleProps> {
               </Form.Item>
             </TabPane>
             <TabPane tab={L('RolePermission')} key={'permission'} forceRender={true}>
-              <Form.Item {...tailFormItemLayout} name={'grantedPermissions'} valuePropName={'value'}>
+              <Form.Item {...tailFormItemLayout} name={'grantedPermissionNames'} valuePropName={'value'}>
                 <Checkbox.Group options={options} />
               </Form.Item>
             </TabPane>

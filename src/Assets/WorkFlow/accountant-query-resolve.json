@@ -1,0 +1,295 @@
+{
+  "$id": "1",
+  "definitionId": "df973dff77644bb09767cca86127b718",
+  "versionId": "e85ea98da224437ab5a294322e726deb",
+  "name": "Accountant Query Resolve",
+  "displayName": "Accountant Query Resolve",
+  "version": 1,
+  "variables": {
+    "$id": "2",
+    "data": {}
+  },
+  "customAttributes": {
+    "$id": "3",
+    "data": {}
+  },
+  "isSingleton": false,
+  "persistenceBehavior": "WorkflowBurst",
+  "deleteCompletedInstances": false,
+  "isPublished": true,
+  "isLatest": true,
+  "createdAt": "2024-12-19T12:40:20.2946193Z",
+  "activities": [
+    {
+      "$id": "4",
+      "activityId": "1c0036f2-1f65-42a6-9fda-a5ce94aabdee",
+      "type": "HttpEndpoint",
+      "name": "Document01",
+      "displayName": "HTTP Endpoint",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "5",
+          "name": "Path",
+          "expressions": {
+            "$id": "6",
+            "Literal": "/RetroPay/AccountantResolveWorkflow"
+          }
+        },
+        {
+          "$id": "7",
+          "name": "Methods",
+          "expressions": {
+            "$id": "8",
+            "Json": "[\"POST\"]"
+          }
+        },
+        {
+          "$id": "9",
+          "name": "ReadContent",
+          "expressions": {
+            "$id": "10",
+            "Literal": "true"
+          }
+        },
+        {
+          "$id": "11",
+          "name": "TargetType",
+          "expressions": {
+            "$id": "12"
+          }
+        },
+        {
+          "$id": "13",
+          "name": "Schema",
+          "syntax": "Literal",
+          "expressions": {
+            "$id": "14",
+            "Literal": ""
+          }
+        },
+        {
+          "$id": "15",
+          "name": "Authorize",
+          "expressions": {
+            "$id": "16"
+          }
+        },
+        {
+          "$id": "17",
+          "name": "Policy",
+          "expressions": {
+            "$id": "18"
+          }
+        },
+        {
+          "$id": "19",
+          "name": "AuthorizeWithCustomHeader",
+          "expressions": {
+            "$id": "20"
+          }
+        },
+        {
+          "$id": "21",
+          "name": "CustomHeaderName",
+          "expressions": {
+            "$id": "22"
+          }
+        },
+        {
+          "$id": "23",
+          "name": "CustomHeaderValue",
+          "expressions": {
+            "$id": "24"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "25"
+      }
+    },
+    {
+      "$id": "26",
+      "activityId": "ce7a1044-ad42-4322-8a67-a177ed20f88e",
+      "type": "SetVariable",
+      "displayName": "Set Variable",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "27",
+          "name": "VariableName",
+          "expressions": {
+            "$id": "28",
+            "Literal": "Document"
+          }
+        },
+        {
+          "$id": "29",
+          "name": "Value",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "30",
+            "JavaScript": "input.Body"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "31"
+      }
+    },
+    {
+      "$id": "32",
+      "activityId": "26401244-55aa-4824-8c29-f561df5970dc",
+      "type": "SendEmail",
+      "displayName": "Send Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "33",
+          "name": "From",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "34",
+            "JavaScript": "activities.Document01.Output().Body.fromMail"
+          }
+        },
+        {
+          "$id": "35",
+          "name": "To",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "36",
+            "JavaScript": "activities.Document01.Output().Body.buyerMail"
+          }
+        },
+        {
+          "$id": "37",
+          "name": "Subject",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "38",
+            "Liquid": "Intimation: Your Query is resolved on the Supplementary report"
+          }
+        },
+        {
+          "$id": "39",
+          "name": "Attachments",
+          "expressions": {
+            "$id": "40"
+          }
+        },
+        {
+          "$id": "41",
+          "name": "Body",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "42",
+            "Liquid": "<p>Hello,</p>\r\n\r\n<p>Your query on the latest supplementary report is closed.<br>\r\nClick the link to review the feedback and upload the pending invoice / credit notes within two weeks of this email.<br>\r\nPlease contact the buyer for further clarifications.</p>\r\n<a href=\"{{ Variables.Document.appURL}}\">link to portal</a> </P>\r\n\r\n<p>Regards,<br>\r\nProcurement & Supply Chain Digitalization Team<br>\r\nDaimler India Commercial Vehicles Private Limited<br>"
+          }
+        },
+        {
+          "$id": "43",
+          "name": "Cc",
+          "expressions": {
+            "$id": "44"
+          }
+        },
+        {
+          "$id": "45",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "46"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "47"
+      }
+    },
+    {
+      "$id": "48",
+      "activityId": "2fff5f45-0474-4e08-9129-7f78bf970db1",
+      "type": "Correlate",
+      "displayName": "Correlate",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "49",
+          "name": "Value",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "50",
+            "Liquid": "QueryResolveId-{{Variables.Document.id}}"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "51"
+      }
+    },
+    {
+      "$id": "52",
+      "activityId": "7bbd8b8c-4cc9-4fb7-8d87-c5aa185481d9",
+      "type": "Finish",
+      "displayName": "Finish",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "53",
+          "name": "ActivityOutput",
+          "expressions": {
+            "$id": "54",
+            "Literal": "Success"
+          }
+        },
+        {
+          "$id": "55",
+          "name": "OutcomeNames",
+          "expressions": {
+            "$id": "56"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "$id": "57"
+      }
+    }
+  ],
+  "connections": [
+    {
+      "$id": "58",
+      "sourceActivityId": "1c0036f2-1f65-42a6-9fda-a5ce94aabdee",
+      "targetActivityId": "ce7a1044-ad42-4322-8a67-a177ed20f88e",
+      "outcome": "Done"
+    },
+    {
+      "$id": "59",
+      "sourceActivityId": "ce7a1044-ad42-4322-8a67-a177ed20f88e",
+      "targetActivityId": "26401244-55aa-4824-8c29-f561df5970dc",
+      "outcome": "Done"
+    },
+    {
+      "$id": "60",
+      "sourceActivityId": "26401244-55aa-4824-8c29-f561df5970dc",
+      "targetActivityId": "2fff5f45-0474-4e08-9129-7f78bf970db1",
+      "outcome": "Done"
+    },
+    {
+      "$id": "61",
+      "sourceActivityId": "2fff5f45-0474-4e08-9129-7f78bf970db1",
+      "targetActivityId": "7bbd8b8c-4cc9-4fb7-8d87-c5aa185481d9",
+      "outcome": "Done"
+    }
+  ],
+  "id": "e85ea98da224437ab5a294322e726deb"
+}

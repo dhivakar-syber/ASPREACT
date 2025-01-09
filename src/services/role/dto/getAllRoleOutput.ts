@@ -1,8 +1,7 @@
+import {RoleEditDto} from "./roleEditDto"
+
 export interface GetAllRoleOutput {
-    name: string;
-    displayName: string;
-    normalizedName: string;
-    description: string;
-    grantedPermissionsNames: string[];
-    id: number;
-  }
+  role:RoleEditDto
+  grantedPermissionNames: string[];
+  id:number,
+}

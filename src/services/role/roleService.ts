@@ -1,4 +1,4 @@
-import { CreateRoleInput } from './dto/createRoleInput';
+import { CreateOrUpdateRoleInput } from './dto/createOrUpdateRoleInput';
 import { CreateRoleOutput } from './dto/createRoleOutput';
 import { EntityDto } from '../dto/entityDto';
 import { GetAllRoleOutput } from './dto/getAllRoleOutput';
@@ -7,13 +7,15 @@ import GetRoleAsyncOutput from './dto/getRoleAsyncOutput';
 import { GetRoleForEditOutput } from './dto/getRoleForEditOutput';
 import { PagedResultDto } from '../dto/pagedResultDto';
 import { PagedRoleResultRequestDto } from './dto/PagedRoleResultRequestDto';
-import { UpdateRoleInput } from './dto/updateRoleInput';
+//import { UpdateRoleInput } from './dto/updateRoleInput';
 import { UpdateRoleOutput } from './dto/updateRoleOutput';
 import http from '../httpService';
 
 class RoleService {
-  public async create(createRoleInput: CreateRoleInput): Promise<PagedResultDto<CreateRoleOutput>> {
-    let result = await http.post('/api/services/app/Role/CreateOrUpdateRole', createRoleInput);
+
+  public async create(createRoleInput: CreateOrUpdateRoleInput): Promise<PagedResultDto<CreateRoleOutput>> {
+    let result = await http.post('api/services/app/Role/CreateOrUpdateRole', createRoleInput);
+
     return result.data.result;
   }
 
@@ -22,8 +24,11 @@ class RoleService {
     return result.data.result;
   }
 
-  public async update(updateRoleInput: UpdateRoleInput): Promise<UpdateRoleOutput> {
-    let result = await http.put('/api/services/app/Role/CreateOrUpdateRole', updateRoleInput);
+
+
+  public async update(updateRoleInput: CreateOrUpdateRoleInput): Promise<UpdateRoleOutput> {
+    let result = await http.post('api/services/app/Role/CreateOrUpdateRole', updateRoleInput);
+
     return result.data.result as UpdateRoleOutput;
   }
 
