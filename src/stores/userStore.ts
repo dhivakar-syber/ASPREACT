@@ -8,7 +8,7 @@ import { GetRoles } from '../services/user/dto/getRolesOuput';
 import { GetUserOutput } from '../services/user/dto/getUserOutput';
 import { PagedResultDto } from '../services/dto/pagedResultDto';
 import { PagedUserResultRequestDto } from '../services/user/dto/PagedUserResultRequestDto';
-import { UpdateUserInput } from '../services/user/dto/updateUserInput';
+//import { UpdateUserInput } from '../services/user/dto/updateUserInput';
 import userService from '../services/user/userService';
 
 class UserStore {
@@ -24,7 +24,7 @@ class UserStore {
   }
 
   @action
-  async update(updateUserInput: UpdateUserInput) {
+  async update(updateUserInput: CreateOrUpdateUserInput) {
     let result = await userService.update(updateUserInput);
     this.users.items = this.users.items.map((x: GetUserOutput) => {
       if (x.id === updateUserInput.id) x = result;
@@ -54,15 +54,26 @@ class UserStore {
   @action
   async createUser() {
     this.editUser = {
-        userName: '',
+      user: {
+        id: 0,
         name: '',
         surname: '',
+        userName: '',
         emailAddress: '',
+        phoneNumber: '', // Optional field
+        password: '', // Optional field (can be empty to indicate 'not change password')
         isActive: false,
-        roleNames: [],
-        password: '',
-        id: 0,
-      };
+        shouldChangePasswordOnNextLogin: false,
+        isTwoFactorEnabled: false,
+        isLockoutEnabled: false,
+      },
+      assignedRoleNames: [] as string[], // Default empty array
+      sendActivationEmail: false,
+      setRandomPassword: false,
+      organizationUnits: [] as number[], // Default empty array
+      id: 0, // Default value for id
+    };
+    
       this.editRole = {
         RoleId:0,
         RoleName:'',

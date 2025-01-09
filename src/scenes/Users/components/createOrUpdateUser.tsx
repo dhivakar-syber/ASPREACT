@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 import { Checkbox, Input, Modal, Tabs, Form } from 'antd';
 import { GetRoles } from '../../../services/user/dto/getRolesOuput';
 import { L } from '../../../lib/abpUtility';
@@ -13,13 +12,16 @@ export interface ICreateOrUpdateUserProps {
   onCancel: () => void;
   modalType: string;
   onCreate: () => void;
+  onRoleSelection: (selectedRoles: string[]) => void;
   roles: GetRoles[]; // Ensure roles is passed as a valid array
   formRef: React.RefObject<FormInstance>;
+  editRole: any;
 }
 
 class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
   state = {
     confirmDirty: false,
+    selectedRoles: [] as string[], // Add state for selected roles
   };
 
   compareToFirstPassword = (rule: any, value: any) => {
@@ -41,42 +43,56 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
     return Promise.resolve();
   };
 
-  render() {
-    const roles = this.props.roles || []; // Use default empty array if roles is undefined
-
-    console.log("Roles Data:", roles);
-
-    const formItemLayout = {
-      labelCol: { span: 6 },
-      wrapperCol: { span: 18 },
-    };
-    const tailFormItemLayout = {
-      labelCol: { span: 6 },
-      wrapperCol: { span: 18 },
-    };
-
-    const { visible, onCancel, onCreate } = this.props;
-
-    // Filter and map roles to prevent undefined/null issues
-    const options = roles
-  ?.map((item: any) => {
-    if (item) {
-      const { name, displayName } = item;
-      return {
-        name,
-        displayName,
-      };
+  componentDidUpdate(prevProps: ICreateOrUpdateUserProps) {
+    if (this.props.editRole !== prevProps.editRole) {
+      const { formRef, editRole } = this.props;
+      // If the form is available, set the field values
+      if (formRef?.current) {
+        formRef.current.setFieldsValue({
+          ...editRole, // Assuming editRole is an object with the fields matching your form's field names
+        });
+      }
+      const roles = this.props.roles || [];
+      // Set the selected roles if editRole has changed
+      const selectedRoles = (editRole?.length > 0 ? editRole : roles)
+        ?.filter((role: any) => role.isAssigned)
+        .map((role: any) => role.roleName) || [];
+      this.setState({ selectedRoles });
     }
-    return null; // Return null if the item is falsy to prevent undefined values
-  })
-  .filter((role): role is { name:any,displayName: any; } => 
-    role !== null && role.name && role.displayName // Filter out nulls and invalid roles
-  )
-  .map((x) => ({
-    label: x?.displayName,
-    value: x?.name,
-  }));
+  }
 
+  handleRoleChange = (roleValue: string, checked: boolean) => {
+    this.setState((prevState: any) => {
+      const selectedRoles = prevState.selectedRoles.slice();
+  
+      if (checked) {
+        selectedRoles.push(roleValue);
+      } else {
+        const index = selectedRoles.indexOf(roleValue);
+        if (index > -1) {
+          selectedRoles.splice(index, 1);
+        }
+      }
+  
+      this.setState({ selectedRoles });
+      const returnedRoles = this.props.onRoleSelection(selectedRoles);
+    console.log('Returned roles:', returnedRoles); // You can log t
+    });
+  };
+
+  render() {
+    const { visible, onCancel, onCreate, editRole } = this.props;
+    const { selectedRoles } = this.state;
+    const roles = this.props.roles || [];
+    console.log("Roles Data:", roles);
+    // Handle default selected roles based on 'isAssigned' property
+    const options = (editRole?.length > 0 ? editRole : roles)
+      ?.map((role: any) => ({
+        label: role.roleDisplayName || role.displayName, // Access `displayName` if `roleDisplayName` is not present
+        value: role.roleName || role.name, // Use `roleName` or fallback to `name`
+        className: selectedRoles.includes(role.roleName || role.name) ? 'ant-checkbox-checked' : '',
+      }))
+      .filter((role: any) => role.label && role.value);
 
     return (
       <Modal
@@ -91,51 +107,54 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
         <Form ref={this.props.formRef}>
           <Tabs defaultActiveKey="userInfo" size="small" tabBarGutter={64}>
             <TabPane tab={L('User')} key="userInfo">
-              <Form.Item label={L('Name')} {...formItemLayout} name="name" rules={rules.name}>
+              <Form.Item label={L('Name')} {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="name" rules={rules.name}>
                 <Input />
               </Form.Item>
-              <Form.Item label={L('Surname')} {...formItemLayout} name="surname" rules={rules.surname}>
+              <Form.Item label={L('Surname')} {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="surname" rules={rules.surname}>
                 <Input />
               </Form.Item>
-              <Form.Item label={L('UserName')} {...formItemLayout} name="userName" rules={rules.userName}>
+              <Form.Item label={L('UserName')} {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="userName" rules={rules.userName}>
                 <Input />
               </Form.Item>
-              <Form.Item label={L('Email')} {...formItemLayout} name="emailAddress" rules={rules.emailAddress as []}>
+              <Form.Item label={L('Email')} {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="emailAddress" rules={rules.emailAddress as []}>
                 <Input />
               </Form.Item>
               {this.props.modalType === 'edit' && (
                 <>
                   <Form.Item
                     label={L('Password')}
-                    {...formItemLayout}
+                    {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }}
                     name="password"
-                    rules={[
-                      { required: true, message: 'Please input your password!' },
-                      { validator: this.validateToNextPassword },
-                    ]}
+                    rules={[{ required: true, message: 'Please input your password!' }, { validator: this.validateToNextPassword }]}
                   >
                     <Input type="password" />
                   </Form.Item>
                   <Form.Item
                     label={L('ConfirmPassword')}
-                    {...formItemLayout}
+                    {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }}
                     name="confirm"
-                    rules={[
-                      { required: true, message: 'Please confirm your password!' },
-                      { validator: this.compareToFirstPassword },
-                    ]}
+                    rules={[{ required: true, message: 'Please confirm your password!' }, { validator: this.compareToFirstPassword }]}
                   >
                     <Input type="password" />
                   </Form.Item>
                 </>
               )}
-              <Form.Item label={L('IsActive')} {...tailFormItemLayout} name="isActive" valuePropName="checked">
+              <Form.Item label={L('IsActive')} {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="isActive" valuePropName="checked">
                 <Checkbox>{L('IsActive')}</Checkbox>
               </Form.Item>
             </TabPane>
             <TabPane tab={L('Roles')} key="roles" forceRender>
-              <Form.Item {...tailFormItemLayout} name="roleNames">
-                <Checkbox.Group options={options} />
+              <Form.Item {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="roleNames">
+                {options?.map((role: any) => (
+                  <Checkbox
+                    key={role.value}
+                    value={role.value}
+                    checked={selectedRoles.includes(role.value)}
+                    onChange={(e) => this.handleRoleChange(role.value, e.target.checked)}
+                  >
+                    {role.label}
+                  </Checkbox>
+                ))}
               </Form.Item>
             </TabPane>
           </Tabs>

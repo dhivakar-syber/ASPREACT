@@ -1,18 +1,9 @@
-export interface Role {
-  name: string;
-  displayName: string;
-  description?: any;
-  id: number;
-}
+import {RoleEditDto} from "./roleEditDto"
+import {FlatPermissionDto} from "./flatPermissionDto"
 
-export interface Permission {
-  name: string;
-  displayName: string;
-  description?: any;
-}
 
 export interface GetRoleForEditOutput {
-  role: Role;
-  permissions: Permission[];
+  role: RoleEditDto;
+  permissions: FlatPermissionDto[];
   grantedPermissionNames: string[];
 }
