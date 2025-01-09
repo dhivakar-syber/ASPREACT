@@ -22,6 +22,7 @@ export interface IUserState {
   skipCount: number;
   userId: number;
   filter: string;
+  selectedRoles: string[],
 }
 
 const confirm = Modal.confirm;
@@ -38,6 +39,7 @@ class User extends AppComponentBase<IUserProps, IUserState> {
     skipCount: 0,
     userId: 0,
     filter: '',
+    selectedRoles:[] as string[]
   };
 
   async componentDidMount() {
@@ -71,7 +73,7 @@ class User extends AppComponentBase<IUserProps, IUserState> {
     this.Modal();
 
     setTimeout(() => {
-      this.formRef.current?.setFieldsValue({ ...this.props.userStore.editUser });
+      this.formRef.current?.setFieldsValue({ ...this.props.userStore.editUser,...this.props.userStore.editRole });
     }, 100);
   }
 
@@ -87,17 +89,44 @@ class User extends AppComponentBase<IUserProps, IUserState> {
       },
     });
   }
-
+  handleRoleSelection = (selectedRoles: string[]) => {
+    // Check if selectedRoles is different from the current state
+    if (JSON.stringify(selectedRoles) !== JSON.stringify(this.state.selectedRoles)) {
+      this.setState({ selectedRoles }); // Update state if roles have changed
+    }
+  
+    // Always return the selectedRoles (whether changed or not)
+    return selectedRoles;
+  };
   handleCreate = () => {
     const form = this.formRef.current;
-
+  
     form!.validateFields().then(async (values: any) => {
+      // Destructure values for better clarity
+      const { name, surname, userName, emailAddress, isActive, roleNames,phoneNumber,password, ...otherValues } = values;
+      const { selectedRoles } = this.state;
+      // Construct the input object
+      const userInput = {
+        ...otherValues,
+        user: {
+          id:this.state.userId === 0 ? null : this.state.userId,
+          name,             
+          surname,          
+          userName,         
+          emailAddress,     
+          isActive,
+          phoneNumber, 
+          password,
+        },
+        assignedRoleNames:selectedRoles, 
+      };
+  
       if (this.state.userId === 0) {
-        await this.props.userStore.create(values);
+        await this.props.userStore.create(userInput);
       } else {
-        await this.props.userStore.update({ ...values, id: this.state.userId });
+        await this.props.userStore.update({ id: this.state.userId, ...userInput });
       }
-
+  
       await this.getAll();
       this.setState({ modalVisible: false });
       form!.resetFields();
@@ -185,7 +214,7 @@ class User extends AppComponentBase<IUserProps, IUserState> {
             xxl={{ span: 24, offset: 0 }}
           >
             <Table
-              rowKey={(record) => record.id.toString()}
+              rowKey="id"
               bordered={true}
               columns={columns}
               pagination={{ pageSize: 10, total: users === undefined ? 0 : users.totalCount, defaultCurrent: 1 }}
@@ -207,6 +236,8 @@ class User extends AppComponentBase<IUserProps, IUserState> {
           modalType={this.state.userId === 0 ? 'edit' : 'create'}
           onCreate={this.handleCreate}
           roles={this.props.userStore.roles}
+          editRole={this.props.userStore.editRole}
+          onRoleSelection={this.handleRoleSelection}
         />
       </Card>
     );

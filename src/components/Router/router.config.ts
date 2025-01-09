@@ -58,6 +58,15 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../scenes/Accounts Dashboard')),
   },
   {
+    path: '/BackgroundJobDashboard',
+    name: 'BackgroundJobDashboard',
+    permission: '',
+    title: 'BackgroundJob Dashboard',
+    icon: HomeOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/BackgroundJobDashboard')),
+  },
+  {
     path: '/users',
     permission: 'Pages.Administration.Users',
     title: 'Users',
