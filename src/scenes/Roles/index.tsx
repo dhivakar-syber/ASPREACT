@@ -73,7 +73,7 @@ class Role extends AppComponentBase<IRoleProps, IRoleState> {
     setTimeout(() => {
       this.formRef.current?.setFieldsValue({
         ...this.props.roleStore.roleEdit.role,
-        grantedPermissions: this.props.roleStore.roleEdit.grantedPermissionNames,
+        grantedPermissionNames: this.props.roleStore.roleEdit.grantedPermissionNames,
       });
     }, 100);
   }
@@ -91,18 +91,34 @@ class Role extends AppComponentBase<IRoleProps, IRoleState> {
 
   handleCreate = () => {
     const form = this.formRef.current;
+  
     form!.validateFields().then(async (values: any) => {
+      // Destructure values for better clarity
+      const { displayName, name, grantedPermissionNames, ...otherValues } = values;
+  
+      // Construct the input object
+      const roleInput = {
+        ...otherValues,
+        role: {
+          id: this.state.roleId === 0 ? null : this.state.roleId,
+          displayName, // Add displayName to the role object
+          name,        // Add name to the role object
+        },
+        grantedPermissionNames, // Place grantedPermissionNames outside the role object
+      };
+  
       if (this.state.roleId === 0) {
-        await this.props.roleStore.create(values);
+        await this.props.roleStore.create(roleInput);
       } else {
-        await this.props.roleStore.update({ id: this.state.roleId, ...values });
+        await this.props.roleStore.update({ id: this.state.roleId, ...roleInput });
       }
-
+  
       await this.getAll();
       this.setState({ modalVisible: false });
       form!.resetFields();
     });
   };
+  
 
   handleSearch = (value: string) => {
     this.setState({ filter: value }, async () => await this.getAll());
@@ -111,7 +127,7 @@ class Role extends AppComponentBase<IRoleProps, IRoleState> {
   public render() {
     const { allPermissions, roles } = this.props.roleStore;
     const columns = [
-      { title: L('RoleName'), dataIndex: 'name', key: 'name', width: 150, render: (text: string) => <div>{text}</div> },
+      { title: L('RoleName'), dataIndex: 'displayName', key: 'displayName', width: 150, render: (text: string) => <div>{text}</div> },
       { title: L('DisplayName'), dataIndex: 'displayName', key: 'displayName', width: 150, render: (text: string) => <div>{text}</div> },
       {
         title: L('Actions'),

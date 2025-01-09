@@ -5,17 +5,17 @@ import { EntityDto } from '../../services/dto/entityDto';
 import { GetAllUserOutput } from './dto/getAllUserOutput';
 import { PagedResultDto } from '../../services/dto/pagedResultDto';
 import { PagedUserResultRequestDto } from "./dto/PagedUserResultRequestDto";
-import { UpdateUserInput } from './dto/updateUserInput';
+//import { UpdateUserInput } from './dto/updateUserInput';
 import http from '../httpService';
 
 class UserService {
   public async create(createUserInput: CreateOrUpdateUserInput) {
-    let result = await http.post('api/services/app/User/Create', createUserInput);
+    let result = await http.post('api/services/app/User/CreateOrUpdateUser', createUserInput);
     return result.data.result;
   }
 
-  public async update(updateUserInput: UpdateUserInput) {
-    let result = await http.put('api/services/app/User/Update', updateUserInput);
+  public async update(updateUserInput: CreateOrUpdateUserInput) {
+    let result = await http.post('api/services/app/User/CreateOrUpdateUser', updateUserInput);
     return result.data.result;
   }
 
