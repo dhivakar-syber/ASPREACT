@@ -1029,123 +1029,139 @@ function barstatus(status:any) {
             </tr>
           </thead>
           <tbody>
-            {tableData.map((row) => (
-              <tr
-                key={row.id}
-                onClick={() => handleRowClick(row)} // Add click event here
-                onMouseEnter={() => setHoveredRowId(row.id)}
-                onMouseLeave={() => setHoveredRowId(null)}
-                style={{
-                  backgroundColor: hoveredRowId === row.id ? "#f1f1f1" : row.id % 2 === 0 ? "#f9f9f9" : "#ffff",
-                  cursor: "pointer",
-                }}
-              >
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.buyerName}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.partno}-{row.versionNo}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.createtime)}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.ageing}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
-                
-                <div className="dropdown-container" style={{ position: "relative",whiteSpace:'normal' }}>
-                <button
-                  style={{
-                    backgroundColor: "#005f7f",
-                    color: "#fff",
-                    border: "none",
-                    padding: "5px 10px",
-                    cursor: "pointer",
-                  }}
-                  onClick={(event) => toggleDropdown(row.id, event)} // Ensure this function handles the dropdown toggle
-                >
-                  ⚙️
-                </button>
-                    {openDropdownId === row.id && (
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: "100%",
-                          left: "0",
-                          backgroundColor: "#fff",
-                          boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                          zIndex: 999,
-                          padding: "10px",
-                          width: "325px",
-                        }}
-                      >
-                        <button
-                          style={{
-                            width: "100%",
-                            backgroundColor: "#fff",
-                            color: "#071437",
-                            border: "none",
-                            padding: "10px",
-                            marginBottom: "5px",
-                            textAlign:"left"
-                          }}
-                          onClick={(event) => handleSupplementaryDropdownAction("Supplementary Invoice/Credit Note Details", row.id,row.annexureVersionNo,event)}
-                        >
-                          Supplementary Invoice/Credit Note Details
-                        </button>
-                        <button
-                          style={{
-                            width: "100%",
-                            backgroundColor: "#fff",
-                            color: "#071437",
-                            border: "none",
-                            padding: "10px",
-                            textAlign:"left"
-                          }}
-                          onClick={(event) => handleSupplierSubmitAction("Submit", row.id,event)}
-                        >
-                          Submit
-                        </button>
-                        <button
-                          style={{
-                            width: "100%",
-                            backgroundColor: "#fff",
-                            color: "#071437",
-                            border: "none",
-                            padding: "10px",
-                            textAlign:"left"
-                          }}
-                          onClick={(event) => handleRaiseQueryAction("Raise Query", row.id,event)}
-                        >
-                          Raise Query
-                        </button>
-                        <button
-                          style={{
-                            width: "100%",
-                            backgroundColor: "#fff",
-                            color: "#071437",
-                            border: "none",
-                            padding: "10px",
-                            textAlign:"left"
-                          }}
-                          onClick={(event) => handleDisputeHisotryAction("History of Query", row.id,event)}
-                        >
-                          History of Query
-                        </button>
-                      </div>
-                    )}
-              </div>
+  {tableData.map((row) => (
+    <tr
+      key={row.id}
+      onClick={() => handleRowClick(row)} // Add click event here
+      onMouseEnter={() => setHoveredRowId(row.id)}
+      onMouseLeave={() => setHoveredRowId(null)}
+      style={{
+        backgroundColor: hoveredRowId === row.id ? "#f1f1f1" : row.id % 2 === 0 ? "#f9f9f9" : "#fff",
+        cursor: "pointer",
+      }}
+    >
+      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.buyerName}</td>
+      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.partno}-{row.versionNo}</td>
+      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.createtime)}</td>
+      <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.ageing}</td>
+      <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
+        <div className="dropdown-container" style={{ position: "relative", whiteSpace: 'normal' }}>
+          <button
+            style={{
+              backgroundColor: "#005f7f",
+              color: "#fff",
+              border: "none",
+              padding: "5px 10px",
+              cursor: "pointer",
+            }}
+            onClick={(event) => toggleDropdown(row.id, event)} // Ensure this function handles the dropdown toggle
+          >
+            ⚙️
+          </button>
 
-                </td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryInvoiceNo}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryinvoicedatestring}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.contractFromDate)}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.contractToDate)}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.total}</td>
-                
-                <td style={{ padding: "10px", border: "1px solid #ddd" }} colSpan={3}>
-  <div className="progress-tube">
-    <div className={supplierstatus(row.documentStatus)} style={{ width: "50px" }}></div>
-    <div className={barstatus(row.buyerApprovalStatus)} style={{ width: "50px" }}></div>
-    <div className={barstatus(row.accountantApprovalStatus)} style={{ width: "50px" }}></div>
+          {openDropdownId === row.id && (
+  <div
+    style={{
+      position: "absolute",
+      top: "100%",
+      left: "0",
+      backgroundColor: "#fff",
+      boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+      zIndex: 999,
+      padding: "10px",
+      width: "325px",
+    }}
+  >
+    {row.documentStatus === 0 && (
+      <>
+        <button
+          style={{
+            width: "100%",
+            backgroundColor: "#fff",
+            color: "#071437",
+            border: "none",
+            padding: "10px",
+            marginBottom: "5px",
+            textAlign: "left",
+          }}
+          onClick={(event) =>
+            handleSupplementaryDropdownAction(
+              "Supplementary Invoice/Credit Note Details",
+              row.id,
+              row.annexureVersionNo,
+              event
+            )
+          }
+        >
+          Supplementary Invoice/Credit Note Details
+        </button>
+
+        <button
+          style={{
+            width: "100%",
+            backgroundColor: "#fff",
+            color: "#071437",
+            border: "none",
+            padding: "10px",
+            textAlign: "left",
+          }}
+          onClick={(event) => handleSupplierSubmitAction("Submit", row.id, event)}
+        >
+          Submit
+        </button>
+
+        <button
+          style={{
+            width: "100%",
+            backgroundColor: "#fff",
+            color: "#071437",
+            border: "none",
+            padding: "10px",
+            textAlign: "left",
+          }}
+          onClick={(event) => handleRaiseQueryAction("Raise Query", row.id, event)}
+        >
+          Raise Query
+        </button>
+      </>
+    )}
+
+    {/* "History of Query" button is now always visible */}
+    <button
+      style={{
+        width: "100%",
+        backgroundColor: "#fff",
+        color: "#071437",
+        border: "none",
+        padding: "10px",
+        textAlign: "left",
+      }}
+      onClick={(event) => handleDisputeHisotryAction("History of Query", row.id, event)}
+    >
+      History of Query
+    </button>
   </div>
-</td>
-              </tr>
-            ))}
-          </tbody>
+)}
+
+        </div>
+      </td>
+      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryInvoiceNo}</td>
+      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryinvoicedatestring}</td>
+      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.contractFromDate)}</td>
+      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.contractToDate)}</td>
+      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.total}</td>
+      
+      <td style={{ padding: "10px", border: "1px solid #ddd" }} colSpan={3}>
+        <div className="progress-tube">
+          <div className={supplierstatus(row.documentStatus)} style={{ width: "50px" }}></div>
+          <div className={barstatus(row.buyerApprovalStatus)} style={{ width: "50px" }}></div>
+          <div className={barstatus(row.accountantApprovalStatus)} style={{ width: "50px" }}></div>
+        </div>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
         </table>
       </div>
       <SupplierSubmitModal isOpen={isSupplierSubmitModalOpen} onClose={closeSupplierSubmitModal} submitIdRow={submitIdRow}
