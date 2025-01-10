@@ -366,7 +366,7 @@ declare var abp: any;
       setrowAccountsStatus(carddetails.data.result.accountspending.toFixed(2));
   
       
-  
+        
   
   
     }
@@ -889,7 +889,9 @@ function barstatus(status:any) {
       </Modal>
     </Tabs.TabPane>
     <Tabs.TabPane tab="Queries" key="3">
-    <BuyerQueryModal disputesStore={ new DisputedataStore} />
+    <BuyerQueryModal disputesStore={ new DisputedataStore}
+                     BuyerDashboardInput={dashboardinput}
+    />
 </Tabs.TabPane>
 
   </Tabs>
