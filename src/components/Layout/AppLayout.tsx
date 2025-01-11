@@ -18,13 +18,17 @@ const { Content } = Layout;
 
 class AppLayout extends React.Component<any> {
   state = {
-    collapsed: false,
+    collapsed: true, 
+    hovering: false, 
   };
 
-  toggle = () => {
-    this.setState({
-      collapsed: !this.state.collapsed,
-    });
+  
+  onHoverStart = () => {
+    this.setState({ collapsed: false, hovering: true });
+  };
+
+  onHoverEnd = () => {
+    this.setState({ collapsed: true, hovering: false });
   };
 
   onCollapse = (collapsed: any) => {
@@ -42,10 +46,18 @@ class AppLayout extends React.Component<any> {
 
     const layout = (
       <Layout style={{ minHeight: '100vh' }}>
-        <SiderMenu path={path} onCollapse={this.onCollapse} history={history} collapsed={collapsed} />
+        <div
+          onMouseEnter={this.onHoverStart}
+          onMouseLeave={this.onHoverEnd}
+          style={{
+            transition: 'width 0.2s ease', 
+          }}
+        >
+          <SiderMenu path={path} onCollapse={this.onCollapse} history={history} collapsed={collapsed} />
+        </div>
         <Layout>
           <Layout.Header style={{ background: '#fff', minHeight: 52, padding: 0 }}>
-            <Header collapsed={this.state.collapsed} toggle={this.toggle} />
+            <Header collapsed={collapsed}  />
           </Layout.Header>
           <Content style={{ margin: 16 }}>
             <Switch>

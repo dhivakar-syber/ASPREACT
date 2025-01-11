@@ -76,7 +76,7 @@ class disputesService {
 
 
   public async buyergetAll(input:BuyerDashboardInput) {
-    let result = await http.post('api/services/app/Disputes/BuyerGetAll', { params: input });
+    let result = await http.post('api/services/app/Disputes/BuyerGetAll', { params:{ buyerid:input.Buyerid,Supplierids:input.Supplierids}});
     return result.data.result;
   }
 
