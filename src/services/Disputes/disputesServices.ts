@@ -10,6 +10,8 @@ import {DisputeBuyerLookupTableDto} from './dto/DisputeBuyerLookupTableDto';
 import {DisputeSupplierLookupTableDto} from './dto/DisputeSupplierLookupTableDto';
 import {DisputeSupplierRejectionLookupTableDto} from './dto/DisputeSupplierRejectionLookupTableDto';
 import http from '../httpService';
+import { BuyerDashboardInput } from '../../scenes/BuyerDashboard/BuyerDashboardInput';
+import { AccountDashboardInput } from '../../scenes/Accounts Dashboard/components/PayRetroaccountsDashboard/AccountsDashboardInput';
 
 class disputesService {
   public async create(createOrEditDisputeDto: CreateOrEditDisputeDto) {
@@ -73,13 +75,13 @@ class disputesService {
 
 
 
-  public async buyergetAll(pagedFilterAndSortedRequest: PagedDisputesResultRequestDto): Promise<PagedResultDto<GetDisputeForViewDto>> {
-    let result = await http.post('api/services/app/Disputes/BuyerGetAll', { params: pagedFilterAndSortedRequest });
+  public async buyergetAll(input:BuyerDashboardInput) {
+    let result = await http.post('api/services/app/Disputes/BuyerGetAll', { params:{ buyerid:input.Buyerid,Supplierids:input.Supplierids}});
     return result.data.result;
   }
 
-  public async accountgetAll(pagedFilterAndSortedRequest: PagedDisputesResultRequestDto): Promise<PagedResultDto<GetDisputeForViewDto>> {
-    let result = await http.post('api/services/app/Disputes/AccountsGetAll', { params: pagedFilterAndSortedRequest });
+  public async accountgetAll(input:AccountDashboardInput) { 
+    let result = await http.post('api/services/app/Disputes/AccountsGetAll', { params: input });
     return result.data.result;
   }
 
