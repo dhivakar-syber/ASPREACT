@@ -5,15 +5,9 @@ import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../components/AppComponentBase';
 // import SupplierLookUpData from './components/SupplierLookUpData';
-<<<<<<< HEAD
 
-import Edit from './components/createOrUpdateSupplier';
-
-// import Edit from './components/createorupdatesuppliers';
-
-=======
 import Edit from './components/createorupdatesuppliers';
->>>>>>> c8452a45048a344138c6d657d880b88588f4c32d
+
 import { EntityDto } from '../../services/dto/entityDto';
 import { L } from '../../lib/abpUtility';
 import Stores from '../../stores/storeIdentifier';
@@ -47,7 +41,8 @@ const Search = Input.Search;
 
 @inject(Stores.SupplierStore)
 @observer
-class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState> {
+class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState> 
+{
     formRef = React.createRef<FormInstance>();
 
     state = {

@@ -41,7 +41,6 @@ public async update(createOrEditSupplierDto: CreateOrEditSupplierDto) {
 public async getAllSupplierForLookupTable(pagedFilterAndSortedRequest: PagedTenantResultRequestDto): Promise<PagedResultDto<SupplierUserLookupTableDto>>{
   let result = await http.get('/api/services/app/Suppliers/GetAllUserForLookupTable', { params: pagedFilterAndSortedRequest });
   return result.data.result;
-  console.log("hello! Its me");
 
 }
 }   

@@ -1,8 +1,6 @@
-export interface RoleEditDto {
-    id:number,
-    displayName:string,
-    isDefault:boolean,
-    name: string;
-    description?: any;
-    normalizedName: string;
+export interface RoleEditDto
+{
+    id:number;
+    DisplayName:string;
+    IsDefault:boolean;
 }
