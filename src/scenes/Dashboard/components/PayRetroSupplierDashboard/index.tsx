@@ -1158,7 +1158,7 @@ function barstatus(status:any) {
   {tableData.map((row) => (
     <tr
       key={row.id}
-      onClick={() => handleRowClick(row)} // Add click event here
+      onClick={(e) => handleRowClick(row,e)} // Add click event here
       onMouseEnter={() => setHoveredRowId(row.id)}
       onMouseLeave={() => setHoveredRowId(null)}
       style={{
@@ -1166,6 +1166,13 @@ function barstatus(status:any) {
         cursor: "pointer",
       }}
     >
+      <td style={{ padding: "10px", border: "1px solid #ddd" }}>
+                <input
+                  type="checkbox"
+                  checked={selectedRows.includes(row.id)}
+                  onChange={(e) => handleCheckboxChange(e, row.id)}
+                />
+              </td>
       <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.buyerName}</td>
       <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.partno}-{row.versionNo}</td>
       <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.createtime)}</td>
