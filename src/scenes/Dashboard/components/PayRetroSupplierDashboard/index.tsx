@@ -1,6 +1,7 @@
 import React ,{useRef,useState} from "react";
 
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
+import annexureDetailsService from "../../../../services/annexureDetails/annexureDetailsService";
 import { SupplierDashboardInput } from "./SupplierDashboardInput";
 import  DashboardCards  from "../PayRetroSupplierDashboard/DashboardCards";
 import { Row, Col, Input, Form,Select,message } from 'antd';
@@ -8,11 +9,12 @@ import SupplierSubmitModal from './SupplierSubmitModal';
 import SupplementaryInvoiceModal from "./SupplementaryInvoicesModal";
 import DisputesStore from "../../../../stores/DisputesStrore";
 import { FormInstance } from 'antd/lib/form';
-//import CreateOrUpdateDisputes from '../../../../scenes/Disputes/components/createOrUpdateDisputes'; // Import the modal component
 import CreateOrUpdateDisputes from '../../../../scenes/Disputes/components/createOrUpdateDashboardDisputes';
 import DisputedataStore from "../../../../stores/DisputesStrore";
 import DisputeHistoryModal from "../../../Dashboard/components/PayRetroSupplierDashboard/DisputeHistoryModal";
 import disputesServices from "../../../../services/Disputes/disputesServices";
+//import CreateOrUpdateDisputes from '../../../../scenes/Disputes/components/createOrUpdateDisputes'; // Import the modal component
+
 //import { IDisputesdataState } from "../../../Disputes";
 
 
@@ -48,6 +50,8 @@ declare var abp: any;
   const [rowsupplierstatus, setrowsupplierstatus] = React.useState<number | null>(0); 
   const [rowBuyerstatus, setrowBuyerstatus] = React.useState<number | null>(0); 
   const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0);
+const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
+const [showDownloadButton, setShowDownloadButton] = React.useState<boolean>(false);
   const [implementationDate, setImplementationDate] = React.useState(selectedRow?.implementationDate || '');
   const [dashboardinput, setdashboardinput] = React.useState<SupplierDashboardInput>({
     Supplierid: 0,
@@ -126,7 +130,9 @@ declare var abp: any;
 
     fetchData();
   }, []);
-
+  React.useEffect(() => {
+    setShowDownloadButton(selectedRows.length > 0);
+  }, [selectedRows]);
   const handleDateChange = async (rowid:any,implementationDate:any,row:any) => {
     const newDate= implementationDate
     setImplementationDate(newDate);
@@ -294,6 +300,9 @@ const handleButtonClick = () => {
     if (!target.closest(".dropdown-container")) {
       setOpenDropdownId(null);
     }
+    if (isModalOpen && !target.closest(".supplier-modal-container")) {
+      handleModalClose(); // Close the modal if clicked outside
+    }
   };
 
   React.useEffect(() => {
@@ -301,7 +310,7 @@ const handleButtonClick = () => {
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, []);
+  }, [isModalOpen]);
 
 
   const toggleDropdown = (id:any,event: React.MouseEvent) => {
@@ -576,7 +585,24 @@ const railqueryMail = (item:any) =>
 
   const [hoveredRowId, setHoveredRowId] = React.useState<number | null>(null);
 
-  const handleRowClick = async (row: any) => {
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>, rowId: number) => {
+    e.stopPropagation();
+    const isChecked = e.target.checked;
+  
+    setSelectedRows((prevSelected) => {
+      const updatedSelectedRows = isChecked
+        ? prevSelected.concat(rowId) // Add rowId if checked
+        : prevSelected.filter((id) => id !== rowId); // Remove rowId if unchecked
+  
+      // Update the visibility of the download button based on the updated selected rows
+      setShowDownloadButton(updatedSelectedRows.length > 0);
+  
+      return updatedSelectedRows;
+    });
+  };
+
+  const handleRowClick = async (e: React.MouseEvent<HTMLTableRowElement>,row: any) => {
+    if ((e.target as HTMLElement).tagName !== 'INPUT') {
     setSelectedRow(row); // Set the clicked row data
     setIsModalOpen(true); // Open the modal
     
@@ -594,6 +620,7 @@ const railqueryMail = (item:any) =>
     } catch (error) {
       console.error('Error fetching data:', error);
     } 
+  } 
   };
   const { Item } = Form;
 
@@ -798,12 +825,70 @@ return (
       </div>
     );
   };
- 
+  const handleAnnexureClick = (supplementarysummaryIds: number[]) => {
+    const templatepath = '//assets/SampleFiles/AnnexureDetails.xlsx';
+  
+    // Wrap supplementarysummaryId in an array as the method expects an array
+    //const supplementaryIds = [supplementarysummaryId];
+  
+    // Call the service method with the array of supplementaryIds
+    const idsToPass = Array.isArray(supplementarysummaryIds) ? supplementarysummaryIds : [supplementarysummaryIds];
+
+    annexureDetailsService.GetSupplementarysplitAnnexureDetailsToExcel(idsToPass, templatepath)
+      .then((result) => {
+        // Loop through each file in the result (assuming result is an array of file objects)
+        result.forEach((fileData: any) => {
+          const fileContent = fileData.fileContent;
+          const fileName = fileData.fileName;
+          const fileType = fileData.fileType;
+  
+          // Convert base64 string to a Blob
+          const byteCharacters = atob(fileContent);  // Decode base64 string
+          const byteArray = new Uint8Array(byteCharacters.length);
+  
+          // Convert byte characters into byte array
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteArray[i] = byteCharacters.charCodeAt(i);
+          }
+  
+          // Create a Blob from the byte array and specify the MIME type
+          const fileBlob = new Blob([byteArray], { type: fileType });
+  
+          // Create a temporary link element
+          const link = document.createElement('a');
+  
+          // Create an object URL for the Blob
+          const url = URL.createObjectURL(fileBlob);
+  
+          // Set the download attribute with the file name
+          link.href = url;
+          link.download = fileName;
+  
+          // Trigger a click event to start the download
+          link.click();
+  
+          // Clean up the URL object after download
+          URL.revokeObjectURL(url);
+        });
+      })
+      .catch((error) => {
+        console.error('Error fetching annexure details:', error);
+      });
+  };
   const AnnexureTable = ({ data }: { data: any[] }) => {
     console.log('AnnexureTable',data);
     return (
       <div >
         <h3>AnnexureDetails</h3>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button
+  className="upload-btn"
+  id="downloadannexure"
+  onClick={() => handleAnnexureClick(data[0].supplementarysummaryId)}
+>
+  Download Annexure
+</button>
+</div>
         <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px" }}>
           <thead>
           <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
@@ -916,6 +1001,29 @@ function barstatus(status:any) {
         
       optionLabelProp="label"
     />
+    {showDownloadButton && (
+  <div style={{ marginTop: "20px" }}>
+    <button
+      onClick={() => {
+        if (selectedRows.length > 0) {
+          handleAnnexureClick(selectedRows);
+          console.log("Download Annexure clicked for rows:", selectedRows);
+        } else {
+          alert("No rows selected for download!");
+        }
+      }}
+      style={{
+        padding: "10px 20px",
+        backgroundColor: "#005f7f",
+        color: "#fff",
+        border: "none",
+        cursor: "pointer",
+      }}
+    >
+      Download Annexure
+    </button>
+  </div>
+)}
     </div>
       </Col>
       <Col className="gutter-row" span={4}>
@@ -997,6 +1105,20 @@ function barstatus(status:any) {
         <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px",whiteSpace:'nowrap' }}>
           <thead>
             <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
+            <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+  <input
+    type="checkbox"
+    onChange={(e) => {
+      const isChecked = e.target.checked;
+
+      if (isChecked) {
+        setSelectedRows(tableData.map((row) => row.id)); // Select all rows
+      } else {
+        setSelectedRows([]); // Deselect all rows
+      }
+    }}
+  />
+</th>
               {[
                 "Buyer Name",
                 "Part No - Version",
@@ -1019,11 +1141,11 @@ function barstatus(status:any) {
             </tr>
             <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
 
-            <td  colSpan={10}>
+            <td  colSpan={11}>
   
 </td>
               
-            <td style={{  border: "1px solid #ddd" }} colSpan={3}>
+<td style={{  border: "1px solid #ddd" }} colSpan={4}>
   <div className="progress-tube">
     <div  style={{  width: "50px",textAlign:"center" }}>{rowsupplierstatus}</div>
     <div  style={{ width: "50px",textAlign:"center" }}>{rowBuyerstatus}</div>
@@ -1036,7 +1158,7 @@ function barstatus(status:any) {
             {tableData.map((row) => (
               <tr
                 key={row.id}
-                onClick={() => handleRowClick(row)} // Add click event here
+                onClick={(e) => handleRowClick(e,row)}
                 onMouseEnter={() => setHoveredRowId(row.id)}
                 onMouseLeave={() => setHoveredRowId(null)}
                 style={{
@@ -1044,6 +1166,13 @@ function barstatus(status:any) {
                   cursor: "pointer",
                 }}
               >
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>
+                <input
+                  type="checkbox"
+                  checked={selectedRows.includes(row.id)}
+                  onChange={(e) => handleCheckboxChange(e, row.id)}
+                />
+              </td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.buyerName}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.partno}-{row.versionNo}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.createtime)}</td>
