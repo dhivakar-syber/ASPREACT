@@ -124,14 +124,14 @@ const PayRetroAccountsDashboard: React.SFC = () => {
         setselectedbuyers(selectedValues);
         console.log('selectedbuyers',selectedValues)
     
-        getparts(selectedsuppliers,selectedValues);
+        getparts(selectedparts,selectedValues);
 
-        getsuppliers(selectedValues)
+        getsuppliers(selectedsuppliers)
     
         var   accountDashboardInput: AccountDashboardInput = {
           Supplierids: selectedsuppliers,
-        Buyerids: selectedbuyers,
-        Partids: selectedValues,
+        Buyerids: selectedValues,
+        Partids: selectedparts,
         invoicetype:selectedcategory,
         Date:new Date,
         Document : ''
@@ -206,6 +206,8 @@ const PayRetroAccountsDashboard: React.SFC = () => {
       
       
         };
+
+        
   
   
     const handlepartChange =async  (selectedValues: any[]) => {
@@ -755,7 +757,8 @@ function barstatus(status:any) {
       </Modal>
       	</Tabs.TabPane>
     <Tabs.TabPane tab="Queries" key="3">
-    <AccountQueryModal disputesStore={new DisputedataStore} />
+    <AccountQueryModal disputesStore={new DisputedataStore}
+                         AccountDashboardInput ={dashboardinput} />
 
     </Tabs.TabPane>
   </Tabs> 

@@ -4,7 +4,7 @@ import { CreateOrUpdateRoleInput } from '../services/role/dto/createOrUpdateRole
 import { EntityDto } from '../services/dto/entityDto';
 import { GetAllPermissionsOutput } from '../services/role/dto/getAllPermissionsOutput';
 import { GetAllRoleOutput } from '../services/role/dto/getAllRoleOutput';
-import { GetRoleAsyncInput } from '../services/role/dto/getRolesAsyncInput';
+import { GetRoleAsyncInput } from '../services/role/dto/getRoleAsyncInput';
 import { PagedResultDto } from '../services/dto/pagedResultDto';
 import { PagedRoleResultRequestDto } from '../services/role/dto/PagedRoleResultRequestDto';
 import RoleEditModel from '../models/Roles/roleEditModel';
@@ -75,7 +75,7 @@ class RoleStore {
     let result = await roleService.getRoleForEdit(entityDto);
     this.roleEdit.grantedPermissionNames = result.grantedPermissionNames;
     this.roleEdit.permissions = result.permissions;
-    this.roleEdit.role = result.role;
+    //this.roleEdit.role.name = result.role;
   }
 
   @action
