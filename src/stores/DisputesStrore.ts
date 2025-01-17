@@ -110,6 +110,7 @@ class DisputedataStore {
   async createDisputeData() {
     this.editDispute = {
             CreateOrEditDisputeDto: {
+
               id: 0,
               Query: '',
               BuyerRemarks: '',
@@ -123,6 +124,7 @@ class DisputedataStore {
               SupplierRejection: '',
               SupplierName: '',
               BuyerName: ''
+
             },
             SupplementarySummaryDisplayProperty: '',
             SupplierRejectionCode: '',
