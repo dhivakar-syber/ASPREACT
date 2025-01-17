@@ -170,7 +170,7 @@ const handleButtonClick = () => {
   const handlesupplierChange = async  (value:any, option:any) => {
     
     console.log('selectedSuppliers',option,value)
-    setselectedsuppliers({name:option.lable,value:value});
+    setselectedsuppliers({name:option.label,value:value});
     
 
     await getbuyers(value);
@@ -507,7 +507,7 @@ const railqueryMail = (item:any) =>
 }
 
 
-  const supplementaryInvoiceSubmit = (item: any) => {
+  const supplementaryInvoiceSubmit = async(item: any) => {
     console.log('Processing item:', item);
     if (item.buyerEmailAddress) {
       item.buyerEmailAddress = item.buyerEmailAddress.split(",").map((email: string) => email.trim());
@@ -529,9 +529,17 @@ const railqueryMail = (item:any) =>
         'Content-Type': 'application/json',
       },
     })
-      .then((data) => {
+      .then((data) =>  {
         abp.ui.clearBusy();
         message.success(`Approve Mail Sent to - ${item.buyerName}`);
+        var   supplierDashboardInput: SupplierDashboardInput = {
+          Supplierid: selectedsuppliers.value,
+          Buyerids:selectedbuyers,
+          Partids: selectedparts,
+          invoicetype:selectedcategory
+        };
+        setdashboardinput(supplierDashboardInput);
+         LoadsupplementarySummary(supplierDashboardInput);
       })
       .catch((error) => {
         abp.ui.clearBusy();

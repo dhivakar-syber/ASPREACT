@@ -259,6 +259,7 @@ IntimateToBuyerMail = async (item: any) => {
 //     };
 
   public render() {
+    this.getAll();
     console.log(this.props.disputesStore);
     const { disputedata } = this.props.disputesStore;
     const columns = [

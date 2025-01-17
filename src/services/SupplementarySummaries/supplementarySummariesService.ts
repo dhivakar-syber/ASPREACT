@@ -129,7 +129,7 @@ public async GetAllSuppliersaccountsdashboard(input:number[]) {
   try {
     
     const result = await http.get(
-      'api/services/app/SupplementarySummaries/GetAllSuppliersaccountsdashboard',{ params: { buyerids:input } },
+      'api/services/app/SupplementarySummaries/GetAllSuppliersaccountsdashboard',{ params: { buyerIds:input } },
        
     );
     return result;

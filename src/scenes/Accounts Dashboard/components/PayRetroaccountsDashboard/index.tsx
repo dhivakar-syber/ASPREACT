@@ -41,12 +41,6 @@ const PayRetroAccountsDashboard: React.SFC = () => {
     Date:new Date,
     Document:'',
     });
-  // const [selectedRow, setSelectedRow] = React.useState<any | null>(null); // To manage selected row for modal
-  // const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false); // To control modal visibility
-  // const [modalData, setModalData] = React.useState<any[]>([]);
-  // const [annexuremodalData, annexuresetModalData] = React.useState<any[]>([]);
-
-  //var userid='0';
 
   React.useEffect(() => {
     
@@ -66,7 +60,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
             const buyers = await supplementarySummariesService.GetAllBuyers('0');
             console.log('buyers',buyers)
             setBuyers(buyers.data.result || []);
-            setselectedsuppliers([]);
+            setselectedbuyers([]);
            
             setselectedcategory(0);
               
@@ -126,7 +120,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
     
         getparts(selectedparts,selectedValues);
 
-        getsuppliers(selectedsuppliers)
+        getsuppliers(selectedValues)
     
         var   accountDashboardInput: AccountDashboardInput = {
           Supplierids: selectedsuppliers,

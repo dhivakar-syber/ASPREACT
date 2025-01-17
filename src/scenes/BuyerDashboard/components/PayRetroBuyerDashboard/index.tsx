@@ -134,7 +134,7 @@ declare var abp: any;
   const handlebuyerchange = async  (value:any, option:any) => {
       
       console.log('selectedbuyers',option,value)
-      setselectedbuyers({name:option.lable,value:value});
+      setselectedbuyers({name:option.label,value:value});
       
   
       await getsuppliers(value);
@@ -365,7 +365,9 @@ declare var abp: any;
       setrowBuyerstatus(carddetails.data.result.buyerpending.toFixed(2));
       setrowAccountsStatus(carddetails.data.result.accountspending.toFixed(2));
   
-      
+      const disput = new DisputedataStore();
+
+      await disput.buyergetAll(buyerdashboardinput);
         
   
   
@@ -526,7 +528,7 @@ function barstatus(status:any) {
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      <p>Current User id:{abp.session.userId}</p>
+      <p style={{display:'none'}}>Current User id:{abp.session.userId}</p>
 <DashboardCards BuyerDashboardinputs={dashboardinput} />
 <br></br>
 <Row gutter={11} style={{ marginRight:'-200.5px'}}>

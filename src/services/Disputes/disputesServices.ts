@@ -76,12 +76,15 @@ class disputesService {
 
 
   public async buyergetAll(input:BuyerDashboardInput) {
-    let result = await http.post('api/services/app/Disputes/BuyerGetAll', { params:{ buyerid:input.Buyerid,Supplierids:input.Supplierids}});
+    console.log('Buyerdashboardinput-disputeinput',input)
+    const result = await http.get('api/services/app/Disputes/BuyerGetAll', { params:{ Supplierids:input.Supplierids,Buyerid:input.Buyerid}},);
+    
+    console.log('Buyerdashboardinput-disputeinput-result',result.data.result)
     return result.data.result;
   }
 
   public async accountgetAll(input:AccountDashboardInput) { 
-    let result = await http.post('api/services/app/Disputes/AccountsGetAll', { params: input });
+    let result = await http.get('api/services/app/Disputes/AccountsGetAll', { params: input });
     return result.data.result;
   }
 

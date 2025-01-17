@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Route, Switch } from 'react-router-dom';
+import { BrowserRouter,Route, Switch } from 'react-router-dom';
 
 import ProtectedRoute from './ProtectedRoute';
 import utils from '../../utils/utils';
@@ -10,10 +10,13 @@ const Router = () => {
   const AppLayout = utils.getRoute('/').component;
 
   return (
-    <Switch>
-      <Route path="/user" render={(props: any) => <UserLayout {...props} />} />
-      <ProtectedRoute path="/" render={(props: any) => <AppLayout {...props} exact />} />
-    </Switch>
+    <BrowserRouter basename="ToolCapPro/">
+      <Switch>
+        <Route path="/user" render={(props: any) => <UserLayout {...props} />} />
+        <ProtectedRoute path="/" render={(props: any) => <AppLayout {...props} exact />} />
+      </Switch>
+    </BrowserRouter>
+    
   );
 };
 

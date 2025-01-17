@@ -69,6 +69,12 @@ const getStatusLabel = (status: number): string => {
       return "Close";
     case 3:
       return "InimatedToBuyer";
+
+
+
+
+
+
     default:
       return "Unknown";
   }
@@ -117,7 +123,10 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
   }
 
   handleTableChange = (pagination: any) => {
-    this.setState({ skipCount: (pagination.current - 1) * this.state.maxResultCount! }, async () => await this.getAll());
+    this.setState({ skipCount: (pagination.current - 1) * this.state.maxResultCount! }, 
+    // async () => await this.getAll()
+  
+  );
   };
 
   Modal = () => {
@@ -235,7 +244,7 @@ ForwardFandCMail = async (item: any) => {
         });
       }
 
-      await this.getAll();
+      //await this.getAll();
       this.setState({ modalVisible: false });
       form!.resetFields();
     });
@@ -314,7 +323,7 @@ ForwardFandCMail = async (item: any) => {
             });
     }
   
-    await this.getAll();
+   // await this.getAll();
   
     this.setState({ modalVisible: false });
     form.resetFields();
@@ -323,9 +332,9 @@ ForwardFandCMail = async (item: any) => {
   
   
 
-  handleSearch = (value: string) => {
-    this.setState({ filter: value }, async () => await this.getAll());
-  };
+  // handleSearch = (value: string) => {
+  //   this.setState({ filter: value }, async () => await this.getAll());
+  // };
 
   // handleexcelexport = () =>{
   //   this.props.cbfcdataStore.getExcelExport();
@@ -340,6 +349,7 @@ ForwardFandCMail = async (item: any) => {
 //     };
 
   public render() {
+    this.getAll();
     console.log(this.props.disputesStore);
     const { disputedata } = this.props.disputesStore;
     const columns = [

@@ -116,7 +116,6 @@ class Login extends React.Component<ILoginProps> {
         boxSizing: 'border-box',
         backgroundColor: 'transparent', // Transparent background for the form
         borderRadius: '4px', // Rounded corners
-        border: '.5px solid #BCE8F3', // Light outline
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Subtle shadow effect
       }}>
 
