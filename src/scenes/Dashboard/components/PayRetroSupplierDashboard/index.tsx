@@ -1166,7 +1166,7 @@ function barstatus(status:any) {
   {tableData.map((row) => (
     <tr
       key={row.id}
-      onClick={(e) => handleRowClick(row,e)} // Add click event here
+      onClick={(e) => handleRowClick(e,row)} // Add click event here
       onMouseEnter={() => setHoveredRowId(row.id)}
       onMouseLeave={() => setHoveredRowId(null)}
       style={{

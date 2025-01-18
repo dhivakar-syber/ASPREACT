@@ -7,7 +7,9 @@ import http from '../httpService';
 class AccountService {
   public async isTenantAvailable(isTenantAvaibleInput: IsTenantAvaibleInput): Promise<IsTenantAvaibleOutput> {
     let result = await http.post('api/services/app/Account/IsTenantAvailable', isTenantAvaibleInput);
+    console.log('login_credentials',result.data.result);
     return result.data.result;
+    
   }
 
   public async register(registerInput: RegisterInput): Promise<RegisterOutput> {

@@ -19,6 +19,22 @@ export const userRouter: any = [
   },
 ];
 
+export const discRoute: any =[
+{
+  
+    path: '/fetchData', 
+    name: 'fetchData',
+    title: 'Fetch Data',
+    permission: '',
+    icon: HomeOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/DiscRoute')), 
+  
+
+}
+
+];
+
 export const appRouters: any = [
   {
     path: '/',
@@ -239,6 +255,7 @@ export const appRouters: any = [
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/Exception')),
   },
+  
 ];
 
-export const routers = [...userRouter, ...appRouters];
+export const routers = [...userRouter, ...appRouters, ...discRoute];

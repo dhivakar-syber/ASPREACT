@@ -65,8 +65,9 @@ class Login extends React.Component<ILoginProps> {
     const { loginModel } = this.props.authenticationStore!;
     await this.props.authenticationStore!.login(values);
     sessionStorage.setItem('rememberMe', loginModel.rememberMe ? '1' : '0');
-    const { state } = this.props.location;
+   const { state } = this.props.location;
     window.location = state ? state.from.pathname : '/';
+    console.log('Window',window.location)
   };
 
   public render() {
