@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 
 import profilePicture from '../../images/user.png';
 
+//declare var abp: any;
 export interface IHeaderProps {
   collapsed?: any;
   toggle?: any;
@@ -19,6 +20,9 @@ export interface IHeaderProps {
 
 const userDropdownMenu = (
   <Menu>
+    <Menu.Item key="2">
+      <span>{L('Logout')}</span>
+    </Menu.Item>
     <Menu.Item key="2">
       <Link to="/logout">
         <LogoutOutlined />
