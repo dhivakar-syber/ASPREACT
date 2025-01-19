@@ -59,7 +59,7 @@ class AppLayout extends React.Component<any> {
           <Layout.Header style={{ background: '#fff', minHeight: 52, padding: 0 }}>
             <Header collapsed={collapsed}  />
           </Layout.Header>
-          <Content style={{ margin: 16 }}>
+          <Content style={{ margin: 6 }}>
             <Switch>
               {pathname === '/' && <Redirect from="/" to="/dashboard" />}
               {appRouters
