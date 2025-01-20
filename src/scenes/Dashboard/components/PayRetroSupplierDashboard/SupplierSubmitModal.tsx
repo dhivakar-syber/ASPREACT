@@ -1,6 +1,10 @@
 import React, { useState ,useRef } from 'react';
-import {message}from 'antd';
+import {message ,Button}from 'antd';
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
+import submiticon from "../../../../images/Submiticon.svg";
+import closeicon from "../../../../images/close.svg";
+
+
 
 
 interface SupplierSubmitModalProps {
@@ -9,6 +13,17 @@ interface SupplierSubmitModalProps {
   submitIdRow: number; // Assuming this comes as a prop
   supplementaryInvoiceSubmit: (item: any) => void; 
 }
+
+const Submiticon = () => (
+    <span role="img" aria-label="home" className="anticon">
+    <img src={submiticon} alt="Submit" />
+    </span>
+  );
+  const Closeicon = () => (
+    <span role="img" aria-label="home" className="anticon">
+    <img src={closeicon} alt="close" />
+    </span>
+  );
 
 const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({ isOpen, onClose,submitIdRow,
     supplementaryInvoiceSubmit, }) => {
@@ -60,10 +75,8 @@ const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({ isOpen, onClo
             overflowY: "auto",
           }} id="suppliersubmit" tabIndex={-2} role="modal" aria-hidden="true">
             <div className="modal-dialog modal-md" role="document">
-                <div className="modal-content">
-                    <div className="modal-body">
                         
-                            <h6 style={{ marginLeft: '10px',fontSize: 'larger',textAlign: 'center' }}>Submit Model</h6>
+                            <h6 style={{ marginLeft: '10px',fontSize: 'larger',textAlign: 'center' }}><b>Submit Model</b></h6>
                             <div className="col-md-12">
                                 <div className="rm-a3-remarks-container">
                                     <div className="input-group">
@@ -83,26 +96,29 @@ const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({ isOpen, onClo
                         
                     </div>
                     <div className="modal-footer" style={{ padding: '10px',textAlign: 'end' }}>
-                        <button
-                            style={{    marginRight: '10px',backgroundColor:'#006780',color:'#fff',borderRadius: '8px'
+                        <Button
+                            style={{    marginRight: '10px',backgroundColor:'#006780',color:'#fff',borderRadius: '8px',width:'20%'
                             }}
-                            type="button"
+                            
                             className="btn btn-primary sumbit-button"
                             onClick={handleSubmit}
                         >
                             <i className="flaticon-map" />
-                            <span style={{padding: '11.075px 20.5px'}}>Submit</span>
-                        </button>
-                        <button
-                            type="button"
+                            <span style={{marginBottom:'7px'}}> <Submiticon/>  Submit</span>
+                        </Button>
+                        <Button
+                            style={{ backgroundColor: '#FF0000', color: 'white',width:'20%' }}
                             className="btn btn-secondary"
                             onClick={onClose}
                         >
-                            Close
-                        </button>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 0,marginBottom:'5px' }}>
+                                <Closeicon />Close
+                            </span>
+                        </Button>
+
                     </div>
-                </div>
-            </div>
+                
+            
         </div>
     );
 };
