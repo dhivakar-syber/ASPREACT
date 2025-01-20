@@ -1,19 +1,19 @@
 import React from "react";
-import { Card, Badge, Row, Col } from "antd";
+import { Badge, Row, Col } from "antd";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
 import { AccountDashboardInput } from "./AccountsDashboardInput";
 
 interface DashboardCardsProps {
-  AccountDashboardInput: AccountDashboardInput; // Explicitly define expected props
+  AccountsDashboardInputs: AccountDashboardInput; // Explicitly define expected props
 }
 
-const DashboardCards: React.FC<DashboardCardsProps> = ({ AccountDashboardInput }) => {
+const DashboardCards: React.FC<DashboardCardsProps> = ({ AccountsDashboardInputs }) => {
     const [carddata, setcarddata] = React.useState<any>({});
 
     React.useEffect(() => {
         const fetchData = async () => {
             try {
-                const result = await supplementarySummariesService.accounntcarddetails(AccountDashboardInput);
+                const result = await supplementarySummariesService.accounntcarddetails(AccountsDashboardInputs);
                 console.log('Dashboard_card_details', result);
                 setcarddata(result.data.result || {});
             } catch (error) {
@@ -21,7 +21,7 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ AccountDashboardInput }
             }
         };
         fetchData();
-    }, [AccountDashboardInput]);
+    }, [AccountsDashboardInputs]);
 
     const cardDetails = [
         { key: "totalInvoicePending", title: "Pending Supplementary Invoice" },
@@ -30,17 +30,16 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ AccountDashboardInput }
     ];
 
     return (
-        <div className="site-card-wrapper">
-  <Row gutter={16}>
-    {cardDetails.map((card, index) => (
-      <Col key={index} span={8}>
-        <Card
-          title={card.title}
-          bordered={true}
-          className="custom-card"
-          style={{ backgroundColor: "#e6f7ff" }}
-        >
-                          <div className="card-content" style={{ textAlign: "center" }}>
+        <div style={{ padding: "10px"}}>
+   <Row gutter={16}>
+      {cardDetails.map((card, index) => (
+        <Col key={index} span={8}>
+          <div style={{ height:"85px", backgroundColor: "#fafafa", marginLeft:"20px", marginRight:"20px"  , borderRadius:"2px" }}>
+            
+            <Row>
+            <Col span={16}>
+          
+                <div className="card-content" style={{ paddingTop:"22px", textAlign: "left", marginLeft:"10px" }}>
                   <Badge
                     count={
                       card.key === "totalqueryraised"
@@ -48,17 +47,31 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ AccountDashboardInput }
                         : (carddata[card.key] !== undefined && carddata[card.key] !== null ? carddata[card.key].toFixed(2) : 0) // Format other keys to 2 decimal places, default to 0 if null/undefined
                     }
                     style={{
-                      backgroundColor: "#006780",
-                      fontSize: "12px",
-                      padding: "0 8px",
+                      backgroundColor: "#fafafa",
+                      fontSize: "28px",
+                      padding: "0px",
+                      margin:"0px",
+                      color: "#6EA046",
                     }}
                   />
-                  {card.key !== "totalqueryraised" && <b> Cr</b>} {/* Only add 'Cr' for other keys */}
+                  {card.key !== "totalqueryraised" && <span> Cr </span>} {/* Only add 'Cr' for other keys */}
                 </div>
-        </Card>
-      </Col>
-    ))}
-  </Row>    
+
+                <div className="card-title" style={{marginLeft:"10px", paddingTop:"6px", fontSize:"10px", color:"#444444", textAlign: "left" }}>
+                  <span>{card.title}</span>
+                </div>
+            </Col>
+            <Col span={6}>
+                <div className="card-icon" style={{ paddingTop:"14px", textAlign: "right" }}>
+                  <img width={45} src={require(`../../../../images/${card.key}.png`)} alt={card.key} />
+                </div>
+            </Col>
+            </Row>
+          </div>
+          
+        </Col>
+      ))}
+    </Row>    
 </div>
     );
 };
