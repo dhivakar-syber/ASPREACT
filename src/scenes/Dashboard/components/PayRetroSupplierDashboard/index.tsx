@@ -4,7 +4,7 @@ import supplementarySummariesService from "../../../../services/SupplementarySum
 import annexureDetailsService from "../../../../services/annexureDetails/annexureDetailsService";
 import { SupplierDashboardInput } from "./SupplierDashboardInput";
 import  DashboardCards  from "../PayRetroSupplierDashboard/DashboardCards";
-import { Row, Col, Input, Form,Select,message } from 'antd';
+import { Row, Col, Input, Form,Select,message, Card } from 'antd';
 import SupplierSubmitModal from './SupplierSubmitModal';
 import SupplementaryInvoiceModal from "./SupplementaryInvoicesModal";
 import DisputesStore from "../../../../stores/DisputesStrore";
@@ -979,372 +979,415 @@ function barstatus(status:any) {
 }
 
   return (
-
-        
-    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      <p>Current User id:{abp.session.userId}</p>
-      
-      <DashboardCards SupplierDashboardInputs={dashboardinput} />
-      <br></br>
-      
-    <Row gutter={11} style={{ marginRight:'-200.5px'}}>
-    
-      <Col className="gutter-row" span={4}>
-      <div style={{ textAlign: 'left' }}>
-      <h3>Suppliers</h3>
-      <Select
-      
-      style={{ width: '200px' }}
-      placeholder="Select supplier"
-      options={
-        suppliers.map((supplier) => ({
-          label: supplier.name,
-          value: supplier.id,
-        }))
-      }
-      value={selectedsuppliers.name} 
-      // value={} 
-      onChange={handlesupplierChange} 
-     // onChange={(value:any, option:any) => {
-        
-      optionLabelProp="label"
-    />
-    {showDownloadButton && (
-  <div style={{ marginTop: "20px" }}>
-    <button
-      onClick={() => {
-        if (selectedRows.length > 0) {
-          handleAnnexureClick(selectedRows);
-          console.log("Download Annexure clicked for rows:", selectedRows);
-        } else {
-          alert("No rows selected for download!");
-        }
-      }}
-      style={{
-        padding: "10px 20px",
-        backgroundColor: "#005f7f",
-        color: "#fff",
-        border: "none",
-        cursor: "pointer",
-      }}
-    >
-      Download Annexure
-    </button>
-  </div>
-)}
-    </div>
-      </Col>
-      <Col className="gutter-row" span={4}>
-      <div style={{ textAlign: 'left' }}>
-      <h3>Category</h3>
-      <Select
-        
-        style={{ width: '200px' }}
-        placeholder="Select one or more suppliers"
-        options={[
-          {
-            label: 'Select All',
-            value: 0,
-          },
-          {
-          label: 'Supplementary Invoice',
-          value: 1,
-        },
-        {
-          label: 'Credit Note',
-          value: 2,
-
-        }
-      ]}
-      value={selectedcategory}
-        onChange={handlecategorychange}
-        optionLabelProp="label"
-      />
-    </div>
-      </Col>
-      <Col className="gutter-row" span={4}>
-      <div style={{ textAlign: 'left' }}>
-      <h3>Buyers</h3>
-      <Select
-      mode="multiple"
-      style={{ width: '200px' }}
-      placeholder="Select one or more Buyers"
-      options={buyers.map((buyer) => ({
-        label: buyer.name,
-        value: buyer.value,
-      }))}
-       value={selectedbuyers}
-      //value={[]} 
-      onChange={handlebuyerChange} 
-      showSearch 
-      optionLabelProp="label"
-      filterOption={(input:any, buyers:any) =>
-        buyers?.label.toLowerCase().includes(input.toLowerCase())
-      } 
-    />
-    </div>
-      </Col>
-      <Col className="gutter-row" span={4}>
-      <div style={{ textAlign: 'left' }}>
-      <h3>Parts</h3>
-      <Select
-        mode="multiple"
-        style={{ width: '200px' }}
-        placeholder="Select one or more Parts"
-        options={parts.map((part) => ({
-          label: part.name,
-          value: part.value,
-        }))}
-         value={selectedparts}
-        //value={[]} 
-        onChange={handlepartChange}
-        filterOption={(input:any, parts:any) =>
-          parts?.label.toLowerCase().includes(input.toLowerCase())}
-        optionLabelProp="label"
-      />
-    </div>
-      </Col>
-      
-    </Row>
-    
-      <br></br>
-      <div style={{ marginTop: "20px",overflowX: "auto" }}>
-        
-        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px",whiteSpace:'nowrap' }}>
-          <thead>
-            <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
-            <th style={{ padding: "10px", border: "1px solid #ddd" }}>
-  <input
-    type="checkbox"
-    onChange={(e) => {
-      const isChecked = e.target.checked;
-
-      if (isChecked) {
-        setSelectedRows(tableData.map((row) => row.id)); // Select all rows
-      } else {
-        setSelectedRows([]); // Deselect all rows
-      }
-    }}
-  />
-</th>
-              {[
-                "Buyer Name",
-                "Part No - Version",
-                "Report Date",
-                "Ageing",
-                "Action",
-                "Supplementary Invoice/Credit Note",
-                "Date",
-                "From",
-                "To",
-                "Value",
-                "Supplier",
-                "Buyer",
-                "F&C",
-              ].map((header) => (
-                <th key={header} style={{ padding: "10px", border: "1px solid #ddd" }}>
-                  {header}
-                </th>
-              ))}
-            </tr>
-            <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
-
-            <td  colSpan={11}>
-  
-</td>
-              
-<td style={{  border: "1px solid #ddd" }} colSpan={4}>
-  <div className="progress-tube">
-    <div  style={{  width: "50px",textAlign:"center" }}>{rowsupplierstatus}</div>
-    <div  style={{ width: "50px",textAlign:"center" }}>{rowBuyerstatus}</div>
-    <div  style={{ width: "50px",textAlign:"center" }}>{rowAccountsStatus}</div>
-  </div>
-</td>
-            </tr>
-          </thead>
-          <tbody>
-  {tableData.map((row) => (
-    <tr
-      key={row.id}
-      onClick={(e) => handleRowClick(e,row)} // Add click event here
-      onMouseEnter={() => setHoveredRowId(row.id)}
-      onMouseLeave={() => setHoveredRowId(null)}
-      style={{
-        backgroundColor: hoveredRowId === row.id ? "#f1f1f1" : row.id % 2 === 0 ? "#f9f9f9" : "#fff",
-        cursor: "pointer",
-      }}
-    >
-      <td style={{ padding: "10px", border: "1px solid #ddd" }}>
-                <input
-                  type="checkbox"
-                  checked={selectedRows.includes(row.id)}
-                  onChange={(e) => handleCheckboxChange(e, row.id)}
-                />
-              </td>
-      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.buyerName}</td>
-      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.partno}-{row.versionNo}</td>
-      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.createtime)}</td>
-      <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.ageing}</td>
-      <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
-        <div className="dropdown-container" style={{ position: "relative", whiteSpace: 'normal' }}>
-          <button
-            style={{
-              backgroundColor: "#005f7f",
-              color: "#fff",
-              border: "none",
-              padding: "5px 10px",
-              cursor: "pointer",
-            }}
-            onClick={(event) => toggleDropdown(row.id, event)} // Ensure this function handles the dropdown toggle
-          >
-            ⚙️
-          </button>
-
-          {openDropdownId === row.id && (
-  <div
-    style={{
-      position: "absolute",
-      top: "100%",
-      left: "0",
-      backgroundColor: "#fff",
-      boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-      zIndex: 999,
-      padding: "10px",
-      width: "325px",
-    }}
-  >
-    {row.documentStatus === 0 && (
-      <>
-        <button
-          style={{
-            width: "100%",
-            backgroundColor: "#fff",
-            color: "#071437",
-            border: "none",
-            padding: "10px",
-            marginBottom: "5px",
-            textAlign: "left",
-          }}
-          onClick={(event) =>
-            handleSupplementaryDropdownAction(
-              "Supplementary Invoice/Credit Note Details",
-              row.id,
-              row.annexureVersionNo,
-              event
-            )
-          }
+    <div>
+      <div
+        style={{
+          background: '#fafafa',
+          padding: '!2px',
+          marginTop: '16px',
+          marginBottom: '10px',
+          borderRadius: '2px',
+        }}
+      >
+        <Row
+          style={{ color: '#444444', paddingLeft: '10px', paddingTop: '10px', margin: '2px' }}
+          gutter={11}
         >
-          Supplementary Invoice/Credit Note Details
-        </button>
-
-        <button
-          style={{
-            width: "100%",
-            backgroundColor: "#fff",
-            color: "#071437",
-            border: "none",
-            padding: "10px",
-            textAlign: "left",
-          }}
-          onClick={(event) => handleSupplierSubmitAction("Submit", row.id, event)}
-        >
-          Submit
-        </button>
-
-        <button
-          style={{
-            width: "100%",
-            backgroundColor: "#fff",
-            color: "#071437",
-            border: "none",
-            padding: "10px",
-            textAlign: "left",
-          }}
-          onClick={(event) => handleRaiseQueryAction("Raise Query", row.id, event)}
-        >
-          Raise Query
-        </button>
-      </>
-    )}
-
-    {/* "History of Query" button is now always visible */}
-    <button
-      style={{
-        width: "100%",
-        backgroundColor: "#fff",
-        color: "#071437",
-        border: "none",
-        padding: "10px",
-        textAlign: "left",
-      }}
-      onClick={(event) => handleDisputeHisotryAction("History of Query", row.id, event)}
-    >
-      History of Query
-    </button>
-  </div>
-)}
-
-        </div>
-      </td>
-      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryInvoiceNo}</td>
-      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryinvoicedatestring}</td>
-      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.contractFromDate)}</td>
-      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.contractToDate)}</td>
-      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.total}</td>
-      
-      <td style={{ padding: "10px", border: "1px solid #ddd" }} colSpan={3}>
-        <div className="progress-tube">
-          <div className={supplierstatus(row.documentStatus)} style={{ width: "50px" }}></div>
-          <div className={barstatus(row.buyerApprovalStatus)} style={{ width: "50px" }}></div>
-          <div className={barstatus(row.accountantApprovalStatus)} style={{ width: "50px" }}></div>
-        </div>
-      </td>
-    </tr>
-  ))}
-</tbody>
-
-        </table>
+          <p>Supplier Dashboard</p>
+        </Row>
       </div>
-      <SupplierSubmitModal isOpen={isSupplierSubmitModalOpen} onClose={closeSupplierSubmitModal} submitIdRow={submitIdRow}
-        supplementaryInvoiceSubmit={supplementaryInvoiceSubmit} />
+
+      <DashboardCards SupplierDashboardInputs={dashboardinput} />
+
+      <Card style={{ backgroundColor:"#fafafa", fontSize: "12px" }}>
+        <Row gutter={11} style={{ marginRight: '-200.5px' }}>
+          <Col className="gutter-row" span={5}>
+            <div style={{ textAlign: 'left' }}>
+              <span style={{padding: "2px"}}>Suppliers</span>
+              <Select
+                style={{ width: '200px' }}
+                placeholder="Select supplier"
+                options={suppliers.map((supplier) => ({
+                  label: supplier.name,
+                  value: supplier.id,
+                }))}
+                value={selectedsuppliers.name}
+                // value={}
+                onChange={handlesupplierChange}
+                // onChange={(value:any, option:any) => {
+
+                optionLabelProp="label"
+              />
+              {showDownloadButton && (
+                <div style={{ marginTop: '20px' }}>
+                  <button
+                    onClick={() => {
+                      if (selectedRows.length > 0) {
+                        handleAnnexureClick(selectedRows);
+                        console.log('Download Annexure clicked for rows:', selectedRows);
+                      } else {
+                        alert('No rows selected for download!');
+                      }
+                    }}
+                    style={{
+                      padding: '10px 20px',
+                      backgroundColor: '#005f7f',
+                      color: '#fff',
+                      border: 'none',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Download Annexure
+                  </button>
+                </div>
+              )}
+            </div>
+          </Col>
+          <Col className="gutter-row" span={5}>
+            <div style={{ textAlign: 'left' }}>
+              <span style={{padding: "2px"}}>Category</span>
+              <Select
+                style={{ width: '200px' }}
+                placeholder="Select one or more suppliers"
+                options={[
+                  {
+                    label: 'Select All',
+                    value: 0,
+                  },
+                  {
+                    label: 'Supplementary Invoice',
+                    value: 1,
+                  },
+                  {
+                    label: 'Credit Note',
+                    value: 2,
+                  },
+                ]}
+                value={selectedcategory}
+                onChange={handlecategorychange}
+                optionLabelProp="label"
+              />
+            </div>
+          </Col>
+          <Col className="gutter-row" span={5}>
+            <div style={{ textAlign: 'left' }}>
+              <span style={{padding: "2px"}}>Buyers</span>
+              <Select
+                mode="multiple"
+                style={{ width: '200px' }}
+                placeholder="Select one or more Buyers"
+                options={buyers.map((buyer) => ({
+                  label: buyer.name,
+                  value: buyer.value,
+                }))}
+                value={selectedbuyers}
+                //value={[]}
+                onChange={handlebuyerChange}
+                showSearch
+                optionLabelProp="label"
+                filterOption={(input: any, buyers: any) =>
+                  buyers?.label.toLowerCase().includes(input.toLowerCase())
+                }
+              />
+            </div>
+          </Col>
+          <Col className="gutter-row" span={5}>
+            <div style={{ textAlign: 'left' }}>
+              <span style={{padding: "2px"}}>Parts</span>
+              <Select
+                mode="multiple"
+                style={{ width: '200px' }}
+                placeholder="Select one or more Parts"
+                options={parts.map((part) => ({
+                  label: part.name,
+                  value: part.value,
+                }))}
+                value={selectedparts}
+                //value={[]}
+                onChange={handlepartChange}
+                filterOption={(input: any, parts: any) =>
+                  parts?.label.toLowerCase().includes(input.toLowerCase())
+                }
+                optionLabelProp="label"
+              />
+            </div>
+          </Col>
+        </Row>
+
+        <br></br>
+        <div style={{ marginTop: '20px', overflowX: 'auto' }}>
+          <table
+            style={{
+              width: '100%',
+              borderCollapse: 'collapse',
+              marginTop: '20px',
+              fontSize: '12px',
+              whiteSpace: 'nowrap',
+              borderRadius: '5px',
+            }}
+          >
+            <thead>
+              <tr style={{ backgroundColor: '#005f7f', color: '#fff', textAlign: 'left', borderRadius: '2px' }}>
+                <th style={{ padding: '10px', border: '1px solid #ffffff1a', borderRadius: '2px' }}>
+                  <input
+                    type="checkbox"
+                    onChange={(e) => {
+                      const isChecked = e.target.checked;
+
+                      if (isChecked) {
+                        setSelectedRows(tableData.map((row) => row.id)); // Select all rows
+                      } else {
+                        setSelectedRows([]); // Deselect all rows
+                      }
+                    }}
+                  />
+                </th>
+                {[
+                  'Buyer Name',
+                  'Part No - Version',
+                  'Report Date',
+                  'Ageing',
+                  'Action',
+                  'Supplementary Invoice/Credit Note',
+                  'Date',
+                  'From',
+                  'To',
+                  'Value',
+                  'Supplier',
+                  'Buyer',
+                  'F&C',
+                ].map((header) => (
+                  <th key={header} style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px' }}>
+                    {header}
+                  </th>
+                ))}
+              </tr>
+              <tr style={{ backgroundColor: '#005f7f', color: '#fff', textAlign: 'left' }}>
+                <td colSpan={11}></td>
+
+                <td style={{ border: '1px solid #ffffff1a' }} colSpan={4}>
+                  <div className="progress-tube">
+                    <div style={{ width: '50px', textAlign: 'center' }}>{rowsupplierstatus}</div>
+                    <div style={{ width: '50px', textAlign: 'center' }}>{rowBuyerstatus}</div>
+                    <div style={{ width: '50px', textAlign: 'center' }}>{rowAccountsStatus}</div>
+                  </div>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              {tableData.map((row) => (
+                <tr
+                  key={row.id}
+                  onClick={(e) => handleRowClick(e, row)} // Add click event here
+                  onMouseEnter={() => setHoveredRowId(row.id)}
+                  onMouseLeave={() => setHoveredRowId(null)}
+                  style={{
+                    backgroundColor:
+                      hoveredRowId === row.id ? '#f1f1f1' : row.id % 2 === 0 ? '#f9f9f9' : '#fff',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    <input
+                      type="checkbox"
+                      checked={selectedRows.includes(row.id)}
+                      onChange={(e) => handleCheckboxChange(e, row.id)}
+                    />
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>{row.buyerName}</td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    {row.partno}-{row.versionNo}
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    {formatDate(row.createtime)}
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>
+                    {row.ageing}
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>
+                    <div
+                      className="dropdown-container"
+                      style={{ position: 'relative', whiteSpace: 'normal' }}
+                    >
+                      <button
+                        style={{
+                          backgroundColor: '#005f7f',
+                          color: '#fff',
+                          border: 'none',
+                          padding: '5px 10px',
+                          cursor: 'pointer',
+                        }}
+                        onClick={(event) => toggleDropdown(row.id, event)} // Ensure this function handles the dropdown toggle
+                      >
+                        ⚙️
+                      </button>
+
+                      {openDropdownId === row.id && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: '100%',
+                            left: '0',
+                            backgroundColor: '#fff',
+                            boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+                            zIndex: 999,
+                            padding: '10px',
+                            width: '325px',
+                          }}
+                        >
+                          {row.documentStatus === 0 && (
+                            <>
+                              <button
+                                style={{
+                                  width: '100%',
+                                  backgroundColor: '#fff',
+                                  color: '#071437',
+                                  border: 'none',
+                                  padding: '10px',
+                                  marginBottom: '5px',
+                                  textAlign: 'left',
+                                }}
+                                onClick={(event) =>
+                                  handleSupplementaryDropdownAction(
+                                    'Supplementary Invoice/Credit Note Details',
+                                    row.id,
+                                    row.annexureVersionNo,
+                                    event
+                                  )
+                                }
+                              >
+                                Supplementary Invoice/Credit Note Details
+                              </button>
+
+                              <button
+                                style={{
+                                  width: '100%',
+                                  backgroundColor: '#fff',
+                                  color: '#071437',
+                                  border: 'none',
+                                  padding: '10px',
+                                  textAlign: 'left',
+                                }}
+                                onClick={(event) =>
+                                  handleSupplierSubmitAction('Submit', row.id, event)
+                                }
+                              >
+                                Submit
+                              </button>
+
+                              <button
+                                style={{
+                                  width: '100%',
+                                  backgroundColor: '#fff',
+                                  color: '#071437',
+                                  border: 'none',
+                                  padding: '10px',
+                                  textAlign: 'left',
+                                }}
+                                onClick={(event) =>
+                                  handleRaiseQueryAction('Raise Query', row.id, event)
+                                }
+                              >
+                                Raise Query
+                              </button>
+                            </>
+                          )}
+
+                          {/* "History of Query" button is now always visible */}
+                          <button
+                            style={{
+                              width: '100%',
+                              backgroundColor: '#fff',
+                              color: '#071437',
+                              border: 'none',
+                              padding: '10px',
+                              textAlign: 'left',
+                            }}
+                            onClick={(event) =>
+                              handleDisputeHisotryAction('History of Query', row.id, event)
+                            }
+                          >
+                            History of Query
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    {row.supplementaryInvoiceNo}
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    {row.supplementaryinvoicedatestring}
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    {formatDate(row.contractFromDate)}
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    {formatDate(row.contractToDate)}
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>{row.total}</td>
+
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }} colSpan={3}>
+                    <div className="progress-tube">
+                      <div
+                        className={supplierstatus(row.documentStatus)}
+                        style={{ width: '50px' }}
+                      ></div>
+                      <div
+                        className={barstatus(row.buyerApprovalStatus)}
+                        style={{ width: '50px' }}
+                      ></div>
+                      <div
+                        className={barstatus(row.accountantApprovalStatus)}
+                        style={{ width: '50px' }}
+                      ></div>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <SupplierSubmitModal
+          isOpen={isSupplierSubmitModalOpen}
+          onClose={closeSupplierSubmitModal}
+          submitIdRow={submitIdRow}
+          supplementaryInvoiceSubmit={supplementaryInvoiceSubmit}
+        />
         <SupplementaryInvoiceModal
-        rowId={currentRowId}
-        AnnexureVersion={AnnexureVersionNo}      // Pass rowId to the modal
-        visible={isModalVisible}   // Control visibility of the modal
-        onCancel={handleCloseModal} // Function to close modal
-      />
+          rowId={currentRowId}
+          AnnexureVersion={AnnexureVersionNo} // Pass rowId to the modal
+          visible={isModalVisible} // Control visibility of the modal
+          onCancel={handleCloseModal} // Function to close modal
+        />
 
-      
-      {isHistoryModalVisible && (
-        <DisputeHistoryModal
-        rowId={submitIdRow}              
-        visible={isHistoryModalVisible}          
-        onCancel={handlehistoryCancel}      
-        data={disputeData}                               
-         // Function to close modal
-      />
-      )}
-        
-
-
-      {isModalOpen && modalData && Suppliermodalview(selectedRow)}
-      {isQueryModalVisible && (
-          <CreateOrUpdateDisputes
-          visible={isQueryModalVisible}
-          modalType="view"
-          onCreate={handleCreate}
-          onCancel={handleCancel}
-          disputesStrore={new DisputesStore()}
-          initialData={{
-            supplierName:initialData.supplierName,
-            buyerName:initialData.buyerShortId,
-          }} 
-          formRef={formRef} 
+        {isHistoryModalVisible && (
+          <DisputeHistoryModal
+            rowId={submitIdRow}
+            visible={isHistoryModalVisible}
+            onCancel={handlehistoryCancel}
+            data={disputeData}
+            // Function to close modal
           />
-      )}
-     
+        )}
+
+        {isModalOpen && modalData && Suppliermodalview(selectedRow)}
+        {isQueryModalVisible && (
+          <CreateOrUpdateDisputes
+            visible={isQueryModalVisible}
+            modalType="view"
+            onCreate={handleCreate}
+            onCancel={handleCancel}
+            disputesStrore={new DisputesStore()}
+            initialData={{
+              supplierName: initialData.supplierName,
+              buyerName: initialData.buyerShortId,
+            }}
+            formRef={formRef}
+          />
+        )}
+      </Card>
     </div>
-    
   );
 
   

@@ -57,7 +57,7 @@ const SiderMenu = (props: ISiderMenuProps) => {
         </Col>
       )}
 
-      <Menu theme="dark" mode="inline" selectedKeys={[currentRoute ? currentRoute.path : '']}>
+      <Menu theme="dark" style={{fontSize: '12px'}} mode="inline" selectedKeys={[currentRoute ? currentRoute.path : '']}>
         {appRouters
           .filter((item: any) => !item.isLayout && item.showInMenu)
           .map((route: any, index: number) => {
