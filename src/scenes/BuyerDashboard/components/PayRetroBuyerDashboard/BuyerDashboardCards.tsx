@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Badge, Row, Col } from "antd";
+import { Badge, Row, Col } from "antd";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
 import { BuyerDashboardInput } from "./BuyerDashboardInput";
 
@@ -30,29 +30,50 @@ const BuyerDashboardCards: React.FC<DashboardCardsProps> = ({ BuyerDashboardinpu
     ];
 
     return (
-        <div className="site-card-wrapper">
-  <Row gutter={16}>
-    {cardDetails.map((card, index) => (
-      <Col key={index} span={8}>
-        <Card
-          title={card.title}
-          bordered={true}
-          className="custom-card"
-          style={{ backgroundColor: "#e6f7ff" }}
-        >
-          <div className="card-content" style={{ textAlign: "center" }}>
-            <Badge
-              count={((carddata[card.key] || 0).toFixed(2))}
-              style={{ backgroundColor: "#006780", fontSize: "12px", padding: "0 8px" }}
-            />
-           <b> Cr</b> 
-          </div>
-        </Card>
-      </Col>
-    ))}
-  </Row>    
-</div>
-    );
+            <div style={{ padding: "10px"}}>
+       <Row gutter={16}>
+          {cardDetails.map((card, index) => (
+            <Col key={index} span={8}>
+              <div style={{ height:"85px", backgroundColor: "#fafafa", marginLeft:"20px", marginRight:"20px"  , borderRadius:"2px" }}>
+                
+                <Row>
+                <Col span={16}>
+              
+                    <div className="card-content" style={{ paddingTop:"22px", textAlign: "left", marginLeft:"10px" }}>
+                      <Badge
+                        count={
+                          card.key === "totalqueryraised"
+                            ? (carddata[card.key] === 0 ? 0 : carddata[card.key]) // If 0, show 0, otherwise show the value
+                            : (carddata[card.key] !== undefined && carddata[card.key] !== null ? carddata[card.key].toFixed(2) : 0) // Format other keys to 2 decimal places, default to 0 if null/undefined
+                        }
+                        style={{
+                          backgroundColor: "#fafafa",
+                          fontSize: "28px",
+                          padding: "0px",
+                          margin:"0px",
+                          color: "#6EA046",
+                        }}
+                      />
+                      {card.key !== "totalqueryraised" && <span> Cr </span>} {/* Only add 'Cr' for other keys */}
+                    </div>
+    
+                    <div className="card-title" style={{marginLeft:"10px", paddingTop:"6px", fontSize:"10px", color:"#444444", textAlign: "left" }}>
+                      <span>{card.title}</span>
+                    </div>
+                </Col>
+                <Col span={6}>
+                    <div className="card-icon" style={{ paddingTop:"14px", textAlign: "right" }}>
+                      <img width={45} src={require(`../../../../images/${card.key}.png`)} alt={card.key} />
+                    </div>
+                </Col>
+                </Row>
+              </div>
+              
+            </Col>
+          ))}
+        </Row>    
+    </div>
+        );
 };
 
 export default BuyerDashboardCards;
