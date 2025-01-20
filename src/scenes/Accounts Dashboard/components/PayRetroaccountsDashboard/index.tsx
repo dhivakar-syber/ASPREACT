@@ -1,7 +1,7 @@
 import * as React from "react";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
 import { AccountDashboardInput } from "./AccountsDashboardInput";
-import { Row, Col,Select, message,Tabs,Button,Modal} from 'antd';
+import { Row, Col,Select, message,Tabs,Button,Modal,Card} from 'antd';
 import  DashboardCards  from "../PayRetroaccountsDashboard/DashboardCards";
 import ApproveorRejectModal from "../ApproveorRejectModal"
 import { FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
@@ -456,19 +456,33 @@ function barstatus(status:any) {
 
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      
+    <div>
+      <div
+              style={{
+                background: '#fafafa',
+                padding: '!2px',
+                marginTop: '16px',
+                marginBottom: '10px',
+                borderRadius: '2px',
+              }}
+            >
+              <Row
+                style={{ color: '#444444', paddingLeft: '10px', paddingTop: '10px', margin: '2px' }}
+                gutter={11}
+              >
+                <p>Account Dashboard</p>
+              </Row>
+            </div>
       
 
-      <div style={{ marginTop: "20px" }}>
         
-        <DashboardCards AccountDashboardInput={dashboardinput} />
-        <br></br>
-
-        <Row gutter={11} style={{ marginRight:'-200.5px'}}>
-            <Col className="gutter-row" span={4}>
+        <DashboardCards AccountsDashboardInputs={dashboardinput} />
+        
+       <Card style={{ backgroundColor:"#fafafa", fontSize: "12px" }}>
+        <Row gutter={11} style={{ marginRight:'-200.5px'}} >
+            <Col className="gutter-row" span={4} style={{maxWidth:'17.83333333%'}}>
               <div style={{ textAlign: 'left' }}>
-              <h3>Buyer</h3>
+              <span style={{padding: "2px"}}>Buyers</span>
               <Select
               mode="multiple"
               style={{ width: '200px' }}
@@ -487,9 +501,9 @@ function barstatus(status:any) {
             />
             </div>
               </Col>
-              <Col className="gutter-row" span={4}>
+              <Col className="gutter-row" span={5} style={{maxWidth:'17.83333333%'}}>
               <div style={{ textAlign: 'left' }}>
-              <h3>Suppliers</h3>
+              <span style={{padding: "2px"}}>Suppliers</span>
               <Select
               
               style={{ width: '200px' }}
@@ -507,9 +521,10 @@ function barstatus(status:any) {
             />
             </div>
               </Col>
-              <Col className="gutter-row" span={4}>
+              <Col className="gutter-row" span={5} style={{maxWidth:'17.83333333%'}}>
               <div style={{ textAlign: 'left' }}>
-              <h3>Category</h3>
+              <span style={{padding: "2px"}}>Category</span>
+              
               <Select
                 
                 style={{ width: '200px' }}
@@ -536,9 +551,9 @@ function barstatus(status:any) {
             </div>
               </Col>
               
-              <Col className="gutter-row" span={4}>
-              <div style={{ textAlign: 'left' }}>
-              <h3>Parts</h3>
+              <Col className="gutter-row" span={4} style={{maxWidth:'17.83333333%'}}>
+              <div style={{ textAlign: 'left', }}>
+              <span style={{padding: "2px"}}>Parts</span>
               <Select
                 mode="multiple"
                 style={{ width: '200px' }}
@@ -556,18 +571,18 @@ function barstatus(status:any) {
             </div>
               </Col>
               
-              <br></br>
-              <Col className="gutter-row" span={4}>
-            <div style={{ textAlign: 'left' }}>
-              <h3>Date</h3>
-              <input 
-                type="date" 
-                value={selectedDate} 
-                onChange={(e) => handledatechange(e.target.value)} 
-                style={{ width: '100%' }} 
-              />
-            </div>
-          </Col> 
+              <Col className="gutter-row" span={2} style={{maxWidth:'17.83333333%'}}>
+                <div style={{ alignItems: 'center' }}>
+                  <span style={{ padding: "9px"}}>Date</span>
+                  <input 
+                    type="date" 
+                    value={selectedDate} 
+                    onChange={(e) => handledatechange(e.target.value)} 
+                    style={{ width: '100%' }} 
+                  />
+                </div>
+              </Col>
+
             </Row>
 
 
@@ -757,8 +772,7 @@ function barstatus(status:any) {
     </Tabs.TabPane>
   </Tabs> 
      
-      </div>
-      
+  </Card> 
      
     </div>
   );
