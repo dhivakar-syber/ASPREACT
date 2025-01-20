@@ -1,5 +1,7 @@
 import LoadableComponent from './../Loadable/index';
-import { HomeOutlined, UserOutlined, TagsOutlined, AppstoreOutlined, InfoCircleOutlined, ShoppingCartOutlined, DatabaseFilled, SnippetsFilled, FileFilled, SettingOutlined, GlobalOutlined, DiffFilled, QuestionCircleOutlined, DeleteOutlined, WarningOutlined, StarOutlined,} from '@ant-design/icons';
+import { HomeOutlined, UserOutlined, TagsOutlined, AppstoreOutlined,
+   ShoppingCartOutlined, DatabaseFilled, SnippetsFilled, FileFilled, SettingOutlined, GlobalOutlined, DiffFilled,
+    QuestionCircleOutlined, DeleteOutlined, WarningOutlined, StarOutlined,} from '@ant-design/icons';
 
 export const userRouter: any = [
   {
@@ -230,15 +232,15 @@ export const appRouters: any = [
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/Tenants')),
   },
-  {
-    path: '/about',
-    permission: '',
-    title: 'About',
-    name: 'about',
-    icon: InfoCircleOutlined,
-    showInMenu: true,
-    component: LoadableComponent(() => import('../../scenes/About')),
-  },
+  // {
+  //   path: '/about',
+  //   permission: '',
+  //   title: 'About',
+  //   name: 'about',
+  //   icon: InfoCircleOutlined,
+  //   showInMenu: true,
+  //   component: LoadableComponent(() => import('../../scenes/About')),
+  // },
   {
     path: '/logout',
     permission: '',
