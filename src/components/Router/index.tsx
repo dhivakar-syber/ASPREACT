@@ -20,7 +20,7 @@ const Router = () => {
         const token = new URLSearchParams(props.location.search).get('token');
 
         if (token) {
-          // Store the token in localStorage
+          console.log('discauthToken',token);
           localStorage.setItem('authToken', token);
 
           try {
