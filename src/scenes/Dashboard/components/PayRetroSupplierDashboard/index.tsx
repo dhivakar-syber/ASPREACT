@@ -16,11 +16,16 @@ import disputesServices from "../../../../services/Disputes/disputesServices";
 //import CreateOrUpdateDisputes from '../../../../scenes/Disputes/components/createOrUpdateDisputes'; // Import the modal component
 
 //import { IDisputesdataState } from "../../../Disputes";
-
+import settingsIcon from "../../../../images/Setting.svg";
 
 
 declare var abp: any;
 
+const SettingsIcon = () => (
+  <span role="img" aria-label="home" className="anticon">
+  <img src={settingsIcon} alt="Settings" />
+  </span>
+);
 
 
 
@@ -1149,7 +1154,7 @@ function barstatus(status:any) {
               marginTop: '20px',
               fontSize: '12px',
               whiteSpace: 'nowrap',
-              borderRadius: '5px',
+             
             }}
           >
             <thead>
@@ -1235,18 +1240,15 @@ function barstatus(status:any) {
                       className="dropdown-container"
                       style={{ position: 'relative', whiteSpace: 'normal' }}
                     >
-                      <button
+                      <div
                         style={{
-                          backgroundColor: '#005f7f',
-                          color: '#fff',
-                          border: 'none',
                           padding: '5px 10px',
                           cursor: 'pointer',
                         }}
                         onClick={(event) => toggleDropdown(row.id, event)} // Ensure this function handles the dropdown toggle
                       >
-                        ⚙️
-                      </button>
+                        <SettingsIcon />
+                      </div>
 
                       {openDropdownId === row.id && (
                         <div

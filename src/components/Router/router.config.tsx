@@ -1,14 +1,33 @@
-import LoadableComponent from './../Loadable/index';
-import { HomeOutlined, UserOutlined, TagsOutlined, AppstoreOutlined,
-   ShoppingCartOutlined, DatabaseFilled, SnippetsFilled, FileFilled, SettingOutlined, GlobalOutlined, DiffFilled,
-    QuestionCircleOutlined, DeleteOutlined, WarningOutlined, StarOutlined,} from '@ant-design/icons';
+import LoadableComponent from '../Loadable/index';
+import React from 'react';
+import { HomeOutlined, UserOutlined, TagsOutlined, AppstoreOutlined, ShoppingCartOutlined, DatabaseFilled, SnippetsFilled, FileFilled, SettingOutlined, GlobalOutlined, DiffFilled, QuestionCircleOutlined, DeleteOutlined, WarningOutlined, StarOutlined,} from '@ant-design/icons';
+import SupplierSvg from '../../images/Frame.svg';
+import AccountsSvg from '../../images/Accounts.svg';
+import BuyerSvg from '../../images/Buyer.svg';
 
+const SupplierIcon = () => (
+  <span role="img" aria-label="home" className="anticon">
+  <img src={SupplierSvg} alt="Supplier Dashboard" />
+  </span>
+);
+
+const BuyerIcon = () => (
+  <span role="img" aria-label="home" className="anticon">
+  <img src={BuyerSvg} alt="Buyer Dashboard" />
+  </span>
+);
+
+const AccountsIcon = () => (
+  <span role="img" aria-label="home" className="anticon">
+  <img src={AccountsSvg} alt="Accounts Dashboard" />
+  </span>
+);
 export const userRouter: any = [
   {
     path: '/user',
     name: 'user',
     title: 'User',
-    component: LoadableComponent(() => import('../../components/Layout/UserLayout')),
+    component: LoadableComponent(() => import('../Layout/UserLayout')),
     isLayout: true,
     showInMenu: false,
   },
@@ -44,7 +63,7 @@ export const appRouters: any = [
     name: 'home',
     permission: '',
     title: 'Home',
-    component: LoadableComponent(() => import('../../components/Layout/AppLayout')),
+    component: LoadableComponent(() => import('../Layout/AppLayout')),
     isLayout: true,
     showInMenu: false,
   },
@@ -53,7 +72,7 @@ export const appRouters: any = [
     name: 'dashboard',
     permission: 'Pages.Tenant.Dashboard',
     title: 'Supplier Dashboard',
-    icon: HomeOutlined,
+    icon: SupplierIcon,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/Dashboard')),
   },
@@ -62,7 +81,7 @@ export const appRouters: any = [
     name: 'buyerdashboard',
     permission: 'Pages.Buyer.Dashboard',
     title: 'Buyer Dashboard',
-    icon: HomeOutlined,
+    icon: BuyerIcon,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/BuyerDashboard')),
   },
@@ -71,7 +90,7 @@ export const appRouters: any = [
     name: 'accountsdashboard',
     permission: 'Pages.Accounts.Dashboard',
     title: 'Accounts Dashboard',
-    icon: HomeOutlined,
+    icon: AccountsIcon,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/Accounts Dashboard')),
   },
@@ -247,7 +266,7 @@ export const appRouters: any = [
     title: 'Logout',
     name: 'logout',
     showInMenu: false,
-    component: LoadableComponent(() => import('../../components/Logout')),
+    component: LoadableComponent(() => import('../Logout')),
   },
   {
     path: '/exception?:type',

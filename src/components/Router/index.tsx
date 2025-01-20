@@ -86,7 +86,7 @@ const Router = () => {
   const AppLayout = utils.getRoute('/').component;
 
   return (
-    <BrowserRouter basename="PayRetro/">
+    <BrowserRouter basename="/PayRetro">
       <Switch>
         <Route path="/discauth" render={(props: any) => <ThirdPartyLogin {...props} />} />
         <Route path="/user" render={(props: any) => <UserLayout {...props} />} />

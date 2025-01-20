@@ -480,7 +480,7 @@ function barstatus(status:any) {
         
        <Card style={{ backgroundColor:"#fafafa", fontSize: "12px" }}>
         <Row gutter={11} style={{ marginRight:'-200.5px'}} >
-            <Col className="gutter-row" span={4} style={{maxWidth:'17.83333333%'}}>
+            <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '250px' }}>
               <div style={{ textAlign: 'left' }}>
               <span style={{padding: "2px"}}>Buyers</span>
               <Select
@@ -501,7 +501,7 @@ function barstatus(status:any) {
             />
             </div>
               </Col>
-              <Col className="gutter-row" span={5} style={{maxWidth:'17.83333333%'}}>
+              <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '250px' }}>
               <div style={{ textAlign: 'left' }}>
               <span style={{padding: "2px"}}>Suppliers</span>
               <Select
@@ -521,7 +521,7 @@ function barstatus(status:any) {
             />
             </div>
               </Col>
-              <Col className="gutter-row" span={5} style={{maxWidth:'17.83333333%'}}>
+              <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '250px' }}>
               <div style={{ textAlign: 'left' }}>
               <span style={{padding: "2px"}}>Category</span>
               
@@ -551,8 +551,8 @@ function barstatus(status:any) {
             </div>
               </Col>
               
-              <Col className="gutter-row" span={4} style={{maxWidth:'17.83333333%'}}>
-              <div style={{ textAlign: 'left', }}>
+              <Col className="gutter-row" span={2} style={{ maxWidth: '250px' }}>
+              <div style={{ textAlign: 'left' }}>
               <span style={{padding: "2px"}}>Parts</span>
               <Select
                 mode="multiple"
@@ -571,7 +571,7 @@ function barstatus(status:any) {
             </div>
               </Col>
               
-              <Col className="gutter-row" span={2} style={{maxWidth:'17.83333333%'}}>
+              <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '215px',margin:'4px' }}>
                 <div style={{ alignItems: 'center' }}>
                   <span style={{ padding: "9px"}}>Date</span>
                   <input 
@@ -588,9 +588,9 @@ function barstatus(status:any) {
 
             <Tabs defaultActiveKey="1">
     <Tabs.TabPane tab="Home" key="1">
-    <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px" ,whiteSpace:"nowrap"}}>
+    <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px" ,whiteSpace:"nowrap"}}>
           <thead>
-            <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
+            <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left",fontWeight: 'normal' }}>
               {[
                 "S.No",
                 "Document",
@@ -606,12 +606,12 @@ function barstatus(status:any) {
                 "Buyer",
                 "F&C",
               ].map((header) => (
-                <th key={header} style={{ padding: "10px", border: "1px solid #ddd" }}>
+                <th key={header} style={{ padding: "10px", border: "1px solid #ffffff1a",fontWeight: 'normal' }}>
                   {header}
                 </th>
               ))}
             </tr>
-            <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
+            <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left",fontWeight: 'normal' }}>
 
               <td  colSpan={10}>
 
