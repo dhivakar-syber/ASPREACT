@@ -37,6 +37,9 @@ const userDropdownMenu = (
 @observer
 export class Header extends React.Component<IHeaderProps> {
   render() {
+    const { sessionStore } = this.props;
+    const userName =
+      sessionStore?.currentLogin?.user?.userName || L('Guest');
     return (  
       <Row className={'header-container'}>
         <Col style={{ textAlign: 'left' }} span={12}>
@@ -50,7 +53,7 @@ export class Header extends React.Component<IHeaderProps> {
         <Col style={{ padding: '0px 15px 0px 15px', textAlign: 'right' }} span={12}>
           {/* <LanguageSelect /> {'   '} */}
           {/* {this.props.sessionStore!.currentLogin.user!.name!} */}
-          <span style={{ marginRight: 10 }}>Welcome</span>
+          <span style={{ marginRight: 10 }}>{userName}</span>
           <Dropdown overlay={userDropdownMenu} trigger={['click']}>
             <Badge style={{}} >
               <Avatar style={{ height: 24, width: 24 }} shape="circle" alt={'profile'} src={profilePicture} />

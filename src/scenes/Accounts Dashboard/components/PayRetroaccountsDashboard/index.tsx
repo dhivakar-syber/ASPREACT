@@ -57,7 +57,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
             setSuppliers(suppliers.data.result || []);
             setselectedsuppliers([]);
            
-            const buyers = await supplementarySummariesService.GetAllBuyers('0');
+            const buyers = await supplementarySummariesService.GetAllBuyersList(0);
             console.log('buyers',buyers)
             setBuyers(buyers.data.result || []);
             setselectedbuyers([]);
