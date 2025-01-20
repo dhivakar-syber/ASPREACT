@@ -282,7 +282,7 @@ class CreateOrUpdateDahBoarddisputedata extends React.Component<ICreateOrUpdateD
                 value={selectedSupplierLookupItem?.displayName || ''}
                 readOnly
               />
-            </Form.Item> */}\
+            </Form.Item> */}
 
             <Form.Item label={L('BuyerName')} name="buyerName" {...formItemLayout}  >
               <Input disabled value={initialData ? initialData.buyerName : ''}/>

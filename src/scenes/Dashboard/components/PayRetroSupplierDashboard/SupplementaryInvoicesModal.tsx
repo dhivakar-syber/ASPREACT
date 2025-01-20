@@ -117,7 +117,7 @@ for (let i = 1; i <= t; i++) {
   });
     try {
       // Call your service's checkSignature method with the FormData
-      const response = await supplementarySummariesService.checkSignature(formData); //ts2345
+      const response = await supplementarySummariesService.checkSignature(formData);
   
       if (response.result.hasSignature && response.success) {
         message.success("Supplementary Invoice uploaded successfully.");
@@ -275,7 +275,7 @@ async function downloadFile({ path }: { path: string }): Promise<void> {
     >
       <div className="row mb-4">
         <div className="col-md-3" style = {{paddingTop: '20px'}}>
-          <label htmlFor="annexureGroup" className="form-label"style = {{fontSize: '14px'}}>
+          <label htmlFor="annexureGroup" className="form-label"style = {{fontSize: '12px',fontWeight: 'normal'}}>
             Annexure Group
           </label>
           <Select
@@ -293,7 +293,7 @@ async function downloadFile({ path }: { path: string }): Promise<void> {
           </Select>
         </div>
         <div className="col-md-3">
-          <label htmlFor="invoiceNo" className="form-label"style = {{fontSize: '14px'}}>
+          <label htmlFor="invoiceNo" className="form-label"style = {{fontSize: '12px',fontWeight: 'normal'}}>
             Supplementary Invoice/Credit Note No
           </label>
           <Input
@@ -305,7 +305,7 @@ async function downloadFile({ path }: { path: string }): Promise<void> {
           />
         </div>
         <div className="col-md-3">
-          <label htmlFor="invoiceDate" className="form-label"style = {{fontSize: '14px'}}>
+          <label htmlFor="invoiceDate" className="form-label"style = {{fontSize: '12px',fontWeight: 'normal'}}>
             Supplementary Invoice Date/Credit Note Date
           </label>
           <DatePicker
@@ -323,7 +323,7 @@ async function downloadFile({ path }: { path: string }): Promise<void> {
 
       <div className="row mb-3">
         <div className="col-md-4">
-          <label className="form-label"style = {{fontSize: '14px',width:'85%'}}>Supplementary Invoice/Credit Note (Digitally signed PDF only)</label>
+          <label className="form-label"style = {{fontSize: '12px',width:'85%',fontWeight: 'normal'}}>Supplementary Invoice/Credit Note (Digitally signed PDF only)</label>
           <Upload
             beforeUpload={(file) => {
               setAttachmentFile(file as RcFile);
@@ -332,11 +332,11 @@ async function downloadFile({ path }: { path: string }): Promise<void> {
             accept=".pdf"
             showUploadList={true}
           >
-            <Button icon={<UploadOutlined />} style={{borderRadius: '5px'}}>Upload Invoice</Button>
+            <Button icon={<UploadOutlined />} style={{borderRadius: '5px',fontSize: '12px'}}>Upload Invoice</Button>
           </Upload>
         </div>
         <div className="col-md-4"style = {{paddingTop: '25px'}}>
-          <label className="form-label"style = {{fontSize: '14px',width:'85%'}}>Annexure Upload (PDF only)</label>
+          <label className="form-label"style = {{fontSize: '12px',width:'85%',fontWeight: 'normal'}}>Annexure Upload (PDF only)</label>
           <Upload
             beforeUpload={(file) => {
               setAnnexureFile(file as RcFile);
@@ -345,11 +345,11 @@ async function downloadFile({ path }: { path: string }): Promise<void> {
             accept=".pdf"
             showUploadList={true}
           >
-            <Button icon={<UploadOutlined />} style={{borderRadius: '5px',width:'95%'}}>Upload Annexure</Button>
+            <Button icon={<UploadOutlined />} style={{borderRadius: '5px',width:'95%',fontSize: '12px'}}>Upload Annexure</Button>
           </Upload>
         </div>
         <div className="col-md-4"style = {{paddingTop: '25px'}}>
-          <label className="form-label"style = {{fontSize: '14px'}}>Annexure Attachment (Excel)</label>
+          <label className="form-label"style = {{fontSize: '12px',fontWeight: 'normal'}}>Annexure Attachment (Excel)</label>
           <Upload
             beforeUpload={(file) => {
               setAnnexureAttachmentFile(file as RcFile);
@@ -358,12 +358,14 @@ async function downloadFile({ path }: { path: string }): Promise<void> {
             accept=".xlsx,.csv"
             showUploadList={true}
           >
-            <Button icon={<UploadOutlined />}style={{borderRadius: '5px',width:'95%'}}>Upload Attachment</Button>
+            <Button icon={<UploadOutlined />}style={{borderRadius: '5px',width:'95%',fontSize: '12px'}}>Upload Attachment</Button>
           </Upload>
         </div>
       </div>
 
-      <Table columns={columns} dataSource={tableData} pagination={false} className="custom-ant-table" />
+      <Table columns={columns} dataSource={tableData} pagination={false} className="custom-ant-table" 
+      style={{fontSize:'12px'}}
+      />
       <Modal
         title="View PDF"
         visible={isModalVisible}

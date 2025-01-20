@@ -4,7 +4,7 @@ import supplementarySummariesService from "../../../../services/SupplementarySum
 import annexureDetailsService from "../../../../services/annexureDetails/annexureDetailsService";
 import { SupplierDashboardInput } from "./SupplierDashboardInput";
 import  DashboardCards  from "../PayRetroSupplierDashboard/DashboardCards";
-import { Row, Col, Input, Form,Select,message, Card } from 'antd';
+import { Row, Col,Select,message, Card,Modal,Button,DatePicker } from 'antd';
 import SupplierSubmitModal from './SupplierSubmitModal';
 import SupplementaryInvoiceModal from "./SupplementaryInvoicesModal";
 import DisputesStore from "../../../../stores/DisputesStrore";
@@ -52,7 +52,7 @@ declare var abp: any;
   const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0);
 const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
 const [showDownloadButton, setShowDownloadButton] = React.useState<boolean>(false);
-  const [implementationDate, setImplementationDate] = React.useState(selectedRow?.implementationDate || '');
+  // const [implementationDate, setImplementationDate] = React.useState(selectedRow?.implementationDate || '');
   const [dashboardinput, setdashboardinput] = React.useState<SupplierDashboardInput>({
     Supplierid: 0,
     Buyerids: [0],
@@ -133,46 +133,46 @@ const [showDownloadButton, setShowDownloadButton] = React.useState<boolean>(fals
   React.useEffect(() => {
     setShowDownloadButton(selectedRows.length > 0);
   }, [selectedRows]);
-  const handleDateChange = async (rowid:any,implementationDate:any,row:any) => {
-    const newDate= implementationDate
-    setImplementationDate(newDate);
-    console.log('New implementation date:', newDate);
-    console.log('Row Id:', rowid);
-     await supplementarySummariesService.Implementationeffect(rowid,newDate);
+  // const handleDateChange = async (rowid:any,implementationDate:any,row:any) => {
+  //   const newDate= implementationDate
+  //   setImplementationDate(newDate);
+  //   console.log('New implementation date:', newDate);
+  //   console.log('Row Id:', rowid);
+  //    await supplementarySummariesService.Implementationeffect(rowid,newDate);
 
-     row = await supplementarySummariesService.GetAllsupplementarySummarybyId(rowid);
-    console.log('ImplementationDateChange',row[0]);
-    setSelectedRow(row[0]);
-    try {
-      const result = await supplementarySummariesService.grndata(rowid);
-      setModalData([]); // Await the Promise
-      setModalData(result);
-      console.log('setmodaldata',result) // Assuming the result contains the data in 'data' field
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-    try {
-      const annexureresult = await supplementarySummariesService.annexuredata(rowid); // Await the Promise
-      annexuresetModalData([]);
-      annexuresetModalData(annexureresult);
-      console.log('annexuresetmodaldata',annexureresult) // Assuming the result contains the data in 'data' field
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    } 
-    message.success('Implementation Date changed Successfully Synced');
-  };
-  const handleBlur = () => {
-    // Handle the blur event when the user has finished interacting with the input
-    console.log('Input lost focus, final date:', implementationDate);
-    // Add any additional logic, like saving the date to a database, if needed
-};
-const handleInputChange = (event:React.ChangeEvent<HTMLInputElement>) => {
-  setImplementationDate(event.target.value); // Update state when date changes
-};
+  //    row = await supplementarySummariesService.GetAllsupplementarySummarybyId(rowid);
+  //   console.log('ImplementationDateChange',row[0]);
+  //   setSelectedRow(row[0]);
+  //   try {
+  //     const result = await supplementarySummariesService.grndata(rowid);
+  //     setModalData([]); // Await the Promise
+  //     setModalData(result);
+  //     console.log('setmodaldata',result) // Assuming the result contains the data in 'data' field
+  //   } catch (error) {
+  //     console.error('Error fetching data:', error);
+  //   }
+  //   try {
+  //     const annexureresult = await supplementarySummariesService.annexuredata(rowid); // Await the Promise
+  //     annexuresetModalData([]);
+  //     annexuresetModalData(annexureresult);
+  //     console.log('annexuresetmodaldata',annexureresult) // Assuming the result contains the data in 'data' field
+  //   } catch (error) {
+  //     console.error('Error fetching data:', error);
+  //   } 
+  //   message.success('Implementation Date changed Successfully Synced');
+  // };
+//   const handleBlur = () => {
+//     // Handle the blur event when the user has finished interacting with the input
+//     console.log('Input lost focus, final date:', implementationDate);
+//     // Add any additional logic, like saving the date to a database, if needed
+// };
+// const handleInputChange = (event:React.ChangeEvent<HTMLInputElement>) => {
+//   setImplementationDate(event.target.value); // Update state when date changes
+// };
 
-const handleButtonClick = () => {
-  handleDateChange(selectedRow.id, implementationDate,selectedRow);
-};
+// const handleButtonClick = () => {
+//   handleDateChange(selectedRow.id, implementationDate,selectedRow);
+// };
   const handlesupplierChange = async  (value:any, option:any) => {
     
     console.log('selectedSuppliers',option,value)
@@ -295,22 +295,22 @@ const handleButtonClick = () => {
 
 
 
-  const handleClickOutside = (event: MouseEvent) => {
-    const target = event.target as HTMLElement;
-    if (!target.closest(".dropdown-container")) {
-      setOpenDropdownId(null);
-    }
-    if (isModalOpen && !target.closest(".supplier-modal-container")) {
-      handleModalClose(); // Close the modal if clicked outside
-    }
-  };
+  // const handleClickOutside = (event: MouseEvent) => {
+  //   const target = event.target as HTMLElement;
+  //   if (!target.closest(".dropdown-container")) {
+  //     setOpenDropdownId(null);
+  //   }
+  //   if (isModalOpen && !target.closest(".supplier-modal-container")) {
+  //     handleModalClose(); // Close the modal if clicked outside
+  //   }
+  // };
 
-  React.useEffect(() => {
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [isModalOpen]);
+  // React.useEffect(() => {
+  //   document.addEventListener("click", handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener("click", handleClickOutside);
+  //   };
+  // }, [isModalOpen]);
 
 
   const toggleDropdown = (id:any,event: React.MouseEvent) => {
@@ -582,14 +582,14 @@ const railqueryMail = (item:any) =>
 
     return `${day}-${month}-${year}`; 
 }
-  function formatDateToInput( d:string) {
-    const date = new Date(d); 
-    const year = date.getFullYear(); 
-    const month = String(date.getMonth() + 1).padStart(2, '0'); 
-    const day = String(date.getDate()).padStart(2, '0'); 
+//   function formatDateToInput( d:string) {
+//     const date = new Date(d); 
+//     const year = date.getFullYear(); 
+//     const month = String(date.getMonth() + 1).padStart(2, '0'); 
+//     const day = String(date.getDate()).padStart(2, '0'); 
 
-    return `${year}-${month}-${day}`;  
-}
+//     return `${year}-${month}-${day}`;  
+// }
 
   const [hoveredRowId, setHoveredRowId] = React.useState<number | null>(null);
 
@@ -630,7 +630,7 @@ const railqueryMail = (item:any) =>
     } 
   } 
   };
-  const { Item } = Form;
+  //const { Item } = Form;
 
   const handleModalClose = () => {
     setIsModalOpen(false); // Close the modal
@@ -645,145 +645,161 @@ const railqueryMail = (item:any) =>
   // }
 
   const Suppliermodalview = (selectedRow: any) => {
-    
-return (
-        <div
-                    style={{
-                      position: "fixed",
-                      top: "50%",
-                      left: "55%",
-                      transform: "translate(-50%, -50%)",
-                      backgroundColor: "#ece4e4",
-                      padding: "20px",
-                      borderRadius: "8px",
-                      boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-                      zIndex: 9999,
-                      width: "80%",  // Adjusting modal width
-                      maxHeight: "80vh",  // Limit modal height
-                      overflowY: "auto",
-                    }}
-                  >
-                    <button
-                      onClick={handleModalClose}
-                      style={{
-                        position: "absolute",
-                        top: "10px",
-                        right: "10px",
-                        padding: "10px",
-                        backgroundColor: "#005f7f",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "4px",
-                      }}
-                    >
-                      Close
-                    </button>
-                    <div className="ui-container">
-                      <h3 className="card-title align-items-start flex-column">
-                        <span className="fw-bolder text-dark" style={{ fontSize: '13px', textAlign: 'left' }}>
-                          Contract Details
-                        </span>
-                      </h3>
-                      <Form layout="vertical">
-                        <Row gutter={[14, 10]}>
-                          {/* Column 1 */}
-                          <Col span={6}>
-                            <Item label="Part No:">
-                              <Input readOnly value={selectedRow.partno} />
-                            </Item>
-                            <Item label="Description:">
-                              <Input readOnly value={selectedRow.partdescription} />
-                            </Item>
-                            <Item label="Buyer:">
-                              <Input readOnly value={selectedRow.buyerName} />
-                            </Item>
-                            <Item label="Supplier Code:">
-                              <Input readOnly value={selectedRow.suppliercode} />
-                            </Item>
-                            <Item label="Supplier Name:">
-                              <Input readOnly value={selectedRow.suppliername} />
-                            </Item>
-                            </Col>
+    const handleInsideClick = (e: React.MouseEvent) => {
+      // Prevent modal from closing when clicking inside the modal
+      e.stopPropagation();
+    };
+    const handleDateChange = async (date:any, dateString:any) => {
+      console.log('Selected date:', dateString);
+      console.log('Selected row ID:', selectedRow?.id);
+      await supplementarySummariesService.Implementationeffect(selectedRow?.id,dateString);
+      await LoadsupplementarySummary(dashboardinput);
+      try {
+        const result = await supplementarySummariesService.grndata(selectedRow?.id);
+        setModalData([]); // Await the Promise
+        setModalData(result);
+        console.log('setmodaldata',result) // Assuming the result contains the data in 'data' field
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+      try {
+        const annexureresult = await supplementarySummariesService.annexuredata(selectedRow?.id); // Await the Promise
+        annexuresetModalData([]);
+        annexuresetModalData(annexureresult);
+        console.log('annexuresetmodaldata',annexureresult) // Assuming the result contains the data in 'data' field
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } 
+      try {
+        const row = await supplementarySummariesService.GetAllsupplementarySummarybyId(selectedRow?.id);
+        console.log('ImplementationDateChange',row[0]);
+        setSelectedRow([]);
+        setSelectedRow(row[0]);
+         // Assuming the result contains the data in 'data' field
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } 
 
-                        {/* Column 2 */}
-                        <Col span={6}>
-                        <Item label="Valid From:">
-                          <Input readOnly value={formatDate(selectedRow.contractFromDate)} />
-                        </Item>
-                        <Item label="Valid To:">
-                          <Input readOnly value={formatDate(selectedRow.contractToDate)} />
-                        </Item>
-                        <Item label="Implemented On:">
-      <Input
-        type="date"
-        value={formatDateToInput(selectedRow.implementationDate)}
-        onChange={handleInputChange} // Update state on input change
-        onBlur={handleBlur} // Optional blur handler
-      />
-      <button
-        type="button"
-        onClick={handleButtonClick} // Call handler on button click
+      message.success('Implementation Date changed Successfully Synced');
+    };
+    return (
+      <Modal
+        visible={isModalOpen}
+        title="Contract Details"
+        onCancel={handleModalClose}
+        footer={[
+          <Button key="close" onClick={handleModalClose}>
+            Close
+          </Button>,
+        ]}
+        centered
+        width="80%"
+        bodyStyle={{ maxHeight: '80vh', overflowY: 'auto' }}
+        maskClosable={true}  // This ensures it will close when clicking outside
       >
-        Submit Date
-      </button>
-    </Item>
-                        <Item label="Contract No:">
-                          <Input readOnly value={selectedRow.contractNo} />
-                        </Item>
-                        <Item label="Released Date:">
-                          <Input readOnly value={selectedRow.approvalDate} />
-                        </Item>
-                      </Col>
-
-                      {/* Column 3 */}
-                      <Col span={6}>
-                        <Item label="Old Value:">
-                          <Input readOnly value={selectedRow.oldValue} />
-                        </Item>
-                        <Item label="New Value:">
-                          <Input readOnly value={selectedRow.newValue} />
-                        </Item>
-                        <Item label="Delta:">
-                          <Input readOnly value={selectedRow.delta} />
-                        </Item>
-                        <Item label="Qty:">
-                          <Input readOnly value={selectedRow.grnQty} />
-                        </Item>
-                        <Item label="Total:">
-                          <Input readOnly value={selectedRow.total} />
-                        </Item>
-                      </Col>
-
-                      {/* Column 4 */}
-                      <Col span={6}>
-                        <Item label="Accounted Price:">
-                          <Input readOnly value={selectedRow.accoutedPrice} />
-                        </Item>
-                        <Item label="Accounted Value:">
-                          <Input readOnly value={selectedRow.accountedValue} />
-                        </Item>
-                        <Item label="Version No:">
-                          <Input readOnly value={selectedRow.versionNo} />
-                        </Item>
-                        <Item label="Plant:">
-                          <Input readOnly value={selectedRow.plantCode} />
-                        </Item>
-                      </Col>
-                    </Row>
-                  </Form>
-                  <InvoiceTable data={modalData} />
-                  <AnnexureTable data={annexuremodalData} />
-                 
-                </div>
-                
-          </div>
-      
-      
-    )
-      
-    
-
+        <div onClick={handleInsideClick}> {/* Prevent close on inside click */}
+          <Row gutter={[14, 10]}>
+            {/* Column 1 */}
+            <Col span={6}>
+              <div>
+                <Row gutter={[14, 10]}>
+                  <Col span={12} style={{ textAlign: 'right', fontSize: '12px' }}>
+                    <p>Part Number</p>
+                    <p>Description</p>
+                    <p>Buyer Name</p>
+                    <p>Supplier Code</p>
+                    <p>Supplier Name</p>
+                  </Col>
+                  <Col span={12} style={{ fontSize: '12px' }}>
+                    <p><span>: {selectedRow?.partno}</span></p>
+                    <p><span>: {selectedRow?.partdescription}</span></p>
+                    <p><span>: {selectedRow?.buyerName}</span></p>
+                    <p><span>: {selectedRow?.suppliercode}</span></p>
+                    <p><span>: {selectedRow?.suppliername}</span></p>
+                  </Col>
+                </Row>
+              </div>
+            </Col>
+  
+            {/* Column 2 */}
+            <Col span={6}>
+              <div>
+                <Row gutter={[14, 10]}>
+                  <Col span={12} style={{ textAlign: 'right', fontSize: '12px' }}>
+                    <p>Valid From</p>
+                    <p>Valid To</p>
+                    <p>Contract No</p>
+                    <p>Released Date</p>
+                    <p>Plant</p>
+                  </Col>
+                  <Col span={12} style={{ fontSize: '12px' }}>
+                    <p><span>: {formatDate(selectedRow?.contractFromDate)}</span></p>
+                    <p><span>: {formatDate(selectedRow?.contractToDate)}</span></p>
+                    <p><span>: {selectedRow?.contractNo}</span></p>
+                    <p><span>: {formatDate(selectedRow?.approvalDate)}</span></p>
+                    <p><span>: {selectedRow?.plantCode}</span></p>
+                  </Col>
+                </Row>
+              </div>
+            </Col>
+  
+            {/* Column 3 */}
+            <Col span={6}>
+              <div>
+                <Row gutter={[14, 10]}>
+                  <Col span={12} style={{ textAlign: 'right', fontSize: '12px' }}>
+                    <p>Old Value</p>
+                    <p>New Value</p>
+                    <p>Delta</p>
+                    <p>Qty</p>
+                    <p>Total</p>
+                  </Col>
+                  <Col span={12} style={{ fontSize: '12px' }}>
+                    <p><span>: {selectedRow?.oldValue}</span></p>
+                    <p><span>: {selectedRow?.newValue}</span></p>
+                    <p><span>: {selectedRow?.delta}</span></p>
+                    <p><span>: {selectedRow?.grnQty}</span></p>
+                    <p><span>: {selectedRow?.total}</span></p>
+                  </Col>
+                </Row>
+              </div>
+            </Col>
+  
+            {/* Column 4 */}
+            <Col span={6}>
+              <div>
+                <Row gutter={[14, 10]}>
+                  <Col span={12} style={{ textAlign: 'right', fontSize: '12px' }}>
+                    <p>Accounted Price</p>
+                    <p>Accounted Value</p>
+                    <p>Version No</p>
+                    <p>Implementation Date</p>
+                    <p>Change</p>
+                  </Col>
+                  <Col span={12} style={{ fontSize: '12px' }}>
+                    <p><span>: {selectedRow?.accoutedPrice}</span></p>
+                    <p><span>: {selectedRow?.accountedValue}</span></p>
+                    <p><span>: {selectedRow?.versionNo}</span></p>
+                    <p><span>: {formatDate(selectedRow.implementationDate)}</span></p>
+                    <DatePicker
+      //value={selectedRow?.implementationDate ? dayjs(selectedRow?.implementationDate) : null} // Using dayjs
+      onChange={handleDateChange}
+      format="YYYY-MM-DD"
+      style={{ width: '100%' }}
+    />
+                  </Col>
+                </Row>
+              </div>
+            </Col>
+          </Row>
+  
+          <InvoiceTable data={modalData} />
+          <AnnexureTable data={annexuremodalData} />
+        </div>
+      </Modal>
+    );
   };
+    
 
   // const loadgrndata = (supplementaryid: number) => {
   //   const result =  supplementarySummariesService.grndata(supplementaryid);
@@ -800,23 +816,27 @@ return (
     return (
       <div >
         <h3>CBFC Information</h3>
-        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px",
+              borderRadius: '5px' }}>
           <thead>
-          <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
-              <th>S.no</th>
-              <th>PartNo</th>
-              <th>Invoice No</th>
-              <th>InvoiceDate</th>
-              <th>Qty</th>
-              <th>Price (GRN)</th>
-              <th>Paid Price (CBFC)</th>
-              <th>Paid Amount (CBFC)</th>
+          <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" , borderRadius: '2px'}}>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>S.no</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>PartNo</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Invoice No</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>InvoiceDate</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Qty</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Price (GRN)</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Paid Price (CBFC)</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Paid Amount (CBFC)</th>
             </tr>
           </thead>
           <tbody >
             {data && data.length > 0 ? (
               data.map((item:any, index:any) => (
-                <tr key={index}>
+                <tr key={index} style={{
+                  backgroundColor:
+                  index % 2 === 0 ? '#f9f9f9' : '#fff',
+                }}>
                   <td style={{ padding: "10px", border: "1px solid #ddd" }}>{index + 1}</td>
                   <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.partNo}</td>
                   <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.invoiceNo}</td>
@@ -887,7 +907,8 @@ return (
     console.log('AnnexureTable',data);
     return (
       <div >
-        <h3>AnnexureDetails</h3>
+        <br></br>
+        <h3>Annexure Details</h3>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button
   className="upload-btn"
@@ -897,31 +918,36 @@ return (
   Download Annexure
 </button>
 </div>
-        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px",
+              borderRadius: '5px' }}>
           <thead>
-          <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
+          <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left", borderRadius: '2px' }}>
           
-            <th>S.No</th>
-            <th>Annexure Group</th>
-            <th>Part No</th>
-            <th>Invoice No</th>
-            <th style={{width:"120px"}}>InvoiceDate</th>
-            <th>Old Contract</th>
-            <th>New Contract</th>
-            <th>Paid Price(CBFC)</th>
-            <th>Diff Value</th>
-            <th>Qty</th>
-            <th>Total</th>
-            <th>Currency</th>
-            <th>Supp.Inv.No/Credit Note</th>
-            <th>Supp.Inv.Date/Credit Note Date</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>S.No</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Annexure Group</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Part No</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Invoice No</th>
+            <th style={{width:"120px",padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>InvoiceDate</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Old Contract</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>New Contract</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Paid Price(CBFC)</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Diff Value</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Qty</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Total</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Currency</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Supp.Inv.No/Credit Note</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Supp.Inv.Date/Credit Note Date</th>
           </tr>
             
           </thead>
           <tbody >
             {data && data.length > 0 ? (
               data.map((item:any, index:any) => (
-                <tr key={index}>
+                <tr key={index} 
+                style={{
+                  backgroundColor:
+                  index % 2 === 0 ? '#f9f9f9' : '#fff',
+                }}>
                   <td style={{ padding: "10px", border: "1px solid #ddd" }}>{index + 1}</td>
                   <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.versionNo}</td>
                   <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.partno}</td>
