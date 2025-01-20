@@ -77,7 +77,7 @@ const AccountsApproval: React.FC<ApproveRejectModalModalProps> = ({ isOpen, onCl
 
                 // Call the API method with the necessary parameters
                 supplementarySummariesService
-                    .supplementaryInvoiceAccountReject(submitIdRow,submitRemarks, accountNo,accountDate  )
+                    .supplementaryInvoiceAccountReject(submitIdRow,submitRemarks  )
                     .then((result:any) => {
                         
                             rejectSubmit(result); // Process each item in the result

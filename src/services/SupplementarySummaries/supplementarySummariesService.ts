@@ -374,7 +374,7 @@ public async GetAllParts(supplierid:string,buyerid:string) {
         try {
           
           const result = await http.post(
-            `api/services/app/SupplementarySummaries/supplementaryInvoiceaccountreject?fileid=${id}&accountsapproveremarks=${remarks}`,'',
+            `api/services/app/SupplementarySummaries/supplementaryInvoicebuyerreject?fileid=${id}&accountsapproveremarks=${remarks}`,'',
             
             {
               headers: {
@@ -427,11 +427,11 @@ public async GetAllParts(supplierid:string,buyerid:string) {
         }
       }
 
-      public async supplementaryInvoiceAccountReject(id: number,remarks:string,accNo:string,accdate:any) {
+      public async supplementaryInvoiceAccountReject(id: number,remarks:string) {
         try {
           
           const result = await http.post(
-            `api/services/app/SupplementarySummaries/supplementaryInvoiceaccountreject?fileid=${id}&accountsapproveremarks=${remarks}&accNo=${accNo}&accdate=${accdate}`,'',
+            `api/services/app/SupplementarySummaries/supplementaryInvoiceaccountreject?fileid=${id}&accountsapproveremarks=${remarks}`,'',
             
             {
               headers: {
