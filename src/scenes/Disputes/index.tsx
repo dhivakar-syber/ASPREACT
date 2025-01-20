@@ -417,7 +417,7 @@ editdata:any = null;
                 </Button>
               </Col>
                 </Row>
-)}
+  )}
         <Row style={{ marginTop: 20 }}>
           <Col
             xs={{ span: 24, offset: 0 }}
