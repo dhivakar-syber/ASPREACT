@@ -11,11 +11,14 @@ import Stores from '../../../../stores/storeIdentifier';
 import DisputesStrore from '../../../../stores/DisputesStrore';
 import disputesServices from '../../../../services/Disputes/disputesServices';
 import { FormInstance } from 'antd/lib/form';
+import { BuyerDashboardInput } from "./BuyerDashboardInput";
+
 //import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
 //import { EnumCurrency,EnumTransaction } from '../../../src/enum'
 
 export interface IDisputesProps {
-    disputesStore: DisputesStrore;
+  disputesStore: DisputesStrore;
+  BuyerDashboardInput: BuyerDashboardInput; // Ensure the type is correct
 }
 
 export interface IDisputesdataState {
@@ -66,6 +69,12 @@ const getStatusLabel = (status: number): string => {
       return "Close";
     case 3:
       return "InimatedToBuyer";
+
+
+
+
+
+
     default:
       return "Unknown";
   }
@@ -85,7 +94,7 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
     disputeId: 0,
     initialData: {
     supplierName: "",
-    buyerName: "",
+    buyerName: "",    
     supplierRejection: "",
     query: "",
     status: "",
@@ -110,11 +119,14 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
         console.error('cbfcdatastore is undefined');
         return;
     }
-    await this.props.disputesStore.buyergetAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
+    await this.props.disputesStore.buyergetAll(this.props.BuyerDashboardInput);
   }
 
   handleTableChange = (pagination: any) => {
-    this.setState({ skipCount: (pagination.current - 1) * this.state.maxResultCount! }, async () => await this.getAll());
+    this.setState({ skipCount: (pagination.current - 1) * this.state.maxResultCount! }, 
+    // async () => await this.getAll()
+  
+  );
   };
 
   Modal = () => {
@@ -232,7 +244,7 @@ ForwardFandCMail = async (item: any) => {
         });
       }
 
-      await this.getAll();
+      //await this.getAll();
       this.setState({ modalVisible: false });
       form!.resetFields();
     });
@@ -311,7 +323,7 @@ ForwardFandCMail = async (item: any) => {
             });
     }
   
-    await this.getAll();
+   // await this.getAll();
   
     this.setState({ modalVisible: false });
     form.resetFields();
@@ -320,9 +332,9 @@ ForwardFandCMail = async (item: any) => {
   
   
 
-  handleSearch = (value: string) => {
-    this.setState({ filter: value }, async () => await this.getAll());
-  };
+  // handleSearch = (value: string) => {
+  //   this.setState({ filter: value }, async () => await this.getAll());
+  // };
 
   // handleexcelexport = () =>{
   //   this.props.cbfcdataStore.getExcelExport();
@@ -337,6 +349,7 @@ ForwardFandCMail = async (item: any) => {
 //     };
 
   public render() {
+    this.getAll();
     console.log(this.props.disputesStore);
     const { disputedata } = this.props.disputesStore;
     const columns = [
@@ -432,6 +445,7 @@ ForwardFandCMail = async (item: any) => {
               dataSource={disputedata === undefined ? [] : disputedata.items}
               onChange={this.handleTableChange}
               scroll={{ x: 'max-content' }}
+              style={{width:'auto'}}
             />
           </Col>
         </Row>

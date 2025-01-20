@@ -65,8 +65,9 @@ class Login extends React.Component<ILoginProps> {
     const { loginModel } = this.props.authenticationStore!;
     await this.props.authenticationStore!.login(values);
     sessionStorage.setItem('rememberMe', loginModel.rememberMe ? '1' : '0');
-    const { state } = this.props.location;
+   const { state } = this.props.location;
     window.location = state ? state.from.pathname : '/';
+    console.log('Window',window.location)
   };
 
   public render() {
@@ -116,7 +117,6 @@ class Login extends React.Component<ILoginProps> {
         boxSizing: 'border-box',
         backgroundColor: 'transparent', // Transparent background for the form
         borderRadius: '4px', // Rounded corners
-        border: '.5px solid #BCE8F3', // Light outline
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Subtle shadow effect
       }}>
 

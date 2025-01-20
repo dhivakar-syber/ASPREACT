@@ -2,7 +2,7 @@ import * as React from "react";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
 
 import  DashboardCards  from "./BuyerDashboardCards";
-import { Row, Col,Select, Tabs,Button,Modal,message } from 'antd';
+import { Row, Col,Select, Tabs,Button,Modal,message,Card } from 'antd';
 import { FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
 import { BuyerDashboardInput } from "./BuyerDashboardInput";
 import BuyerQueryModal from "./BuyerQueryModal"
@@ -134,7 +134,7 @@ declare var abp: any;
   const handlebuyerchange = async  (value:any, option:any) => {
       
       console.log('selectedbuyers',option,value)
-      setselectedbuyers({name:option.lable,value:value});
+      setselectedbuyers({name:option.label,value:value});
       
   
       await getsuppliers(value);
@@ -365,8 +365,10 @@ declare var abp: any;
       setrowBuyerstatus(carddetails.data.result.buyerpending.toFixed(2));
       setrowAccountsStatus(carddetails.data.result.accountspending.toFixed(2));
   
-      
-  
+      const disput = new DisputedataStore();
+
+      await disput.buyergetAll(buyerdashboardinput);
+        
   
   
     }
@@ -525,142 +527,125 @@ function barstatus(status:any) {
 }
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      <p>Current User id:{abp.session.userId}</p>
-<DashboardCards BuyerDashboardinputs={dashboardinput} />
-<br></br>
-<Row gutter={11} style={{ marginRight:'-200.5px'}}>
-    <Col className="gutter-row" span={4}>
-      <div style={{ textAlign: 'left' }}>
-      <h3>Buyer</h3>
+    <div>
+      <div
+              style={{
+                background: '#fafafa',
+                padding: '!2px',
+                marginTop: '16px',
+                marginBottom: '10px',
+                borderRadius: '2px',
+              }}
+            >
+              <Row
+                style={{ color: '#444444', paddingLeft: '10px', paddingTop: '10px', margin: '2px' }}
+                gutter={11}
+              >
+                <p>Buyer Dashboard</p>
+              </Row>
+            </div>
+        <DashboardCards BuyerDashboardinputs={dashboardinput} />
+
+              <Card style={{ backgroundColor:"#fafafa", fontSize: "12px" }}>
+        
+              <Row gutter={16} style={{ marginRight: '0', display: 'flex', flexWrap: 'nowrap', alignItems: 'center' }}>
+  <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '250px' }}>
+    <div style={{ textAlign: 'left' }}>
+      <span style={{ padding: '2px' }}>Buyers</span>
       <Select
-      
-      style={{ width: '200px' }}
-      placeholder="Select one or more Buyers"
-      options={buyers.map((buyer) => ({
-        label: buyer.name,
-        value: buyer.id,
-      }))}
-      value={selectedbuyers.name} 
-      onChange={handlebuyerchange} 
-      showSearch 
-      optionLabelProp="label"
-      filterOption={(input:any, buyers:any) =>
-        buyers?.label.toLowerCase().includes(input.toLowerCase())
-      } 
-    />
+        style={{ width: '100%' }}
+        placeholder="Select one or more Buyers"
+        options={buyers.map((buyer) => ({
+          label: buyer.name,
+          value: buyer.id,
+        }))}
+        value={selectedbuyers.name}
+        onChange={handlebuyerchange}
+        showSearch
+        optionLabelProp="label"
+        filterOption={(input:any, buyers:any) =>
+          buyers?.label.toLowerCase().includes(input.toLowerCase())
+        }
+      />
     </div>
-      </Col>
-      <Col className="gutter-row" span={4}>
-      <div style={{ textAlign: 'left' }}>
-      <h3>Suppliers</h3>
+  </Col>
+  <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '250px' }}>
+    <div style={{ textAlign: 'left' }}>
+      <span style={{ padding: '2px' }}>Suppliers</span>
       <Select
-      
-      style={{ width: '200px' }}
-      placeholder="Select one or more suppliers"
-      mode="multiple"
-      options={
-        suppliers.map((supplier) => ({
+        style={{ width: '100%' }}
+        placeholder="Select one or more suppliers"
+        mode="multiple"
+        options={suppliers.map((supplier) => ({
           label: supplier.name,
           value: supplier.value,
-        }))
-      }
-      value={selectedsuppliers} 
-      onChange={handlesupplierchange} 
-      optionLabelProp="label"
-    />
+        }))}
+        value={selectedsuppliers}
+        onChange={handlesupplierchange}
+        optionLabelProp="label"
+      />
     </div>
-      </Col>
-      <Col className="gutter-row" span={4}>
-      <div style={{ textAlign: 'left' }}>
-      <h3>Category</h3>
+  </Col>
+  <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '250px' }}>
+    <div style={{ textAlign: 'left' }}>
+      <span style={{ padding: '2px' }}>Category</span>
       <Select
-        
-        style={{ width: '200px' }}
-        placeholder="Select one or more suppliers"
+        style={{ width: '100%' }}
+        placeholder="Select a category"
         options={[
-          {
-            label: 'Select All',
-            value: 0,
-          },
-          {
-          label: 'Supplementary Invoice',
-          value: 1,
-        },
-        {
-          label: 'Credit Note',
-          value: 2,
-
-        }
-      ]}
-      value={selectedcategory}
+          { label: 'Select All', value: 0 },
+          { label: 'Supplementary Invoice', value: 1 },
+          { label: 'Credit Note', value: 2 },
+        ]}
+        value={selectedcategory}
         onChange={handlecategorychange}
         optionLabelProp="label"
       />
     </div>
-      </Col>
-      
-      <Col className="gutter-row" span={4}>
-      <div style={{ textAlign: 'left' }}>
-      <h3>Parts</h3>
-      <Select
-        mode="multiple"
-        style={{ width: '200px' }}
-        placeholder="Select one or more suppliers"
-        options={parts.map((part) => ({
-          label: part.name,
-          value: part.value,
-        }))}
-        value={selectedparts} 
-        onChange={handlepartChange}
-        filterOption={(input:any, parts:any) =>
-          parts?.label.toLowerCase().includes(input.toLowerCase())}
-        optionLabelProp="label"
-      />
-    </div>
-      </Col>
-      {/* <Col className="gutter-row" span={4}>
-      <div style={{ textAlign: 'left' }}>
-      <h3>Document</h3>
-      <Select
-        mode="multiple"
-        style={{ width: '200px' }}
-        placeholder="Select one or more suppliers"
-        options={parts.map((part) => ({
-          label: part.name,
-          value: part.value,
-        }))}
-        value={selectedparts} 
-        onChange={handlepartChange}
-        filterOption={(input:any, parts:any) =>
-          parts?.label.toLowerCase().includes(input.toLowerCase())}
-        optionLabelProp="label"
-      />
-    </div>
-      </Col> */}
-      
-      <Col className="gutter-row" span={4}>
+  </Col>
+  <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '250px' }}>
     <div style={{ textAlign: 'left' }}>
-      <h3>Date</h3>
-      <input 
-        type="date" 
-        value={selectedDate} 
-        onChange={(e) => handledatechange(e.target.value)} 
-        style={{ width: '100%' }} 
+      <span style={{ padding: '2px' }}>Parts</span>
+      <Select
+        mode="multiple"
+        style={{ width: '100%' }}
+        placeholder="Select one or more parts"
+        options={parts.map((part) => ({
+          label: part.name,
+          value: part.value,
+        }))}
+        value={selectedparts}
+        onChange={handlepartChange}
+        filterOption={(input:any, parts:any) =>
+          parts?.label.toLowerCase().includes(input.toLowerCase())
+        }
+        optionLabelProp="label"
       />
     </div>
-  </Col> 
-    </Row>
+  </Col>
+  <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '250px' }}>
+    <div style={{ textAlign: 'left' }}>
+      <span style={{ padding: '2px' }}>Date</span>
+      <input
+        type="date"
+        value={selectedDate}
+        onChange={(e) => handledatechange(e.target.value)}
+        style={{ width: '100%' }}
+      />
+    </div>
+  </Col>
+</Row>
     
 <br></br>
 <Tabs defaultActiveKey="1">
     <Tabs.TabPane tab="Home" key="1">
       <div style={{ marginTop: "20px" }}>
         
-        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px",whiteSpace:'nowrap' }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px",whiteSpace:'nowrap',
+              borderRadius: '5px', }}>
           <thead>
-            <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "center" }}>
-              {[
+          <tr style={{ backgroundColor: '#005f7f', color: '#fff', textAlign: 'left', borderRadius: '2px' }}>
+          {[
                 "S.No",
                 "PartNumber - Version",
                 "Annexure Group",
@@ -671,7 +656,7 @@ function barstatus(status:any) {
                 "Buyer",
                 "F&C",
               ].map((header) => (
-                <th key={header} style={{ padding: "10px", border: "1px solid #ddd" }}>
+                <th key={header} style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px' }}>
                   {header}
                 </th>
               ))}
@@ -682,7 +667,7 @@ function barstatus(status:any) {
   
 </td>
               
-            <td style={{  border: "1px solid #ddd" }} colSpan={3}>
+            <td style={{  border: "1px solid #ffffff1a" }} colSpan={3}>
   <div className="progress-tube">
     <div  style={{  width: "50px",textAlign:"center" }}>{rowsupplierstatus}</div>
     <div  style={{ width: "50px",textAlign:"center" }}>{rowBuyerstatus}</div>
@@ -715,12 +700,13 @@ function barstatus(status:any) {
 
     </Tabs.TabPane>
     <Tabs.TabPane tab="Approvals" key="2">
-      <div style={{ marginTop: "20px" }}>
+      <div style={{ marginTop: "20px", overflowX: 'auto' }}>
         
-        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px",
+              borderRadius: '5px', }}>
           <thead>
-            <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "center" }}>
-              {[
+          <tr style={{ backgroundColor: '#005f7f', color: '#fff', textAlign: 'left', borderRadius: '2px' }}>
+          {[
                 "S.No",
                 "Document",
                 "Document Number",
@@ -735,7 +721,7 @@ function barstatus(status:any) {
                 "Buyer",
                 "F&C",
               ].map((header) => (
-                <th key={header} style={{ padding: "10px", border: "1px solid #ddd" }}>
+                <th key={header} style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px' }}>
                   {header}
                 </th>
               ))}
@@ -746,7 +732,7 @@ function barstatus(status:any) {
   
 </td>
               
-            <td style={{  border: "1px solid #ddd" }} colSpan={3}>
+            <td style={{  border: "1px solid #ffffff1a" }} colSpan={3}>
   <div className="progress-tube">
     <div  style={{  width: "50px",textAlign:"center" }}>{rowsupplierstatus}</div>
     <div  style={{ width: "50px",textAlign:"center" }}>{rowBuyerstatus}</div>
@@ -889,11 +875,13 @@ function barstatus(status:any) {
       </Modal>
     </Tabs.TabPane>
     <Tabs.TabPane tab="Queries" key="3">
-    <BuyerQueryModal disputesStore={ new DisputedataStore} />
+    <BuyerQueryModal disputesStore={ new DisputedataStore}
+                     BuyerDashboardInput={dashboardinput}
+    />
 </Tabs.TabPane>
 
   </Tabs>
-  
+  </Card>
       
           
     </div>

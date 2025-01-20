@@ -11,11 +11,13 @@ import Stores from '../../../../stores/storeIdentifier';
 import DisputesStrore from '../../../../stores/DisputesStrore';
 import { FormInstance } from 'antd/lib/form';
 import disputesServices from '../../../../services/Disputes/disputesServices';
+import { AccountDashboardInput } from './AccountsDashboardInput';
 //import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
 //import { EnumCurrency,EnumTransaction } from '../../../src/enum'
 
 export interface IDisputesProps {
     disputesStore: DisputesStrore;
+    AccountDashboardInput:AccountDashboardInput;
 }
 
 export interface IDisputesdataState {
@@ -111,7 +113,7 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
         console.error('cbfcdatastore is undefined');
         return;
     }
-    await this.props.disputesStore.accountgetAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
+    await this.props.disputesStore.accountgetAll(this.props.AccountDashboardInput);
   }
 
   handleTableChange = (pagination: any) => {
@@ -257,6 +259,7 @@ IntimateToBuyerMail = async (item: any) => {
 //     };
 
   public render() {
+    this.getAll();
     console.log(this.props.disputesStore);
     const { disputedata } = this.props.disputesStore;
     const columns = [

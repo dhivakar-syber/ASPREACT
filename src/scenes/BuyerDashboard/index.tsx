@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Row, Col, Card } from 'antd';
+import { Row, Col } from 'antd';
 // import { CheckOutlined, QuestionOutlined, MessageOutlined, UserAddOutlined } from '@ant-design/icons';
 import './index.less';
 // import TinyLineChartExample from './components/TinyLineChartExample';
@@ -123,9 +123,9 @@ export class BuyerDashboard extends React.Component<any> {
         </Row> */}
         <Row>
           <Col span={24}>
-            <Card>
+            
               <PayRetroBuyerDashboard />
-            </Card>
+            
           </Col>
         </Row>
 

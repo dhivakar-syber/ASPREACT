@@ -1,5 +1,7 @@
 import LoadableComponent from './../Loadable/index';
-import { HomeOutlined, UserOutlined, TagsOutlined, AppstoreOutlined, } from '@ant-design/icons';
+import { HomeOutlined, UserOutlined, TagsOutlined, AppstoreOutlined,
+   ShoppingCartOutlined, DatabaseFilled, SnippetsFilled, FileFilled, SettingOutlined, GlobalOutlined, DiffFilled,
+    QuestionCircleOutlined, DeleteOutlined, WarningOutlined, StarOutlined,} from '@ant-design/icons';
 
 export const userRouter: any = [
   {
@@ -17,6 +19,22 @@ export const userRouter: any = [
     component: LoadableComponent(() => import('../../scenes/Login')),
     showInMenu: false,
   },
+];
+
+export const discRoute: any =[
+{
+  
+    path: '/fetchData', 
+    name: 'fetchData',
+    title: 'Fetch Data',
+    permission: '',
+    icon: HomeOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/DiscRoute')), 
+  
+
+}
+
 ];
 
 export const appRouters: any = [
@@ -58,15 +76,6 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../scenes/Accounts Dashboard')),
   },
   {
-    path: '/BackgroundJobDashboard',
-    name: 'BackgroundJobDashboard',
-    permission: '',
-    title: 'BackgroundJob Dashboard',
-    icon: HomeOutlined,
-    showInMenu: true,
-    component: LoadableComponent(() => import('../../scenes/BackgroundJobDashboard')),
-  },
-  {
     path: '/users',
     permission: 'Pages.Administration.Users',
     title: 'Users',
@@ -89,7 +98,7 @@ export const appRouters: any = [
     permission: 'Pages.Administration.Buyers',
     title: 'Buyers',
     name: 'buyer',
-    icon: UserOutlined,
+    icon: ShoppingCartOutlined,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/Buyers')),
   },
@@ -98,7 +107,7 @@ export const appRouters: any = [
     permission: 'Pages.Administration.CBFCdatas',
     title: 'CBFCdatas',
     name: 'cbfcdatas',
-    icon: TagsOutlined,
+    icon: DatabaseFilled,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/CBFCdatas')),
   },
@@ -107,7 +116,7 @@ export const appRouters: any = [
     permission: 'Pages.Administration.GRNMasters',
     title: 'GRNdatas',
     name: 'grndatas',
-    icon: TagsOutlined,
+    icon: DatabaseFilled,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/GRNdatas')),
   },
@@ -125,7 +134,7 @@ export const appRouters: any = [
     name: 'procuredatas',
     permission: 'Pages.Administration.ProcureDatas',
     title: 'ProcureDatas',
-    icon: HomeOutlined,
+    icon: DatabaseFilled,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/ProcureDatas')),
   },
@@ -134,7 +143,7 @@ export const appRouters: any = [
     name: 'SupplementarySummaries',
     permission: 'Pages.Administration.SupplementarySummaries',
     title: 'SupplementarySummaries',
-    icon: HomeOutlined,
+    icon: SnippetsFilled,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/SupplementarySummaries')),
   },
@@ -143,7 +152,7 @@ export const appRouters: any = [
     name: 'FileMasters',
     permission: 'Pages.Administration.FileMasters',
     title: 'FileMasters',
-    icon: HomeOutlined,
+    icon: FileFilled,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/FileMaster')),
   },
@@ -152,7 +161,7 @@ export const appRouters: any = [
     name: 'Parts',
     permission: 'Pages.Administration.Parts',
     title: 'Parts',
-    icon: HomeOutlined,
+    icon: SettingOutlined,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/Parts')),
   },
@@ -162,7 +171,7 @@ export const appRouters: any = [
     name: 'Plants',
     permission: 'Pages.Administration.Plants',
     title: 'Plants',
-    icon: HomeOutlined,
+    icon: GlobalOutlined,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/Plant')),
   },
@@ -172,7 +181,7 @@ export const appRouters: any = [
     name: 'AnnexureDetails',
     permission: 'Pages.Administration.AnnexureDetails',
     title: 'AnnexureDetails',
-    icon: HomeOutlined,
+    icon: DiffFilled,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/AnnexureDetails')),
   },
@@ -181,7 +190,7 @@ export const appRouters: any = [
     name: 'SupplierRaisedQueries',
     permission: 'Pages.Administration.SupplierRaisedQueries',
     title: 'SupplierRaisedQueries',
-    icon: HomeOutlined,
+    icon: QuestionCircleOutlined,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/SupplierRaisedQueries')),
   },
@@ -190,7 +199,7 @@ export const appRouters: any = [
     name: 'SupplierRejections',
     permission: 'Pages.Administration.SupplierRejections',
     title: 'SupplierRejections',
-    icon: HomeOutlined,
+    icon: DeleteOutlined,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/SupplierRejections')),
   },
@@ -200,7 +209,7 @@ export const appRouters: any = [
     name: 'Disputes',
     permission: 'Pages.Administration.Disputes',
     title: 'Disputes',
-    icon: HomeOutlined,
+    icon: WarningOutlined,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/Disputes')),
   },
@@ -209,7 +218,7 @@ export const appRouters: any = [
     name: 'ApprovalWorkflows',
     permission: 'Pages.Administration.ApprovalWorkflows',
     title: 'ApprovalWorkflows',
-    icon: HomeOutlined,
+    icon: StarOutlined,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/ApprovalWorkflows')),
   },
@@ -248,6 +257,7 @@ export const appRouters: any = [
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/Exception')),
   },
+  
 ];
 
-export const routers = [...userRouter, ...appRouters];
+export const routers = [...userRouter, ...appRouters, ...discRoute];

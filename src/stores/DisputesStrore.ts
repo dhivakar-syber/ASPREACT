@@ -13,6 +13,9 @@ import { DisputeSupplierLookupTableDto } from '../services/Disputes/dto/DisputeS
 import { DisputeBuyerLookupTableDto } from '../services/Disputes/dto/DisputeBuyerLookupTableDto';
 import disputesService from '../services/Disputes/disputesServices';
 import { EnumDisputeStatus } from '../enum';
+import { BuyerDashboardInput } from '../scenes/BuyerDashboard/components/PayRetroBuyerDashboard/BuyerDashboardInput';
+import { AccountDashboardInput } from '../scenes/Accounts Dashboard/components/PayRetroaccountsDashboard/AccountsDashboardInput';
+
 
 class DisputedataStore {
   @observable disputedata!: PagedResultDto<GetDisputeForViewDto>;
@@ -107,19 +110,21 @@ class DisputedataStore {
   async createDisputeData() {
     this.editDispute = {
             CreateOrEditDisputeDto: {
-                id:0,
-                Query:'',
-                BuyerRemarks:'',
-                AccountsRemarks:'',
-                Status:EnumDisputeStatus.Open,
-                ResponseTime:new Date(),
-                SupplementarySummaryId:0,
-                SupplierRejectionId:0,
-                SupplierId:0,
-                BuyerId:0,
-                SupplierRejection:'',
-                SupplierName:'',
-                BuyerName:'',
+
+              id: 0,
+              Query: '',
+              BuyerRemarks: '',
+              AccountsRemarks: '',
+              Status: EnumDisputeStatus.Open,
+              ResponseTime: new Date(),
+              SupplementarySummaryId: 0,
+              SupplierRejectionId: 0,
+              SupplierId: 0,
+              BuyerId: 0,
+              SupplierRejection: '',
+              SupplierName: '',
+              BuyerName: ''
+
             },
             SupplementarySummaryDisplayProperty: '',
             SupplierRejectionCode: '',
@@ -146,14 +151,14 @@ class DisputedataStore {
   }
 
   @action
-  async buyergetAll(pagedFilterAndSortedRequest: PagedUserResultRequestDto) {
-    let result = await disputesService.buyergetAll(pagedFilterAndSortedRequest);
+  async buyergetAll(input:BuyerDashboardInput) {
+    let result = await disputesService.buyergetAll(input);
     this.disputedata = result;
   }
 
   @action
-  async accountgetAll(pagedFilterAndSortedRequest: PagedUserResultRequestDto) {
-    let result = await disputesService.accountgetAll(pagedFilterAndSortedRequest);
+  async accountgetAll(input:AccountDashboardInput) {
+    let result = await disputesService.accountgetAll(input);
     this.disputedata = result;
   }
 

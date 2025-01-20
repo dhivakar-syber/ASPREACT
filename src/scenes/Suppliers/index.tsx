@@ -5,7 +5,9 @@ import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../components/AppComponentBase';
 // import SupplierLookUpData from './components/SupplierLookUpData';
+
 import Edit from './components/createorupdatesuppliers';
+
 import { EntityDto } from '../../services/dto/entityDto';
 import { L } from '../../lib/abpUtility';
 import Stores from '../../stores/storeIdentifier';
@@ -39,7 +41,8 @@ const Search = Input.Search;
 
 @inject(Stores.SupplierStore)
 @observer
-class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState> {
+class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState> 
+{
     formRef = React.createRef<FormInstance>();
 
     state = {
@@ -240,6 +243,7 @@ class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState> {
             //     width: 150,
             //     render: (text: string, record: any) => <div>{record.supplier?.rid || ''}</div>,
             // },
+
           ];
 
         return (
@@ -274,7 +278,7 @@ class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState> {
                 </div>
 
             {this.state.filterVisible && (
-                <Row gutter={16} style={{ marginTop: '10px' }}>
+                <Row gutter={10} style={{ marginTop: '10px' }}>
                 <Col xs={{span:5,offset:0}}>
                 <label className="form-label">{L('Name')}</label>
                 <input 
@@ -311,7 +315,7 @@ class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState> {
                 <Button
                   type="default"
                   onClick={this.resetFilters}
-                  style={{ marginTop: '24px', width: '100%' }}
+                  style={{ marginTop: '24px', width: '50%' }}
                 >
                   Reset
                 </Button>

@@ -1,18 +1,20 @@
 import React ,{useRef,useState} from "react";
 
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
+import annexureDetailsService from "../../../../services/annexureDetails/annexureDetailsService";
 import { SupplierDashboardInput } from "./SupplierDashboardInput";
 import  DashboardCards  from "../PayRetroSupplierDashboard/DashboardCards";
-import { Row, Col, Input, Form,Select,message } from 'antd';
+import { Row, Col, Input, Form,Select,message, Card } from 'antd';
 import SupplierSubmitModal from './SupplierSubmitModal';
 import SupplementaryInvoiceModal from "./SupplementaryInvoicesModal";
 import DisputesStore from "../../../../stores/DisputesStrore";
 import { FormInstance } from 'antd/lib/form';
-//import CreateOrUpdateDisputes from '../../../../scenes/Disputes/components/createOrUpdateDisputes'; // Import the modal component
 import CreateOrUpdateDisputes from '../../../../scenes/Disputes/components/createOrUpdateDashboardDisputes';
 import DisputedataStore from "../../../../stores/DisputesStrore";
 import DisputeHistoryModal from "../../../Dashboard/components/PayRetroSupplierDashboard/DisputeHistoryModal";
 import disputesServices from "../../../../services/Disputes/disputesServices";
+//import CreateOrUpdateDisputes from '../../../../scenes/Disputes/components/createOrUpdateDisputes'; // Import the modal component
+
 //import { IDisputesdataState } from "../../../Disputes";
 
 
@@ -48,6 +50,8 @@ declare var abp: any;
   const [rowsupplierstatus, setrowsupplierstatus] = React.useState<number | null>(0); 
   const [rowBuyerstatus, setrowBuyerstatus] = React.useState<number | null>(0); 
   const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0);
+const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
+const [showDownloadButton, setShowDownloadButton] = React.useState<boolean>(false);
   const [implementationDate, setImplementationDate] = React.useState(selectedRow?.implementationDate || '');
   const [dashboardinput, setdashboardinput] = React.useState<SupplierDashboardInput>({
     Supplierid: 0,
@@ -126,7 +130,9 @@ declare var abp: any;
 
     fetchData();
   }, []);
-
+  React.useEffect(() => {
+    setShowDownloadButton(selectedRows.length > 0);
+  }, [selectedRows]);
   const handleDateChange = async (rowid:any,implementationDate:any,row:any) => {
     const newDate= implementationDate
     setImplementationDate(newDate);
@@ -170,7 +176,7 @@ const handleButtonClick = () => {
   const handlesupplierChange = async  (value:any, option:any) => {
     
     console.log('selectedSuppliers',option,value)
-    setselectedsuppliers({name:option.lable,value:value});
+    setselectedsuppliers({name:option.label,value:value});
     
 
     await getbuyers(value);
@@ -294,6 +300,9 @@ const handleButtonClick = () => {
     if (!target.closest(".dropdown-container")) {
       setOpenDropdownId(null);
     }
+    if (isModalOpen && !target.closest(".supplier-modal-container")) {
+      handleModalClose(); // Close the modal if clicked outside
+    }
   };
 
   React.useEffect(() => {
@@ -301,7 +310,7 @@ const handleButtonClick = () => {
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, []);
+  }, [isModalOpen]);
 
 
   const toggleDropdown = (id:any,event: React.MouseEvent) => {
@@ -507,7 +516,7 @@ const railqueryMail = (item:any) =>
 }
 
 
-  const supplementaryInvoiceSubmit = (item: any) => {
+  const supplementaryInvoiceSubmit = async(item: any) => {
     console.log('Processing item:', item);
     if (item.buyerEmailAddress) {
       item.buyerEmailAddress = item.buyerEmailAddress.split(",").map((email: string) => email.trim());
@@ -529,9 +538,17 @@ const railqueryMail = (item:any) =>
         'Content-Type': 'application/json',
       },
     })
-      .then((data) => {
+      .then((data) =>  {
         abp.ui.clearBusy();
         message.success(`Approve Mail Sent to - ${item.buyerName}`);
+        var   supplierDashboardInput: SupplierDashboardInput = {
+          Supplierid: selectedsuppliers.value,
+          Buyerids:selectedbuyers,
+          Partids: selectedparts,
+          invoicetype:selectedcategory
+        };
+        setdashboardinput(supplierDashboardInput);
+         LoadsupplementarySummary(supplierDashboardInput);
       })
       .catch((error) => {
         abp.ui.clearBusy();
@@ -576,7 +593,24 @@ const railqueryMail = (item:any) =>
 
   const [hoveredRowId, setHoveredRowId] = React.useState<number | null>(null);
 
-  const handleRowClick = async (row: any) => {
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>, rowId: number) => {
+    e.stopPropagation();
+    const isChecked = e.target.checked;
+  
+    setSelectedRows((prevSelected) => {
+      const updatedSelectedRows = isChecked
+        ? prevSelected.concat(rowId) // Add rowId if checked
+        : prevSelected.filter((id) => id !== rowId); // Remove rowId if unchecked
+  
+      // Update the visibility of the download button based on the updated selected rows
+      setShowDownloadButton(updatedSelectedRows.length > 0);
+  
+      return updatedSelectedRows;
+    });
+  };
+
+  const handleRowClick = async (e: React.MouseEvent<HTMLTableRowElement>,row: any) => {
+    if ((e.target as HTMLElement).tagName !== 'INPUT') {
     setSelectedRow(row); // Set the clicked row data
     setIsModalOpen(true); // Open the modal
     
@@ -594,6 +628,7 @@ const railqueryMail = (item:any) =>
     } catch (error) {
       console.error('Error fetching data:', error);
     } 
+  } 
   };
   const { Item } = Form;
 
@@ -798,12 +833,70 @@ return (
       </div>
     );
   };
- 
+  const handleAnnexureClick = (supplementarysummaryIds: number[]) => {
+    const templatepath = '//assets/SampleFiles/AnnexureDetails.xlsx';
+  
+    // Wrap supplementarysummaryId in an array as the method expects an array
+    //const supplementaryIds = [supplementarysummaryId];
+  
+    // Call the service method with the array of supplementaryIds
+    const idsToPass = Array.isArray(supplementarysummaryIds) ? supplementarysummaryIds : [supplementarysummaryIds];
+
+    annexureDetailsService.GetSupplementarysplitAnnexureDetailsToExcel(idsToPass, templatepath)
+      .then((result) => {
+        // Loop through each file in the result (assuming result is an array of file objects)
+        result.forEach((fileData: any) => {
+          const fileContent = fileData.fileContent;
+          const fileName = fileData.fileName;
+          const fileType = fileData.fileType;
+  
+          // Convert base64 string to a Blob
+          const byteCharacters = atob(fileContent);  // Decode base64 string
+          const byteArray = new Uint8Array(byteCharacters.length);
+  
+          // Convert byte characters into byte array
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteArray[i] = byteCharacters.charCodeAt(i);
+          }
+  
+          // Create a Blob from the byte array and specify the MIME type
+          const fileBlob = new Blob([byteArray], { type: fileType });
+  
+          // Create a temporary link element
+          const link = document.createElement('a');
+  
+          // Create an object URL for the Blob
+          const url = URL.createObjectURL(fileBlob);
+  
+          // Set the download attribute with the file name
+          link.href = url;
+          link.download = fileName;
+  
+          // Trigger a click event to start the download
+          link.click();
+  
+          // Clean up the URL object after download
+          URL.revokeObjectURL(url);
+        });
+      })
+      .catch((error) => {
+        console.error('Error fetching annexure details:', error);
+      });
+  };
   const AnnexureTable = ({ data }: { data: any[] }) => {
     console.log('AnnexureTable',data);
     return (
       <div >
         <h3>AnnexureDetails</h3>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button
+  className="upload-btn"
+  id="downloadannexure"
+  onClick={() => handleAnnexureClick(data[0].supplementarysummaryId)}
+>
+  Download Annexure
+</button>
+</div>
         <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px" }}>
           <thead>
           <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
@@ -886,328 +979,415 @@ function barstatus(status:any) {
 }
 
   return (
-
-        
-    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      <p>Current User id:{abp.session.userId}</p>
-      
-      <DashboardCards SupplierDashboardInputs={dashboardinput} />
-      <br></br>
-      
-    <Row gutter={11} style={{ marginRight:'-200.5px'}}>
-    
-      <Col className="gutter-row" span={4}>
-      <div style={{ textAlign: 'left' }}>
-      <h3>Suppliers</h3>
-      <Select
-      
-      style={{ width: '200px' }}
-      placeholder="Select supplier"
-      options={
-        suppliers.map((supplier) => ({
-          label: supplier.name,
-          value: supplier.id,
-        }))
-      }
-      value={selectedsuppliers.name} 
-      // value={} 
-      onChange={handlesupplierChange} 
-     // onChange={(value:any, option:any) => {
-        
-      optionLabelProp="label"
-    />
-    </div>
-      </Col>
-      <Col className="gutter-row" span={4}>
-      <div style={{ textAlign: 'left' }}>
-      <h3>Category</h3>
-      <Select
-        
-        style={{ width: '200px' }}
-        placeholder="Select one or more suppliers"
-        options={[
-          {
-            label: 'Select All',
-            value: 0,
-          },
-          {
-          label: 'Supplementary Invoice',
-          value: 1,
-        },
-        {
-          label: 'Credit Note',
-          value: 2,
-
-        }
-      ]}
-      value={selectedcategory}
-        onChange={handlecategorychange}
-        optionLabelProp="label"
-      />
-    </div>
-      </Col>
-      <Col className="gutter-row" span={4}>
-      <div style={{ textAlign: 'left' }}>
-      <h3>Buyers</h3>
-      <Select
-      mode="multiple"
-      style={{ width: '200px' }}
-      placeholder="Select one or more Buyers"
-      options={buyers.map((buyer) => ({
-        label: buyer.name,
-        value: buyer.value,
-      }))}
-       value={selectedbuyers}
-      //value={[]} 
-      onChange={handlebuyerChange} 
-      showSearch 
-      optionLabelProp="label"
-      filterOption={(input:any, buyers:any) =>
-        buyers?.label.toLowerCase().includes(input.toLowerCase())
-      } 
-    />
-    </div>
-      </Col>
-      <Col className="gutter-row" span={4}>
-      <div style={{ textAlign: 'left' }}>
-      <h3>Parts</h3>
-      <Select
-        mode="multiple"
-        style={{ width: '200px' }}
-        placeholder="Select one or more Parts"
-        options={parts.map((part) => ({
-          label: part.name,
-          value: part.value,
-        }))}
-         value={selectedparts}
-        //value={[]} 
-        onChange={handlepartChange}
-        filterOption={(input:any, parts:any) =>
-          parts?.label.toLowerCase().includes(input.toLowerCase())}
-        optionLabelProp="label"
-      />
-    </div>
-      </Col>
-      
-    </Row>
-    
-      <br></br>
-      <div style={{ marginTop: "20px",overflowX: "auto" }}>
-        
-        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "14px",whiteSpace:'nowrap' }}>
-          <thead>
-            <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
-              {[
-                "Buyer Name",
-                "Part No - Version",
-                "Report Date",
-                "Ageing",
-                "Action",
-                "Supplementary Invoice/Credit Note",
-                "Date",
-                "From",
-                "To",
-                "Value",
-                "Supplier",
-                "Buyer",
-                "F&C",
-              ].map((header) => (
-                <th key={header} style={{ padding: "10px", border: "1px solid #ddd" }}>
-                  {header}
-                </th>
-              ))}
-            </tr>
-            <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
-
-            <td  colSpan={10}>
-  
-</td>
-              
-            <td style={{  border: "1px solid #ddd" }} colSpan={3}>
-  <div className="progress-tube">
-    <div  style={{  width: "50px",textAlign:"center" }}>{rowsupplierstatus}</div>
-    <div  style={{ width: "50px",textAlign:"center" }}>{rowBuyerstatus}</div>
-    <div  style={{ width: "50px",textAlign:"center" }}>{rowAccountsStatus}</div>
-  </div>
-</td>
-            </tr>
-          </thead>
-          <tbody>
-  {tableData.map((row) => (
-    <tr
-      key={row.id}
-      onClick={() => handleRowClick(row)} // Add click event here
-      onMouseEnter={() => setHoveredRowId(row.id)}
-      onMouseLeave={() => setHoveredRowId(null)}
-      style={{
-        backgroundColor: hoveredRowId === row.id ? "#f1f1f1" : row.id % 2 === 0 ? "#f9f9f9" : "#fff",
-        cursor: "pointer",
-      }}
-    >
-      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.buyerName}</td>
-      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.partno}-{row.versionNo}</td>
-      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.createtime)}</td>
-      <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.ageing}</td>
-      <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
-        <div className="dropdown-container" style={{ position: "relative", whiteSpace: 'normal' }}>
-          <button
-            style={{
-              backgroundColor: "#005f7f",
-              color: "#fff",
-              border: "none",
-              padding: "5px 10px",
-              cursor: "pointer",
-            }}
-            onClick={(event) => toggleDropdown(row.id, event)} // Ensure this function handles the dropdown toggle
-          >
-            ⚙️
-          </button>
-
-          {openDropdownId === row.id && (
-  <div
-    style={{
-      position: "absolute",
-      top: "100%",
-      left: "0",
-      backgroundColor: "#fff",
-      boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-      zIndex: 999,
-      padding: "10px",
-      width: "325px",
-    }}
-  >
-    {row.documentStatus === 0 && (
-      <>
-        <button
-          style={{
-            width: "100%",
-            backgroundColor: "#fff",
-            color: "#071437",
-            border: "none",
-            padding: "10px",
-            marginBottom: "5px",
-            textAlign: "left",
-          }}
-          onClick={(event) =>
-            handleSupplementaryDropdownAction(
-              "Supplementary Invoice/Credit Note Details",
-              row.id,
-              row.annexureVersionNo,
-              event
-            )
-          }
+    <div>
+      <div
+        style={{
+          background: '#fafafa',
+          padding: '!2px',
+          marginTop: '16px',
+          marginBottom: '10px',
+          borderRadius: '2px',
+        }}
+      >
+        <Row
+          style={{ color: '#444444', paddingLeft: '10px', paddingTop: '10px', margin: '2px' }}
+          gutter={11}
         >
-          Supplementary Invoice/Credit Note Details
-        </button>
-
-        <button
-          style={{
-            width: "100%",
-            backgroundColor: "#fff",
-            color: "#071437",
-            border: "none",
-            padding: "10px",
-            textAlign: "left",
-          }}
-          onClick={(event) => handleSupplierSubmitAction("Submit", row.id, event)}
-        >
-          Submit
-        </button>
-
-        <button
-          style={{
-            width: "100%",
-            backgroundColor: "#fff",
-            color: "#071437",
-            border: "none",
-            padding: "10px",
-            textAlign: "left",
-          }}
-          onClick={(event) => handleRaiseQueryAction("Raise Query", row.id, event)}
-        >
-          Raise Query
-        </button>
-      </>
-    )}
-
-    {/* "History of Query" button is now always visible */}
-    <button
-      style={{
-        width: "100%",
-        backgroundColor: "#fff",
-        color: "#071437",
-        border: "none",
-        padding: "10px",
-        textAlign: "left",
-      }}
-      onClick={(event) => handleDisputeHisotryAction("History of Query", row.id, event)}
-    >
-      History of Query
-    </button>
-  </div>
-)}
-
-        </div>
-      </td>
-      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryInvoiceNo}</td>
-      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryinvoicedatestring}</td>
-      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.contractFromDate)}</td>
-      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.contractToDate)}</td>
-      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.total}</td>
-      
-      <td style={{ padding: "10px", border: "1px solid #ddd" }} colSpan={3}>
-        <div className="progress-tube">
-          <div className={supplierstatus(row.documentStatus)} style={{ width: "50px" }}></div>
-          <div className={barstatus(row.buyerApprovalStatus)} style={{ width: "50px" }}></div>
-          <div className={barstatus(row.accountantApprovalStatus)} style={{ width: "50px" }}></div>
-        </div>
-      </td>
-    </tr>
-  ))}
-</tbody>
-
-        </table>
+          <p>Supplier Dashboard</p>
+        </Row>
       </div>
-      <SupplierSubmitModal isOpen={isSupplierSubmitModalOpen} onClose={closeSupplierSubmitModal} submitIdRow={submitIdRow}
-        supplementaryInvoiceSubmit={supplementaryInvoiceSubmit} />
+
+      <DashboardCards SupplierDashboardInputs={dashboardinput} />
+
+      <Card style={{ backgroundColor:"#fafafa", fontSize: "12px" }}>
+        <Row gutter={11} style={{ marginRight: '-200.5px' }}>
+          <Col className="gutter-row" span={5}>
+            <div style={{ textAlign: 'left' }}>
+              <span style={{padding: "2px"}}>Suppliers</span>
+              <Select
+                style={{ width: '200px' }}
+                placeholder="Select supplier"
+                options={suppliers.map((supplier) => ({
+                  label: supplier.name,
+                  value: supplier.id,
+                }))}
+                value={selectedsuppliers.name}
+                // value={}
+                onChange={handlesupplierChange}
+                // onChange={(value:any, option:any) => {
+
+                optionLabelProp="label"
+              />
+              {showDownloadButton && (
+                <div style={{ marginTop: '20px' }}>
+                  <button
+                    onClick={() => {
+                      if (selectedRows.length > 0) {
+                        handleAnnexureClick(selectedRows);
+                        console.log('Download Annexure clicked for rows:', selectedRows);
+                      } else {
+                        alert('No rows selected for download!');
+                      }
+                    }}
+                    style={{
+                      padding: '10px 20px',
+                      backgroundColor: '#005f7f',
+                      color: '#fff',
+                      border: 'none',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Download Annexure
+                  </button>
+                </div>
+              )}
+            </div>
+          </Col>
+          <Col className="gutter-row" span={5}>
+            <div style={{ textAlign: 'left' }}>
+              <span style={{padding: "2px"}}>Category</span>
+              <Select
+                style={{ width: '200px' }}
+                placeholder="Select one or more suppliers"
+                options={[
+                  {
+                    label: 'Select All',
+                    value: 0,
+                  },
+                  {
+                    label: 'Supplementary Invoice',
+                    value: 1,
+                  },
+                  {
+                    label: 'Credit Note',
+                    value: 2,
+                  },
+                ]}
+                value={selectedcategory}
+                onChange={handlecategorychange}
+                optionLabelProp="label"
+              />
+            </div>
+          </Col>
+          <Col className="gutter-row" span={5}>
+            <div style={{ textAlign: 'left' }}>
+              <span style={{padding: "2px"}}>Buyers</span>
+              <Select
+                mode="multiple"
+                style={{ width: '200px' }}
+                placeholder="Select one or more Buyers"
+                options={buyers.map((buyer) => ({
+                  label: buyer.name,
+                  value: buyer.value,
+                }))}
+                value={selectedbuyers}
+                //value={[]}
+                onChange={handlebuyerChange}
+                showSearch
+                optionLabelProp="label"
+                filterOption={(input: any, buyers: any) =>
+                  buyers?.label.toLowerCase().includes(input.toLowerCase())
+                }
+              />
+            </div>
+          </Col>
+          <Col className="gutter-row" span={5}>
+            <div style={{ textAlign: 'left' }}>
+              <span style={{padding: "2px"}}>Parts</span>
+              <Select
+                mode="multiple"
+                style={{ width: '200px' }}
+                placeholder="Select one or more Parts"
+                options={parts.map((part) => ({
+                  label: part.name,
+                  value: part.value,
+                }))}
+                value={selectedparts}
+                //value={[]}
+                onChange={handlepartChange}
+                filterOption={(input: any, parts: any) =>
+                  parts?.label.toLowerCase().includes(input.toLowerCase())
+                }
+                optionLabelProp="label"
+              />
+            </div>
+          </Col>
+        </Row>
+
+        <br></br>
+        <div style={{ marginTop: '20px', overflowX: 'auto' }}>
+          <table
+            style={{
+              width: '100%',
+              borderCollapse: 'collapse',
+              marginTop: '20px',
+              fontSize: '12px',
+              whiteSpace: 'nowrap',
+             
+            }}
+          >
+            <thead>
+              <tr style={{ backgroundColor: '#005f7f', color: '#fff', textAlign: 'left', borderRadius: '2px' }}>
+                <th style={{ padding: '10px', border: '1px solid #ffffff1a', borderRadius: '2px' }}>
+                  <input
+                    type="checkbox"
+                    onChange={(e) => {
+                      const isChecked = e.target.checked;
+
+                      if (isChecked) {
+                        setSelectedRows(tableData.map((row) => row.id)); // Select all rows
+                      } else {
+                        setSelectedRows([]); // Deselect all rows
+                      }
+                    }}
+                  />
+                </th>
+                {[
+                  'Buyer Name',
+                  'Part No - Version',
+                  'Report Date',
+                  'Ageing',
+                  'Action',
+                  'Supplementary Invoice/Credit Note',
+                  'Date',
+                  'From',
+                  'To',
+                  'Value',
+                  'Supplier',
+                  'Buyer',
+                  'F&C',
+                ].map((header) => (
+                  <th key={header} style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px' }}>
+                    {header}
+                  </th>
+                ))}
+              </tr>
+              <tr style={{ backgroundColor: '#005f7f', color: '#fff', textAlign: 'left' }}>
+                <td colSpan={11}></td>
+
+                <td style={{ border: '1px solid #ffffff1a' }} colSpan={4}>
+                  <div className="progress-tube">
+                    <div style={{ width: '50px', textAlign: 'center' }}>{rowsupplierstatus}</div>
+                    <div style={{ width: '50px', textAlign: 'center' }}>{rowBuyerstatus}</div>
+                    <div style={{ width: '50px', textAlign: 'center' }}>{rowAccountsStatus}</div>
+                  </div>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              {tableData.map((row) => (
+                <tr
+                  key={row.id}
+                  onClick={(e) => handleRowClick(e, row)} // Add click event here
+                  onMouseEnter={() => setHoveredRowId(row.id)}
+                  onMouseLeave={() => setHoveredRowId(null)}
+                  style={{
+                    backgroundColor:
+                      hoveredRowId === row.id ? '#f1f1f1' : row.id % 2 === 0 ? '#f9f9f9' : '#fff',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    <input
+                      type="checkbox"
+                      checked={selectedRows.includes(row.id)}
+                      onChange={(e) => handleCheckboxChange(e, row.id)}
+                    />
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>{row.buyerName}</td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    {row.partno}-{row.versionNo}
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    {formatDate(row.createtime)}
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>
+                    {row.ageing}
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>
+                    <div
+                      className="dropdown-container"
+                      style={{ position: 'relative', whiteSpace: 'normal' }}
+                    >
+                      <button
+                        style={{
+                          backgroundColor: '#005f7f',
+                          color: '#fff',
+                          border: 'none',
+                          padding: '5px 10px',
+                          cursor: 'pointer',
+                        }}
+                        onClick={(event) => toggleDropdown(row.id, event)} // Ensure this function handles the dropdown toggle
+                      >
+                        ⚙️
+                      </button>
+
+                      {openDropdownId === row.id && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: '100%',
+                            left: '0',
+                            backgroundColor: '#fff',
+                            boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+                            zIndex: 999,
+                            padding: '10px',
+                            width: '325px',
+                          }}
+                        >
+                          {row.documentStatus === 0 && (
+                            <>
+                              <button
+                                style={{
+                                  width: '100%',
+                                  backgroundColor: '#fff',
+                                  color: '#071437',
+                                  border: 'none',
+                                  padding: '10px',
+                                  marginBottom: '5px',
+                                  textAlign: 'left',
+                                }}
+                                onClick={(event) =>
+                                  handleSupplementaryDropdownAction(
+                                    'Supplementary Invoice/Credit Note Details',
+                                    row.id,
+                                    row.annexureVersionNo,
+                                    event
+                                  )
+                                }
+                              >
+                                Supplementary Invoice/Credit Note Details
+                              </button>
+
+                              <button
+                                style={{
+                                  width: '100%',
+                                  backgroundColor: '#fff',
+                                  color: '#071437',
+                                  border: 'none',
+                                  padding: '10px',
+                                  textAlign: 'left',
+                                }}
+                                onClick={(event) =>
+                                  handleSupplierSubmitAction('Submit', row.id, event)
+                                }
+                              >
+                                Submit
+                              </button>
+
+                              <button
+                                style={{
+                                  width: '100%',
+                                  backgroundColor: '#fff',
+                                  color: '#071437',
+                                  border: 'none',
+                                  padding: '10px',
+                                  textAlign: 'left',
+                                }}
+                                onClick={(event) =>
+                                  handleRaiseQueryAction('Raise Query', row.id, event)
+                                }
+                              >
+                                Raise Query
+                              </button>
+                            </>
+                          )}
+
+                          {/* "History of Query" button is now always visible */}
+                          <button
+                            style={{
+                              width: '100%',
+                              backgroundColor: '#fff',
+                              color: '#071437',
+                              border: 'none',
+                              padding: '10px',
+                              textAlign: 'left',
+                            }}
+                            onClick={(event) =>
+                              handleDisputeHisotryAction('History of Query', row.id, event)
+                            }
+                          >
+                            History of Query
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    {row.supplementaryInvoiceNo}
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    {row.supplementaryinvoicedatestring}
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    {formatDate(row.contractFromDate)}
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    {formatDate(row.contractToDate)}
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>{row.total}</td>
+
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }} colSpan={3}>
+                    <div className="progress-tube">
+                      <div
+                        className={supplierstatus(row.documentStatus)}
+                        style={{ width: '50px' }}
+                      ></div>
+                      <div
+                        className={barstatus(row.buyerApprovalStatus)}
+                        style={{ width: '50px' }}
+                      ></div>
+                      <div
+                        className={barstatus(row.accountantApprovalStatus)}
+                        style={{ width: '50px' }}
+                      ></div>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <SupplierSubmitModal
+          isOpen={isSupplierSubmitModalOpen}
+          onClose={closeSupplierSubmitModal}
+          submitIdRow={submitIdRow}
+          supplementaryInvoiceSubmit={supplementaryInvoiceSubmit}
+        />
         <SupplementaryInvoiceModal
-        rowId={currentRowId}
-        AnnexureVersion={AnnexureVersionNo}      // Pass rowId to the modal
-        visible={isModalVisible}   // Control visibility of the modal
-        onCancel={handleCloseModal} // Function to close modal
-      />
+          rowId={currentRowId}
+          AnnexureVersion={AnnexureVersionNo} // Pass rowId to the modal
+          visible={isModalVisible} // Control visibility of the modal
+          onCancel={handleCloseModal} // Function to close modal
+        />
 
-      
-      {isHistoryModalVisible && (
-        <DisputeHistoryModal
-        rowId={submitIdRow}              
-        visible={isHistoryModalVisible}          
-        onCancel={handlehistoryCancel}      
-        data={disputeData}                               
-         // Function to close modal
-      />
-      )}
-        
-
-
-      {isModalOpen && modalData && Suppliermodalview(selectedRow)}
-      {isQueryModalVisible && (
-          <CreateOrUpdateDisputes
-          visible={isQueryModalVisible}
-          modalType="view"
-          onCreate={handleCreate}
-          onCancel={handleCancel}
-          disputesStrore={new DisputesStore()}
-          initialData={{
-            supplierName:initialData.supplierName,
-            buyerName:initialData.buyerShortId,
-          }} 
-          formRef={formRef} 
+        {isHistoryModalVisible && (
+          <DisputeHistoryModal
+            rowId={submitIdRow}
+            visible={isHistoryModalVisible}
+            onCancel={handlehistoryCancel}
+            data={disputeData}
+            // Function to close modal
           />
-      )}
-     
+        )}
+
+        {isModalOpen && modalData && Suppliermodalview(selectedRow)}
+        {isQueryModalVisible && (
+          <CreateOrUpdateDisputes
+            visible={isQueryModalVisible}
+            modalType="view"
+            onCreate={handleCreate}
+            onCancel={handleCancel}
+            disputesStrore={new DisputesStore()}
+            initialData={{
+              supplierName: initialData.supplierName,
+              buyerName: initialData.buyerShortId,
+            }}
+            formRef={formRef}
+          />
+        )}
+      </Card>
     </div>
-    
   );
 
   
