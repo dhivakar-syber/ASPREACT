@@ -112,19 +112,19 @@ class supplementarySummariesService{
 }
 
 
-  public async GetAllBuyers(input:string) {
-    try {
+//   public async GetAllBuyers(input:string) {
+//     try {
       
-      const result = await http.get(
-        'api/services/app/Buyers/Getallbuyers',{ params: { supplierid:input } },
+//       const result = await http.get(
+//         'api/services/app/Buyers/Getallbuyers',{ params: { supplierid:input } },
          
-      );
-      return result;
-    } catch (error) {
-      console.error('Error fetching supplementary summaries:', error);
-      throw error; 
-    }
-}
+//       );
+//       return result;
+//     } catch (error) {
+//       console.error('Error fetching supplementary summaries:', error);
+//       throw error; 
+//     }
+// }
 public async GetAllSuppliersaccountsdashboard(input:number[]) {
   try {
     
@@ -374,7 +374,7 @@ public async GetAllParts(supplierid:string,buyerid:string) {
         try {
           
           const result = await http.post(
-            `api/services/app/SupplementarySummaries/supplementaryInvoiceaccountreject?fileid=${id}&accountsapproveremarks=${remarks}`,'',
+            `api/services/app/SupplementarySummaries/supplementaryInvoicebuyerreject?fileid=${id}&accountsapproveremarks=${remarks}`,'',
             
             {
               headers: {
@@ -427,11 +427,11 @@ public async GetAllParts(supplierid:string,buyerid:string) {
         }
       }
 
-      public async supplementaryInvoiceAccountReject(id: number,remarks:string,accNo:string,accdate:any) {
+      public async supplementaryInvoiceAccountReject(id: number,remarks:string) {
         try {
           
           const result = await http.post(
-            `api/services/app/SupplementarySummaries/supplementaryInvoiceaccountreject?fileid=${id}&accountsapproveremarks=${remarks}&accNo=${accNo}&accdate=${accdate}`,'',
+            `api/services/app/SupplementarySummaries/supplementaryInvoiceaccountreject?fileid=${id}&accountsapproveremarks=${remarks}`,'',
             
             {
               headers: {

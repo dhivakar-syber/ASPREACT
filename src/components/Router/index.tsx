@@ -20,7 +20,7 @@ const Router = () => {
         const token = new URLSearchParams(props.location.search).get('token');
 
         if (token) {
-          // Store the token in localStorage
+          console.log('discauthToken',token);
           localStorage.setItem('authToken', token);
 
           try {
@@ -86,7 +86,7 @@ const Router = () => {
   const AppLayout = utils.getRoute('/').component;
 
   return (
-    <BrowserRouter basename="ToolCapPro/">
+    <BrowserRouter basename="/PayRetro">
       <Switch>
         <Route path="/discauth" render={(props: any) => <ThirdPartyLogin {...props} />} />
         <Route path="/user" render={(props: any) => <UserLayout {...props} />} />

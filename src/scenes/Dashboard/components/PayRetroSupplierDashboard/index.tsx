@@ -1128,7 +1128,7 @@ function barstatus(status:any) {
               marginTop: '20px',
               fontSize: '12px',
               whiteSpace: 'nowrap',
-              borderRadius: '5px',
+             
             }}
           >
             <thead>
