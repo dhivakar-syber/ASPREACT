@@ -5,4 +5,5 @@ export default class UserLoginInfoDto extends EntityDto {
   surname!: string;
   userName!: string;
   emailAddress!: string;
+  roles: string[] = [];
 }
