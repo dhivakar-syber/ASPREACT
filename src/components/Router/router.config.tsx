@@ -1,6 +1,6 @@
 import LoadableComponent from '../Loadable/index';
 import React from 'react';
-import { HomeOutlined, UserOutlined, TagsOutlined, AppstoreOutlined, InfoCircleOutlined, ShoppingCartOutlined, DatabaseFilled, SnippetsFilled, FileFilled, SettingOutlined, GlobalOutlined, DiffFilled, QuestionCircleOutlined, DeleteOutlined, WarningOutlined, StarOutlined,} from '@ant-design/icons';
+import { HomeOutlined, UserOutlined, TagsOutlined, AppstoreOutlined, ShoppingCartOutlined, DatabaseFilled, SnippetsFilled, FileFilled, SettingOutlined, GlobalOutlined, DiffFilled, QuestionCircleOutlined, DeleteOutlined, WarningOutlined, StarOutlined,} from '@ant-design/icons';
 import SupplierSvg from '../../images/Frame.svg';
 import AccountsSvg from '../../images/Accounts.svg';
 import BuyerSvg from '../../images/Buyer.svg';
