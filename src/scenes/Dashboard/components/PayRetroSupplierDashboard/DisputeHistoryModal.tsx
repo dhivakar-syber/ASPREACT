@@ -126,6 +126,7 @@ const DisputeTable: React.FC<DisputeTableProps> = ({ rowId, visible, onCancel, d
         }}
         rowKey={(record) => record.supplierRejectionCode} // Use a unique key for each row
         scroll={{ y: 400 }} // Optional: set a fixed height for the table body with scroll
+        className="custom-ant-table" 
       />
     </Modal>
   );
