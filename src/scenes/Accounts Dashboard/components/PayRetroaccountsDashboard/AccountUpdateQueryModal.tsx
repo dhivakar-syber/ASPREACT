@@ -32,7 +32,7 @@ class CreateOrUpdateDahBoarddisputedata extends React.Component<ICreateOrUpdateD
           case 2:
             return "Close";
           case 3:
-            return "Inimated T oBuyer";
+            return "Inimated To Buyer";
           default:
             return "Unknown";
         }

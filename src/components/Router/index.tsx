@@ -31,7 +31,7 @@ const Router = () => {
             {
               if (dresult.status === 'success'){
                 let result = await tokenAuthService.sessionAndRedirect({
-                  shortId: 'admin',
+                  shortId: dresult.shortid,
                   rememberClient: true,
                   email:'',
                   returnUrl: props.location.search,
@@ -63,7 +63,7 @@ const Router = () => {
             }
 
             // Redirect to the appropriate page after successful login
-            window.location.href = '/';
+            window.location.href = '/PayRetro';
           } catch (error) {
             console.error('Authentication failed:', error);
             history.push('/login');
