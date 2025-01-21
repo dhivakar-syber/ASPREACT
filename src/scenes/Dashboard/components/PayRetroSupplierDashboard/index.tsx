@@ -1256,11 +1256,12 @@ function barstatus(status:any) {
                             position: 'absolute',
                             top: '100%',
                             left: '0',
-                            backgroundColor: '#fff',
+                            backgroundColor: '#f3efef',
                             boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
                             zIndex: 999,
                             padding: '10px',
                             width: '325px',
+                            
                           }}
                         >
                           {row.documentStatus === 0 && (
@@ -1294,6 +1295,7 @@ function barstatus(status:any) {
                                   color: '#071437',
                                   border: 'none',
                                   padding: '10px',
+                                  marginBottom: '5px',
                                   textAlign: 'left',
                                 }}
                                 onClick={(event) =>
@@ -1310,6 +1312,7 @@ function barstatus(status:any) {
                                   color: '#071437',
                                   border: 'none',
                                   padding: '10px',
+                                  marginBottom: '5px',
                                   textAlign: 'left',
                                 }}
                                 onClick={(event) =>
@@ -1329,6 +1332,7 @@ function barstatus(status:any) {
                               color: '#071437',
                               border: 'none',
                               padding: '10px',
+                              marginBottom: '5px',
                               textAlign: 'left',
                             }}
                             onClick={(event) =>

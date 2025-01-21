@@ -56,10 +56,8 @@ class AppLayout extends React.Component<ILoginProps> {
     } = this.props;
 
     const roles = this.props.sessionStore?.currentLogin?.user?.roles;
-    if (!roles) {
-      // Show a loader or placeholder
-      return <div>Loading...</div>;
-    }
+    console.log('Roles',roles);
+    
     let redirectPath = '';
     if (roles?.includes('admin')) {
       redirectPath = '/dashboard';

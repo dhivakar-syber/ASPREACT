@@ -32,6 +32,7 @@ class UserLayout extends React.Component<any> {
                 ))}
 
               <Redirect from="/user" to="/user/login" />
+              {/* <Redirect from="/user" to="/dicvscar/DaimDISC/#/login" /> */}
             </Switch>
           </div>
           {/* <Footer /> */}
