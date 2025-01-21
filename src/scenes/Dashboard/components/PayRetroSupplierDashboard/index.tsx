@@ -1256,7 +1256,7 @@ function barstatus(status:any) {
                             position: 'absolute',
                             top: '100%',
                             left: '0',
-                            backgroundColor: '#f3efef',
+                            backgroundColor: '#fff',
                             boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
                             zIndex: 999,
                             padding: '10px',
@@ -1267,24 +1267,34 @@ function barstatus(status:any) {
                           {row.documentStatus === 0 && (
                             <>
                               <button
-                                style={{
-                                  width: '100%',
-                                  backgroundColor: '#fff',
-                                  color: '#071437',
-                                  border: 'none',
-                                  padding: '10px',
-                                  marginBottom: '5px',
-                                  textAlign: 'left',
-                                }}
-                                onClick={(event) =>
-                                  handleSupplementaryDropdownAction(
-                                    'Supplementary Invoice/Credit Note Details',
-                                    row.id,
-                                    row.annexureVersionNo,
-                                    event
-                                  )
-                                }
-                              >
+  style={{
+    width: '100%',
+    backgroundColor: '#fff',
+    color: '#071437',
+    border: 'none',
+    padding: '10px',
+    marginBottom: '5px',
+    textAlign: 'left',
+    cursor: 'pointer', // Add pointer cursor for a better user experience
+    transition: 'background-color 0.3s', // Smooth transition for background color change
+  }}
+  onMouseEnter={(e) => {
+    const target = e.target as HTMLButtonElement; // Type assertion
+    target.style.backgroundColor = '#f3efef'; // Change background on hover
+  }}
+  onMouseLeave={(e) => {
+    const target = e.target as HTMLButtonElement; // Type assertion
+    target.style.backgroundColor = '#fff'; // Revert background when hover ends
+  }}
+  onClick={(event) =>
+    handleSupplementaryDropdownAction(
+      'Supplementary Invoice/Credit Note Details',
+      row.id,
+      row.annexureVersionNo,
+      event
+    )
+  }
+>
                                 Supplementary Invoice/Credit Note Details
                               </button>
 
@@ -1297,6 +1307,14 @@ function barstatus(status:any) {
                                   padding: '10px',
                                   marginBottom: '5px',
                                   textAlign: 'left',
+                                }}
+                                onMouseEnter={(e) => {
+                                  const target = e.target as HTMLButtonElement; // Type assertion
+                                  target.style.backgroundColor = '#f3efef'; // Change background on hover
+                                }}
+                                onMouseLeave={(e) => {
+                                  const target = e.target as HTMLButtonElement; // Type assertion
+                                  target.style.backgroundColor = '#fff'; // Revert background when hover ends
                                 }}
                                 onClick={(event) =>
                                   handleSupplierSubmitAction('Submit', row.id, event)
@@ -1314,6 +1332,14 @@ function barstatus(status:any) {
                                   padding: '10px',
                                   marginBottom: '5px',
                                   textAlign: 'left',
+                                }}
+                                onMouseEnter={(e) => {
+                                  const target = e.target as HTMLButtonElement; // Type assertion
+                                  target.style.backgroundColor = '#f3efef'; // Change background on hover
+                                }}
+                                onMouseLeave={(e) => {
+                                  const target = e.target as HTMLButtonElement; // Type assertion
+                                  target.style.backgroundColor = '#fff'; // Revert background when hover ends
                                 }}
                                 onClick={(event) =>
                                   handleRaiseQueryAction('Raise Query', row.id, event)
@@ -1335,6 +1361,14 @@ function barstatus(status:any) {
                               marginBottom: '5px',
                               textAlign: 'left',
                             }}
+                            onMouseEnter={(e) => {
+                              const target = e.target as HTMLButtonElement; // Type assertion
+                              target.style.backgroundColor = '#f3efef'; // Change background on hover
+                            }}
+                            onMouseLeave={(e) => {
+                              const target = e.target as HTMLButtonElement; // Type assertion
+                              target.style.backgroundColor = '#fff'; // Revert background when hover ends
+                            }}
                             onClick={(event) =>
                               handleDisputeHisotryAction('History of Query', row.id, event)
                             }
@@ -1343,7 +1377,7 @@ function barstatus(status:any) {
                           </button>
                         </div>
                       )}
-                    </div>
+                    </div>  
                   </td>
                   <td style={{ padding: '10px', border: '1px solid #ddd' }}>
                     {row.supplementaryInvoiceNo}
