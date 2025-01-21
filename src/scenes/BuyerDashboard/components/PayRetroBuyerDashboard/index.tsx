@@ -8,11 +8,16 @@ import { BuyerDashboardInput } from "./BuyerDashboardInput";
 import BuyerQueryModal from "./BuyerQueryModal"
 import DisputedataStore from "../../../../stores/DisputesStrore";
 //import { keys } from "mobx";
+import settingsIcon from "../../../../images/Setting.svg";
 
 import ApproveorRejectModal from "../ApproveorRejectModal"
 
 declare var abp: any;
-
+const SettingsIcon = () => (
+  <span role="img" aria-label="home" className="anticon">
+  <img src={settingsIcon} alt="Settings" />
+  </span>
+);
   const PayRetroBuyerDashboard: React.SFC = () => {
   const [tableData, setTableData] = React.useState<any[]>([]);
   const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
@@ -135,7 +140,7 @@ declare var abp: any;
       
       console.log('selectedbuyers',option,value)
       setselectedbuyers({name:option.label,value:value});
-      
+  
   
       await getsuppliers(value);
       await getparts([],value)
@@ -254,6 +259,7 @@ declare var abp: any;
     const handleAnnexurePathCancel = async () => {
       setIsModalVisible(false); // Close the modal
     };
+    
     const approveSubmit = async(item: any) => {
       console.log('Processing item:', item);
       if (item.buyerEmailAddress) {
@@ -785,15 +791,15 @@ function barstatus(status:any) {
                   <div className="dropdown-container" style={{ position: "relative" }}>
                     <button
                       style={{
-                        backgroundColor: "#005f7f",
-                        color: "#fff",
+                        // backgroundColor: "#005f7f",
+                        //color: "#fff",
                         border: "none",
                         padding: "5px 10px",
                         cursor: "pointer",
                       }}
                       onClick={(event) => toggleDropdown(row.id,event)}
                     >
-                      ⚙️
+                      <SettingsIcon/>
                     </button>
                     {openDropdownId === row.id && (
                       <div
@@ -836,7 +842,7 @@ function barstatus(status:any) {
             ))}
           </tbody>
         </table>
-        <ApproveorRejectModal isOpen={isApproveRejectModalOpen} onClose={closeApproveRejectModal} submitIdRow={submitIdRow}
+        <ApproveorRejectModal isOpen={isApproveRejectModalOpen} onCancel={closeApproveRejectModal} submitIdRow={submitIdRow}
         approveSubmit={approveSubmit} rejectSubmit={rejectSubmit} />
       </div>
 <Modal

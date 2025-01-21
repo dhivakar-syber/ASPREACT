@@ -61,7 +61,6 @@ const BuyerApprovalModal: React.FC<BuyerApprovalModalProps> = ({ isOpen, onClose
           }} id="suppliersubmit" tabIndex={-2} role="modal" aria-hidden="true">
             <div className="modal-dialog modal-md" role="document">
                 <div className="modal-content">
-                    <div className="modal-body">
                         
                             <h6 style={{ marginLeft: '10px',fontSize: 'larger',textAlign: 'center' }}>Submit Model</h6>
                             <div className="col-md-12">
@@ -81,7 +80,6 @@ const BuyerApprovalModal: React.FC<BuyerApprovalModalProps> = ({ isOpen, onClose
                                 </div>
                             </div>
                         
-                    </div>
                     <div className="modal-footer" style={{ padding: '10px',textAlign: 'end' }}>
                         <button
                             style={{    marginRight: '10px',backgroundColor:'#006780',color:'#fff',borderRadius: '8px'

@@ -7,6 +7,7 @@ import ApproveorRejectModal from "../ApproveorRejectModal"
 import { FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
 import AccountQueryModal from "./AccountsQueryModal"
 import DisputedataStore from "../../../../stores/DisputesStrore";
+import settingsIcon from "../../../../images/Setting.svg";
 
 
 
@@ -30,6 +31,11 @@ const PayRetroAccountsDashboard: React.SFC = () => {
       const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  
       const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   const [isSupplierSubmitModalOpen, setIsSupplierSubmitModalOpen] = React.useState<boolean>(false); // To control modal visibility
+  const SettingsIcon = () => (
+    <span role="img" aria-label="home" className="anticon">
+    <img src={settingsIcon} alt="Settings" />
+    </span>
+  );
   
   
   
@@ -389,7 +395,7 @@ function barstatus(status:any) {
         setIsModalVisible(false); // Close the modal
       };
 
-  const approveSubmit = (item: any) => {
+  const approveSubmit = async (item: any) => {
     console.log('Processing item:', item);
     if (item.buyerEmailAddress) {
       item.buyerEmailAddress = item.buyerEmailAddress.split(",").map((email: string) => email.trim());
@@ -419,9 +425,19 @@ function barstatus(status:any) {
         abp.ui.clearBusy();
         abp.message.error(error.message || error);
       });
+      var   accountDashboardInput: AccountDashboardInput = {
+        Supplierids: selectedsuppliers,
+        Buyerids: selectedbuyers,
+        Partids: selectedparts,
+        invoicetype:selectedcategory,
+        Date:new Date,
+        Document : ''
+      };
+      setdashboardinput(accountDashboardInput);
+        await AccountsDashboardSummaries(accountDashboardInput);
 
   };
-  const rejectSubmit = (item: any) => {
+  const rejectSubmit = async (item: any) => {
     console.log('Processing item:', item);
     if (item.buyerEmailAddress) {
       item.buyerEmailAddress = item.buyerEmailAddress.split(",").map((email: string) => email.trim());
@@ -451,6 +467,16 @@ function barstatus(status:any) {
         abp.ui.clearBusy();
         abp.message.error(error.message || error);
       });
+      var   accountDashboardInput: AccountDashboardInput = {
+        Supplierids: selectedsuppliers,
+        Buyerids: selectedbuyers,
+        Partids: selectedparts,
+        invoicetype:selectedcategory,
+        Date:new Date,
+        Document : ''
+      };
+      setdashboardinput(accountDashboardInput);
+       AccountsDashboardSummaries(accountDashboardInput);
 
   };
 
@@ -677,7 +703,7 @@ function barstatus(status:any) {
                   <div className="dropdown-container" style={{ position: "relative" }}>
                     <button
                       style={{
-                        backgroundColor: "#005f7f",
+                        //backgroundColor: "#005f7f",
                         color: "#fff",
                         border: "none",
                         padding: "5px 10px",
@@ -685,7 +711,7 @@ function barstatus(status:any) {
                       }}
                       onClick={() => toggleDropdown(row.id)}
                     >
-                      ⚙️
+                      <SettingsIcon/>
                     </button>
                     {openDropdownId === row.id && (
                       <div
