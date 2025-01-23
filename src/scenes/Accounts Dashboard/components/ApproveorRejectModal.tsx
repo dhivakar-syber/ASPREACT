@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Modal, Form, Input, DatePicker, message,Button } from 'antd';
+import { Modal, Form, Input, DatePicker, message, Button } from 'antd';
 import supplementarySummariesService from "../../../services/SupplementarySummaries/supplementarySummariesService";
 import approveicon from "../../../images/Approve.svg";
 import rejecticon from "../../../images/reject.svg";
@@ -11,17 +11,19 @@ interface ApproveRejectModalProps {
   approveSubmit: (item: any) => void;
   rejectSubmit: (item: any) => void;
 }
+
 const Approveicon = () => (
-    <span role="img" aria-label="approve" className="anticon">
-      <img src={approveicon} alt="approve" />
-    </span>
-  );
-  
-  const Rejecticon = () => (
-    <span role="img" aria-label="reject" className="anticon">
-      <img src={rejecticon} alt="reject" />
-    </span>
-  );
+  <span role="img" aria-label="approve" className="anticon">
+    <img src={approveicon} alt="approve" />
+  </span>
+);
+
+const Rejecticon = () => (
+  <span role="img" aria-label="reject" className="anticon">
+    <img src={rejecticon} alt="reject" />
+  </span>
+);
+
 const AccountsApproval: React.FC<ApproveRejectModalProps> = ({
   isOpen,
   onClose,
@@ -30,18 +32,21 @@ const AccountsApproval: React.FC<ApproveRejectModalProps> = ({
   rejectSubmit,
 }) => {
   const [submitText, setSubmitText] = useState('');
-  const submitRemarksRef = useRef<HTMLTextAreaElement>(null);
   const [accountDate, setAccountDate] = useState<string | ''>('');
   const [accountNo, setAccountNo] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const submitRemarksRef = useRef<HTMLTextAreaElement>(null);
   const [form] = Form.useForm();
 
   const handleApproveSubmit = async () => {
     try {
+      setIsLoading(true); // Start loading
       await form.validateFields();
       const submitRemarks = submitRemarksRef.current?.value || '';
 
       if (!submitIdRow) {
         console.error('Submit ID Row is not set.');
+        setIsLoading(false);
         return;
       }
 
@@ -53,21 +58,25 @@ const AccountsApproval: React.FC<ApproveRejectModalProps> = ({
       );
 
       approveSubmit(result);
-      message.success('Submission successful.');
+      message.success('Document Approved Successfully.');
       onClose(); // Close the modal
     } catch (error) {
       console.error('Error during submission:', error);
-      message.error('Submission failed. Please try again.');
+      message.error('Approval failed. Please try again.');
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
   const handleRejectSubmit = async () => {
     try {
+      setIsLoading(true); // Start loading
       await form.validateFields();
       const submitRemarks = submitRemarksRef.current?.value || '';
 
       if (!submitIdRow) {
         console.error('Submit ID Row is not set.');
+        setIsLoading(false);
         return;
       }
 
@@ -77,11 +86,13 @@ const AccountsApproval: React.FC<ApproveRejectModalProps> = ({
       );
 
       rejectSubmit(result);
-      message.success('Rejection successful.');
+      message.success('Document Rejected Successfully');
       onClose(); // Close the modal
     } catch (error) {
       console.error('Error during submission:', error);
       message.error('Rejection failed. Please try again.');
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
@@ -130,21 +141,28 @@ const AccountsApproval: React.FC<ApproveRejectModalProps> = ({
       </Form>
 
       <div style={{ textAlign: 'end' }}>
-        < Button
+        <Button
           style={{
             marginRight: '10px',
             backgroundColor: '#6EA046',
             color: '#fff',
             borderRadius: '8px',
-            border:'none',
-            //padding: '10px 20px',
+            border: 'none',
           }}
-          
           onClick={handleApproveSubmit}
+          loading={isLoading} // Show loading spinner
         >
-          <span style={{ display: 'flex', alignItems: 'center', gap: 0,marginBottom:'5px' }}>
-                                <Approveicon />Approve
-                            </span>
+          <span
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 0,
+              marginBottom: '5px',
+            }}
+          >
+            <Approveicon />
+            Approve
+          </span>
         </Button>
         <Button
           style={{
@@ -152,15 +170,22 @@ const AccountsApproval: React.FC<ApproveRejectModalProps> = ({
             backgroundColor: '#FF0000',
             color: '#fff',
             borderRadius: '8px',
-            //padding: '10px 20px',
           }}
           onClick={handleRejectSubmit}
+          loading={isLoading} // Show loading spinner
         >
-          <span style={{ display: 'flex', alignItems: 'center', gap: 1,marginBottom:'5px' }}>
-                                <Rejecticon />Reject
-                            </span>
+          <span
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              marginBottom: '5px',
+            }}
+          >
+            <Rejecticon />
+            Reject
+          </span>
         </Button>
-       
       </div>
     </Modal>
   );

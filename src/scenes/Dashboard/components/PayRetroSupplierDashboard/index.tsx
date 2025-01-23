@@ -166,46 +166,7 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
   React.useEffect(() => {
     setShowDownloadButton(selectedRows.length > 0);
   }, [selectedRows]);
-  // const handleDateChange = async (rowid:any,implementationDate:any,row:any) => {
-  //   const newDate= implementationDate
-  //   setImplementationDate(newDate);
-  //   console.log('New implementation date:', newDate);
-  //   console.log('Row Id:', rowid);
-  //    await supplementarySummariesService.Implementationeffect(rowid,newDate);
-
-  //    row = await supplementarySummariesService.GetAllsupplementarySummarybyId(rowid);
-  //   console.log('ImplementationDateChange',row[0]);
-  //   setSelectedRow(row[0]);
-  //   try {
-  //     const result = await supplementarySummariesService.grndata(rowid);
-  //     setModalData([]); // Await the Promise
-  //     setModalData(result);
-  //     console.log('setmodaldata',result) // Assuming the result contains the data in 'data' field
-  //   } catch (error) {
-  //     console.error('Error fetching data:', error);
-  //   }
-  //   try {
-  //     const annexureresult = await supplementarySummariesService.annexuredata(rowid); // Await the Promise
-  //     annexuresetModalData([]);
-  //     annexuresetModalData(annexureresult);
-  //     console.log('annexuresetmodaldata',annexureresult) // Assuming the result contains the data in 'data' field
-  //   } catch (error) {
-  //     console.error('Error fetching data:', error);
-  //   } 
-  //   message.success('Implementation Date changed Successfully Synced');
-  // };
-//   const handleBlur = () => {
-//     // Handle the blur event when the user has finished interacting with the input
-//     console.log('Input lost focus, final date:', implementationDate);
-//     // Add any additional logic, like saving the date to a database, if needed
-// };
-// const handleInputChange = (event:React.ChangeEvent<HTMLInputElement>) => {
-//   setImplementationDate(event.target.value); // Update state when date changes
-// };
-
-// const handleButtonClick = () => {
-//   handleDateChange(selectedRow.id, implementationDate,selectedRow);
-// };
+  
   const handlesupplierChange = async  (value:any, option:any) => {
     
     console.log('selectedSuppliers',option,value)
@@ -550,43 +511,17 @@ const railqueryMail = (item:any) =>
 
 
   const supplementaryInvoiceSubmit = async(item: any) => {
-    console.log('Processing item:', item);
-    if (item.buyerEmailAddress) {
-      item.buyerEmailAddress = item.buyerEmailAddress.split(",").map((email: string) => email.trim());
-    }
-    if (item.supplierEmailAddress) {
-      item.supplierEmailAddress = item.supplierEmailAddress.split(",").map((email: string) => email.trim());
-    }
-  
-    if (item.accountantEmailAddress) {
-      item.accountantEmailAddress = item.accountantEmailAddress.split(",").map((email: string) => email.trim());
-    }
-    const jsondata = JSON.stringify(item);
-    console.log('item', jsondata);
-    const url = `${process.env.REACT_APP_REMOTE_SERVICE_BASE_URL}RetroPay/Buyer_Approval_Workflow`;
-    fetch(url, {
-      method: 'POST',
-      body: jsondata,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((data) =>  {
-        abp.ui.clearBusy();
-        message.success(`Approve Mail Sent to - ${item.buyerName}`);
-        var   supplierDashboardInput: SupplierDashboardInput = {
-          Supplierid: selectedsuppliers.value,
-          Buyerids:selectedbuyers,
-          Partids: selectedparts,
-          invoicetype:selectedcategory
-        };
-        setdashboardinput(supplierDashboardInput);
-         LoadsupplementarySummary(supplierDashboardInput);
-      })
-      .catch((error) => {
-        abp.ui.clearBusy();
-        abp.message.error(error.message || error);
-      });
+    
+    message.success(`${item.document} Approval Mail Sent to - ${item.buyerName}`);
+      var   supplierDashboardInput: SupplierDashboardInput = {
+        Supplierid: selectedsuppliers.value,
+        Buyerids:selectedbuyers,
+        Partids: selectedparts,
+        invoicetype:selectedcategory
+      };
+      setdashboardinput(supplierDashboardInput);
+       LoadsupplementarySummary(supplierDashboardInput);
+
 
   };
   const handleSupplementaryDropdownAction = (buttonName: string, rowId: string, AnnexureVersionNo:number, event: React.MouseEvent) => {
