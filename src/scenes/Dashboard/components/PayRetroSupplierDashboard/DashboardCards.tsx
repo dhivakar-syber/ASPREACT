@@ -53,6 +53,7 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ SupplierDashboardInputs
                       margin:"0px",
                       color: "#6EA046",
                     }}
+                    showZero
                   />
                   {card.key !== "totalqueryraised" && <span> Cr </span>} {/* Only add 'Cr' for other keys */}
                 </div>

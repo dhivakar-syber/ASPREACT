@@ -41,6 +41,7 @@ const SettingsIcon = () => (
   const [selectedDate, setSelectedDate] = React.useState("");
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   const [isApproveRejectModalOpen, setIsApproveRejectModalOpen] = React.useState<boolean>(false); // To control modal visibility
+  const [hasRole, setHasRole] = React.useState<boolean>(false);
   const [dashboardinput, setdashboardinput] = React.useState<BuyerDashboardInput>({
     Supplierids:[0],
     Buyerid:0,
@@ -61,7 +62,9 @@ const SettingsIcon = () => (
       try {
 
         const roles = sessionStore?.currentLogin?.user?.roles || [];
-
+        const requiredRoles = ["admin", "PayRetroAdmin","Admin","payretroadmin"];
+        const hasRole = roles.some(role => requiredRoles.includes(role));
+        setHasRole(hasRole);
          if (roles.includes('admin') || roles.includes('PayRetroAdmin') || roles.includes('Admin')|| roles.includes('payretroadmin')) {
           userid = '0';
         } else {
@@ -555,12 +558,13 @@ function barstatus(status:any) {
               <Card style={{ backgroundColor:"#fafafa", fontSize: "12px" }}>
         
               <Row gutter={16} style={{ marginRight: '0', display: 'flex', flexWrap: 'nowrap', alignItems: 'center' }}>
+              {hasRole?(
   <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '250px' }}>
     <div style={{ textAlign: 'left' }}>
       <span style={{ padding: '2px' }}>Buyers</span>
       <Select
         style={{ width: '100%' }}
-        placeholder="Select one or more Buyers"
+        placeholder="Select Buyer"
         options={buyers.map((buyer) => ({
           label: buyer.name,
           value: buyer.id,
@@ -573,8 +577,9 @@ function barstatus(status:any) {
           buyers?.label.toLowerCase().includes(input.toLowerCase())
         }
       />
-    </div>
+      </div>
   </Col>
+):''}
   <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '250px' }}>
     <div style={{ textAlign: 'left' }}>
       <span style={{ padding: '2px' }}>Suppliers</span>

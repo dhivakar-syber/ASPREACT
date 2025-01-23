@@ -13,6 +13,7 @@ import CreateOrUpdateDisputes from '../../../../scenes/Disputes/components/creat
 import DisputedataStore from "../../../../stores/DisputesStrore";
 import DisputeHistoryModal from "../../../Dashboard/components/PayRetroSupplierDashboard/DisputeHistoryModal";
 import disputesServices from "../../../../services/Disputes/disputesServices";
+import sessionServices from "../../../../services/session/sessionService";
 //import CreateOrUpdateDisputes from '../../../../scenes/Disputes/components/createOrUpdateDisputes'; // Import the modal component
 
 //import { IDisputesdataState } from "../../../Disputes";
@@ -66,6 +67,7 @@ const PayRetroSupplierDashboard: React.FC<{ sessionStore?: SessionStore }> = ({
   const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0);
 const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
 const [showDownloadButton, setShowDownloadButton] = React.useState<boolean>(false);
+const [hasRole, setHasRole] = React.useState<boolean>(false);
   // const [implementationDate, setImplementationDate] = React.useState(selectedRow?.implementationDate || '');
   const [dashboardinput, setdashboardinput] = React.useState<SupplierDashboardInput>({
     Supplierid: 0,
@@ -101,6 +103,14 @@ const [showDownloadButton, setShowDownloadButton] = React.useState<boolean>(fals
 
         const roles = sessionStore?.currentLogin?.user?.roles || [];
 
+        const session = await sessionServices.getCurrentLoginInformations();
+        console.log(session.user.roles);
+        const rolesfromsession = session.user.roles;
+        const requiredRoles = ["admin", "PayRetroAdmin", "Admin", "payretroadmin"];
+        const hasRole = rolesfromsession.some(role => requiredRoles.includes(role));
+        console.log('HasRole:',hasRole);
+        setHasRole(hasRole)
+      
           if (roles.includes('admin') || roles.includes('PayRetroAdmin') || roles.includes('Admin')|| roles.includes('payretroadmin')) {
             userid = '0';
           } else {
@@ -1050,6 +1060,7 @@ function barstatus(status:any) {
 
       <Card style={{ backgroundColor:"#fafafa", fontSize: "12px" }}>
         <Row gutter={11} style={{ marginRight: '-200.5px' }}>
+        {hasRole?(
           <Col className="gutter-row" span={5}>
             <div style={{ textAlign: 'left' }}>
               <span style={{padding: "2px"}}>Suppliers</span>
@@ -1067,31 +1078,9 @@ function barstatus(status:any) {
 
                 optionLabelProp="label"
               />
-              {showDownloadButton && (
-                <div style={{ marginTop: '20px' }}>
-                  <button
-                    onClick={() => {
-                      if (selectedRows.length > 0) {
-                        handleAnnexureClick(selectedRows);
-                        console.log('Download Annexure clicked for rows:', selectedRows);
-                      } else {
-                        alert('No rows selected for download!');
-                      }
-                    }}
-                    style={{
-                      padding: '10px 20px',
-                      backgroundColor: '#005f7f',
-                      color: '#fff',
-                      border: 'none',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    Download Annexure
-                  </button>
-                </div>
-              )}
-            </div>
+              </div>
           </Col>
+        ):''}
           <Col className="gutter-row" span={5}>
             <div style={{ textAlign: 'left' }}>
               <span style={{padding: "2px"}}>Category</span>
@@ -1159,6 +1148,33 @@ function barstatus(status:any) {
                 }
                 optionLabelProp="label"
               />
+            </div>
+          </Col>
+          <Col className="gutter-row" span={5}>
+            <div style={{ textAlign: 'left' }}>
+            {showDownloadButton && (
+                <div style={{ marginTop: '20px' }}>
+                  <button
+                    onClick={() => {
+                      if (selectedRows.length > 0) {
+                        handleAnnexureClick(selectedRows);
+                        console.log('Download Annexure clicked for rows:', selectedRows);
+                      } else {
+                        alert('No rows selected for download!');
+                      }
+                    }}
+                    style={{
+                      padding: '10px 20px',
+                      backgroundColor: '#005f7f',
+                      color: '#fff',
+                      border: 'none',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Download Annexure
+                  </button>
+                </div>
+              )}
             </div>
           </Col>
         </Row>

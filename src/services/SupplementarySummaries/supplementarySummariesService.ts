@@ -235,7 +235,7 @@ public async GetAllParts(supplierid:string,buyerid:string) {
     try {
       
       const result = await http.get(
-        'api/services/app/SupplementarySummaries/GetAllsupplementarySummaryContractDataTestvalue',{ params: input },
+        'api/services/app/SupplementarySummaries/GetAllsupplementarySummaryContractDataTestvalueaccountsdashboard',{ params: input },
          
       );
       return result;

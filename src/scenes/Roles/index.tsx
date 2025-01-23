@@ -8,12 +8,14 @@ import CreateOrUpdateRole from './components/createOrUpdateRole';
 import { EntityDto } from '../../services/dto/entityDto';
 import { L } from '../../lib/abpUtility';
 import RoleStore from '../../stores/roleStore';
+import SessionStore from '../../stores/sessionStore';
 import Stores from '../../stores/storeIdentifier';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
 
 export interface IRoleProps {
   roleStore: RoleStore;
+  sessionStore: SessionStore;
 }
 
 export interface IRoleState {
@@ -27,7 +29,7 @@ export interface IRoleState {
 const confirm = Modal.confirm;
 const Search = Input.Search;
 
-@inject(Stores.RoleStore)
+@inject(Stores.RoleStore,Stores.SessionStore)
 @observer
 class Role extends AppComponentBase<IRoleProps, IRoleState> {
   formRef = React.createRef<FormInstance>();
@@ -62,9 +64,11 @@ class Role extends AppComponentBase<IRoleProps, IRoleState> {
     if (entityDto.id === 0) {
       this.props.roleStore.createRole();
       await this.props.roleStore.getAllPermissions();
+      await this.props.sessionStore.currentLogin;
     } else {
       await this.props.roleStore.getRoleForEdit(entityDto);
       await this.props.roleStore.getAllPermissions();
+      await this.props.sessionStore.currentLogin;
     }
 
     this.setState({ roleId: entityDto.id });
@@ -126,6 +130,17 @@ class Role extends AppComponentBase<IRoleProps, IRoleState> {
 
   public render() {
     const { allPermissions, roles } = this.props.roleStore;
+    const {currentLogin} = this.props.sessionStore
+    console.log(allPermissions);
+    console.log(currentLogin);
+    const specificPermissionsToShow = ["Pages", "Administration", "Disputes","Create new Query","Edit dispute","Delete dispute","Roles","Creating new role",
+      "Editing role","Supplier Dashboard","Buyer Dashboard","Accounts Dashboard","Users","Creating new user","Editing user","Deleting user"];
+    const permissionsToDisplay = currentLogin.user.roles.includes('Admin')
+    ? allPermissions
+  : allPermissions.filter(permission =>
+      specificPermissionsToShow.includes(permission.displayName)
+    );
+    console.log(permissionsToDisplay);
     const columns = [
       { title: L('RoleName'), dataIndex: 'displayName', key: 'displayName', width: 150, render: (text: string) => <div>{text}</div> },
       { title: L('DisplayName'), dataIndex: 'displayName', key: 'displayName', width: 150, render: (text: string) => <div>{text}</div> },
@@ -212,7 +227,7 @@ class Role extends AppComponentBase<IRoleProps, IRoleState> {
           }
           modalType={this.state.roleId === 0 ? 'edit' : 'create'}
           onOk={this.handleCreate}
-          permissions={allPermissions}
+          permissions={permissionsToDisplay}
           roleStore={this.props.roleStore}
           formRef={this.formRef}
         />
