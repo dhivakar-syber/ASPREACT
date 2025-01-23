@@ -10,9 +10,6 @@ import DisputedataStore from "../../../../stores/DisputesStrore";
 import settingsIcon from "../../../../images/Setting.svg";
 
 
-
-declare var abp: any;
-
 const PayRetroAccountsDashboard: React.SFC = () => {
   const [tableData, setTableData] = React.useState<any[]>([]);
   const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
@@ -396,35 +393,9 @@ function barstatus(status:any) {
       };
 
   const approveSubmit = async (item: any) => {
-    console.log('Processing item:', item);
-    if (item.buyerEmailAddress) {
-      item.buyerEmailAddress = item.buyerEmailAddress.split(",").map((email: string) => email.trim());
-    }
-    if (item.supplierEmailAddress) {
-      item.supplierEmailAddress = item.supplierEmailAddress.split(",").map((email: string) => email.trim());
-    }
-  
-    if (item.accountantEmailAddress) {
-      item.accountantEmailAddress = item.accountantEmailAddress.split(",").map((email: string) => email.trim());
-    }
-    const jsondata = JSON.stringify(item);
-    console.log('item', jsondata);
-    const url = `${process.env.REACT_APP_REMOTE_SERVICE_BASE_URL}RetroPay/AccountsApprovalWorkflow`;
-    fetch(url, {
-      method: 'POST',
-      body: jsondata,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((data) => {
-        abp.ui.clearBusy();
-        message.success(`Approve Mail Sent to - ${item.buyerName}`);
-      })
-      .catch((error) => {
-        abp.ui.clearBusy();
-        abp.message.error(error.message || error);
-      });
+
+    message.success(` Document Approved Successfully & Mail Sent to ${item.supplierName}`);
+    
       var   accountDashboardInput: AccountDashboardInput = {
         Supplierids: selectedsuppliers,
         Buyerids: selectedbuyers,
@@ -438,35 +409,9 @@ function barstatus(status:any) {
 
   };
   const rejectSubmit = async (item: any) => {
-    console.log('Processing item:', item);
-    if (item.buyerEmailAddress) {
-      item.buyerEmailAddress = item.buyerEmailAddress.split(",").map((email: string) => email.trim());
-    }
-    if (item.supplierEmailAddress) {
-      item.supplierEmailAddress = item.supplierEmailAddress.split(",").map((email: string) => email.trim());
-    }
-  
-    if (item.accountantEmailAddress) {
-      item.accountantEmailAddress = item.accountantEmailAddress.split(",").map((email: string) => email.trim());
-    }
-    const jsondata = JSON.stringify(item);
-    console.log('item', jsondata);
-    const url = `${process.env.REACT_APP_REMOTE_SERVICE_BASE_URL}RetroPay/AccountsRejectionWorkflow`;
-    fetch(url, {
-      method: 'POST',
-      body: jsondata,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((data) => {
-        abp.ui.clearBusy();
-        message.success(`Approve Mail Sent to - ${item.buyerName}`);
-      })
-      .catch((error) => {
-        abp.ui.clearBusy();
-        abp.message.error(error.message || error);
-      });
+
+    message.success(` Document Rejected Successfully & Mail Sent to ${item.supplierName}`);
+    
       var   accountDashboardInput: AccountDashboardInput = {
         Supplierids: selectedsuppliers,
         Buyerids: selectedbuyers,

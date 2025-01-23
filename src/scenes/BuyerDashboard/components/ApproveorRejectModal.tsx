@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { message, Form, Button, Modal } from 'antd';
+import { message, Form, Button, Modal, Spin } from 'antd'; // Import Spin for the loader
 import supplementarySummariesService from "../../../services/SupplementarySummaries/supplementarySummariesService";
 import approveicon from "../../../images/Approve.svg";
 import rejecticon from "../../../images/reject.svg";
@@ -35,6 +35,9 @@ const BuyersApproval: React.FC<ApproveRejectModalModalProps> = ({
   const submitRemarksRef = useRef<HTMLTextAreaElement>(null);
   const [form] = Form.useForm();
 
+  const [approveLoading, setApproveLoading] = useState(false); // Loading state for approve
+  const [rejectLoading, setRejectLoading] = useState(false); // Loading state for reject
+
   const handleApproveSubmit = () => {
     form.validateFields()
       .then(() => {
@@ -44,16 +47,20 @@ const BuyersApproval: React.FC<ApproveRejectModalModalProps> = ({
           return;
         }
 
+        setApproveLoading(true); // Start approve loading
         supplementarySummariesService
           .supplementaryInvoicebuyerapprove(submitIdRow, submitRemarks)
           .then((result: any) => {
             approveSubmit(result);
-            message.success('Approval successful.');
+            message.success('Successfully Approved');
             onCancel();
           })
           .catch((error) => {
             console.error('Error during submission:', error);
             message.error('Approval failed. Please try again.');
+          })
+          .finally(() => {
+            setApproveLoading(false); // Stop approve loading
           });
       })
       .catch((errorInfo) => {
@@ -70,16 +77,20 @@ const BuyersApproval: React.FC<ApproveRejectModalModalProps> = ({
           return;
         }
 
+        setRejectLoading(true); // Start reject loading
         supplementarySummariesService
           .supplementaryInvoicebuyerreject(submitIdRow, submitRemarks)
           .then((result: any) => {
             rejectSubmit(result);
-            message.success('Rejection successful.');
+            message.success('Successfully Rejected');
             onCancel();
           })
           .catch((error) => {
             console.error('Error during submission:', error);
             message.error('Rejection failed. Please try again.');
+          })
+          .finally(() => {
+            setRejectLoading(false); // Stop reject loading
           });
       })
       .catch((errorInfo) => {
@@ -123,10 +134,15 @@ const BuyersApproval: React.FC<ApproveRejectModalModalProps> = ({
             borderRadius: '8px',
           }}
           onClick={handleApproveSubmit}
+          disabled={approveLoading || rejectLoading} // Disable if any button is loading
         >
-         <span style={{ display: 'flex', alignItems: 'center', gap: 0,marginBottom:'5px' }}>
-                                <Approveicon />Approve
-                            </span>
+          {approveLoading ? (
+            <Spin size="small" />
+          ) : (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 0, marginBottom: '5px' }}>
+              <Approveicon /> Approve
+            </span>
+          )}
         </Button>
         <Button
           style={{
@@ -136,10 +152,15 @@ const BuyersApproval: React.FC<ApproveRejectModalModalProps> = ({
             borderRadius: '8px',
           }}
           onClick={handleRejectSubmit}
+          disabled={approveLoading || rejectLoading} // Disable if any button is loading
         >
-         <span style={{ display: 'flex', alignItems: 'center', gap: 1,marginBottom:'5px' }}>
-                                <Rejecticon />Reject
-                            </span>
+          {rejectLoading ? (
+            <Spin size="small" />
+          ) : (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 1, marginBottom: '5px' }}>
+              <Rejecticon /> Reject
+            </span>
+          )}
         </Button>
       </div>
     </Modal>
