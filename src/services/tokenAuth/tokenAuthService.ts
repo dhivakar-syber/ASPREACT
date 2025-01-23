@@ -25,7 +25,7 @@ class TokenAuthService {
         headers: {Authorization: token,}
       }
     );
-    return result.data.result;
+    return result.data;
   }
 }
 

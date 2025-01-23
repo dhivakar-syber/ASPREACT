@@ -9,6 +9,8 @@ import BuyerQueryModal from "./BuyerQueryModal"
 import DisputedataStore from "../../../../stores/DisputesStrore";
 //import { keys } from "mobx";
 import settingsIcon from "../../../../images/Setting.svg";
+import SessionStore from "../../../../stores/sessionStore";
+import { inject, observer } from "mobx-react"; // Import MobX utilities
 
 import ApproveorRejectModal from "../ApproveorRejectModal"
 
@@ -18,7 +20,9 @@ const SettingsIcon = () => (
   <img src={settingsIcon} alt="Settings" />
   </span>
 );
-  const PayRetroBuyerDashboard: React.SFC = () => {
+  const PayRetroBuyerDashboard:React.FC<{ sessionStore?: SessionStore }> = ({
+    sessionStore,
+  }) => {
   const [tableData, setTableData] = React.useState<any[]>([]);
   const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
   const [suppliers, setSuppliers] =React.useState<any[]>([]);
@@ -56,17 +60,13 @@ const SettingsIcon = () => (
     const fetchData = async () => {
       try {
 
-        if(abp.session.userId==2||abp.session.userId==1)
-        {
+        const roles = sessionStore?.currentLogin?.user?.roles || [];
 
-         userid='0';
+         if (roles.includes('admin') || roles.includes('PayRetroAdmin') || roles.includes('Admin')|| roles.includes('payretroadmin')) {
+          userid = '0';
+        } else {
+          userid = abp.session.userId;
         }
-        else{
-
-          userid=abp.session.userId;
-
-        }
-        
         
 
         const buyers = await supplementarySummariesService.GetLoginBuyer(userid);
@@ -894,4 +894,4 @@ function barstatus(status:any) {
   );
 };
 
-export default PayRetroBuyerDashboard;
+export default inject("sessionStore")(observer(PayRetroBuyerDashboard));

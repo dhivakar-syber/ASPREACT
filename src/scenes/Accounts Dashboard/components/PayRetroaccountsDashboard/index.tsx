@@ -625,7 +625,7 @@ function barstatus(status:any) {
                 "Value",
                 "Ageing",
                 "Documents",
-                "Accountant Number",
+                "Accounting  Number",
                 "Acc Date",
                 "Action",
                 "Supplier",

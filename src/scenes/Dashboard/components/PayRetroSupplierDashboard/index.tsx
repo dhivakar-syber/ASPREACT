@@ -17,6 +17,13 @@ import disputesServices from "../../../../services/Disputes/disputesServices";
 
 //import { IDisputesdataState } from "../../../Disputes";
 import settingsIcon from "../../../../images/Setting.svg";
+import SessionStore from "../../../../stores/sessionStore";
+import { inject, observer } from "mobx-react"; // Import MobX utilities
+
+
+
+
+
 
 
 declare var abp: any;
@@ -29,7 +36,9 @@ const SettingsIcon = () => (
 
 
 
-    const PayRetroSupplierDashboard: React.SFC = () => {
+const PayRetroSupplierDashboard: React.FC<{ sessionStore?: SessionStore }> = ({
+  sessionStore,
+}) => {
   const [tableData, setTableData] = React.useState<any[]>([]);
   const [disputeData,setDisputeData] = useState<any[]>([]);
   const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
@@ -68,26 +77,35 @@ const [showDownloadButton, setShowDownloadButton] = React.useState<boolean>(fals
     buyerShortId: "",
     supplierName: "",
   });
+  
+  
+  
 
   var userid='0';
   
 
-  React.useEffect(() => {
+
+  
     
 
+  React.useEffect(() => {
+
+    
+
+     
+  
     const fetchData = async () => {
+
+      
       try {
 
-        if(abp.session.userId==2||abp.session.userId==1)
-        {
+        const roles = sessionStore?.currentLogin?.user?.roles || [];
 
-         userid='0';
-        }
-        else{
-
-          userid=abp.session.userId;
-
-        }
+          if (roles.includes('admin') || roles.includes('PayRetroAdmin') || roles.includes('Admin')|| roles.includes('payretroadmin')) {
+            userid = '0';
+          } else {
+            userid = abp.session.userId;
+          }
         
         
 
@@ -1459,4 +1477,4 @@ function barstatus(status:any) {
   
 };
 
-export default PayRetroSupplierDashboard;
+export default inject("sessionStore")(observer(PayRetroSupplierDashboard));
