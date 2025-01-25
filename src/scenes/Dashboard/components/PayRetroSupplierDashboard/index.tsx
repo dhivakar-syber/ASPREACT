@@ -420,7 +420,7 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
 
  
 
-  const handleCreate = (item:any) => {
+  const handleCreate = async(item:any) => {
     const form = formRef.current;
     const { selectedLookupItem, selectedBuyerLookupItem, selectedSupplierLookupItem, userId } = state;
 
@@ -439,7 +439,7 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
     }
 
     form!.validateFields().then(async (values: any) => {
-      // Check and assign SupplementarySummaryId if it's null or undefined
+      
       if (values.supplementarySummaryId == null) {
         values.supplementarySummaryId = currentRowId;
       }
@@ -448,19 +448,19 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
          await disputesStore.create(values).then(function(docid){
           disputesServices
           .buyermail(docid) 
-          .then((item) => { 
+          .then(async (item) => { 
             
-              railqueryMail(item); 
+              console.log('supplementaryid',docid);
+              await supplementarySummariesService.SupplierRaisedQuery(values.supplementarySummaryId);
             
-      
-            message.success("Submission successful.");
+              message.success(` Query Raised Intimation Sent to   ${item.buyerShortId}`);
           })
           .catch((error: any) => {
-            console.error("Error during submission:", error); // Handle errors
+            console.error("Error during QueryRaised:", error); 
           });
-        });  // Create new record
+        });  
       } else {
-        await disputesStore.update({ ...values, id: userId });  // Update existing record with userId
+        await disputesStore.update({ ...values, id: userId });  
       }
     
       // Close the modal and reset the form
@@ -476,38 +476,6 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
   };
 
   const formRef = useRef<FormInstance>(null); 
-const railqueryMail = (item:any) =>
-{
-  console.log(item);  
-  if (item.buyerMail) {
-    item.buyerMail = item.buyerMail.split(",").map((email: string) => email.trim());   
-  }
-
-  var jsondata = JSON.stringify(item);
-  console.log(jsondata);
-  
-  //var url = "";
-  var url =`${process.env.REACT_APP_REMOTE_SERVICE_BASE_URL}PayRetro/disputebuyerapprovalmail`;
-
-  abp.ui.setBusy();
-
-  fetch(url, {
-      method: 'POST',
-      body: jsondata,
-      headers: {
-          'Content-Type': 'application/json'
-      }
-  }).then(function (response) {
-      //return response.json();
-      return console.log(response.body);
-  }).then(function (data) {
-      abp.ui.clearBusy();
-      message.success(`Supplier Query Raised Intimation -  ${item.buyerShortId}`);
-  }).catch(function (error) {
-      abp.ui.clearBusy();
-      abp.message.error(error.message || error);
-  });
-}
 
 
   const supplementaryInvoiceSubmit = async(item: any) => {

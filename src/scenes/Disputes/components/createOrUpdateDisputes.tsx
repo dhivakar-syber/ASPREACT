@@ -275,9 +275,9 @@ class CreateOrUpdatedisputedata extends React.Component<ICreateOrUpdateDisputesD
             <Form.Item label={L('BuyerId')} name="buyerId" {...formItemLayout} hidden>
               <Input />
             </Form.Item>    
-                <Form.Item label={L('Rejection')} name="supplierRejectionId" {...formItemLayout}>
+                <Form.Item label={L('Query')} name="supplierRejectionId" {...formItemLayout}>
             <Select
-                placeholder={L('Select Rejection')}
+                placeholder={L('Select Query')}
                 onChange={(value) => {
                 const selectedOption = rejectionData.find((option) => option.id === value);
                 this.setState({ selectedRejectionLookupItem: selectedOption });
@@ -291,7 +291,7 @@ class CreateOrUpdatedisputedata extends React.Component<ICreateOrUpdateDisputesD
                 ))}
             </Select>           
             </Form.Item>
-            <Form.Item label={L('Query')} name={'query'} {...formItemLayout}>
+            <Form.Item label={L('Additional Query')} name={'query'} {...formItemLayout}>
               <Input/>
             </Form.Item> 
             <Form.Item label={L('SupplementarySummaryId')} name={'supplementarySummaryId'} {...formItemLayout} style={{ display: 'none' }}>
