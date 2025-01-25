@@ -389,6 +389,27 @@ public async GetAllParts(supplierid:string,buyerid:string) {
           throw error; 
         }
       }
+
+      public async SupplierRaisedQuery(supplementaryid: number) {
+        try {
+          
+          console.log('SupID',supplementaryid)
+          const result = await http.post(
+            `api/services/app/SupplementarySummaries/SupplierQueryToBuyer?supplementaryid=${supplementaryid}`,
+            
+            {
+              headers: {
+                'accept': 'text/plain',
+            }
+          }
+             
+          );
+          return result.data.result;
+        } catch (error) {
+          console.error('Error fetching supplementary summaries:', error);
+          throw error; 
+        }
+      }
       public async Implementationeffect(id: number,date:string) {
         try {
           

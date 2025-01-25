@@ -16,10 +16,7 @@ interface ICreateOrUpdateDahBoardDisputesDataProps {
   disputesStrore: any; // Replace `any` with the correct type for `DisputesStrore`
 }
 
-// type LookupItem = {
-//   id: number;
-//   displayName: string;
-// };
+
 
 const CreateOrUpdateDahBoardDisputesData: React.FC<ICreateOrUpdateDahBoardDisputesDataProps> = ({
   visible,
@@ -30,23 +27,7 @@ const CreateOrUpdateDahBoardDisputesData: React.FC<ICreateOrUpdateDahBoardDisput
   disputesStrore,
 }) => {
   const [rejectionData, setRejectionData] = React.useState<any[]>([]);
-  // const [supplierData, setSupplierData] = useState<LookupItem[]>([]);
-  // const [buyerData, setBuyerData] = useState<LookupItem[]>([]);
-  // const [summariesData, setSummariesData] = useState<LookupItem[]>([]);
-  // const [visibleLookup, setVisibleLookup] = useState({
-  //   summaries: false,
-  //   supplier: false,
-  //   buyer: false,
-  // });
-  // const [selectedLookupItem, setSelectedLookupItem] = useState<{
-  //   summaries: LookupItem | null;
-  //   supplier: LookupItem | null;
-  //   buyer: LookupItem | null;
-  // }>({
-  //   summaries: null,
-  //   supplier: null,
-  //   buyer: null,
-  // });
+  
 
   const formItemLayout = {
     labelCol: { span: 6 },
@@ -76,33 +57,7 @@ const CreateOrUpdateDahBoardDisputesData: React.FC<ICreateOrUpdateDahBoardDisput
     fetchData();
   }, [disputesStrore]);
 
-  // const handleSelect = (type: 'summaries' | 'supplier' | 'buyer', item: LookupItem) => {
-  //   setSelectedLookupItem((prev) => ({ ...prev, [type]: item }));
-  //   setVisibleLookup((prev) => ({ ...prev, [type]: false }));
-
-  //   // Update form field values
-  //   const fieldMap: Record<string, string> = {
-  //     summaries: 'summaries',
-  //     supplier: 'supplierName',
-  //     buyer: 'buyerName',
-  //   };
-  //   formRef.current?.setFieldsValue({
-  //     [fieldMap[type]]: item.displayName,
-  //     [`${fieldMap[type]}Id`]: item.id,
-  //   });
-  // };
-
-  // const columns = (type: 'summaries' | 'supplier' | 'buyer') => [
-  //   { title: 'ID', dataIndex: 'id', key: 'id' },
-  //   { title: 'Name', dataIndex: 'displayName', key: 'displayName' },
-  //   {
-  //     title: 'Action',
-  //     key: 'action',
-  //     render: (_: any, record: LookupItem) => (
-  //       <Button onClick={() => handleSelect(type, record)}>Select</Button>
-  //     ),
-  //   },
-  // ];
+  
 
   return (
     <Modal visible={visible} onCancel={onCancel} onOk={onCreate} title={L('Disputes')} width={550}>
@@ -113,16 +68,14 @@ const CreateOrUpdateDahBoardDisputesData: React.FC<ICreateOrUpdateDahBoardDisput
             <Form.Item label={L('SupplierName')} name="supplierName" {...formItemLayout} >
               <Input  disabled value={initialData ? initialData.supplierName : ''} style={{color:'#000000D9'}}/>
             </Form.Item>
-        {/* <Form.Item label={L('Summaries')} name="summaries">
-          <Input readOnly onClick={() => setVisibleLookup((prev) => ({ ...prev, summaries: true }))} />
-        </Form.Item> */}
-        <Form.Item label={L('Rejection')} name="SupplierRejectionId" {...formItemLayout}>
+        
+        <Form.Item label={L('Query')} name="SupplierRejectionId" {...formItemLayout}>
             <Select
-                placeholder={L('Select Rejection')}
+                placeholder={L('Select Query')}
                 onChange={(value) => {
                 const selectedOption = rejectionData.find((option) => option.id === value);
                 console.log(selectedOption);
-                //({ selectedRejectionLookupItem: selectedOption });
+                
                 formRef.current?.setFieldsValue({ rejectionId: value });
                 }}
             >
@@ -133,7 +86,7 @@ const CreateOrUpdateDahBoardDisputesData: React.FC<ICreateOrUpdateDahBoardDisput
                 ))}
             </Select>                   
             </Form.Item>
-        <Form.Item label={L('Query')} name={'query'} {...formItemLayout}>
+        <Form.Item label={L('Additional Query')} name={'query'} {...formItemLayout}>
               <Input/>
             </Form.Item> 
             <Form.Item label={L('SupplementarySummaryId')} name={'supplementarySummaryId'} {...formItemLayout} style={{ display: 'none' }}>
@@ -145,31 +98,7 @@ const CreateOrUpdateDahBoardDisputesData: React.FC<ICreateOrUpdateDahBoardDisput
             </Form.Item>
       </Form>
 
-      {/* Lookup Modals */}
-      {/* <Modal
-        visible={visibleLookup.summaries}
-        title={L('Select Summary')}
-        footer={null}
-        onCancel={() => setVisibleLookup((prev) => ({ ...prev, summaries: false }))}
-      >
-        <Table dataSource={summariesData} columns={columns('summaries')} rowKey="id" />
-      </Modal>
-      <Modal
-        visible={visibleLookup.supplier}
-        title={L('Select Supplier')}
-        footer={null}
-        onCancel={() => setVisibleLookup((prev) => ({ ...prev, supplier: false }))}
-      >
-        <Table dataSource={supplierData} columns={columns('supplier')} rowKey="id" />
-      </Modal>
-      <Modal
-        visible={visibleLookup.buyer}
-        title={L('Select Buyer')}
-        footer={null}
-        onCancel={() => setVisibleLookup((prev) => ({ ...prev, buyer: false }))}
-      >
-        <Table dataSource={buyerData} columns={columns('buyer')} rowKey="id" />
-      </Modal> */}
+      
     </Modal>
   );
 };

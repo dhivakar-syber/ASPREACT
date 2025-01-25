@@ -106,18 +106,18 @@ const AccountsApproval: React.FC<ApproveRejectModalProps> = ({
       width="35%"
     >
       <Form layout="vertical" form={form}>
-        <Form.Item label="Accountant No" name="accNo">
+        <Form.Item label="Accounting No" name="accNo">
           <Input
             value={accountNo}
             onChange={(e) => setAccountNo(e.target.value)}
-            placeholder="Enter Accountant No"
+            placeholder="Enter Accounting No"
           />
         </Form.Item>
 
-        <Form.Item label="Accountant Date" name="accDate">
+        <Form.Item label="Accounting Date" name="accDate">
           <DatePicker
             style={{ width: '100%' }}
-            placeholder="Select Accountant Date"
+            placeholder="Select Accounting Date"
             onChange={(date) => setAccountDate(date ? date.format('YYYY-MM-DD') : '')}
             dropdownClassName="custom-datepicker-dropdown"
           />
