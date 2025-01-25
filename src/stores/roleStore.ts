@@ -61,7 +61,7 @@ class RoleStore {
   @action
   async delete(entityDto: EntityDto) {
     await roleService.delete(entityDto);
-    this.roles.items = this.roles.items.filter((x: GetAllRoleOutput) => x.role.id !== entityDto.id);
+    this.roles.items = this.roles.items.filter((x: GetAllRoleOutput) => x.id !== entityDto.id);
   }
 
   @action
