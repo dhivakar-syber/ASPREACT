@@ -446,18 +446,9 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
       
       if (userId === 0) {
          await disputesStore.create(values).then(function(docid){
-          disputesServices
-          .buyermail(docid) 
-          .then(async (item) => { 
-            
-              console.log('supplementaryid',docid);
-              await supplementarySummariesService.SupplierRaisedQuery(values.supplementarySummaryId);
-            
-              message.success(` Query Raised Intimation Sent to   ${item.buyerShortId}`);
-          })
-          .catch((error: any) => {
-            console.error("Error during QueryRaised:", error); 
-          });
+
+          message.success(` Query Raised Intimation Sent to   ${item.buyerShortId}`);
+
         });  
       } else {
         await disputesStore.update({ ...values, id: userId });  
