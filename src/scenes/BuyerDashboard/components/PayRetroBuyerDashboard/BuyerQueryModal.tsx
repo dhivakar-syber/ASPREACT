@@ -55,7 +55,7 @@ type BuyerLookupItem = {
   id: number;
   displayName: string;
 };
-declare var abp: any;
+
 const confirm = Modal.confirm;
 //const Search = Input.Search;
 
@@ -188,37 +188,7 @@ ForwardFandCMail = async (item: any) => {
     
   console.log(item);
 
-  if (item.buyerMail) {
-    item.buyerMail = item.buyerMail.split(',').map((email: string) => email.trim());
-  }
-
-  if (item.accoutantMail) {
-    item.accoutantMail = item.accoutantMail.split(',').map((email: string) => email.trim());
-  }
-
-  const jsondata = JSON.stringify(item);
-  console.log(jsondata);
-
-  const url = `${process.env.REACT_APP_REMOTE_SERVICE_BASE_URL}PayRetro/disputeaccoutantapprovalmail`;
-
-  abp.ui.setBusy();
-
-  const response = await fetch(url, {
-    method: 'POST',
-    body: jsondata,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  abp.ui.clearBusy();
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
- // const result = await response.json();
-  //console.log(result);
+  
 
   message.success(`Buyer to F&C Forwarded Query Intimation  Mail Sent to - ${item.accoutantName}`);
 
@@ -254,42 +224,7 @@ ForwardFandCMail = async (item: any) => {
   
     console.log(item);
 
-    if (item.buyerMail) {
-      item.buyerMail = item.buyerMail.split(',').map((email: string) => email.trim());
-    }
-
-    if (item.accoutantMail) {
-      item.accoutantMail = item.accoutantMail.split(',').map((email: string) => email.trim());
-    }
-
-    if (item.supplierMail) {
-      item.supplierMail = item.supplierMail.split(',').map((email: string) => email.trim());
-    }
-
-    const jsondata = JSON.stringify(item);
-    console.log(jsondata);
-
-    const url = `${process.env.REACT_APP_REMOTE_SERVICE_BASE_URL}PayRetro/BuyerResolveWorkflow`;
-
-    abp.ui.setBusy();
-
-    const response = await fetch(url, {
-      method: 'POST',
-      body: jsondata,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    abp.ui.clearBusy();
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    // const result = await response.json();
-    // console.log(result);
-
+    
     message.success(`Supplier Query Raised Intimation - ${item.supplierName}`);
   
 };

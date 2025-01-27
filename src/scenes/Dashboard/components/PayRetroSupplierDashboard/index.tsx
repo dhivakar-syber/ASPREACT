@@ -4,7 +4,7 @@ import supplementarySummariesService from "../../../../services/SupplementarySum
 import annexureDetailsService from "../../../../services/annexureDetails/annexureDetailsService";
 import { SupplierDashboardInput } from "./SupplierDashboardInput";
 import  DashboardCards  from "../PayRetroSupplierDashboard/DashboardCards";
-import { Row, Col,Select,message, Card,Modal,Button,DatePicker } from 'antd';
+import { Row, Col,Select,message, Card,Modal,Button,DatePicker,Spin } from 'antd';
 import SupplierSubmitModal from './SupplierSubmitModal';
 import SupplementaryInvoiceModal from "./SupplementaryInvoicesModal";
 import DisputesStore from "../../../../stores/DisputesStrore";
@@ -20,6 +20,7 @@ import sessionServices from "../../../../services/session/sessionService";
 import settingsIcon from "../../../../images/Setting.svg";
 import SessionStore from "../../../../stores/sessionStore";
 import { inject, observer } from "mobx-react"; // Import MobX utilities
+
 
 
 
@@ -80,7 +81,7 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
     supplierName: "",
   });
   
-  
+  const [isLoading, setIsLoading] = useState(false);
   
 
   var userid='0';
@@ -355,6 +356,7 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
 
   
   const handleSupplierSubmitAction = (action: string, id: number, event: React.MouseEvent) => {
+    
     event.stopPropagation();
     console.log(action, id);
     setSubmitIdRow(id);
@@ -445,7 +447,7 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
       }
       
       if (userId === 0) {
-         await disputesStore.create(values).then(function(docid){
+         await disputesStore.create(values).then(function(){
 
           message.success(` Query Raised Intimation Sent to   ${item.buyerShortId}`);
 
@@ -470,7 +472,7 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
 
 
   const supplementaryInvoiceSubmit = async(item: any) => {
-    
+    setIsLoading(true);
     message.success(`${item.document} Approval Mail Sent to - ${item.buyerName}`);
       var   supplierDashboardInput: SupplierDashboardInput = {
         Supplierid: selectedsuppliers.value,
@@ -479,7 +481,12 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
         invoicetype:selectedcategory
       };
       setdashboardinput(supplierDashboardInput);
-       LoadsupplementarySummary(supplierDashboardInput);
+       LoadsupplementarySummary(supplierDashboardInput).then(
+        function(){
+
+          setIsLoading(false);
+        }
+       );
 
 
   };
@@ -1364,7 +1371,9 @@ function barstatus(status:any) {
             // Function to close modal
           />
         )}
-
+        {isLoading && <div style={{ paddingTop: 100, textAlign: 'center' }}>
+    <Spin size="large" />
+  </div>}
         {isModalOpen && modalData && Suppliermodalview(selectedRow)}
         {isQueryModalVisible && (
           <CreateOrUpdateDisputes

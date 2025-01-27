@@ -55,8 +55,8 @@ type BuyerLookupItem = {
   displayName: string;
 };
 const confirm = Modal.confirm;
-declare var abp: any;
-//const Search = Input.Search;
+
+
 
 const getStatusLabel = (status: number): string => {
     switch (status) {
@@ -178,39 +178,8 @@ IntimateToBuyerMail = async (item: any) => {
    
       console.log(item);
   
-      if (item.buyerMail) {
-        item.buyerMail = item.buyerMail.split(',').map((email: string) => email.trim());
-      }
-
-      if (item.accoutantMail) {
-        item.accoutantMail = item.accoutantMail.split(',').map((email: string) => email.trim());
-      }
-  
-      const jsondata = JSON.stringify(item);
-      console.log(jsondata);
-  
-      const url = `${process.env.REACT_APP_REMOTE_SERVICE_BASE_URL}RetroPay/AccountantResolveWorkflow`;
-  
-      abp.ui.setBusy();
-  
-      const response = await fetch(url, {
-        method: 'POST',
-        body: jsondata,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-  
-      abp.ui.clearBusy();
-  
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-  
-    //   const result = await response.json();
-    //   console.log(result);
-  
       message.success(`Buyer to F&C Forwarded Query Intimation  Mail Sent to - ${item.accoutantName}`);
+      
 
   };
 
@@ -287,7 +256,7 @@ IntimateToBuyerMail = async (item: any) => {
           },
           { title: L('BuyerName'), dataIndex: 'buyerShortId', key: 'buyerFk.buyerShortId', width: 150, render: (text: string) => <div>{text}</div> },
           { title: L('SupplierName'), dataIndex: 'supplierCode', key: 'supplierFk.supplierCode', width: 150, render: (text: string) => <div>{text}</div> },    
-          { title: L('Rejection'), dataIndex: 'supplierRejectionCode', key: 'SupplierRejectionFk.supplierRejectionCode', width: 150, render: (text: string) => <div>{text}</div> },
+          { title: L('Query'), dataIndex: 'supplierRejectionCode', key: 'SupplierRejectionFk.supplierRejectionCode', width: 150, render: (text: string) => <div>{text}</div> },
       { title: L('Query'), dataIndex: 'disputedata.query', key: 'query', width: 150, render: (text: string, record: any) =>
         <div>{record.dispute?.query || ''}</div> },
         { title: L('Status'), dataIndex: 'disputedata.status', key: 'query', width: 150, render: (text: string, record: any) =>

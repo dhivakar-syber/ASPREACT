@@ -4,6 +4,8 @@ import supplementarySummariesService from "../../../../services/SupplementarySum
 import submiticon from "../../../../images/Submiticon.svg";
 import closeicon from "../../../../images/close.svg";
 
+
+
 interface SupplierSubmitModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -31,6 +33,7 @@ const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({
   const [submitText, setSubmitText] = useState("");
   const [loading, setLoading] = useState(false); // Loading state
   const submitRemarksRef = useRef<HTMLTextAreaElement>(null);
+  
 
   const handleSubmit = () => {
     const submitRemarks = submitRemarksRef.current?.value || ""; // Get the value from the textarea
@@ -40,10 +43,10 @@ const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({
       console.error("Submit ID Row is not set.");
       return;
     }
-
+    
     // Set loading to true before starting the submission
     setLoading(true);
-
+    
     supplementarySummariesService
       .supplementaryInvoiceSubmit(submitIdRow, submitRemarks) // Call the API method with the necessary parameters
       .then((result: any[]) => {
@@ -61,12 +64,15 @@ const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({
       .finally(() => {
         // Set loading to false after the submission is complete
         setLoading(false);
+        
+        
       });
   };
 
   if (!isOpen) return null;
 
   return (
+    <div>
     <div
       className="modal fade show"
       style={{
@@ -157,6 +163,8 @@ const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({
           </span>
         </Button>
       </div>
+      
+    </div>
     </div>
   );
 };

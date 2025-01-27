@@ -123,7 +123,8 @@ class DisputedataStore {
               BuyerId: 0,
               SupplierRejection: '',
               SupplierName: '',
-              BuyerName: ''
+              BuyerName: '',
+              Correlationid:''
 
             },
             SupplementarySummaryDisplayProperty: '',
