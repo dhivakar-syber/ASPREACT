@@ -33,7 +33,7 @@ class RoleService {
   }
 
   public async delete(entityDto: EntityDto) {
-    let result = await http.delete('/api/services/app/Role/Delete', { params: entityDto });
+    let result = await http.delete('/api/services/app/Role/DeleteRole', { params: entityDto });
     return result.data;
   }
 
