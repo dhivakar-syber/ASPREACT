@@ -53,7 +53,7 @@ class CreateOrUpdateDahBoarddisputedata extends React.Component<ICreateOrUpdateD
           cancelText="Close"
           footer={[
             <Button key="ok" type="primary" onClick={() => formRef.current?.submit()}>
-            Inimated To Buyer
+            Inimate To Buyer
           </Button>,
            
           ]}
@@ -78,12 +78,12 @@ class CreateOrUpdateDahBoarddisputedata extends React.Component<ICreateOrUpdateD
             </Row>
             <Row gutter={16}>
                 <Col span={12}>
-                <Form.Item label={L('Categorised Of Queries')} name="supplierRejection" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} style={{ fontWeight: 'bold' }}>
+                <Form.Item label={L('Category Of Queries')} name="supplierRejection" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} style={{ fontWeight: 'bold' }}>
                     <Input disabled value={initialData.supplierRejection || ''} style={{  color: 'black' }}/>
                     </Form.Item>
                 </Col>
                 <Col span={12}>
-                <Form.Item label={L('Query')} name="query" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} style={{ fontWeight: 'bold' }}>
+                <Form.Item label={L('Additional Query')} name="query" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} style={{ fontWeight: 'bold' }}>
                     <Input disabled value={initialData.query || ''} style={{  color: 'black' }}/>
                     </Form.Item>
                 </Col>
