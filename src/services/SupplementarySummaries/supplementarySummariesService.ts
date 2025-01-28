@@ -520,6 +520,39 @@ public async GetAllParts(supplierid:string,buyerid:string) {
       public async getAllSupplierForLookupTable(pagedFilterAndSortedRequest: PagedSupplementarySummaryResultRequestDto): Promise<PagedResultDto<SupplementarySummarySupplierLookupTableDto>>{
         let result = await http.get('api/services/app/SupplementarySummaries/GetAllSupplierForLookupTable', { params: pagedFilterAndSortedRequest });
         return result.data.result;
-      }     
+      }   
+      
+     
+      public async GetProcurLogData(ReportDate :any) {
+        let result = await http.get('api/services/app/SupplementarySummaries/GetProcurLogData', {
+            params: { ReportDate } // Passing the date parameter
+        });
+        return result.data.result;
+    }
+
+    public async GetSyncData(ReportDate :any) {
+      let result = await http.get('api/services/app/SupplementarySummaries/GetSyncData', {
+          params: { ReportDate } // Passing the date parameter
+      });
+      return result.data.result;
+  }
+
+  public async GetCBFCLogData(ReportDate :any) {
+    let result = await http.get('api/services/app/SupplementarySummaries/GetCBFCLogData', {
+        params: { ReportDate } // Passing the date parameter
+    });
+    return result.data.result;
+}
+
+
+public async GetGRNLogData(ReportDate :any) {
+  let result = await http.get('api/services/app/SupplementarySummaries/GetGRNLogData', {
+      params: { ReportDate } // Passing the date parameter
+  });
+  return result.data.result;
+}
+    
+
+     
 }
 export default new supplementarySummariesService();
