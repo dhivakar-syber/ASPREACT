@@ -2,7 +2,6 @@ import * as React from "react";
 import supplementarySummariesService from "../../services/SupplementarySummaries/supplementarySummariesService";
 
 import { Row, Col, Tabs,Card } from 'antd';
-import { BuyerDashboardInput } from "../BuyerDashboard/BuyerDashboardInput";
 //import { keys } from "mobx";
 //import settingsIcon from "../../../../images/Setting.svg";
 import SessionStore from "../../stores/sessionStore";
@@ -20,16 +19,7 @@ declare var abp: any;
   const [grnlogtableData, setgrnlogTableData] = React.useState<any[]>([]);
   
   const [selectedDate, setSelectedDate] = React.useState("");
-  const [dashboardinput, setdashboardinput] = React.useState<BuyerDashboardInput>({
-    Supplierids:[0],
-    Buyerid:0,
-    Partids:[0],
-    Document:null,
-    invoicetype:0,
-    Date:null,
-    });
-
-  var userid='0';
+  
   
   
 
@@ -38,22 +28,16 @@ declare var abp: any;
 
     const fetchData = async () => {
       try {
-
-        
-       
-        
-
-        const buyers = await supplementarySummariesService.GetLoginBuyer(userid);
-        //setBuyers(buyers.data.result || []);
+                   
         if(abp.session.userId===1||abp.session.userId===2)
         {
           
          // setBuyers(buyers.data.result || []);
          await Promise.all([
-          LoadsupplementarySummary(dashboardinput),
-          procurelogSummary(dashboardinput),
-          cbfclogSummary(dashboardinput),
-          grnlogSummary(dashboardinput),
+          LoadsupplementarySummary(selectedDate),
+          procurelogSummary(selectedDate),
+          cbfclogSummary(selectedDate),
+          grnlogSummary(selectedDate),
         ]);
                 
          
@@ -63,31 +47,22 @@ declare var abp: any;
 
          // setBuyers(buyers.data.result || []);
 
-          var   buyerdashboard: BuyerDashboardInput = {
-            Supplierids:[0],
-            Buyerid:buyers.data.result[0].id,
-            Partids: [0],
-            invoicetype:0,
-            Date:null,
-            Document:null
-          };
+          
       
-          setdashboardinput(buyerdashboard);
           await Promise.all([
-            LoadsupplementarySummary(buyerdashboard),
-            procurelogSummary(buyerdashboard),
-            cbfclogSummary(buyerdashboard),
-            grnlogSummary(buyerdashboard),
+            LoadsupplementarySummary(selectedDate),
+            procurelogSummary(selectedDate),
+            cbfclogSummary(selectedDate),
+            grnlogSummary(selectedDate),
           ]);
 
       
         }
-        console.log('buyers',buyers.data.result);
         
       } catch (error) {
         console.error("Error fetching supplementary summaries:", error);
       }
-    };
+    };  
 
     fetchData();
   }, []);
@@ -99,22 +74,13 @@ declare var abp: any;
 
     const dateObject =value && value.trim() !== "" ? value : null;
 
-    var   buyerdashboard: BuyerDashboardInput = {
-      
-            Supplierids:[0],
-            Buyerid:0,
-            Partids: [0],
-            invoicetype:0,
-            Date:dateObject,
-            Document:null
-    };
+    
 
-    setdashboardinput(buyerdashboard);
     await Promise.all([
-      LoadsupplementarySummary(buyerdashboard),
-      procurelogSummary(buyerdashboard),
-      cbfclogSummary(buyerdashboard),
-      grnlogSummary(buyerdashboard),
+      LoadsupplementarySummary(dateObject),
+      procurelogSummary(dateObject),
+      cbfclogSummary(dateObject),
+      grnlogSummary(dateObject),
     ]);
       
       
@@ -124,38 +90,38 @@ declare var abp: any;
 
    
   
-    const LoadsupplementarySummary=async (buyerdashboardinput:BuyerDashboardInput)=>
+    const LoadsupplementarySummary=async (selectedDate : any)=>
     {
   
-    var  result = await supplementarySummariesService.GetSyncData(buyerdashboardinput.Date);
+    var  result = await supplementarySummariesService.GetSyncData(selectedDate);
       setTableData(result || []);
      // console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
                     
     }
 
 
-    const procurelogSummary=async (buyerdashboardinput:BuyerDashboardInput)=>
+    const procurelogSummary=async (selectedDate : any)=>
       {
     
-      var  result = await supplementarySummariesService.GetProcurLogData(buyerdashboardinput.Date);
+      var  result = await supplementarySummariesService.GetProcurLogData(selectedDate);
         setprocurelogTableData(result || []);
        // console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
                       
       }
 
-      const cbfclogSummary=async (buyerdashboardinput:BuyerDashboardInput)=>
+      const cbfclogSummary=async (selectedDate:any)=>
         {
       
-        var  result = await supplementarySummariesService.GetCBFCLogData(buyerdashboardinput.Date);
+        var  result = await supplementarySummariesService.GetCBFCLogData(selectedDate);
         setcbfclogTableData(result || []);
         //  console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
                         
         }
 
-        const grnlogSummary=async (buyerdashboardinput:BuyerDashboardInput)=>
+        const grnlogSummary=async (selectedDate : any)=>
           {
         
-          var  result = await supplementarySummariesService.GetGRNLogData(buyerdashboardinput.Date);
+          var  result = await supplementarySummariesService.GetGRNLogData(selectedDate);
           setgrnlogTableData(result || []);
            // console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
                           
