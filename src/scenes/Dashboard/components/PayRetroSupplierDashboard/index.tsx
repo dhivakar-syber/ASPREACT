@@ -69,6 +69,8 @@ const PayRetroSupplierDashboard: React.FC<{ sessionStore?: SessionStore }> = ({
 const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
 const [showDownloadButton, setShowDownloadButton] = React.useState<boolean>(false);
 const [hasRole, setHasRole] = React.useState<boolean>(false);
+
+
   // const [implementationDate, setImplementationDate] = React.useState(selectedRow?.implementationDate || '');
   const [dashboardinput, setdashboardinput] = React.useState<SupplierDashboardInput>({
     Supplierid: 0,
@@ -82,6 +84,7 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
   });
   
   const [isLoading, setIsLoading] = useState(false);
+  
   
 
   var userid='0';
@@ -217,12 +220,22 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
     const buyers = await supplementarySummariesService.GetAllBuyersList(buyersuppliers);
         setBuyers(buyers.data.result || []);
         setselectedbuyers([]);
-        
-
-      
-        
 
   };
+
+  // const DocumentCard = () => {
+  //   return (
+  //     <div className="relative w-64 p-4 border rounded-lg shadow-md">
+  //       {/* Display the 'New' icon if isNew is true */}
+  //       { (
+  //         <div className="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-1 rounded-bl-lg">
+  //           New
+  //         </div>
+  //       )}
+        
+  //     </div>
+  //   );
+  // };
 
   const LoadsupplementarySummary=async (supplierDashboardInput:SupplierDashboardInput)=>
   {
@@ -356,7 +369,7 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
 
   
   const handleSupplierSubmitAction = (action: string, id: number, event: React.MouseEvent) => {
-    
+    //setdropdownclick(false);
     event.stopPropagation();
     console.log(action, id);
     setSubmitIdRow(id);
@@ -370,8 +383,9 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
 
   const handleRaiseQueryAction = async (buttonName: string, rowId: string, event: React.MouseEvent) => {
     event.stopPropagation();
+    setIsModalOpen(false);
     setCurrentRowId(rowId); // Set the rowId when the button is clicked
-  
+    //setdropdownclick(false);
     try {
       const result = await disputesServices.getBuyerAndSupplierNameAsync(rowId); 
   
@@ -492,6 +506,8 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
   };
   const handleSupplementaryDropdownAction = (buttonName: string, rowId: string, AnnexureVersionNo:number, event: React.MouseEvent) => {
     event.stopPropagation();
+    setIsModalOpen(false);
+    //setdropdownclick(false);
     setAnnexureVersionNo(AnnexureVersionNo);
     setCurrentRowId(rowId); // Set the rowId when the button is clicked
     setIsModalVisible(true); // Show the modal
@@ -1109,11 +1125,11 @@ function barstatus(status:any) {
                   />
                 </th>
                 {[
+                  'Action',
                   'Buyer Name',
                   'Part No - Version',
                   'Report Date',
                   'Ageing',
-                  'Action',
                   'Supplementary Invoice/Credit Note',
                   'Date',
                   'From',
@@ -1123,7 +1139,7 @@ function barstatus(status:any) {
                   'Buyer',
                   'F&C',
                 ].map((header) => (
-                  <th key={header} style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px' }}>
+                  <th key={header} style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px',textAlign:'center' }}>
                     {header}
                   </th>
                 ))}
@@ -1160,21 +1176,26 @@ function barstatus(status:any) {
                       onChange={(e) => handleCheckboxChange(e, row.id)}
                     />
                   </td>
-                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>{row.buyerName}</td>
-                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
-                    {row.partno}-{row.versionNo}
-                  </td>
-                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
-                    {formatDate(row.createtime)}
-                  </td>
                   <td style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>
-                    {row.ageing}
-                  </td>
-                  <td style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>
+
+                  {(
+           <span className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+           New
+         </span>
+        )}
+
+                  <div className="p-4 grid grid-cols-3 gap-4">
+     
+         
+        
+     
+    </div>
+    
                     <div
                       className="dropdown-container"
                       style={{ position: 'relative', whiteSpace: 'normal' }}
                     >
+                      
                       <div
                         style={{
                           padding: '5px 10px',
@@ -1251,9 +1272,17 @@ function barstatus(status:any) {
                                   const target = e.target as HTMLButtonElement; // Type assertion
                                   target.style.backgroundColor = '#fff'; // Revert background when hover ends
                                 }}
-                                onClick={(event) =>
-                                  handleSupplierSubmitAction('Submit', row.id, event)
-                                }
+                                onClick={(event) => {
+                                  if (row.isdocumentuploaded) {
+                                    handleSupplierSubmitAction('Submit', row.id, event);
+                                  } else {
+                                    
+                                    message.warning('Upload All Documents');
+                                   
+                                    event.stopPropagation();
+                                    
+                                  }
+                                }}
                               >
                                 Submit
                               </button>
@@ -1314,6 +1343,17 @@ function barstatus(status:any) {
                       )}
                     </div>  
                   </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>{row.buyerName}</td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    {row.partno}-{row.versionNo}
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    {formatDate(row.createtime)}
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>
+                    {row.ageing}
+                  </td>
+                  
                   <td style={{ padding: '10px', border: '1px solid #ddd' }}>
                     {row.supplementaryInvoiceNo}
                   </td>

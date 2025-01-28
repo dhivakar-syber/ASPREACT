@@ -4,6 +4,7 @@ import { UploadOutlined,FilePdfOutlined, FileExcelOutlined } from "@ant-design/i
 import { RcFile } from "antd/es/upload";
 import { ColumnsType } from "antd/es/table";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
+import FullScreenLoader from "./fullscreenloader";
 
 interface SupplementaryInvoiceModalProps {
   rowId: string | null;
@@ -38,6 +39,8 @@ const SupplementaryInvoiceModal: React.FC<SupplementaryInvoiceModalProps> = ({
   const [tableData, setTableData] = useState<TableData[]>([]); 
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false); 
+  
   const handleCancel = () => {
     setTableData([]);      // Clear table data
     onCancel();            // Call the parent-provided onCancel
@@ -91,7 +94,8 @@ for (let i = 1; i <= t; i++) {
       message.error("Please fill in all fields and upload files.");
       return;
     }
-  
+    setIsLoading(true)
+
     const formData = new FormData();
     if (rowId) {
     formData.append("supplementaryid", rowId);  // append the rowId directly as a string
@@ -121,7 +125,7 @@ for (let i = 1; i <= t; i++) {
   
       if (response.result.hasSignature && response.success) {
         message.success("Supplementary Invoice uploaded successfully.");
-
+        setIsLoading(false)
        // const uploadData = await supplementarySummariesService.supplementaryuploadeddetails(Number(rowId));
         
 
@@ -400,6 +404,7 @@ async function downloadFile({ path }: { path: string }): Promise<void> {
           />
         )}
       </Modal>
+      {isLoading&&FullScreenLoader}
     </Modal>
   );
 };
