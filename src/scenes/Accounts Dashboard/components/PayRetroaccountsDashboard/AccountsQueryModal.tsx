@@ -253,22 +253,86 @@ IntimateToBuyerMail = async (item: any) => {
                 </Dropdown>
               </div>
             ),
+            onHeaderCell: () => ({
+              style: {
+                backgroundColor: '#005f7f', // Set header background color for this column
+                color: '#fff',
+              },
+            }),
           },
-          { title: L('BuyerName'), dataIndex: 'buyerShortId', key: 'buyerFk.buyerShortId', width: 150, render: (text: string) => <div>{text}</div> },
-          { title: L('SupplierName'), dataIndex: 'supplierCode', key: 'supplierFk.supplierCode', width: 150, render: (text: string) => <div>{text}</div> },    
-          { title: L('Query'), dataIndex: 'supplierRejectionCode', key: 'SupplierRejectionFk.supplierRejectionCode', width: 150, render: (text: string) => <div>{text}</div> },
+
+          { title: L('BuyerName'), dataIndex: 'buyerShortId', key: 'buyerFk.buyerShortId', width: 150, render: (text: string) => <div>{text}</div>,
+          onHeaderCell: () => ({
+            style: {
+              backgroundColor: '#005f7f', // Set header background color for this column
+              color: '#fff',
+            },
+          }),
+         },
+          { title: L('SupplierName'), dataIndex: 'supplierCode', key: 'supplierFk.supplierCode', width: 150, render: (text: string) => <div>{text}</div>,
+          onHeaderCell: () => ({
+            style: {
+              backgroundColor: '#005f7f', // Set header background color for this column
+              color: '#fff',
+            },
+          }),
+         },    
+          { title: L('Rejection'), dataIndex: 'supplierRejectionCode', key: 'SupplierRejectionFk.supplierRejectionCode', width: 150, render: (text: string) => <div>{text}</div>,
+          onHeaderCell: () => ({
+            style: {
+              backgroundColor: '#005f7f', // Set header background color for this column
+              color: '#fff',
+            },
+          }),
+         },
+ 
       { title: L('Query'), dataIndex: 'disputedata.query', key: 'query', width: 150, render: (text: string, record: any) =>
-        <div>{record.dispute?.query || ''}</div> },
+        <div>{record.dispute?.query || ''}</div>,
+        onHeaderCell: () => ({
+          style: {
+            backgroundColor: '#005f7f', // Set header background color for this column
+            color: '#fff',
+          },
+        }),
+       },
         { title: L('Status'), dataIndex: 'disputedata.status', key: 'query', width: 150, render: (text: string, record: any) =>
-         <div>{getStatusLabel(record.dispute?.status) || ''}</div> },
+         <div>{getStatusLabel(record.dispute?.status) || ''}</div>,
+         onHeaderCell: () => ({
+          style: {
+            backgroundColor: '#005f7f', // Set header background color for this column
+            color: '#fff',
+          },
+        }),
+       },
       { title: L('BuyerRemarks'), dataIndex: 'disputedata.buyerRemarks', key: 'query', width: 150, render: (text: string, record: any) =>
-        <div>{record.dispute?.buyerRemarks || ''}</div> },      
+        <div>{record.dispute?.buyerRemarks || ''}</div>,
+        onHeaderCell: () => ({
+          style: {
+            backgroundColor: '#005f7f', // Set header background color for this column
+            color: '#fff',
+          },
+        }),
+       },      
       { title: L('AccountsRemarks'), dataIndex: 'disputedata.accountsRemarks', key: 'accountsRemarks', width: 150, render: (text: string, record: any) =>
-        <div>{record.dispute?.accountsRemarks || ''}</div> },  
+        <div>{record.dispute?.accountsRemarks || ''}</div>,
+        onHeaderCell: () => ({
+          style: {
+            backgroundColor: '#005f7f', // Set header background color for this column
+            color: '#fff',
+          },
+        }),
+       },  
         { title: L('Response Time'), dataIndex: 'disputedata.responseTime', key: 'responseTime', width: 150, render: (text: string, record: any) => {
             const date = record.dispute?.responseTime;
             return <div>{date ? new Date(date).toLocaleString("en-US") : ''}</div>;
           },
+          onHeaderCell: () => ({
+            style: {
+              backgroundColor: '#005f7f', // Set header background color for this column
+              color: '#fff',
+            },
+          }),
+
         },
       // { title: L('Summaries'), dataIndex: 'supplementarySummaryDisplayProperty', key: 'supplementarySummaryFk.SupplementarySummaryDisplayProperty', width: 150, render: (text: string) => <div>{text}</div> },
       

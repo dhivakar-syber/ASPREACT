@@ -1,9 +1,13 @@
 import React from "react";
+import { Spin } from 'antd';
 
 const FullScreenLoader = () => {
+  
   return (
-    <div className="fullscreen-loader">
-      <div className="loader"></div>
+    <div >
+      <div style={{ paddingTop: 100, textAlign: 'center' }}>
+          <Spin size="large" />
+        </div>
       
     </div>
   );

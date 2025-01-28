@@ -4,7 +4,7 @@ import supplementarySummariesService from "../../../../services/SupplementarySum
 import annexureDetailsService from "../../../../services/annexureDetails/annexureDetailsService";
 import { SupplierDashboardInput } from "./SupplierDashboardInput";
 import  DashboardCards  from "../PayRetroSupplierDashboard/DashboardCards";
-import { Row, Col,Select,message, Card,Modal,Button,DatePicker,Spin } from 'antd';
+import { Row, Col,Select,message, Card,Modal,Button,DatePicker,Spin,Tag } from 'antd';
 import SupplierSubmitModal from './SupplierSubmitModal';
 import SupplementaryInvoiceModal from "./SupplementaryInvoicesModal";
 import DisputesStore from "../../../../stores/DisputesStrore";
@@ -20,7 +20,7 @@ import sessionServices from "../../../../services/session/sessionService";
 import settingsIcon from "../../../../images/Setting.svg";
 import SessionStore from "../../../../stores/sessionStore";
 import { inject, observer } from "mobx-react"; // Import MobX utilities
-
+import { ExclamationCircleFilled } from '@ant-design/icons';
 
 
 
@@ -69,6 +69,9 @@ const PayRetroSupplierDashboard: React.FC<{ sessionStore?: SessionStore }> = ({
 const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
 const [showDownloadButton, setShowDownloadButton] = React.useState<boolean>(false);
 const [hasRole, setHasRole] = React.useState<boolean>(false);
+
+
+
   // const [implementationDate, setImplementationDate] = React.useState(selectedRow?.implementationDate || '');
   const [dashboardinput, setdashboardinput] = React.useState<SupplierDashboardInput>({
     Supplierid: 0,
@@ -82,6 +85,7 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
   });
   
   const [isLoading, setIsLoading] = useState(false);
+  
   
 
   var userid='0';
@@ -191,7 +195,10 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
 
   };
 
-
+  const istoday = (d: string): boolean => {
+    return formatDate(new Date()) === d; 
+  };
+  
   const handlebuyerChange =async  (selectedValues: any[]) => {
     
     setselectedbuyers(selectedValues);
@@ -217,12 +224,22 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
     const buyers = await supplementarySummariesService.GetAllBuyersList(buyersuppliers);
         setBuyers(buyers.data.result || []);
         setselectedbuyers([]);
-        
-
-      
-        
 
   };
+
+  // const DocumentCard = () => {
+  //   return (
+  //     <div className="relative w-64 p-4 border rounded-lg shadow-md">
+  //       {/* Display the 'New' icon if isNew is true */}
+  //       { (
+  //         <div className="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-1 rounded-bl-lg">
+  //           New
+  //         </div>
+  //       )}
+        
+  //     </div>
+  //   );
+  // };
 
   const LoadsupplementarySummary=async (supplierDashboardInput:SupplierDashboardInput)=>
   {
@@ -352,11 +369,62 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
   const handlehistoryCancel = () => {
     setIsHistoryModalVisible(false); // close the modal
   };
-
-
+  const checkAnyQueryIsOpen = async (id: number, event: React.MouseEvent): Promise<{ isOpen: boolean, count: number }> => {
+    event.stopPropagation(); // Stop event propagation immediately
   
+    try {
+      // Fetch data from disputesStore
+      const fetchedData = await disputesStore.suppliergetAll({
+        SupplementarySummaryId: id,
+        Filter: state.filter || "", // Add required filter
+        QueryFilter: "", // Default or dynamic value
+        BuyerRemarksFilter: "", // Default or dynamic value
+        StatusFilter: 0, // Default or dynamic value
+        SupplementarySummaryDisplayPropertyFilter: "",
+        SupplierRejectionCodeFilter: "",
+        SupplierCodeFilter: "",
+        BuyerShortIdFilter: "",
+        PagedDisputesResultRequestDto: {
+          maxResultCount: state.maxResultCount,
+          skipCount: state.skipCount,
+          keyword: state.filter,
+        },
+      });
+  
+      console.log(fetchedData); // Log the fetched data
+  
+      if (fetchedData && fetchedData.items) {
+        // Filter items that are not closed
+        const openOrForwardedQueries = fetchedData.items.filter((item: any) => 
+          item.dispute?.status !== 2  // 2 = closed, so we check for open (0), forwarded (1), and forwarded (3)
+        );
+  
+        // If there's at least one query that is not closed
+        const isOpen = !(openOrForwardedQueries.length > 0);
+  
+        // Return the status and count of open queries
+        return {
+          isOpen,
+          count: openOrForwardedQueries.length, // Number of queries that aren't closed
+        };
+      }
+  
+      // If no items or no matches, return false and count as 0
+      return {
+        isOpen: false,
+        count: 0,
+      };
+    } catch (error) {
+      console.error("Error fetching disputes:", error); // Handle errors properly
+      return {
+        isOpen: false,  // Return false if there's an error
+        count: 0,       // and 0 count in case of error
+      };
+    }
+  };  
+
   const handleSupplierSubmitAction = (action: string, id: number, event: React.MouseEvent) => {
-    
+    //setdropdownclick(false);
     event.stopPropagation();
     console.log(action, id);
     setSubmitIdRow(id);
@@ -367,11 +435,12 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
     setIsSupplierSubmitModalOpen(false);
   };
 
-
+  
   const handleRaiseQueryAction = async (buttonName: string, rowId: string, event: React.MouseEvent) => {
     event.stopPropagation();
+    setIsModalOpen(false);
     setCurrentRowId(rowId); // Set the rowId when the button is clicked
-  
+    //setdropdownclick(false);
     try {
       const result = await disputesServices.getBuyerAndSupplierNameAsync(rowId); 
   
@@ -424,7 +493,7 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
 
   const handleCreate = async(item:any) => {
     const form = formRef.current;
-    const { selectedLookupItem, selectedBuyerLookupItem, selectedSupplierLookupItem, userId } = state;
+    const { selectedLookupItem, selectedBuyerLookupItem, selectedSupplierLookupItem} = state;
 
     if (selectedLookupItem?.id) {
       form?.setFieldsValue({ summariesId: selectedLookupItem.id });
@@ -446,17 +515,14 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
         values.supplementarySummaryId = currentRowId;
       }
       
-      if (userId === 0) {
+      console.log('values',values);
+      console.log('item',item);
          await disputesStore.create(values).then(function(){
 
-          message.success(` Query Raised Intimation Sent to   ${item.buyerShortId}`);
+          message.success(` Query Raised Intimation Sent to   ${values.buyerName}`);
 
         });  
-      } else {
-        await disputesStore.update({ ...values, id: userId });  
-      }
-    
-      // Close the modal and reset the form
+      
       setState(prevState => ({ ...prevState, modalVisible: false }));
       form!.resetFields();
     });
@@ -492,6 +558,8 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
   };
   const handleSupplementaryDropdownAction = (buttonName: string, rowId: string, AnnexureVersionNo:number, event: React.MouseEvent) => {
     event.stopPropagation();
+    setIsModalOpen(false);
+    //setdropdownclick(false);
     setAnnexureVersionNo(AnnexureVersionNo);
     setCurrentRowId(rowId); // Set the rowId when the button is clicked
     setIsModalVisible(true); // Show the modal
@@ -508,7 +576,7 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
     setdashboardinput(supplierDashboardInput);
     await LoadsupplementarySummary(supplierDashboardInput);
   };
-  function formatDate(d:string) {
+  function formatDate(d:Date) {
     const date = new Date(d);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); 
@@ -1109,11 +1177,11 @@ function barstatus(status:any) {
                   />
                 </th>
                 {[
+                  'Action',
                   'Buyer Name',
                   'Part No - Version',
                   'Report Date',
                   'Ageing',
-                  'Action',
                   'Supplementary Invoice/Credit Note',
                   'Date',
                   'From',
@@ -1123,7 +1191,7 @@ function barstatus(status:any) {
                   'Buyer',
                   'F&C',
                 ].map((header) => (
-                  <th key={header} style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px' }}>
+                  <th key={header} style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px',textAlign:'center' }}>
                     {header}
                   </th>
                 ))}
@@ -1154,27 +1222,34 @@ function barstatus(status:any) {
                   }}
                 >
                   <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                  {istoday(formatDate(row.createtime)) && (
+        <Tag color="yellow">
+          <ExclamationCircleFilled style={{ marginLeft: 4 }} />
+          New
+        </Tag>
+      )}
                     <input
                       type="checkbox"
                       checked={selectedRows.includes(row.id)}
                       onChange={(e) => handleCheckboxChange(e, row.id)}
                     />
                   </td>
-                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>{row.buyerName}</td>
-                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
-                    {row.partno}-{row.versionNo}
-                  </td>
-                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
-                    {formatDate(row.createtime)}
-                  </td>
                   <td style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>
-                    {row.ageing}
-                  </td>
-                  <td style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>
+
+                
+                  <div className="p-4 grid grid-cols-3 gap-4">
+     
+         
+        
+     
+    </div>
+    
+
                     <div
                       className="dropdown-container"
                       style={{ position: 'relative', whiteSpace: 'normal' }}
                     >
+                      
                       <div
                         style={{
                           padding: '5px 10px',
@@ -1221,17 +1296,19 @@ function barstatus(status:any) {
     const target = e.target as HTMLButtonElement; // Type assertion
     target.style.backgroundColor = '#fff'; // Revert background when hover ends
   }}
-  onClick={(event) =>
+  onClick={(event) => {
     handleSupplementaryDropdownAction(
       'Supplementary Invoice/Credit Note Details',
       row.id,
       row.annexureVersionNo,
       event
-    )
-  }
+    ); // Call the action
+    setOpenDropdownId(null); // Close the dropdown
+  }}
 >
-                                Supplementary Invoice/Credit Note Details
-                              </button>
+  Supplementary Invoice/Credit Note Details
+</button>
+
 
                               <button
                                 style={{
@@ -1251,37 +1328,68 @@ function barstatus(status:any) {
                                   const target = e.target as HTMLButtonElement; // Type assertion
                                   target.style.backgroundColor = '#fff'; // Revert background when hover ends
                                 }}
-                                onClick={(event) =>
-                                  handleSupplierSubmitAction('Submit', row.id, event)
-                                }
+
+                                onClick={async (event) => {
+                                  try {
+                                    const { isOpen, count } = await checkAnyQueryIsOpen(row.id, event); // Destructure isOpen and count from the returned object
+                                
+                                    if (isOpen && row.isdocumentuploaded) {
+                                      handleSupplierSubmitAction('Submit', row.id, event);
+                                    } else {
+
+                                      event.stopPropagation();
+
+                                        if(!row.isdocumentuploaded)
+                                        {
+                                          message.warning('Upload All Documents');
+
+                                        }
+                                        if(!isOpen)
+                                        {
+                                          message.warn(`You have ${count} open queries. Please close the previous queries first.`); // Correct string interpolation
+                                        }
+
+                                      
+                                    }
+
+                                  } catch (error) {
+                                    console.error("Error checking query status:", error);
+                                    message.error("An error occurred while checking query status");
+                                  } finally {
+                                    setOpenDropdownId(null); // Ensure the dropdown is closed regardless of success or failure
+                                  }
+                                }}
+                                
                               >
-                                Submit
+                                Send To Buyer
                               </button>
 
                               <button
-                                style={{
-                                  width: '100%',
-                                  backgroundColor: '#fff',
-                                  color: '#071437',
-                                  border: 'none',
-                                  padding: '10px',
-                                  marginBottom: '5px',
-                                  textAlign: 'left',
-                                }}
-                                onMouseEnter={(e) => {
-                                  const target = e.target as HTMLButtonElement; // Type assertion
-                                  target.style.backgroundColor = '#f3efef'; // Change background on hover
-                                }}
-                                onMouseLeave={(e) => {
-                                  const target = e.target as HTMLButtonElement; // Type assertion
-                                  target.style.backgroundColor = '#fff'; // Revert background when hover ends
-                                }}
-                                onClick={(event) =>
-                                  handleRaiseQueryAction('Raise Query', row.id, event)
-                                }
-                              >
-                                Raise Query
-                              </button>
+                                  style={{
+                                    width: '100%',
+                                    backgroundColor: '#fff',
+                                    color: '#071437',
+                                    border: 'none',
+                                    padding: '10px',
+                                    marginBottom: '5px',
+                                    textAlign: 'left',
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    const target = e.target as HTMLButtonElement; // Type assertion
+                                    target.style.backgroundColor = '#f3efef'; // Change background on hover
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    const target = e.target as HTMLButtonElement; // Type assertion
+                                    target.style.backgroundColor = '#fff'; // Revert background when hover ends
+                                  }}
+                                  onClick={(event) => {
+                                    handleRaiseQueryAction('Raise Query', row.id, event); // Call your function
+                                    setOpenDropdownId(null); // Close dropdown
+                                  }}
+                                >
+                                  Raise Query
+                                </button>
+
                             </>
                           )}
 
@@ -1304,9 +1412,10 @@ function barstatus(status:any) {
                               const target = e.target as HTMLButtonElement; // Type assertion
                               target.style.backgroundColor = '#fff'; // Revert background when hover ends
                             }}
-                            onClick={(event) =>
+                            onClick={(event) =>{
                               handleDisputeHisotryAction('History of Query', row.id, event)
-                            }
+                              setOpenDropdownId(null); // Close dropdown
+                            }}
                           >
                             History of Query
                           </button>
@@ -1314,6 +1423,17 @@ function barstatus(status:any) {
                       )}
                     </div>  
                   </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>{row.buyerName}</td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    {row.partno}-{row.versionNo}
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    {formatDate(row.createtime)}
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>
+                    {row.ageing}
+                  </td>
+                  
                   <td style={{ padding: '10px', border: '1px solid #ddd' }}>
                     {row.supplementaryInvoiceNo}
                   </td>
