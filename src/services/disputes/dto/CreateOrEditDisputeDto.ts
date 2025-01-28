@@ -14,6 +14,5 @@ export interface CreateOrEditDisputeDto
 SupplierRejection:string;
     SupplierName:string;
     BuyerName:string;
-    Correlationid:string;
 
 }

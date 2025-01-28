@@ -365,9 +365,60 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
   const handlehistoryCancel = () => {
     setIsHistoryModalVisible(false); // close the modal
   };
-
-
+  const checkAnyQueryIsOpen = async (id: number, event: React.MouseEvent): Promise<{ isOpen: boolean, count: number }> => {
+    event.stopPropagation(); // Stop event propagation immediately
   
+    try {
+      // Fetch data from disputesStore
+      const fetchedData = await disputesStore.suppliergetAll({
+        SupplementarySummaryId: id,
+        Filter: state.filter || "", // Add required filter
+        QueryFilter: "", // Default or dynamic value
+        BuyerRemarksFilter: "", // Default or dynamic value
+        StatusFilter: 0, // Default or dynamic value
+        SupplementarySummaryDisplayPropertyFilter: "",
+        SupplierRejectionCodeFilter: "",
+        SupplierCodeFilter: "",
+        BuyerShortIdFilter: "",
+        PagedDisputesResultRequestDto: {
+          maxResultCount: state.maxResultCount,
+          skipCount: state.skipCount,
+          keyword: state.filter,
+        },
+      });
+  
+      console.log(fetchedData); // Log the fetched data
+  
+      if (fetchedData && fetchedData.items) {
+        // Filter items that are not closed
+        const openOrForwardedQueries = fetchedData.items.filter((item: any) => 
+          item.dispute?.status !== 2  // 2 = closed, so we check for open (0), forwarded (1), and forwarded (3)
+        );
+  
+        // If there's at least one query that is not closed
+        const isOpen = !(openOrForwardedQueries.length > 0);
+  
+        // Return the status and count of open queries
+        return {
+          isOpen,
+          count: openOrForwardedQueries.length, // Number of queries that aren't closed
+        };
+      }
+  
+      // If no items or no matches, return false and count as 0
+      return {
+        isOpen: false,
+        count: 0,
+      };
+    } catch (error) {
+      console.error("Error fetching disputes:", error); // Handle errors properly
+      return {
+        isOpen: false,  // Return false if there's an error
+        count: 0,       // and 0 count in case of error
+      };
+    }
+  };  
+
   const handleSupplierSubmitAction = (action: string, id: number, event: React.MouseEvent) => {
     //setdropdownclick(false);
     event.stopPropagation();
@@ -380,7 +431,7 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
     setIsSupplierSubmitModalOpen(false);
   };
 
-
+  
   const handleRaiseQueryAction = async (buttonName: string, rowId: string, event: React.MouseEvent) => {
     event.stopPropagation();
     setIsModalOpen(false);
@@ -1242,17 +1293,19 @@ function barstatus(status:any) {
     const target = e.target as HTMLButtonElement; // Type assertion
     target.style.backgroundColor = '#fff'; // Revert background when hover ends
   }}
-  onClick={(event) =>
+  onClick={(event) => {
     handleSupplementaryDropdownAction(
       'Supplementary Invoice/Credit Note Details',
       row.id,
       row.annexureVersionNo,
       event
-    )
-  }
+    ); // Call the action
+    setOpenDropdownId(null); // Close the dropdown
+  }}
 >
-                                Supplementary Invoice/Credit Note Details
-                              </button>
+  Supplementary Invoice/Credit Note Details
+</button>
+
 
                               <button
                                 style={{
@@ -1272,45 +1325,68 @@ function barstatus(status:any) {
                                   const target = e.target as HTMLButtonElement; // Type assertion
                                   target.style.backgroundColor = '#fff'; // Revert background when hover ends
                                 }}
-                                onClick={(event) => {
-                                  if (row.isdocumentuploaded) {
-                                    handleSupplierSubmitAction('Submit', row.id, event);
-                                  } else {
-                                    
-                                    message.warning('Upload All Documents');
-                                   
-                                    event.stopPropagation();
-                                    
+
+                                onClick={async (event) => {
+                                  try {
+                                    const { isOpen, count } = await checkAnyQueryIsOpen(row.id, event); // Destructure isOpen and count from the returned object
+                                
+                                    if (isOpen && row.isdocumentuploaded) {
+                                      handleSupplierSubmitAction('Submit', row.id, event);
+                                    } else {
+
+                                      event.stopPropagation();
+
+                                        if(!row.isdocumentuploaded)
+                                        {
+                                          message.warning('Upload All Documents');
+
+                                        }
+                                        if(!isOpen)
+                                        {
+                                          message.warn(`You have ${count} open queries. Please close the previous queries first.`); // Correct string interpolation
+                                        }
+
+                                      
+                                    }
+
+                                  } catch (error) {
+                                    console.error("Error checking query status:", error);
+                                    message.error("An error occurred while checking query status");
+                                  } finally {
+                                    setOpenDropdownId(null); // Ensure the dropdown is closed regardless of success or failure
                                   }
                                 }}
+                                
                               >
                                 Submit
                               </button>
 
                               <button
-                                style={{
-                                  width: '100%',
-                                  backgroundColor: '#fff',
-                                  color: '#071437',
-                                  border: 'none',
-                                  padding: '10px',
-                                  marginBottom: '5px',
-                                  textAlign: 'left',
-                                }}
-                                onMouseEnter={(e) => {
-                                  const target = e.target as HTMLButtonElement; // Type assertion
-                                  target.style.backgroundColor = '#f3efef'; // Change background on hover
-                                }}
-                                onMouseLeave={(e) => {
-                                  const target = e.target as HTMLButtonElement; // Type assertion
-                                  target.style.backgroundColor = '#fff'; // Revert background when hover ends
-                                }}
-                                onClick={(event) =>
-                                  handleRaiseQueryAction('Raise Query', row.id, event)
-                                }
-                              >
-                                Raise Query
-                              </button>
+                                  style={{
+                                    width: '100%',
+                                    backgroundColor: '#fff',
+                                    color: '#071437',
+                                    border: 'none',
+                                    padding: '10px',
+                                    marginBottom: '5px',
+                                    textAlign: 'left',
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    const target = e.target as HTMLButtonElement; // Type assertion
+                                    target.style.backgroundColor = '#f3efef'; // Change background on hover
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    const target = e.target as HTMLButtonElement; // Type assertion
+                                    target.style.backgroundColor = '#fff'; // Revert background when hover ends
+                                  }}
+                                  onClick={(event) => {
+                                    handleRaiseQueryAction('Raise Query', row.id, event); // Call your function
+                                    setOpenDropdownId(null); // Close dropdown
+                                  }}
+                                >
+                                  Raise Query
+                                </button>
+
                             </>
                           )}
 
@@ -1333,9 +1409,10 @@ function barstatus(status:any) {
                               const target = e.target as HTMLButtonElement; // Type assertion
                               target.style.backgroundColor = '#fff'; // Revert background when hover ends
                             }}
-                            onClick={(event) =>
+                            onClick={(event) =>{
                               handleDisputeHisotryAction('History of Query', row.id, event)
-                            }
+                              setOpenDropdownId(null); // Close dropdown
+                            }}
                           >
                             History of Query
                           </button>
