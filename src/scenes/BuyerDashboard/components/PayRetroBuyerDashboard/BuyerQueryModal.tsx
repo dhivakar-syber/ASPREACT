@@ -225,7 +225,7 @@ ForwardFandCMail = async (item: any) => {
     console.log(item);
 
     
-    message.success(`Supplier Query Raised Intimation - ${item.supplierName}`);
+    message.success(`Query Closed Information Sent to - ${item.supplierName}`);
   
 };
   

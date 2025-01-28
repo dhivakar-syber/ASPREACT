@@ -4,7 +4,7 @@ import supplementarySummariesService from "../../../../services/SupplementarySum
 import annexureDetailsService from "../../../../services/annexureDetails/annexureDetailsService";
 import { SupplierDashboardInput } from "./SupplierDashboardInput";
 import  DashboardCards  from "../PayRetroSupplierDashboard/DashboardCards";
-import { Row, Col,Select,message, Card,Modal,Button,DatePicker,Spin } from 'antd';
+import { Row, Col,Select,message, Card,Modal,Button,DatePicker,Spin,Tag } from 'antd';
 import SupplierSubmitModal from './SupplierSubmitModal';
 import SupplementaryInvoiceModal from "./SupplementaryInvoicesModal";
 import DisputesStore from "../../../../stores/DisputesStrore";
@@ -20,7 +20,7 @@ import sessionServices from "../../../../services/session/sessionService";
 import settingsIcon from "../../../../images/Setting.svg";
 import SessionStore from "../../../../stores/sessionStore";
 import { inject, observer } from "mobx-react"; // Import MobX utilities
-
+import { ExclamationCircleFilled } from '@ant-design/icons';
 
 
 
@@ -69,6 +69,7 @@ const PayRetroSupplierDashboard: React.FC<{ sessionStore?: SessionStore }> = ({
 const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
 const [showDownloadButton, setShowDownloadButton] = React.useState<boolean>(false);
 const [hasRole, setHasRole] = React.useState<boolean>(false);
+
 
 
   // const [implementationDate, setImplementationDate] = React.useState(selectedRow?.implementationDate || '');
@@ -194,7 +195,10 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
 
   };
 
-
+  const istoday = (d: string): boolean => {
+    return formatDate(new Date()) === d; 
+  };
+  
   const handlebuyerChange =async  (selectedValues: any[]) => {
     
     setselectedbuyers(selectedValues);
@@ -489,7 +493,7 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
 
   const handleCreate = async(item:any) => {
     const form = formRef.current;
-    const { selectedLookupItem, selectedBuyerLookupItem, selectedSupplierLookupItem, userId } = state;
+    const { selectedLookupItem, selectedBuyerLookupItem, selectedSupplierLookupItem} = state;
 
     if (selectedLookupItem?.id) {
       form?.setFieldsValue({ summariesId: selectedLookupItem.id });
@@ -511,17 +515,14 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
         values.supplementarySummaryId = currentRowId;
       }
       
-      if (userId === 0) {
+      console.log('values',values);
+      console.log('item',item);
          await disputesStore.create(values).then(function(){
 
-          message.success(` Query Raised Intimation Sent to   ${item.buyerShortId}`);
+          message.success(` Query Raised Intimation Sent to   ${values.buyerName}`);
 
         });  
-      } else {
-        await disputesStore.update({ ...values, id: userId });  
-      }
-    
-      // Close the modal and reset the form
+      
       setState(prevState => ({ ...prevState, modalVisible: false }));
       form!.resetFields();
     });
@@ -575,7 +576,7 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
     setdashboardinput(supplierDashboardInput);
     await LoadsupplementarySummary(supplierDashboardInput);
   };
-  function formatDate(d:string) {
+  function formatDate(d:Date) {
     const date = new Date(d);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); 
@@ -1221,6 +1222,12 @@ function barstatus(status:any) {
                   }}
                 >
                   <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                  {istoday(formatDate(row.createtime)) && (
+        <Tag color="yellow">
+          <ExclamationCircleFilled style={{ marginLeft: 4 }} />
+          New
+        </Tag>
+      )}
                     <input
                       type="checkbox"
                       checked={selectedRows.includes(row.id)}
@@ -1229,12 +1236,7 @@ function barstatus(status:any) {
                   </td>
                   <td style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>
 
-                  {(
-           <span className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-           New
-         </span>
-        )}
-
+                
                   <div className="p-4 grid grid-cols-3 gap-4">
      
          
@@ -1242,6 +1244,7 @@ function barstatus(status:any) {
      
     </div>
     
+
                     <div
                       className="dropdown-container"
                       style={{ position: 'relative', whiteSpace: 'normal' }}
@@ -1358,7 +1361,7 @@ function barstatus(status:any) {
                                 }}
                                 
                               >
-                                Submit
+                                Send To Buyer
                               </button>
 
                               <button
