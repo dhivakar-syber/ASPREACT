@@ -741,52 +741,62 @@ function barstatus(status:any) {
                     )}
                   </span>
                 </td>
-                <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.accountingNo}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.accountingDate?formatDate(row.accountingDate):''}</td>
+
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
-                  <div className="dropdown-container" style={{ position: "relative" }}>
-                    <button
-                      style={{
-                        // backgroundColor: "#005f7f",
-                        //color: "#fff",
-                        border: "none",
-                        padding: "5px 10px",
-                        cursor: "pointer",
-                      }}
-                      onClick={(event) => toggleDropdown(row.id,event)}
-                    >
-                      <SettingsIcon/>
-                    </button>
-                    {openDropdownId === row.id && (
-                      <div
-                        style={{
-                          //position: "absolute",
-                          top: "100%",
-                          left: "0",
-                          backgroundColor: "#fff",
-                          boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                          zIndex: 2000,
-                          padding: "10px",
-                          width: "150px",
-                        }}
-                      >
-                        <button
-                          style={{
-                            width: "100%",
-                            backgroundColor: "#fff",
-                            color: "#071437",
-                            border: "none",
-                            padding: "10px",
-                            marginBottom: "5px",
-                          }}
-                          onClick={(event) => handleDropdownAction("Action 1", row.id,event)}
-                        >
-                          Approve/Reject
-                        </button>                       
-                      </div>
-                    )}
-                  </div>
-                </td>
+  {row.accountingNo}
+</td>
+<td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
+  {row.accountingDate ? formatDate(row.accountingDate) : ''}
+</td>
+<td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
+  <div className="dropdown-container" style={{ position: "relative", zIndex: 2 }}>
+    <button
+      style={{
+        border: "none",
+        padding: "5px 10px",
+        cursor: "pointer",
+        position: "relative", // This ensures the dropdown is positioned relative to this button
+        zIndex:0
+      }}
+      onClick={(event) => toggleDropdown(row.id, event)}
+    >
+      <SettingsIcon />
+    </button>
+
+    {/* Only render dropdown if it's active */}
+    {openDropdownId === row.id && (
+      <div
+        style={{
+          position: "absolute", // Fixed position ensures it is not constrained within the table's scroll
+          // top: `${event.clientY + 10}px`, // Position the dropdown below the button
+          // left: `${event.clientX}px`, // Position relative to the button's horizontal position
+          backgroundColor: "#fff",
+          boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+          //zIndex: 5000, // Ensure it's above the table row
+          //padding: "10px",
+          width: "150px",
+          overflow: "visible", // Allow the dropdown to exceed the parent container
+        }}
+      >
+        <button
+          style={{
+            width: "100%",
+            backgroundColor: "#fff",
+            color: "#071437",
+            border: "none",
+            padding: "10px",
+            marginBottom: "5px",
+          }}
+          onClick={(event) => handleDropdownAction("Action 1", row.id, event)}
+        >
+          Approve/Reject
+        </button>
+      </div>
+    )}
+  </div>
+</td>
+
+
                 <td style={{ padding: "10px", border: "1px solid #ddd" }} colSpan={3}>
   <div className="progress-tube">
     <div className={supplierstatus(row.documentStatus)} style={{ width: "50px" }}></div>
