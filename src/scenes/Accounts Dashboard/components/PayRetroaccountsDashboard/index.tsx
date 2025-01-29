@@ -24,7 +24,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
   const [rowsupplierstatus, setrowsupplierstatus] = React.useState<number | null>(0); 
   const [rowBuyerstatus, setrowBuyerstatus] = React.useState<number | null>(0); 
   const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0);
-    const [submitIdRow] = React.useState<number>(0);
+    const [submitIdRow,setSubmitIdRow] = React.useState<number>(0);
       const [selectedDate, setSelectedDate] = React.useState<Date|null>(null);
       const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  
       const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
@@ -290,7 +290,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
   const handleClickAction = ( id: number) => {
     console.log(` Row ID: ${id}`);
     // Placeholder for dropdown action logic
-    //setSubmitIdRow(id);
+    setSubmitIdRow(id);
     setIsSupplierSubmitModalOpen(true);
 
   };
@@ -739,9 +739,9 @@ function barstatus(status:any) {
                   <div className="dropdown-container" style={{ position: "relative" }}>
                   <Tooltip title="Approve or Reject">
 
-                    <button
+                  {row.accountantApprovalStatus==1&&<button
                       style={{
-                        //backgroundColor: "#005f7f",
+                        backgroundColor: "transparent", // Fixed from "none" to "transparent"
                         color: "#fff",
                         border: "none",
                         padding: "5px 10px",
@@ -749,8 +749,8 @@ function barstatus(status:any) {
                       }}
                        onClick={(event) => handleClickAction(row.id)}
                     >
-                      <SettingsIcon/>
-                    </button>
+                      <SettingsIcon   />
+                    </button>}
                     </Tooltip>                
 
                     {/* {openDropdownId === row.id && (

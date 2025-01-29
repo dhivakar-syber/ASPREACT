@@ -35,7 +35,7 @@ const SettingsIcon = () => (
   const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  
   const [selectedstatus, setselectedstatus] =React.useState<number|null>(0);
  // const [isQueryModalVisible, setIsQueryModalVisible] = React.useState<boolean>(false);  
-  const [submitIdRow] = React.useState<number>(0);
+  const [submitIdRow,setSubmitIdRow] = React.useState<number>(0);
   const [rowsupplierstatus, setrowsupplierstatus] = React.useState<number | null>(0); 
   const [rowBuyerstatus, setrowBuyerstatus] = React.useState<number | null>(0); 
   const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0); 
@@ -432,7 +432,7 @@ const SettingsIcon = () => (
   const handleClickAction = ( id: number) => {
     console.log(` Row ID: ${id}`);
     // Placeholder for dropdown action logic
-    //setSubmitIdRow(id);
+    setSubmitIdRow(id);
     setIsApproveRejectModalOpen(true);
 
   };
@@ -843,8 +843,9 @@ function barstatus(status:any) {
 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
   <div className="dropdown-container" style={{ position: "relative"}}>
   <Tooltip title="Approve or Reject">
-    <button
+    {row.buyerApprovalStatus==1&&<button
       style={{
+        backgroundColor: "transparent", // Fixed from "none" to "transparent"
         border: "none",
         padding: "5px 10px",
         cursor: "pointer",
@@ -854,7 +855,7 @@ function barstatus(status:any) {
       onClick={(event) => handleClickAction(row.id)}
     >
       <SettingsIcon />
-    </button>
+    </button>}
     </Tooltip>                
 
     {/* Only render dropdown if it's active

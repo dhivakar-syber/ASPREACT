@@ -107,7 +107,7 @@ const AccountsApproval: React.FC<ApproveRejectModalProps> = ({
       className="custom-modal"
       style={{
         overflow: 'hidden', // Ensure the rounded corners work
-        top:30
+        top:100  
       }}
     >
       <Form layout="vertical" form={form}>
