@@ -61,7 +61,7 @@ const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({
         console.error("Error during submission:", error); // Handle errors
         message.error("Error during submission. Please try again.");
       })
-      .finally(() => {
+      .finally(() => {  
         // Set loading to false after the submission is complete
         setLoading(false);
         
@@ -99,17 +99,17 @@ const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({
           style={{
             marginLeft: "10px",
             fontSize: "larger",
-            textAlign: "center",
+            textAlign: "left",
           }}
         >
-          <b>Submit Model</b>
+          <b>Approval Send Box</b>
         </h6>
         <div className="col-md-12">
           <div className="rm-a3-remarks-container">
             <div className="input-group">
               <textarea
                 ref={submitRemarksRef}
-                rows={5}
+                rows={3}
                 maxLength={250}
                 name="supplier-submit"
                 id="supplier-submit"
@@ -131,7 +131,7 @@ const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({
             backgroundColor: "#006780",
             color: "#fff",
             borderRadius: "8px",
-            width: "20%",
+            width: "30%",
           }}
           className="btn btn-primary sumbit-button"
           onClick={handleSubmit}
@@ -141,7 +141,7 @@ const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({
             <Spin size="default" /> // Increased spinner size
           ) : (
             <>
-              <Submiticon /> Submit
+              <Submiticon /> send to Buyer
             </>
           )}
         </Button>
