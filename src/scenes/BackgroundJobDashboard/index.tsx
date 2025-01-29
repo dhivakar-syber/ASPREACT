@@ -24,7 +24,7 @@ declare var abp: any;
     Supplierids:[0],
     Buyerid:0,
     Partids:[0],
-    Document:null,
+    DocumentStatusFilter:null,
     invoicetype:0,
     Date:null,
     });
@@ -69,7 +69,7 @@ declare var abp: any;
             Partids: [0],
             invoicetype:0,
             Date:null,
-            Document:null
+            DocumentStatusFilter:null
           };
       
           setdashboardinput(buyerdashboard);
@@ -106,7 +106,7 @@ declare var abp: any;
             Partids: [0],
             invoicetype:0,
             Date:dateObject,
-            Document:null
+            DocumentStatusFilter:null
     };
 
     setdashboardinput(buyerdashboard);

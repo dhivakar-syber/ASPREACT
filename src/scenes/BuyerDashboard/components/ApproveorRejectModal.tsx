@@ -106,8 +106,12 @@ const BuyersApproval: React.FC<ApproveRejectModalModalProps> = ({
       footer={null}
       centered
       width="25%"
-      style={{ top: -150 }}
-    >
+      className="custom-modal"
+      style={{
+        overflow: 'hidden', // Ensure the rounded corners work
+        top:-70
+      }}
+      >
       <Form layout="vertical" form={form}>
         <Form.Item
           label="Remarks"
@@ -118,6 +122,7 @@ const BuyersApproval: React.FC<ApproveRejectModalModalProps> = ({
             ref={submitRemarksRef}
             rows={5}
             maxLength={250}
+            style={{ fontSize: "18px" }}  // Corrected here
             className="form-control"
             value={submitText}
             onChange={(e) => setSubmitText(e.target.value)}

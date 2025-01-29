@@ -103,7 +103,7 @@ const AccountsApproval: React.FC<ApproveRejectModalProps> = ({
       onCancel={onClose}
       footer={null}
       style={{ top: 20 }} // Moves the modal to the top
-      width="35%"
+      width="25%"
     >
       <Form layout="vertical" form={form}>
         <Form.Item label="Accounting No" name="accNo">

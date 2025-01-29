@@ -33,6 +33,7 @@ const SettingsIcon = () => (
   const [selectedparts, setselectedparts] =React.useState<any[]>([]);
   const [selectedcategory, setselectedcategory] =React.useState<any>(String);
   const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  
+  const [selectedstatus, setselectedstatus] =React.useState<number|null>(0);
  // const [isQueryModalVisible, setIsQueryModalVisible] = React.useState<boolean>(false);  
   const [submitIdRow, setSubmitIdRow] = React.useState<number>(0);
   const [rowsupplierstatus, setrowsupplierstatus] = React.useState<number | null>(0); 
@@ -46,7 +47,7 @@ const SettingsIcon = () => (
     Supplierids:[0],
     Buyerid:0,
     Partids:[0],
-    Document:null,
+    DocumentStatusFilter : selectedstatus,
     invoicetype:0,
     Date:null,
     });
@@ -100,7 +101,7 @@ const SettingsIcon = () => (
             Partids: [0],
             invoicetype:0,
             Date:null,
-            Document:null
+            DocumentStatusFilter : selectedstatus,
           };
       
           setdashboardinput(buyerdashboard);
@@ -130,7 +131,7 @@ const SettingsIcon = () => (
       Partids: selectedparts,
       invoicetype:selectedcategory,
       Date:dateObject,
-      Document:null
+      DocumentStatusFilter : selectedstatus,
     };
 
     setdashboardinput(buyerdashboard);
@@ -156,7 +157,7 @@ const SettingsIcon = () => (
         Partids: [],
         invoicetype:selectedcategory,
         Date:null,
-        Document:null
+        DocumentStatusFilter : selectedstatus,
         
         
 
@@ -180,7 +181,7 @@ const SettingsIcon = () => (
         Buyerid: selectedbuyers.value,
         Partids: [],
         invoicetype:selectedcategory,
-        Document:null,
+        DocumentStatusFilter : selectedstatus,
         Date:null
       };
       setdashboardinput(buyerdashboardinput);
@@ -275,7 +276,7 @@ const SettingsIcon = () => (
           Partids: selectedparts,
           invoicetype:selectedcategory,
           Date:null,
-          Document:null
+          DocumentStatusFilter : selectedstatus,
         };
     
         setdashboardinput(buyerdashboard);
@@ -292,7 +293,7 @@ const SettingsIcon = () => (
           Partids: selectedparts,
           invoicetype:selectedcategory,
           Date:null,
-          Document:null
+          DocumentStatusFilter : selectedstatus,
         };
     
         setdashboardinput(buyerdashboard);
@@ -357,13 +358,29 @@ const SettingsIcon = () => (
         Buyerid: selectedbuyers.value,
         Partids: selectedValues,
         invoicetype:selectedcategory,
-        Document:null,
+        DocumentStatusFilter : selectedstatus,
         Date:null
       };
       setdashboardinput(buyerdashboardinput);
       await LoadsupplementarySummary(buyerdashboardinput);
     };
   
+        const handlestatuschange = async(selectedValues:number) => {
+          console.log('selected', selectedValues);
+          setselectedstatus(selectedValues);
+      
+          var   buyerdashboardinput: BuyerDashboardInput = {
+            Supplierids: selectedsuppliers,
+            Buyerid: selectedbuyers.value,
+            Partids: selectedparts,
+            invoicetype:selectedcategory,
+            DocumentStatusFilter : selectedValues,
+            Date:null
+          };
+          setdashboardinput(buyerdashboardinput);
+          await LoadsupplementarySummary(buyerdashboardinput);
+          
+        };
    
   
     const handlecategorychange = async(value: number) => {
@@ -375,7 +392,7 @@ const SettingsIcon = () => (
         Buyerid: selectedbuyers.value,
         Partids: selectedparts,
         invoicetype:value,
-        Document:null,
+        DocumentStatusFilter : selectedstatus,
         Date:null
 
       };
@@ -596,6 +613,41 @@ function barstatus(status:any) {
       />
     </div>
   </Col>
+                <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '250px' }}>
+                <div style={{ textAlign: 'left' }}>
+                <span style={{padding: "2px"}}>Document Status</span>
+                
+                <Select<number>
+                  
+                  style={{ width: '200px' }}
+                  placeholder="Select one or more options"
+                  options={[
+                    {
+                      label: 'Select All',
+                      value: 0,
+                    },
+                  {
+                    label: 'Pending',
+                    value: 1,
+          
+                  },
+                  {
+                    label: 'Approved',
+                    value: 2,
+                  },
+                  {
+                    label: 'Rejected',
+                    value: 3,
+                  },
+  
+                ]}
+                value={selectedstatus ?? undefined}
+                  onChange={handlestatuschange}
+                  optionLabelProp="label"
+                />
+              </div>
+                </Col>
+          
 </Row>
     
 <br></br>
@@ -749,14 +801,14 @@ function barstatus(status:any) {
   {row.accountingDate ? formatDate(row.accountingDate) : ''}
 </td>
 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
-  <div className="dropdown-container" style={{ position: "relative", zIndex: 2 }}>
+  <div className="dropdown-container" style={{ position: "relative"}}>
     <button
       style={{
         border: "none",
         padding: "5px 10px",
         cursor: "pointer",
         position: "relative", // This ensures the dropdown is positioned relative to this button
-        zIndex:0
+        //zIndex: openDropdownId === row.id ? 10 : 1, // Higher z-index for active dropdown
       }}
       onClick={(event) => toggleDropdown(row.id, event)}
     >
@@ -768,13 +820,12 @@ function barstatus(status:any) {
       <div
         style={{
           position: "absolute", // Fixed position ensures it is not constrained within the table's scroll
-          // top: `${event.clientY + 10}px`, // Position the dropdown below the button
-          // left: `${event.clientX}px`, // Position relative to the button's horizontal position
+          top: "100%", // Adjust as needed to position above the button
+          left: "0",
           backgroundColor: "#fff",
           boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
-          //zIndex: 5000, // Ensure it's above the table row
-          //padding: "10px",
-          width: "150px",
+          zIndex: 999, // Ensure dropdown is above the button
+          //width: "10px",
           overflow: "visible", // Allow the dropdown to exceed the parent container
         }}
       >
@@ -785,9 +836,22 @@ function barstatus(status:any) {
             color: "#071437",
             border: "none",
             padding: "10px",
+            textAlign: 'left',
+            transition: 'background-color 0.3s', // Smooth transition for background color change
+            cursor: 'pointer', // Add pointer cursor for a better user experience
             marginBottom: "5px",
           }}
-          onClick={(event) => handleDropdownAction("Action 1", row.id, event)}
+          onMouseEnter={(e) => {
+            const target = e.target as HTMLButtonElement; // Type assertion
+            target.style.backgroundColor = '#f3efef'; // Change background on hover
+          }}
+          onMouseLeave={(e) => {
+            const target = e.target as HTMLButtonElement; // Type assertion
+            target.style.backgroundColor = '#fff'; // Revert background when hover ends
+          }}
+          onClick={(event) => {handleDropdownAction("Action 1", row.id, event)
+            setOpenDropdownId(null); // Close the dropdown
+          }}
         >
           Approve/Reject
         </button>
