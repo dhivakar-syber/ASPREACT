@@ -184,14 +184,7 @@ declare var abp: any;
   
   
   
-  function formatDate(d:string) {
-    const date = new Date(d);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); 
-    const day = String(date.getDate()).padStart(2, '0'); 
-
-    return `${day}-${month}-${year}`; 
-}
+  
 
 
 
@@ -270,11 +263,11 @@ declare var abp: any;
             {tableData.map((row,index) => (
               <tr>
                 <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{index+1}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{formatDate(row.reportDate)}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.reportDate}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.status}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.partsCount}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{formatDate(row.creationTime )}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{formatDate(row.lastModificationTime)}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.creationTime }</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.lastModificationTime}</td>
                
               </tr>
             ))}
@@ -291,6 +284,7 @@ declare var abp: any;
           <thead>
           <tr style={{ backgroundColor: '#005f7f', color: '#fff', textAlign: 'left', borderRadius: '2px' }}>
           {[
+                 "S.No",
                 "File Name",
                 "Status",
                 "Creation Time",
@@ -315,10 +309,11 @@ declare var abp: any;
             {procurelogtableData.map((row,index) => (
               <tr
               >
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{index+1}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.filename}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.status}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.creationTime?formatDate(row.creationTime):''}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.lastModificationTime?formatDate(row.lastModificationTime):''}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.creationTime?row.creationTime:''}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.lastModificationTime?row.lastModificationTime:''}</td>
                
               </tr>
             ))}
@@ -364,8 +359,8 @@ declare var abp: any;
                 <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{index+1}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.filename}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.status}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.creationTime?formatDate(row.creationTime):''}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.lastModificationTime?formatDate(row.lastModificationTime):''}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.creationTime?row.creationTime:''}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.lastModificationTime?row.lastModificationTime:''}</td>
                
               </tr>
             ))}
@@ -412,8 +407,8 @@ declare var abp: any;
                 <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{index+1}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.filename}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.status}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.creationTime?formatDate(row.creationTime):''}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.lastModificationTime?formatDate(row.lastModificationTime):''}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.creationTime?row.creationTime:''}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.lastModificationTime?row.lastModificationTime:''}</td>
                
               </tr>
             ))}
