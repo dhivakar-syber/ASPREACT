@@ -2,7 +2,7 @@ import * as React from "react";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
 
 import  DashboardCards  from "./BuyerDashboardCards";
-import { Row, Col,Select, Tabs,Button,Modal,message,Card } from 'antd';
+import { Row, Col,Select, Tabs,Button,Modal,message,Card, Tooltip } from 'antd';
 import { FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
 import { BuyerDashboardInput } from "./BuyerDashboardInput";
 import BuyerQueryModal from "./BuyerQueryModal"
@@ -24,7 +24,7 @@ const SettingsIcon = () => (
     sessionStore,
   }) => {
   const [tableData, setTableData] = React.useState<any[]>([]);
-  const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
+  // const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
   const [suppliers, setSuppliers] =React.useState<any[]>([]);
   const [selectedsuppliers, setselectedsuppliers] =React.useState<any[]>([]);   
   const [buyers, setBuyers] =React.useState<any[]>([]);
@@ -35,7 +35,7 @@ const SettingsIcon = () => (
   const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  
   const [selectedstatus, setselectedstatus] =React.useState<number|null>(0);
  // const [isQueryModalVisible, setIsQueryModalVisible] = React.useState<boolean>(false);  
-  const [submitIdRow, setSubmitIdRow] = React.useState<number>(0);
+  const [submitIdRow] = React.useState<number>(0);
   const [rowsupplierstatus, setrowsupplierstatus] = React.useState<number | null>(0); 
   const [rowBuyerstatus, setrowBuyerstatus] = React.useState<number | null>(0); 
   const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0); 
@@ -402,32 +402,39 @@ const SettingsIcon = () => (
     };
 
 
-  const handleClickOutside = (event: MouseEvent) => {
-    const target = event.target as HTMLElement;
-    if (!target.closest(".dropdown-container")) {
-      setOpenDropdownId(null);
-    }
-  };
+  // const handleClickOutside = (event: MouseEvent) => {
+  //   const target = event.target as HTMLElement;
+  //   if (!target.closest(".dropdown-container")) {
+  //     setOpenDropdownId(null);
+  //   }
+  // };
 
-  React.useEffect(() => {
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
+  // React.useEffect(() => {
+  //   document.addEventListener("click", handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener("click", handleClickOutside);
+  //   };
+  // }, []);
 
-  const toggleDropdown = (id:any,event: React.MouseEvent) => {
-    event.stopPropagation();
-    // Toggle the dropdown for the clicked row
-    setOpenDropdownId((prevId) => (prevId === id ? null : id));
-  };
+  // const toggleDropdown = (id:any,event: React.MouseEvent) => {
+  //   event.stopPropagation();
+  //   // Toggle the dropdown for the clicked row
+  //   setOpenDropdownId((prevId) => (prevId === id ? null : id));
+  // };
 
-  const handleDropdownAction = (action: string, id: number,event: React.MouseEvent) => {
-    event.stopPropagation();
-    console.log(`Action: ${action}, Row ID: ${id}`);
-    setSubmitIdRow(id);
-    setIsApproveRejectModalOpen(true);
+  // const handleDropdownAction = (action: string, id: number,event: React.MouseEvent) => {
+  //   event.stopPropagation();
+  //   console.log(`Action: ${action}, Row ID: ${id}`);
+  //   setSubmitIdRow(id);
+  //   setIsApproveRejectModalOpen(true);
+  //   // Placeholder for dropdown action logic
+  // };
+  const handleClickAction = ( id: number) => {
+    console.log(` Row ID: ${id}`);
     // Placeholder for dropdown action logic
+    //setSubmitIdRow(id);
+    setIsApproveRejectModalOpen(true);
+
   };
   const closeApproveRejectModal = () => {
     setIsApproveRejectModalOpen(false);
@@ -605,12 +612,38 @@ function barstatus(status:any) {
   <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '250px' }}>
     <div style={{ textAlign: 'left' }}>
       <span style={{ padding: '2px' }}>Date</span>
+      <div
+  style={{
+    border: '1px solid #d9d9d9',
+    borderRadius: '5px',
+    padding: '4px',
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    transition: 'border 0.3s ease, box-shadow 0.3s ease', // Smooth transition
+  }}
+  onFocus={(e) => {
+    e.currentTarget.style.border = '1px solid #3cb48c';
+    e.currentTarget.style.boxShadow = '0 0 5px #3cb48c';
+  }}
+  onBlur={(e) => {
+    e.currentTarget.style.border = '1px solid #d9d9d9';
+    e.currentTarget.style.boxShadow = 'none';
+  }}
+  tabIndex={0} // Ensures div can receive focus events
+>
       <input
         type="date"
         value={selectedDate}
         onChange={(e) => handledatechange(e.target.value)}
-        style={{ width: '100%' }}
+        style={{ width: '100%',
+          border: 'none',
+          outline: 'none',
+          backgroundColor: 'transparent'
+         }}
       />
+    </div>
     </div>
   </Col>
                 <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '250px' }}>
@@ -769,27 +802,34 @@ function barstatus(status:any) {
                 <td style={{ padding: "10px", border: "1px solid #ddd", width: "175px" }}>
                   <span>
                     {row.supplementaryInvoicePath && (
+                        <Tooltip title="Supplementary Invoice/Credit Note">
+
                       <Button
                         type="link"
                         onClick={() => handleSupplementrypdfButtonClick(row.supplementaryInvoicePath)}
                       >
                         <FilePdfOutlined />
                       </Button>
+                      </Tooltip>
                     )}
                     {row.annecurePath && (
+                    <Tooltip title="Annexure">
                       <Button
                         type="link"
                         onClick={() => handleAnnexurepdfButtonClick(row.annecurePath)}
                       >
                         <FilePdfOutlined />
                       </Button>
+                      </Tooltip>
                     )}
                     {row.supplementaryInvoicePath3 && (
+                      <Tooltip title="Annexure Attachment">
                       <Button
                         type="link"
                         onClick={() =>downloadFile({path: row.supplementaryInvoicePath3 })}>
                         <FileExcelOutlined />
                       </Button>
+                      </Tooltip>
                     )}
                   </span>
                 </td>
@@ -802,6 +842,7 @@ function barstatus(status:any) {
 </td>
 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
   <div className="dropdown-container" style={{ position: "relative"}}>
+  <Tooltip title="Approve or Reject">
     <button
       style={{
         border: "none",
@@ -810,12 +851,13 @@ function barstatus(status:any) {
         position: "relative", // This ensures the dropdown is positioned relative to this button
         //zIndex: openDropdownId === row.id ? 10 : 1, // Higher z-index for active dropdown
       }}
-      onClick={(event) => toggleDropdown(row.id, event)}
+      onClick={(event) => handleClickAction(row.id)}
     >
       <SettingsIcon />
     </button>
+    </Tooltip>                
 
-    {/* Only render dropdown if it's active */}
+    {/* Only render dropdown if it's active
     {openDropdownId === row.id && (
       <div
         style={{
@@ -856,7 +898,7 @@ function barstatus(status:any) {
           Approve/Reject
         </button>
       </div>
-    )}
+    )} */}
   </div>
 </td>
 
