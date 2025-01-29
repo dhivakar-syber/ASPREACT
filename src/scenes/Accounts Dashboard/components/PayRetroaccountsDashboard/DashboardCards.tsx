@@ -48,8 +48,8 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ AccountsDashboardInputs
                     }
                     style={{
                       backgroundColor: "#fafafa",
-                      fontSize: "28px",
-                      padding: "0px",
+                      fontSize: "27px",
+                      // padding: "0px",
                       margin:"0px",
                       color: "#6EA046",
                     }}

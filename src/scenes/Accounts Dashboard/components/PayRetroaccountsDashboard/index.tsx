@@ -12,7 +12,7 @@ import settingsIcon from "../../../../images/Setting.svg";
 
 const PayRetroAccountsDashboard: React.SFC = () => {
   const [tableData, setTableData] = React.useState<any[]>([]);
-  const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
+  // const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
   const [selectedsuppliers, setselectedsuppliers] =React.useState<any[]>([]);  
   const [suppliers, setSuppliers] =React.useState<any[]>([]);
   const [selectedcategory, setselectedcategory] =React.useState<any>(String);
@@ -24,7 +24,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
   const [rowsupplierstatus, setrowsupplierstatus] = React.useState<number | null>(0); 
   const [rowBuyerstatus, setrowBuyerstatus] = React.useState<number | null>(0); 
   const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0);
-    const [submitIdRow, setSubmitIdRow] = React.useState<number>(0);
+    const [submitIdRow] = React.useState<number>(0);
       const [selectedDate, setSelectedDate] = React.useState<Date|null>(null);
       const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  
       const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
@@ -261,28 +261,36 @@ const PayRetroAccountsDashboard: React.SFC = () => {
     };
   
 
-  const handleClickOutside = (event: MouseEvent) => {
-    const target = event.target as HTMLElement;
-    if (!target.closest(".dropdown-container")) {
-      setOpenDropdownId(null);
-    }
-  };
+  // const handleClickOutside = (event: MouseEvent) => {
+  //   const target = event.target as HTMLElement;
+  //   if (!target.closest(".dropdown-container")) {
+  //     setOpenDropdownId(null);
+  //   }
+  // };
 
-  React.useEffect(() => {
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
+  // React.useEffect(() => {
+  //   document.addEventListener("click", handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener("click", handleClickOutside);
+  //   };
+  // }, []);
 
-  const toggleDropdown = (id: number,event: React.MouseEvent) => {
-    setOpenDropdownId((prevId) => (prevId === id ? null : id));
-  };
+  // const toggleDropdown = (id: number,event: React.MouseEvent) => {
+  //   setOpenDropdownId((prevId) => (prevId === id ? null : id));
+  // };
 
-  const handleDropdownAction = (action: string, id: number) => {
-    console.log(`Action: ${action}, Row ID: ${id}`);
+  // const handleDropdownAction = (action: string, id: number) => {
+  //   console.log(`Action: ${action}, Row ID: ${id}`);
+  //   // Placeholder for dropdown action logic
+  //   setSubmitIdRow(id);
+  //   setIsSupplierSubmitModalOpen(true);
+
+  // };
+
+  const handleClickAction = ( id: number) => {
+    console.log(` Row ID: ${id}`);
     // Placeholder for dropdown action logic
-    setSubmitIdRow(id);
+    //setSubmitIdRow(id);
     setIsSupplierSubmitModalOpen(true);
 
   };
@@ -569,8 +577,19 @@ function barstatus(status:any) {
             width: '100%',
             display: 'flex',
             alignItems: 'center',
-            backgroundColor: '#fff'
-          }}>
+            backgroundColor: '#fff',
+            transition: 'border 0.3s ease, box-shadow 0.3s ease', // Smooth transition
+          }}
+        onFocus={(e) => {
+          e.currentTarget.style.border = '1px solid #3cb48c';
+          e.currentTarget.style.boxShadow = '0 0 5px #3cb48c';
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.border = '1px solid #d9d9d9';
+          e.currentTarget.style.boxShadow = 'none';
+        }}
+        tabIndex={0} // Ensures div can receive focus events
+          >
             <input
               type="date"
               value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''} // Convert Date to string (YYYY-MM-DD)
@@ -718,6 +737,8 @@ function barstatus(status:any) {
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.accountingDate?formatDate(row.accountingDate):''}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
                   <div className="dropdown-container" style={{ position: "relative" }}>
+                  <Tooltip title="Approve or Reject">
+
                     <button
                       style={{
                         //backgroundColor: "#005f7f",
@@ -726,11 +747,13 @@ function barstatus(status:any) {
                         padding: "5px 10px",
                         cursor: "pointer",
                       }}
-                      onClick={(event) => toggleDropdown(row.id,event)}
+                       onClick={(event) => handleClickAction(row.id)}
                     >
                       <SettingsIcon/>
                     </button>
-                    {openDropdownId === row.id && (
+                    </Tooltip>                
+
+                    {/* {openDropdownId === row.id && (
                       <div
                         style={{
                           position: "absolute",
@@ -763,12 +786,12 @@ function barstatus(status:any) {
                             const target = e.target as HTMLButtonElement; // Type assertion
                             target.style.backgroundColor = '#fff'; // Revert background when hover ends
                           }}
-                          onClick={() => handleDropdownAction("Action 1", row.id)}
+                         // onClick={() => handleDropdownAction("Action 1", row.id)}
                         >
                           Approve/Reject
-                        </button>                       
+                        </button>       
                       </div>
-                    )}
+                    )} */}
                   </div>
                 </td>                          
                 <td style={{ padding: "10px", border: "1px solid #ddd" }} colSpan={3}>

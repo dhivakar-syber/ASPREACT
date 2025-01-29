@@ -98,12 +98,17 @@ const AccountsApproval: React.FC<ApproveRejectModalProps> = ({
 
   return (
     <Modal
-      title="Approve/Reject Modal"
+      title="Accounts Approve/Reject Modal"
       visible={isOpen}
       onCancel={onClose}
       footer={null}
-      style={{ top: 20 }} // Moves the modal to the top
+      // style={{ top: 20 }} // Moves the modal to the top
       width="25%"
+      className="custom-modal"
+      style={{
+        overflow: 'hidden', // Ensure the rounded corners work
+        top:30
+      }}
     >
       <Form layout="vertical" form={form}>
         <Form.Item label="Accounting No" name="accNo">
@@ -133,6 +138,17 @@ const AccountsApproval: React.FC<ApproveRejectModalProps> = ({
             rows={5}
             maxLength={250}
             className="form-control"
+           style={{ border: '1px solid #d9d9d9',outline: 'none',    
+            transition: 'border-color 0.3s, box-shadow 0.3s', // Smooth transition
+          }}
+          onFocus={(e) => {
+            e.target.style.border = '0.5px solid #3cb48c';
+            e.target.style.boxShadow = '0 0 3px #3cb48c'; // Glow effect
+          }}
+          onBlur={(e) => {
+            e.target.style.border = '0.5px solid #d9d9d9';
+            e.target.style.boxShadow = 'none'; // Remove glow effect
+          }}
             value={submitText}
             onChange={(e) => setSubmitText(e.target.value)}
             placeholder="Enter your remarks here"
