@@ -17,6 +17,7 @@ declare var abp: any;
   const [procurelogtableData, setprocurelogTableData] = React.useState<any[]>([]);
   const [cbfclogtableData, setcbfclogTableData] = React.useState<any[]>([]);
   const [grnlogtableData, setgrnlogTableData] = React.useState<any[]>([]);
+  const [workflowInstancesData, setworkflowIsntancesData] = React.useState<any[]>([]);
   
   const [selectedDate, setSelectedDate] = React.useState("");
   
@@ -38,6 +39,7 @@ declare var abp: any;
           procurelogSummary(selectedDate),
           cbfclogSummary(selectedDate),
           grnlogSummary(selectedDate),
+          workflowIsntances(),
         ]);
                 
          
@@ -54,6 +56,7 @@ declare var abp: any;
             procurelogSummary(selectedDate),
             cbfclogSummary(selectedDate),
             grnlogSummary(selectedDate),
+            workflowIsntances(),
           ]);
 
       
@@ -81,6 +84,7 @@ declare var abp: any;
       procurelogSummary(dateObject),
       cbfclogSummary(dateObject),
       grnlogSummary(dateObject),
+      workflowIsntances(),
     ]);
       
       
@@ -126,6 +130,16 @@ declare var abp: any;
            // console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
                           
           }
+
+          const workflowIsntances=async ()=>
+            {
+          
+            var  result = await supplementarySummariesService.workflowIsntances();
+            setworkflowIsntancesData(result || []);
+                            
+            }
+    
+           
   
     
     
@@ -160,7 +174,23 @@ declare var abp: any;
 // }
 
 
-
+function workflowStatus(status : any) 
+{
+    switch(status){
+      case 1:
+        return 'Suspended';
+      case 2:
+        return 'Finished';
+      case 3:
+        return 'Faulted';
+      case 4:
+        return 'Cancelled';
+      case 5:
+        return 'Idle';  
+      default:
+        return '';         
+    }
+}
   
 
 
@@ -235,7 +265,7 @@ declare var abp: any;
           <tbody>
             {tableData.map((row,index) => (
               <tr>
-                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{index+1}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{index+1}</td>                
                 <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.reportDate}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.status}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.partsCount}</td>
@@ -392,12 +422,66 @@ declare var abp: any;
 
 </Tabs.TabPane>
 
+<Tabs.TabPane tab="Work Flow Instances" key="5">
+      <div style={{ marginTop: "20px", overflowX: 'auto' }}>
+        
+        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px",
+              borderRadius: '5px', }}>
+          <thead>
+          <tr style={{ backgroundColor: '#005f7f', color: '#fff', textAlign: 'center', borderRadius: '2px' }}>
+          {[
+                "S.No",
+                "WorkFlow Name",
+                "Corelation Id",
+                "WorkFlow Status",
+                "Created At",
+                "Finished At",
+                "Faulted At",
+                "Cancelled At",
+                
+              ].map((header) => (
+                <th key={header} style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px' }}>
+                  {header}
+                </th>
+              ))}
+            </tr>
+            <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
+
+            <td  colSpan={10}>
+  
+</td>
+              
+           
+            </tr>
+          </thead>
+          <tbody>
+            {workflowInstancesData.map((row,index) => (
+              <tr
+              >
+                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{index+1}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.workFlowName}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.correlationId}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{workflowStatus(row.workflowStatus)}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.createdAt}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.lastExecutedAt}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.finishedAt}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.faultedAt}</td>
+               
+              </tr>
+            ))}
+          </tbody>
+        </table>
+       
+      </div>
+
+</Tabs.TabPane>
   </Tabs>
   </Card>
       
           
     </div>
   );
+  
 };
 
 export default inject("sessionStore")(observer(PayRetroBuyerDashboard));
