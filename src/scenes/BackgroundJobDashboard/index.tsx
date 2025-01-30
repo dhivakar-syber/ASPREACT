@@ -200,16 +200,18 @@ declare var abp: any;
 function workflowStatus(status : any) 
 {
     switch(status){
+      case 0:
+        return 'Idle';
       case 1:
-        return 'Suspended';
+        return 'Running';
       case 2:
         return 'Finished';
       case 3:
-        return 'Faulted';
+        return 'Suspended';
       case 4:
-        return 'Cancelled';
+        return 'Faulted';
       case 5:
-        return 'Idle';  
+        return 'Cancelled';  
       default:
         return '';         
     }
