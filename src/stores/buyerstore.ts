@@ -50,7 +50,7 @@ class BuyerStore {
   @action
   async createBuyer() {
     this.editUser = {
-        Buyer: {
+        buyer: {
           name: '',
           shortId: '',
           department: 0,

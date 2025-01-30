@@ -12,6 +12,7 @@ import supplierservice  from '../services/supplier/supplierservice';
 class supplierStore {
   @observable supplier!: PagedResultDto<GetSupplierForViewDto>;
   @observable supplierlookupdata!: PagedResultDto<SupplierUserLookupTableDto>;
+  @observable userlookupdata!: PagedResultDto<SupplierUserLookupTableDto>;
   @observable editUser!: GetSupplierForEditOutput;
 
   @action
@@ -44,6 +45,11 @@ class supplierStore {
   async getAllSupplierForLookupTable(pagedFilterAndSortedRequest: PagedUserResultRequestDto) {
     let result = await supplierservice.getAllSupplierForLookupTable(pagedFilterAndSortedRequest);
     this.supplierlookupdata = result;
+  }
+  @action
+  async getAllUserForLookupTable(pagedFilterAndSortedRequest: PagedUserResultRequestDto) {
+    let result = await supplierservice.getAllUserForLookupTable(pagedFilterAndSortedRequest);
+    this.userlookupdata = result;
   }
   @action
   async getAll(pagedFilterAndSortedRequest: PagedUserResultRequestDto) {

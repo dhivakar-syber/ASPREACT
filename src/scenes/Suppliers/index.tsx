@@ -188,8 +188,8 @@ class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState>
                             trigger={['click']}
                             overlay={
                                 <Menu>
-                                    <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.Suppliers?.id })}>{L('Edit')}</Menu.Item>
-                                    <Menu.Item onClick={() => this.delete({ id: item.Suppliers?.id })}>{L('Delete')}</Menu.Item>
+                                    <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.supplier?.id })}>{L('Edit')}</Menu.Item>
+                                    <Menu.Item onClick={() => this.delete({ id: item.supplier?.id })}>{L('Delete')}</Menu.Item>
                                 </Menu>
                             }
                             placement="bottomLeft"
@@ -201,13 +201,13 @@ class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState>
                     </div>
                 ),
             },
-            {
-                title: L('UserName'),
-                dataIndex: 'supplier.userid',
-                key: 'userid',
-                width: 150,
-                render: (text: string, record: any) => <div>{record.supplier?.userid || ''}</div>,
-            },
+            // {
+            //     title: L('UserName'),
+            //     dataIndex: 'supplier.userid',
+            //     key: 'userid',
+            //     width: 150,
+            //     render: (text: string, record: any) => <div>{record.supplier?.userid || ''}</div>,
+            // },
             {
                 title: L('Name'),
                 dataIndex: 'supplier.name',
@@ -348,9 +348,9 @@ class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState>
                     modalType={this.state.userId === 0 ? 'edit' : 'create'}
                     onCreate={this.handleCreate}
                     initialData={{
-                        userid: '',
-                        displayname: '',
-                        code: ''
+                        name: this.props.supplierStore.editUser?.supplier.name,
+                        displayname: this.props.supplierStore.editUser?.userName,
+                        code: this.props.supplierStore.editUser?.supplier.code
                     }}
                     supplierStore={this.props.supplierStore}
                 />
