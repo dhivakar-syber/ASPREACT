@@ -1,7 +1,7 @@
 import * as React from "react";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
 import { AccountDashboardInput } from "./AccountsDashboardInput";
-import { Row, Col,Select, message,Tabs,Button,Modal,Card} from 'antd';
+import { Row, Col,Select, message,Tabs,Button,Modal,Card, Tooltip} from 'antd';
 import  DashboardCards  from "../PayRetroaccountsDashboard/DashboardCards";
 import ApproveorRejectModal from "../ApproveorRejectModal"
 import { FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
@@ -12,10 +12,11 @@ import settingsIcon from "../../../../images/Setting.svg";
 
 const PayRetroAccountsDashboard: React.SFC = () => {
   const [tableData, setTableData] = React.useState<any[]>([]);
-  const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
+  // const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
   const [selectedsuppliers, setselectedsuppliers] =React.useState<any[]>([]);  
   const [suppliers, setSuppliers] =React.useState<any[]>([]);
   const [selectedcategory, setselectedcategory] =React.useState<any>(String);
+  const [selectedstatus, setselectedstatus] =React.useState<number|null>(0);
   const [buyers, setBuyers] =React.useState<any[]>([]);
     const [selectedbuyers, setselectedbuyers] =React.useState<any[]>([]);
   const [parts, setParts] =React.useState<any[]>([]);
@@ -23,8 +24,8 @@ const PayRetroAccountsDashboard: React.SFC = () => {
   const [rowsupplierstatus, setrowsupplierstatus] = React.useState<number | null>(0); 
   const [rowBuyerstatus, setrowBuyerstatus] = React.useState<number | null>(0); 
   const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0);
-    const [submitIdRow, setSubmitIdRow] = React.useState<number>(0);
-      const [selectedDate, setSelectedDate] = React.useState<string>('');
+    const [submitIdRow,setSubmitIdRow] = React.useState<number>(0);
+      const [selectedDate, setSelectedDate] = React.useState<Date|null>(null);
       const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  
       const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   const [isSupplierSubmitModalOpen, setIsSupplierSubmitModalOpen] = React.useState<boolean>(false); // To control modal visibility
@@ -41,8 +42,8 @@ const PayRetroAccountsDashboard: React.SFC = () => {
     Supplierids: [0],
     Partids:[0],
     invoicetype:0, 
-    Date:new Date,
-    Document:'',
+    Date:selectedDate,
+    DocumentStatusFilter:selectedstatus ,
     });
 
   React.useEffect(() => {
@@ -77,8 +78,8 @@ const PayRetroAccountsDashboard: React.SFC = () => {
                 Buyerids: [0],
                 Partids: [0],
                 invoicetype:0,
-                Date:null,
-                Document:null
+                Date:selectedDate,
+                DocumentStatusFilter:selectedstatus
 
               };
     
@@ -108,8 +109,8 @@ const PayRetroAccountsDashboard: React.SFC = () => {
         Buyerids: selectedbuyers,
         Partids: selectedValues,
         invoicetype:selectedcategory,
-        Date:null,
-        Document : ''
+        Date:selectedDate,
+        DocumentStatusFilter:selectedstatus
         };
         setdashboardinput(accountDashboardInput);
         await AccountsDashboardSummaries(accountDashboardInput);
@@ -130,8 +131,8 @@ const PayRetroAccountsDashboard: React.SFC = () => {
         Buyerids: selectedValues,
         Partids: selectedparts,
         invoicetype:selectedcategory,
-        Date:new Date,
-        Document : ''
+        Date:selectedDate,
+        DocumentStatusFilter:selectedstatus
         };
         setdashboardinput(accountDashboardInput);
         await AccountsDashboardSummaries(accountDashboardInput);
@@ -150,7 +151,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
         Partids: selectedparts,
         invoicetype:selectedcategory,
         Date:dateObject,
-        Document:null
+        DocumentStatusFilter:selectedstatus
       };
   
       setdashboardinput(accountDashboardInput);
@@ -217,8 +218,8 @@ const PayRetroAccountsDashboard: React.SFC = () => {
         Buyerids: selectedbuyers,
         Partids: selectedValues,
         invoicetype:selectedcategory,
-        Date:new Date,
-        Document : ''
+        Date:selectedDate,
+        DocumentStatusFilter :selectedstatus
       };
       setdashboardinput(accountDashboardInput);
       await AccountsDashboardSummaries(accountDashboardInput);
@@ -235,8 +236,24 @@ const PayRetroAccountsDashboard: React.SFC = () => {
         Buyerids: selectedbuyers,
         Partids: selectedValues,
         invoicetype:selectedcategory,
-        Date:new Date,
-        Document : ''
+        Date:selectedDate,
+        DocumentStatusFilter:selectedstatus
+      };
+      setdashboardinput(accountDashboardInput);
+      await AccountsDashboardSummaries(accountDashboardInput);
+      
+    };
+    const handlestatuschange = async(selectedValues:number) => {
+      console.log('selected', selectedValues);
+      setselectedstatus(selectedValues);
+  
+      var   accountDashboardInput: AccountDashboardInput = {
+        Supplierids: selectedsuppliers,
+        Buyerids: selectedbuyers,
+        Partids: selectedparts,
+        invoicetype:selectedcategory,
+        Date:selectedDate,
+        DocumentStatusFilter : selectedstatus
       };
       setdashboardinput(accountDashboardInput);
       await AccountsDashboardSummaries(accountDashboardInput);
@@ -244,26 +261,34 @@ const PayRetroAccountsDashboard: React.SFC = () => {
     };
   
 
-  const handleClickOutside = (event: MouseEvent) => {
-    const target = event.target as HTMLElement;
-    if (!target.closest(".dropdown-container")) {
-      setOpenDropdownId(null);
-    }
-  };
+  // const handleClickOutside = (event: MouseEvent) => {
+  //   const target = event.target as HTMLElement;
+  //   if (!target.closest(".dropdown-container")) {
+  //     setOpenDropdownId(null);
+  //   }
+  // };
 
-  React.useEffect(() => {
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
+  // React.useEffect(() => {
+  //   document.addEventListener("click", handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener("click", handleClickOutside);
+  //   };
+  // }, []);
 
-  const toggleDropdown = (id: number) => {
-    setOpenDropdownId((prevId) => (prevId === id ? null : id));
-  };
+  // const toggleDropdown = (id: number,event: React.MouseEvent) => {
+  //   setOpenDropdownId((prevId) => (prevId === id ? null : id));
+  // };
 
-  const handleDropdownAction = (action: string, id: number) => {
-    console.log(`Action: ${action}, Row ID: ${id}`);
+  // const handleDropdownAction = (action: string, id: number) => {
+  //   console.log(`Action: ${action}, Row ID: ${id}`);
+  //   // Placeholder for dropdown action logic
+  //   setSubmitIdRow(id);
+  //   setIsSupplierSubmitModalOpen(true);
+
+  // };
+
+  const handleClickAction = ( id: number) => {
+    console.log(` Row ID: ${id}`);
     // Placeholder for dropdown action logic
     setSubmitIdRow(id);
     setIsSupplierSubmitModalOpen(true);
@@ -401,8 +426,8 @@ function barstatus(status:any) {
         Buyerids: selectedbuyers,
         Partids: selectedparts,
         invoicetype:selectedcategory,
-        Date:new Date,
-        Document : ''
+        Date:selectedDate,
+        DocumentStatusFilter : selectedstatus
       };
       setdashboardinput(accountDashboardInput);
         await AccountsDashboardSummaries(accountDashboardInput);
@@ -417,8 +442,8 @@ function barstatus(status:any) {
         Buyerids: selectedbuyers,
         Partids: selectedparts,
         invoicetype:selectedcategory,
-        Date:new Date,
-        Document : ''
+        Date:selectedDate,
+        DocumentStatusFilter : selectedstatus
       };
       setdashboardinput(accountDashboardInput);
        AccountsDashboardSummaries(accountDashboardInput);
@@ -542,18 +567,77 @@ function barstatus(status:any) {
             </div>
               </Col>
               
-              <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '215px',margin:'4px' }}>
-                <div style={{ alignItems: 'center' }}>
-                  <span style={{ padding: "9px"}}>Date</span>
-                  <input 
-                    type="date" 
-                    value={selectedDate} 
-                    onChange={(e) => handledatechange(e.target.value)} 
-                    style={{ width: '100%' }} 
-                  />
-                </div>
-              </Col>
+              <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '215px', margin: '4px' }}>
+        <div style={{ textAlign: 'left' }}>
+          <span style={{ padding: "2px" }}>Date</span>
+          <div style={{
+            border: '1px solid #d9d9d9',
+            borderRadius: '5px',
+            padding: '4px',
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            backgroundColor: '#fff',
+            transition: 'border 0.3s ease, box-shadow 0.3s ease', // Smooth transition
+          }}
+        onFocus={(e) => {
+          e.currentTarget.style.border = '1px solid #3cb48c';
+          e.currentTarget.style.boxShadow = '0 0 5px #3cb48c';
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.border = '1px solid #d9d9d9';
+          e.currentTarget.style.boxShadow = 'none';
+        }}
+        tabIndex={0} // Ensures div can receive focus events
+          >
+            <input
+              type="date"
+              value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''} // Convert Date to string (YYYY-MM-DD)
+              onChange={(e) => handledatechange(e.target.value)}
+              style={{
+                width: '100%',
+                border: 'none',
+                outline: 'none',
+                backgroundColor: 'transparent'
+              }}
+            />
+          </div>
+        </div>
+      </Col>
+              <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '250px' }}>
+              <div style={{ textAlign: 'left' }}>
+              <span style={{padding: "2px"}}>Document Status</span>
+              
+              <Select<number>
+                
+                style={{ width: '200px' }}
+                placeholder="Select one or more options"
+                options={[
+                  {
+                    label: 'Select All',
+                    value: 0,
+                  },
+                {
+                  label: 'Pending',
+                  value: 1,
+        
+                },
+                {
+                  label: 'Approved',
+                  value: 2,
+                },
+                {
+                  label: 'Rejected',
+                  value: 3,
+                },
 
+              ]}
+              value={selectedstatus ?? undefined}
+                onChange={handlestatuschange}
+                optionLabelProp="label"
+              />
+            </div>
+              </Col>
             </Row>
 
 
@@ -617,28 +701,35 @@ function barstatus(status:any) {
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.ageing}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd", width: "175px" }}>
                   <span>
-                    {row.supplementaryInvoicePath && (
-                      <Button
-                        type="link"
-                        onClick={() => handleSupplementrypdfButtonClick(row.supplementaryInvoicePath)}
-                      >
-                        <FilePdfOutlined />
-                      </Button>
+                  {row.supplementaryInvoicePath && (
+                      <Tooltip title="Supplementary Invoice/Credit Note">
+                        <Button
+                          type="link"
+                          onClick={() => handleSupplementrypdfButtonClick(row.supplementaryInvoicePath)}
+                        >
+                          <FilePdfOutlined />
+                        </Button>
+                      </Tooltip>
                     )}
+
                     {row.annecurePath && (
+                      <Tooltip title="Annexure">
                       <Button
                         type="link"
                         onClick={() => handleAnnexurepdfButtonClick(row.annecurePath)}
                       >
                         <FilePdfOutlined />
                       </Button>
+                      </Tooltip>
                     )}
                     {row.supplementaryInvoicePath3 && (
+                     <Tooltip title="Annexure Attachment">
                       <Button
                         type="link"
                         onClick={() =>downloadFile({path: row.supplementaryInvoicePath3 })}>
                         <FileExcelOutlined />
                       </Button>
+                      </Tooltip>
                     )}
                   </span>
                 </td>
@@ -646,29 +737,33 @@ function barstatus(status:any) {
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.accountingDate?formatDate(row.accountingDate):''}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
                   <div className="dropdown-container" style={{ position: "relative" }}>
-                    <button
+                  <Tooltip title="Approve or Reject">
+
+                  {row.accountantApprovalStatus==1&&<button
                       style={{
-                        //backgroundColor: "#005f7f",
+                        backgroundColor: "transparent", // Fixed from "none" to "transparent"
                         color: "#fff",
                         border: "none",
                         padding: "5px 10px",
                         cursor: "pointer",
                       }}
-                      onClick={() => toggleDropdown(row.id)}
+                       onClick={(event) => handleClickAction(row.id)}
                     >
-                      <SettingsIcon/>
-                    </button>
-                    {openDropdownId === row.id && (
+                      <SettingsIcon   />
+                    </button>}
+                    </Tooltip>                
+
+                    {/* {openDropdownId === row.id && (
                       <div
                         style={{
-                          //position: "absolute",
+                          position: "absolute",
                           top: "100%",
                           left: "0",
                           backgroundColor: "#fff",
                           boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                          //zIndex: 999,
+                          zIndex: 999,
                           padding: "10px",
-                          width: "150px",
+                          //width: "150px",
                         }}
                       >
                         <button
@@ -677,15 +772,26 @@ function barstatus(status:any) {
                             backgroundColor: "#fff",
                             color: "#071437",
                             border: "none",
-                            padding: "10px",
+                            //padding: "10px",
                             marginBottom: "5px",
+                            textAlign: 'left',
+                            cursor: 'pointer', // Add pointer cursor for a better user experience
+                            transition: 'background-color 0.3s', // Smooth transition for background color change
                           }}
-                          onClick={() => handleDropdownAction("Action 1", row.id)}
+                          onMouseEnter={(e) => {
+                            const target = e.target as HTMLButtonElement; // Type assertion
+                            target.style.backgroundColor = '#f3efef'; // Change background on hover
+                          }}
+                          onMouseLeave={(e) => {
+                            const target = e.target as HTMLButtonElement; // Type assertion
+                            target.style.backgroundColor = '#fff'; // Revert background when hover ends
+                          }}
+                         // onClick={() => handleDropdownAction("Action 1", row.id)}
                         >
                           Approve/Reject
-                        </button>                       
+                        </button>       
                       </div>
-                    )}
+                    )} */}
                   </div>
                 </td>                          
                 <td style={{ padding: "10px", border: "1px solid #ddd" }} colSpan={3}>

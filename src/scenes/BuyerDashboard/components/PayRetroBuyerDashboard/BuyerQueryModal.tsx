@@ -324,7 +324,7 @@ ForwardFandCMail = async (item: any) => {
             },
           }),
          },
-          { title: L('SupplierName'), dataIndex: 'supplierCode', key: 'supplierFk.supplierCode', width: 150, render: (text: string) => <div>{text}</div>,
+          { title: L('Supplier Code'), dataIndex: 'supplierCode', key: 'supplierFk.supplierCode', width: 150, render: (text: string) => <div>{text}</div>,
           onHeaderCell: () => ({
             style: {
               backgroundColor: '#005f7f', // Set header background color for this column

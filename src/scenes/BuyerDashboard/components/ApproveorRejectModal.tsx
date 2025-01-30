@@ -100,14 +100,18 @@ const BuyersApproval: React.FC<ApproveRejectModalModalProps> = ({
 
   return (
     <Modal
-      title="Buyers Approval"
+      title="Buyers Approve/Reject Modal"
       visible={isOpen}
       onCancel={onCancel}
       footer={null}
       centered
       width="25%"
-      style={{ top: -150 }}
-    >
+      className="custom-modal"
+      style={{
+        overflow: 'hidden', // Ensure the rounded corners work
+        top:-70
+      }}
+      >
       <Form layout="vertical" form={form}>
         <Form.Item
           label="Remarks"
@@ -118,6 +122,16 @@ const BuyersApproval: React.FC<ApproveRejectModalModalProps> = ({
             ref={submitRemarksRef}
             rows={5}
             maxLength={250}
+            style={{ fontSize: "18px", border: '1px solid #d9d9d9',outline: 'none',    
+              transition: 'border-color 0.3s, box-shadow 0.3s' }}  // Corrected here
+              onFocus={(e) => {
+                e.target.style.border = '0.5px solid #3cb48c';
+                e.target.style.boxShadow = '0 0 3px #3cb48c'; // Glow effect
+              }}
+              onBlur={(e) => {
+                e.target.style.border = '0.5px solid #d9d9d9';
+                e.target.style.boxShadow = 'none'; // Remove glow effect
+              }}
             className="form-control"
             value={submitText}
             onChange={(e) => setSubmitText(e.target.value)}

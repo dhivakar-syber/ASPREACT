@@ -20,7 +20,16 @@ declare var abp: any;
   const [workflowInstancesData, setworkflowIsntancesData] = React.useState<any[]>([]);
   
   const [selectedDate, setSelectedDate] = React.useState("");
-  
+  // const [dashboardinput, setdashboardinput] = React.useState<BuyerDashboardInput>({
+  //   Supplierids:[0],
+  //   Buyerid:0,
+  //   Partids:[0],
+  //   DocumentStatusFilter:null,
+  //   invoicetype:0,
+  //   Date:null,
+  //   });
+
+  var userid='0';
   
   
 
@@ -29,7 +38,13 @@ declare var abp: any;
 
     const fetchData = async () => {
       try {
-                   
+
+        
+       
+        
+
+        const buyers = await supplementarySummariesService.GetLoginBuyer(userid);
+        //setBuyers(buyers.data.result || []);
         if(abp.session.userId===1||abp.session.userId===2)
         {
           
@@ -49,8 +64,7 @@ declare var abp: any;
 
          // setBuyers(buyers.data.result || []);
 
-          
-      
+
           await Promise.all([
             LoadsupplementarySummary(selectedDate),
             procurelogSummary(selectedDate),
@@ -61,11 +75,12 @@ declare var abp: any;
 
       
         }
+        console.log('buyers',buyers.data.result);
         
       } catch (error) {
         console.error("Error fetching supplementary summaries:", error);
       }
-    };  
+    };
 
     fetchData();
   }, []);
@@ -79,6 +94,7 @@ declare var abp: any;
 
     
 
+    setSelectedDate(dateObject);
     await Promise.all([
       LoadsupplementarySummary(dateObject),
       procurelogSummary(dateObject),
@@ -94,38 +110,38 @@ declare var abp: any;
 
    
   
-    const LoadsupplementarySummary=async (selectedDate : any)=>
+    const LoadsupplementarySummary=async (ReportDate :any)=>
     {
   
-    var  result = await supplementarySummariesService.GetSyncData(selectedDate);
+    var  result = await supplementarySummariesService.GetSyncData(ReportDate);
       setTableData(result || []);
      // console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
                     
     }
 
 
-    const procurelogSummary=async (selectedDate : any)=>
+    const procurelogSummary=async (ReportDate : any)=>
       {
     
-      var  result = await supplementarySummariesService.GetProcurLogData(selectedDate);
+      var  result = await supplementarySummariesService.GetProcurLogData(ReportDate);
         setprocurelogTableData(result || []);
        // console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
                       
       }
 
-      const cbfclogSummary=async (selectedDate:any)=>
+      const cbfclogSummary=async (ReportDate : any)=>
         {
       
-        var  result = await supplementarySummariesService.GetCBFCLogData(selectedDate);
+        var  result = await supplementarySummariesService.GetCBFCLogData(ReportDate);
         setcbfclogTableData(result || []);
         //  console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
                         
         }
 
-        const grnlogSummary=async (selectedDate : any)=>
+        const grnlogSummary=async (ReportDate : any)=>
           {
         
-          var  result = await supplementarySummariesService.GetGRNLogData(selectedDate);
+          var  result = await supplementarySummariesService.GetGRNLogData(ReportDate);
           setgrnlogTableData(result || []);
            // console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
                           
@@ -164,14 +180,7 @@ declare var abp: any;
   
   
   
-//   function formatDate(d:string) {
-//     const date = new Date(d);
-//     const year = date.getFullYear();
-//     const month = String(date.getMonth() + 1).padStart(2, '0'); 
-//     const day = String(date.getDate()).padStart(2, '0'); 
-
-//     return `${day}-${month}-${year}`; 
-// }
+  
 
 
 function workflowStatus(status : any) 
@@ -269,7 +278,7 @@ function workflowStatus(status : any)
                 <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.reportDate}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.status}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.partsCount}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.creationTime}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.creationTime }</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.lastModificationTime}</td>
                
               </tr>

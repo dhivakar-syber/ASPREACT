@@ -124,8 +124,6 @@ class DisputedataStore {
               SupplierRejection: '',
               SupplierName: '',
               BuyerName: '',
-              
-
             },
             SupplementarySummaryDisplayProperty: '',
             SupplierRejectionCode: '',

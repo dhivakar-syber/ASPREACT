@@ -65,7 +65,7 @@ const CreateOrUpdateDahBoardDisputesData: React.FC<ICreateOrUpdateDahBoardDisput
       <Form.Item label={L('BuyerName')} name="buyerName" {...formItemLayout}  >
               <Input disabled value={initialData ? initialData.buyerName : ''} style={{color:'#000000D9'}}/>
             </Form.Item>   
-            <Form.Item label={L('SupplierName')} name="supplierName" {...formItemLayout} >
+            <Form.Item label={L('Supplier Code')} name="supplierName" {...formItemLayout} >
               <Input  disabled value={initialData ? initialData.supplierName : ''} style={{color:'#000000D9'}}/>
             </Form.Item>
         

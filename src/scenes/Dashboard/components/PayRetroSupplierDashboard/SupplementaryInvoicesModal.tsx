@@ -30,7 +30,7 @@ const SupplementaryInvoiceModal: React.FC<SupplementaryInvoiceModalProps> = ({
   visible,
   onCancel,
 }) => {
-  const [annexureGroup, setAnnexureGroup] = useState<string | undefined>(undefined);
+  const [annexureGroup, setAnnexureGroup] = useState<string | "1"| undefined>(undefined);
   const [invoiceNo, setInvoiceNo] = useState<string>("");
   const [invoiceDate, setInvoiceDate] = useState<string | undefined>(undefined);
   const [annexureFile, setAnnexureFile] = useState<RcFile | null>(null);

@@ -4,5 +4,5 @@ export interface AccountDashboardInput {
     Partids:number[];
     invoicetype:number; 
     Date:Date|null;
-    Document:string | null;
+    DocumentStatusFilter:number|null;
   }

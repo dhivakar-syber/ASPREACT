@@ -134,7 +134,8 @@ class Role extends AppComponentBase<IRoleProps, IRoleState> {
     console.log(allPermissions);
     console.log(currentLogin);
     const specificPermissionsToShow = ["Pages", "Administration", "Disputes","Create new Query","Edit dispute","Delete dispute","Roles","Creating new role",
-      "Editing role","Supplier Dashboard","Buyer Dashboard","Accounts Dashboard","Users","Creating new user","Editing user","Deleting user"];
+      "Editing role","Supplier Dashboard","Buyer Dashboard","Accounts Dashboard","Users","Creating new user","Editing user","Deleting user","Annexure details"
+    ,"Create new annexure detail","Delete annexure detail","Edit annexure detail"];
     const permissionsToDisplay = currentLogin.user.roles.includes('Admin')
     ? allPermissions
   : allPermissions.filter(permission =>
