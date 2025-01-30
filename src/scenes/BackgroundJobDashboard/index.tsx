@@ -1,7 +1,7 @@
 import * as React from "react";
 import supplementarySummariesService from "../../services/SupplementarySummaries/supplementarySummariesService";
 
-import { Row, Col, Tabs,Card } from 'antd';
+import { Row, Col, Tabs,Card, Input } from 'antd';
 //import { keys } from "mobx";
 //import settingsIcon from "../../../../images/Setting.svg";
 import SessionStore from "../../stores/sessionStore";
@@ -18,6 +18,8 @@ declare var abp: any;
   const [cbfclogtableData, setcbfclogTableData] = React.useState<any[]>([]);
   const [grnlogtableData, setgrnlogTableData] = React.useState<any[]>([]);
   const [workflowInstancesData, setworkflowIsntancesData] = React.useState<any[]>([]);
+  const [selectedparts, setselectedparts] =React.useState<any>(null);
+  
   
   const [selectedDate, setSelectedDate] = React.useState("");
   // const [dashboardinput, setdashboardinput] = React.useState<BuyerDashboardInput>({
@@ -54,7 +56,7 @@ declare var abp: any;
           procurelogSummary(selectedDate),
           cbfclogSummary(selectedDate),
           grnlogSummary(selectedDate),
-          workflowIsntances(),
+          workflowIsntances(selectedparts),
         ]);
                 
          
@@ -70,7 +72,7 @@ declare var abp: any;
             procurelogSummary(selectedDate),
             cbfclogSummary(selectedDate),
             grnlogSummary(selectedDate),
-            workflowIsntances(),
+            workflowIsntances(selectedparts),
           ]);
 
       
@@ -100,13 +102,25 @@ declare var abp: any;
       procurelogSummary(dateObject),
       cbfclogSummary(dateObject),
       grnlogSummary(dateObject),
-      workflowIsntances(),
+      workflowIsntances(selectedparts),
     ]);
       
       
 
 
   };
+
+  const handleCorelationChange =async  (selectedValues: any) => {
+      
+      setselectedparts(selectedValues);
+      console.log('selectedparts',selectedValues)
+  
+      
+      await Promise.all([
+        
+        workflowIsntances(selectedValues),
+      ]);
+    };
 
    
   
@@ -147,10 +161,10 @@ declare var abp: any;
                           
           }
 
-          const workflowIsntances=async ()=>
+          const workflowIsntances=async (correlationId : any)=>
             {
           
-            var  result = await supplementarySummariesService.workflowIsntances();
+            var  result = await supplementarySummariesService.workflowIsntances(correlationId);
             setworkflowIsntancesData(result || []);
                             
             }
@@ -432,6 +446,19 @@ function workflowStatus(status : any)
 </Tabs.TabPane>
 
 <Tabs.TabPane tab="Work Flow Instances" key="5">
+
+<Col className="gutter-row" span={5}>
+    <div style={{ textAlign: 'left' }}>
+      <span style={{ padding: "2px" }}>Correlation Id</span>
+      <Input
+        type="text"
+        style={{ width: '200px' }}
+        value={selectedparts}
+        onChange={(e) => handleCorelationChange(e.target.value)} // Fixed function call
+        
+      />
+    </div>
+  </Col>
       <div style={{ marginTop: "20px", overflowX: 'auto' }}>
         
         <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px",
