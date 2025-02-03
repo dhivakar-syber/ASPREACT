@@ -241,14 +241,9 @@ ForwardFandCMail = async (item: any) => {
         const updatedItem = { ...values, id: this.state.disputeId };
         await this.props.disputesStore.update(updatedItem);
 
-        // Corrected function name and syntax for the 'done' callback
-        disputesServices.buyermail(updatedItem.id)
-            .then((result) => {
-                this.ClosrQueryMail(result);
-            })
-            .catch((error) => {
-                console.error('Error in sending email:', error);
-            });
+        
+        this.ClosrQueryMail(values);
+            
     }
   
    // await this.getAll();

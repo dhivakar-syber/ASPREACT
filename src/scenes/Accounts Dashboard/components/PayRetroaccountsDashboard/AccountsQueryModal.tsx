@@ -193,15 +193,9 @@ IntimateToBuyerMail = async (item: any) => {
       if (this.state.userId === 0) {
         await this.props.disputesStore.create(values);
       } else {
-        const dispute = { ...values, id: this.state.userId };
+        
         await this.props.disputesStore.update({ ...values, id: this.state.userId });
-        disputesServices.buyermail(dispute.id)
-                    .then((result) => {
-                        this.IntimateToBuyerMail(result);
-                    })
-                    .catch((error) => {
-                        console.error('Error in sending email:', error);
-                    });
+        this.IntimateToBuyerMail(values);
        
       }
 
