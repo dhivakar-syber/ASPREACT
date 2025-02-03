@@ -70,7 +70,7 @@ export const appRouters: any = [
   {
     path: '/backgroundJobsDashboard',
     name: 'dashboard',
-    permission: '',
+    permission: 'Pages.Administration.BackgroundJobs',
     title: 'Background Jobs Dashboard',
     icon: TagsOutlined,
     showInMenu: true,

@@ -680,7 +680,7 @@ function barstatus(status:any) {
                 />
               </div>
                 </Col>
-          
+
 </Row>
     
 <br></br>

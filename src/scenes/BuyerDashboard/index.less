@@ -62,4 +62,16 @@
     border-radius: 12px !important;
     overflow: hidden; /* Ensure content respects the border-radius */
   }
-    
+  .fixed-column {
+    position: fixed;
+    top: 20px; /* Adjust based on where you want the column to appear */
+    right: 0; /* You can set left, right, top, or bottom as needed */
+    width: 250px; /* Adjust width as necessary */
+    z-index: 10; /* Ensures it stays on top of other content */
+  }
+  .sticky-column {
+    position: sticky;
+    top: 0; /* Sticks to the top of its container */
+    width: 250px; /* Adjust width as needed */
+    z-index: 5; /* Adjust if needed for stacking */
+  }

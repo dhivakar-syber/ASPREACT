@@ -694,7 +694,7 @@ function barstatus(status:any) {
                 // }}
               >
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{index+1}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.document}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.document ===null && row.iscreditnote === false?row.document ='Supplementary Invoice':row.document }</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryInvoiceNo}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.supplementaryInvoiceDate)}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.total}</td>

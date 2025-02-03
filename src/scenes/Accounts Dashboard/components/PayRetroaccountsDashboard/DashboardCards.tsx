@@ -33,7 +33,7 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ AccountsDashboardInputs
         <div style={{ padding: "10px"}}>
    <Row gutter={16}>
       {cardDetails.map((card, index) => (
-        <Col key={index} span={8}>
+        <Col key={index} span={7}>
           <div style={{ height:"85px", backgroundColor: "#fafafa", marginLeft:"20px", marginRight:"20px"  , borderRadius:"2px" }}>
             
             <Row>
@@ -72,6 +72,29 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ AccountsDashboardInputs
           
         </Col>
       ))}
+     <Col style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", position: "relative", right: '-2rem', top: 0}}>
+                       <div className="col-1 status">
+                         <div className="progress-dot">
+                           <span className="dot approved"></span>
+                           <div className="status-text" style={{ marginRight: "1px" }}>
+                             Approved
+                           </div>
+                         </div>
+                         <div className="progress-dot">
+                         <span className="dot pending"></span>
+                           <div className="status-text" style={{ marginRight: "10px" }}>
+                             Pending
+                           </div>
+                         </div>
+     
+                         <div className="progress-dot">
+                         <span className="dot rejected"></span>
+                           <div className="status-text" style={{ marginRight: "5px" }}>
+                             Rejected
+                           </div>
+                         </div>
+                       </div>
+                     </Col>
     </Row>    
 </div>
     );

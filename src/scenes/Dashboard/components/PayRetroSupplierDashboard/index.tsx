@@ -4,7 +4,7 @@ import supplementarySummariesService from "../../../../services/SupplementarySum
 import annexureDetailsService from "../../../../services/annexureDetails/annexureDetailsService";
 import { SupplierDashboardInput } from "./SupplierDashboardInput";
 import  DashboardCards  from "../PayRetroSupplierDashboard/DashboardCards";
-import { Row, Col,Select,message, Card,Modal,Button,DatePicker,Spin,Tag } from 'antd';
+import { Row, Col,Select,message, Card,Modal,Button,DatePicker,Spin,Tag, Tabs } from 'antd';
 import SupplierSubmitModal from './SupplierSubmitModal';
 import SupplementaryInvoiceModal from "./SupplementaryInvoicesModal";
 import DisputesStore from "../../../../stores/DisputesStrore";
@@ -21,6 +21,7 @@ import settingsIcon from "../../../../images/Setting.svg";
 import SessionStore from "../../../../stores/sessionStore";
 import { inject, observer } from "mobx-react"; // Import MobX utilities
 import { ExclamationCircleFilled } from '@ant-design/icons';
+import AnalysisPieChart from "../PieChartExample";
 
 
 
@@ -630,7 +631,7 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
     } catch (error) {
       console.error('Error fetching data:', error);
     } 
-  } 
+   } 
   };
   //const { Item } = Form;
 
@@ -1119,7 +1120,7 @@ function barstatus(status:any) {
               />
             </div>
           </Col>
-          <Col className="gutter-row" span={5}>
+         <Col className="gutter-row" span={5}>
             <div style={{ textAlign: 'left' }}>
             {showDownloadButton && (
                 <div style={{ marginTop: '20px' }}>
@@ -1149,6 +1150,9 @@ function barstatus(status:any) {
         </Row>
 
         <br></br>
+        
+  <Tabs defaultActiveKey="1">
+    <Tabs.TabPane tab="Home" key="1">
         <div style={{ marginTop: '20px', overflowX: 'auto' }}>
           <table
             style={{
@@ -1509,7 +1513,15 @@ function barstatus(status:any) {
             formRef={formRef}
           />
         )}
+                      </Tabs.TabPane>
+            <Tabs.TabPane tab="Analysis" key="3">
+            <AnalysisPieChart
+            supplementaryDocStatus={tableData}
+            />
+            </Tabs.TabPane>
+          </Tabs> 
       </Card>
+
     </div>
   );
 
