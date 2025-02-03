@@ -188,8 +188,6 @@ ForwardFandCMail = async (item: any) => {
     
   console.log(item);
 
-  
-
   message.success(`Buyer to F&C Forwarded Query Intimation  Mail Sent to - ${item.accoutantName}`);
 
 };

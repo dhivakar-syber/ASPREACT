@@ -112,7 +112,7 @@ class CreateOrUpdateDahBoarddisputedata extends React.Component<ICreateOrUpdateD
                 </Col>
                 <Col span={12}>
                  <Form.Item label={L('Accounts Remarks')} name="accountsRemarks" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} style={{ fontWeight: 'bold' }}>
-                    <Input  value={initialData.accountsRemarks || ''} style={{  color: 'black' }}/>
+                    <textarea  value={initialData.accountsRemarks || ''} style={{  color: 'black' }}/>
                     </Form.Item>
                 </Col>
            </Row>
