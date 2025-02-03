@@ -196,6 +196,18 @@ class CreateOrUpdateBuyer extends React.Component<ICreateOrUpdateBuyerProps> {
       });
     }
 }}>
+  <Form.Item label={L('Department')} name={'department'} {...formItemLayout}>
+            <Input />
+          </Form.Item>
+
+  <Form.Item label={L('Name')} name={'name'} {...formItemLayout}>
+            <Input />
+          </Form.Item>
+
+          <Form.Item label={L('ShortId')} name={'shortId'} {...formItemLayout}>
+            <Input />
+          </Form.Item>
+
           <Form.Item label={L('User')} name={'userName'} {...formItemLayout}>
             <Input 
              onClick={this.showBuyerLookupModal} // Trigger supplier lookup modal
@@ -207,7 +219,19 @@ class CreateOrUpdateBuyer extends React.Component<ICreateOrUpdateBuyerProps> {
           <Form.Item label={L('User')} name="userId" {...formItemLayout} hidden>
             <Input value={selectedBuyerLookupItem?.id || initialData.userId || 0} />
           </Form.Item>
-
+          <Form.Item label={L('L4 User')} name={'l4User'} {...formItemLayout}>
+            <Select
+              value={selectedL4UserLookupItem?.id}
+              onChange={this.handleL4UserChange}
+              placeholder={L('Select L4 User')}
+            >
+              {l4userData.map((user) => (
+                <Select.Option key={user.id} value={user.id}>
+                  {user.displayName}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
           <Form.Item label={L('L3 User')} name={'l3User'} {...formItemLayout}>
             <Select
               value={selectedL3UserLookupItem?.id}
@@ -224,40 +248,15 @@ class CreateOrUpdateBuyer extends React.Component<ICreateOrUpdateBuyerProps> {
 {/* 
           <Form.Item label={L('L3 User')} name="l3userId" {...formItemLayout} hidden>
             <Input />
-          </Form.Item> */}
-
-          <Form.Item label={L('L4 User')} name={'l4User'} {...formItemLayout}>
-            <Select
-              value={selectedL4UserLookupItem?.id}
-              onChange={this.handleL4UserChange}
-              placeholder={L('Select L4 User')}
-            >
-              {l4userData.map((user) => (
-                <Select.Option key={user.id} value={user.id}>
-                  {user.displayName}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
+          </Form.Item> */}          
 {/* 
           <Form.Item label={L('Name')} name="userId" {...formItemLayout} hidden>
             <Input />
           </Form.Item> */}
 
-          <Form.Item label={L('Name')} name={'name'} {...formItemLayout}>
+          {/* <Form.Item label={L('Reporting To')} name={'reportingTo'} {...formItemLayout}>
             <Input />
-          </Form.Item>
-          <Form.Item label={L('ShortId')} name={'shortId'} {...formItemLayout}>
-            <Input />
-          </Form.Item>
-
-          <Form.Item label={L('Department')} name={'department'} {...formItemLayout}>
-            <Input />
-          </Form.Item>
-
-          <Form.Item label={L('Reporting To')} name={'reportingTo'} {...formItemLayout}>
-            <Input />
-          </Form.Item>
+          </Form.Item> */}
         </Form>
         </Modal>
 

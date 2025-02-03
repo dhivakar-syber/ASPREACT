@@ -551,6 +551,14 @@ public async GetGRNLogData(ReportDate :any) {
   });
   return result.data.result;
 }
+
+
+public async workflowIsntances(correlationId : any) {
+  let result = await http.get('api/services/app/SupplementarySummaries/GetWorkFlowInstances',{
+    params:{correlationId}
+  });
+  return result.data.result;
+}
     
 
      

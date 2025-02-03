@@ -24,7 +24,7 @@ public async getAll(pagedFilterAndSortedRequest: PagedTenantResultRequestDto): P
   return result.data.result;
 }
 public async get(entityDto: EntityDto): Promise<GetSupplierForEditOutput> {
-  let result = await http.get('api/services/app/supplier/GetSupplierForEditOutput', { params: entityDto });
+  let result = await http.get('api/services/app/Suppliers/GetSupplierForEdit', { params: entityDto });
   return result.data.result;
 }
 
@@ -42,6 +42,10 @@ public async getAllSupplierForLookupTable(pagedFilterAndSortedRequest: PagedTena
   let result = await http.get('/api/services/app/Suppliers/GetAllUserForLookupTable', { params: pagedFilterAndSortedRequest });
   return result.data.result;
 
+}
+public async getAllUserForLookupTable(pagedFilterAndSortedRequest: PagedTenantResultRequestDto): Promise<PagedResultDto<SupplierUserLookupTableDto>>{
+  let result = await http.get('/api/services/app/Suppliers/GetAllUserForLookupTable', { params: pagedFilterAndSortedRequest });
+  return result.data.result;
 }
 }   
 export default new supplierservice();

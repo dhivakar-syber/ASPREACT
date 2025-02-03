@@ -652,38 +652,47 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
       // Prevent modal from closing when clicking inside the modal
       e.stopPropagation();
     };
-    const handleDateChange = async (date:any, dateString:any) => {
-      console.log('Selected date:', dateString);
-      console.log('Selected row ID:', selectedRow?.id);
-      await supplementarySummariesService.Implementationeffect(selectedRow?.id,dateString);
-      await LoadsupplementarySummary(dashboardinput);
-      try {
-        const result = await supplementarySummariesService.grndata(selectedRow?.id);
-        setModalData([]); // Await the Promise
-        setModalData(result);
-        console.log('setmodaldata',result) // Assuming the result contains the data in 'data' field
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-      try {
-        const annexureresult = await supplementarySummariesService.annexuredata(selectedRow?.id); // Await the Promise
-        annexuresetModalData([]);
-        annexuresetModalData(annexureresult);
-        console.log('annexuresetmodaldata',annexureresult) // Assuming the result contains the data in 'data' field
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } 
-      try {
-        const row = await supplementarySummariesService.GetAllsupplementarySummarybyId(selectedRow?.id);
-        console.log('ImplementationDateChange',row[0]);
-        setSelectedRow([]);
-        setSelectedRow(row[0]);
-         // Assuming the result contains the data in 'data' field
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } 
+    const handleDateChange = async (date: any, dateString: any) => {
+      if (date) {
 
-      message.success('Implementation Date changed Successfully Synced');
+      console.log('changed date',date,dateString);
+      Modal.confirm({
+        title: 'Are you sure?',
+        content: 'Do you want to change the Implementation Date?',
+        onOk: async () => {
+          console.log('Selected date:', dateString);
+          console.log('Selected row ID:', selectedRow?.id);
+    
+          try {
+            await supplementarySummariesService.Implementationeffect(selectedRow?.id, dateString);
+            await LoadsupplementarySummary(dashboardinput);
+    
+            const result = await supplementarySummariesService.grndata(selectedRow?.id);
+            setModalData([]);
+            setModalData(result);
+            console.log('setmodaldata', result);
+    
+            const annexureresult = await supplementarySummariesService.annexuredata(selectedRow?.id);
+            annexuresetModalData([]);
+            annexuresetModalData(annexureresult);
+            console.log('annexuresetmodaldata', annexureresult);
+    
+            const row = await supplementarySummariesService.GetAllsupplementarySummarybyId(selectedRow?.id);
+            console.log('ImplementationDateChange', row[0]);
+            setSelectedRow([]);
+            setSelectedRow(row[0]);
+    
+            message.success('Implementation Date changed Successfully Synced');
+          } catch (error) {
+            console.error('Error fetching data:', error);
+            message.error('Failed to update Implementation Date.');
+          }
+        },
+        onCancel() {
+          console.log('Date change cancelled');
+        },
+      });
+    }
     };
     return (
       <Modal

@@ -306,29 +306,29 @@ editdata:any = null;
           width: 150,
           render: (text: string, record: any) => <div>{record.buyer?.department || ''}</div>,
       },
+      // {
+      //     title: L('ReportingTo'),
+      //     dataIndex: 'buyer.reportingTo',
+      //     key: 'reportingTo',
+      //     width: 150,
+      //     render: (text: string, record: any) => <div>{record.buyer?.reportingTo || ''}</div>,
+      // },
       {
-          title: L('ReportingTo'),
-          dataIndex: 'buyer.reportingTo',
-          key: 'reportingTo',
-          width: 150,
-          render: (text: string, record: any) => <div>{record.buyer?.reportingTo || ''}</div>,
-      },
-      {
-        title: L('UserName'),
+        title: L('User Name'),
         dataIndex: 'userName', // Matches the "name" in your JS code
         key: 'userName', // Assign a unique key for React rendering
         width: 150, // Adjust as needed
         render: (text: string) => <div>{text}</div> ,
       },      
       {
-        title: L('L3UserName'),
+        title: L('L3 User Name'),
         dataIndex: 'userName2', // Matches the "name" in your JS code
         key: 'userName2',
         width: 150,
         render: (text: string) => <div>{text}</div> , // Adjust to render the correct value
     },
     {
-        title: L('L4UserName'),
+        title: L('L4 User Name'),
         dataIndex: 'userName3', // Matches the "name" in your JS code
         key: 'userName3',
         width: 150,
@@ -492,13 +492,16 @@ editdata:any = null;
         modalType={this.state.buyerId === 0 ? 'create' : 'edit'}
         onCreate={this.handleCreate}
         initialData={{
-          name: '',
-          shortId: '',
-          department: '',
-          reportingTo: '',
-          userName: '',
-          userName2: '',
-          userName3: ''
+          name: this.props.buyerStore?.editUser?.buyer?.name,
+          shortId: this.props.buyerStore?.editUser?.buyer?.shortId,
+          department: this.props.buyerStore?.editUser?.buyer?.department,
+          reportingTo: this.props.buyerStore?.editUser?.buyer?.reportingTo,
+          userName: this.props.buyerStore?.editUser?.buyer?.userId,
+          userId: this.props.buyerStore?.editUser?.buyer?.userId,
+          userName2: this.props.buyerStore?.editUser?.buyer?.l4User,
+          l4User: this.props.buyerStore?.editUser?.buyer?.l4User,
+          userName3: this.props.buyerStore?.editUser?.buyer?.l3User,
+          l3User: this.props.buyerStore?.editUser?.buyer?.l3User
         }}
         buyerStore={this.props.buyerStore}
       />

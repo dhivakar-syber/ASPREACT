@@ -1,8 +1,7 @@
 import * as React from "react";
 import supplementarySummariesService from "../../services/SupplementarySummaries/supplementarySummariesService";
 
-import { Row, Col, Tabs,Card } from 'antd';
-import { BuyerDashboardInput } from "../BuyerDashboard/BuyerDashboardInput";
+import { Row, Col, Tabs,Card, Input } from 'antd';
 //import { keys } from "mobx";
 //import settingsIcon from "../../../../images/Setting.svg";
 import SessionStore from "../../stores/sessionStore";
@@ -18,16 +17,19 @@ declare var abp: any;
   const [procurelogtableData, setprocurelogTableData] = React.useState<any[]>([]);
   const [cbfclogtableData, setcbfclogTableData] = React.useState<any[]>([]);
   const [grnlogtableData, setgrnlogTableData] = React.useState<any[]>([]);
+  const [workflowInstancesData, setworkflowIsntancesData] = React.useState<any[]>([]);
+  const [selectedparts, setselectedparts] =React.useState<any>(null);
+  
   
   const [selectedDate, setSelectedDate] = React.useState("");
-  const [dashboardinput, setdashboardinput] = React.useState<BuyerDashboardInput>({
-    Supplierids:[0],
-    Buyerid:0,
-    Partids:[0],
-    DocumentStatusFilter:null,
-    invoicetype:0,
-    Date:null,
-    });
+  // const [dashboardinput, setdashboardinput] = React.useState<BuyerDashboardInput>({
+  //   Supplierids:[0],
+  //   Buyerid:0,
+  //   Partids:[0],
+  //   DocumentStatusFilter:null,
+  //   invoicetype:0,
+  //   Date:null,
+  //   });
 
   var userid='0';
   
@@ -50,10 +52,11 @@ declare var abp: any;
           
          // setBuyers(buyers.data.result || []);
          await Promise.all([
-          LoadsupplementarySummary(dashboardinput),
-          procurelogSummary(dashboardinput),
-          cbfclogSummary(dashboardinput),
-          grnlogSummary(dashboardinput),
+          LoadsupplementarySummary(selectedDate),
+          procurelogSummary(selectedDate),
+          cbfclogSummary(selectedDate),
+          grnlogSummary(selectedDate),
+          workflowIsntances(selectedparts),
         ]);
                 
          
@@ -63,21 +66,13 @@ declare var abp: any;
 
          // setBuyers(buyers.data.result || []);
 
-          var   buyerdashboard: BuyerDashboardInput = {
-            Supplierids:[0],
-            Buyerid:buyers.data.result[0].id,
-            Partids: [0],
-            invoicetype:0,
-            Date:null,
-            DocumentStatusFilter:null
-          };
-      
-          setdashboardinput(buyerdashboard);
+
           await Promise.all([
-            LoadsupplementarySummary(buyerdashboard),
-            procurelogSummary(buyerdashboard),
-            cbfclogSummary(buyerdashboard),
-            grnlogSummary(buyerdashboard),
+            LoadsupplementarySummary(selectedDate),
+            procurelogSummary(selectedDate),
+            cbfclogSummary(selectedDate),
+            grnlogSummary(selectedDate),
+            workflowIsntances(selectedparts),
           ]);
 
       
@@ -99,22 +94,15 @@ declare var abp: any;
 
     const dateObject =value && value.trim() !== "" ? value : null;
 
-    var   buyerdashboard: BuyerDashboardInput = {
-      
-            Supplierids:[0],
-            Buyerid:0,
-            Partids: [0],
-            invoicetype:0,
-            Date:dateObject,
-            DocumentStatusFilter:null
-    };
+    
 
-    setdashboardinput(buyerdashboard);
+    setSelectedDate(dateObject);
     await Promise.all([
-      LoadsupplementarySummary(buyerdashboard),
-      procurelogSummary(buyerdashboard),
-      cbfclogSummary(buyerdashboard),
-      grnlogSummary(buyerdashboard),
+      LoadsupplementarySummary(dateObject),
+      procurelogSummary(dateObject),
+      cbfclogSummary(dateObject),
+      grnlogSummary(dateObject),
+      workflowIsntances(selectedparts),
     ]);
       
       
@@ -122,44 +110,66 @@ declare var abp: any;
 
   };
 
+  const handleCorelationChange =async  (selectedValues: any) => {
+      
+      setselectedparts(selectedValues);
+      console.log('selectedparts',selectedValues)
+  
+      
+      await Promise.all([
+        
+        workflowIsntances(selectedValues),
+      ]);
+    };
+
    
   
-    const LoadsupplementarySummary=async (buyerdashboardinput:BuyerDashboardInput)=>
+    const LoadsupplementarySummary=async (ReportDate :any)=>
     {
   
-    var  result = await supplementarySummariesService.GetSyncData(buyerdashboardinput.Date);
+    var  result = await supplementarySummariesService.GetSyncData(ReportDate);
       setTableData(result || []);
      // console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
                     
     }
 
 
-    const procurelogSummary=async (buyerdashboardinput:BuyerDashboardInput)=>
+    const procurelogSummary=async (ReportDate : any)=>
       {
     
-      var  result = await supplementarySummariesService.GetProcurLogData(buyerdashboardinput.Date);
+      var  result = await supplementarySummariesService.GetProcurLogData(ReportDate);
         setprocurelogTableData(result || []);
        // console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
                       
       }
 
-      const cbfclogSummary=async (buyerdashboardinput:BuyerDashboardInput)=>
+      const cbfclogSummary=async (ReportDate : any)=>
         {
       
-        var  result = await supplementarySummariesService.GetCBFCLogData(buyerdashboardinput.Date);
+        var  result = await supplementarySummariesService.GetCBFCLogData(ReportDate);
         setcbfclogTableData(result || []);
         //  console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
                         
         }
 
-        const grnlogSummary=async (buyerdashboardinput:BuyerDashboardInput)=>
+        const grnlogSummary=async (ReportDate : any)=>
           {
         
-          var  result = await supplementarySummariesService.GetGRNLogData(buyerdashboardinput.Date);
+          var  result = await supplementarySummariesService.GetGRNLogData(ReportDate);
           setgrnlogTableData(result || []);
            // console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
                           
           }
+
+          const workflowIsntances=async (correlationId : any)=>
+            {
+          
+            var  result = await supplementarySummariesService.workflowIsntances(correlationId);
+            setworkflowIsntancesData(result || []);
+                            
+            }
+    
+           
   
     
     
@@ -187,7 +197,25 @@ declare var abp: any;
   
 
 
-
+function workflowStatus(status : any) 
+{
+    switch(status){
+      case 0:
+        return 'Idle';
+      case 1:
+        return 'Running';
+      case 2:
+        return 'Finished';
+      case 3:
+        return 'Suspended';
+      case 4:
+        return 'Faulted';
+      case 5:
+        return 'Cancelled';  
+      default:
+        return '';         
+    }
+}
   
 
 
@@ -262,7 +290,7 @@ declare var abp: any;
           <tbody>
             {tableData.map((row,index) => (
               <tr>
-                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{index+1}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{index+1}</td>                
                 <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.reportDate}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.status}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.partsCount}</td>
@@ -419,12 +447,79 @@ declare var abp: any;
 
 </Tabs.TabPane>
 
+<Tabs.TabPane tab="Work Flow Instances" key="5">
+
+<Col className="gutter-row" span={5}>
+    <div style={{ textAlign: 'left' }}>
+      <span style={{ padding: "2px" }}>Correlation Id</span>
+      <Input
+        type="text"
+        style={{ width: '200px' }}
+        value={selectedparts}
+        onChange={(e) => handleCorelationChange(e.target.value)} // Fixed function call
+        
+      />
+    </div>
+  </Col>
+      <div style={{ marginTop: "20px", overflowX: 'auto' }}>
+        
+        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px",
+              borderRadius: '5px', }}>
+          <thead>
+          <tr style={{ backgroundColor: '#005f7f', color: '#fff', textAlign: 'center', borderRadius: '2px' }}>
+          {[
+                "S.No",
+                "WorkFlow Name",
+                "Corelation Id",
+                "WorkFlow Status",
+                "Created At",
+                "Finished At",
+                "Faulted At",
+                "Cancelled At",
+                
+              ].map((header) => (
+                <th key={header} style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px' }}>
+                  {header}
+                </th>
+              ))}
+            </tr>
+            <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
+
+            <td  colSpan={10}>
+  
+</td>
+              
+           
+            </tr>
+          </thead>
+          <tbody>
+            {workflowInstancesData.map((row,index) => (
+              <tr
+              >
+                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{index+1}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.workFlowName}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.correlationId}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{workflowStatus(row.workflowStatus)}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.createdAt}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.lastExecutedAt}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.finishedAt}</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.faultedAt}</td>
+               
+              </tr>
+            ))}
+          </tbody>
+        </table>
+       
+      </div>
+
+</Tabs.TabPane>
   </Tabs>
   </Card>
       
           
     </div>
   );
+  
 };
 
 export default inject("sessionStore")(observer(PayRetroBuyerDashboard));
