@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Button, Card, Col, Dropdown, Menu, Modal, Row, Table,message} from 'antd';
+import { Button, Card, Col,Modal, Row, Table,message} from 'antd';
 import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../../../components/AppComponentBase';
@@ -12,12 +12,10 @@ import DisputesStrore from '../../../../stores/DisputesStrore';
 import { FormInstance } from 'antd/lib/form';
 import { BuyerDashboardInput } from "./BuyerDashboardInput";
 
-//import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
-//import { EnumCurrency,EnumTransaction } from '../../../src/enum'
 
 export interface IDisputesProps {
   disputesStore: DisputesStrore;
-  BuyerDashboardInput: BuyerDashboardInput; // Ensure the type is correct
+  BuyerDashboardInput: BuyerDashboardInput; 
 }
 
 export interface IDisputesdataState {
@@ -56,7 +54,7 @@ type BuyerLookupItem = {
 };
 
 const confirm = Modal.confirm;
-//const Search = Input.Search;
+
 
 const getStatusLabel = (status: number): string => {
   switch (status) {
@@ -264,20 +262,8 @@ ForwardFandCMail = async (item: any) => {
             render: (text: string, item: any) => (
               <div>
            {item.dispute?.status !== 2 ? (
-          <Dropdown
-            trigger={['click']}
-            overlay={
-              <Menu>
-                <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.dispute?.id })}>
-                  {L('Edit')}
-                </Menu.Item>
-              </Menu>
-            }
-            placement="bottomLeft"
-          >
-            <Button type="primary">{L('Actions')}</Button>
-          </Dropdown>
-        ) : <Button type="primary" disabled>{L('Actions')}</Button>}
+          <Button onClick={() => this.createOrUpdateModalOpen({ id: item.dispute?.id })} type="primary">{L('Response')}</Button>
+        ) : <Button type="primary" disabled>{L('Response')}</Button>}
             </div>
             ),
             onHeaderCell: () => ({

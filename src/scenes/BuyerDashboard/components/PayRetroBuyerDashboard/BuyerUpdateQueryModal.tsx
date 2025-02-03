@@ -33,68 +33,48 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
   const [supplementaryData, setSupplementaryData] = React.useState<any[]>([]);
   const [hoveredRowId, setHoveredRowId] = React.useState<number | null>(null);
   const [ selectedRow,setSelectedRow] = React.useState<any | null>(null); // To manage selected row for modal
-  // const [ setSelectedRow] = React.useState<any | null>(null); // To manage selected row for modal
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false); // To control modal visibility
-    // const [rowsupplierstatus, setrowsupplierstatus] = React.useState<number | null>(0); 
-    // const [rowBuyerstatus, setrowBuyerstatus] = React.useState<number | null>(0); 
-    // const [rowAccountsStatus, setrowAccountsStatus] = React.useState<number | null>(0);
-    // const [ setrowsupplierstatus] = React.useState<number | null>(0); 
-    // const [ setrowBuyerstatus] = React.useState<number | null>(0); 
-    // const [ setrowAccountsStatus] = React.useState<number | null>(0);
-  // console.log(selectedRow);
-
-      // const [dashboardinput, setdashboardinput] = React.useState<SupplierDashboardInput>({
-      //   Supplierid: 0,
-      //   Buyerids: [0],
-      //   Partids: [0],
-      //   invoicetype:0
-      // });
-      // const [dashboardinput] = React.useState<SupplierDashboardInput>({
-      //   Supplierid: 0,
-      //   Buyerids: [0],
-      //   Partids: [0],
-      //   invoicetype:0
-      // });
+    
       console.log(selectedRow)
       console.log(isModalOpen)
       console.log(setHoveredRowId)
 
   
     const handleRowClick = async (row: number) => {
-      // if ((e.target as HTMLElement).tagName !== 'INPUT') {
-      setSelectedRow(row); // Set the clicked row data
-      setIsModalOpen(true); // Open the modal
+      
+      setSelectedRow(row); 
+      setIsModalOpen(true);
 
       try {
         const result = await supplementarySummariesService.GetAllsupplementarySummarybyId(row); // Await the Promise
         console.log('ImplementationDateChange',result[0]);
         setSupplementaryData([]);
         setSupplementaryData(result[0]);
-        // console.log('SupplementaryData',result) // Assuming the result contains the data in 'data' field
+        
       } catch (error) {
         console.error('Error fetching data:', error);
       }
       try {
         const result = await supplementarySummariesService.grndata(row); // Await the Promise
         setModalData(result);
-        console.log('setmodaldata',result) // Assuming the result contains the data in 'data' field
+        console.log('setmodaldata',result) 
       } catch (error) {
         console.error('Error fetching data:', error);
       }
       try {
         const annexureresult = await supplementarySummariesService.annexuredata(row); // Await the Promise
         annexuresetModalData(annexureresult);
-        console.log('annexuresetmodaldata',annexureresult) // Assuming the result contains the data in 'data' field
+        console.log('annexuresetmodaldata',annexureresult) 
       } catch (error) {
         console.error('Error fetching data:', error);
       } 
-    // } 
+  
   };
-  //const { Item } = Form;
+  
 
   const handleModalClose = () => {
-    setIsModalOpen(false); // Close the modal
-    setSelectedRow(null);  // Clear the selected row data
+    setIsModalOpen(false); 
+    setSelectedRow(null);  
   };
 
 
@@ -222,10 +202,10 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
         </Form.Item>
       </Form>
   
-      {/* Supplier Modal inside the same Modal */}
+      
       {isModalOpen && (
         <SupplierModalView
-          // selectedRow={selectedRow}
+      
           modalData={modalData}
           annexureModalData={annexuremodalData}
           supplementaryData = {supplementaryData}
