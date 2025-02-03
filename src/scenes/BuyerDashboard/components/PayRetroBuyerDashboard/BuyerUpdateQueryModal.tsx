@@ -5,8 +5,6 @@ import { L } from '../../../../lib/abpUtility';
 import DisputesStrore from '../../../../stores/DisputesStrore';
 import supplementarySummariesService from '../../../../services/SupplementarySummaries/supplementarySummariesService';
 import SupplierModalView from './supplierModalView';
-// import annexureDetailsService from '../../../../services/annexureDetails/annexureDetailsService';
-// import { SupplierDashboardInput } from '../../../Dashboard/components/PayRetroSupplierDashboard/SupplierDashboardInput';
 
 export interface ICreateOrUpdateDahBoardDisputesDataProps {
   visible: boolean;
