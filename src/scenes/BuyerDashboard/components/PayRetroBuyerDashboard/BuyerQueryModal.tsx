@@ -202,14 +202,9 @@ ForwardFandCMail = async (item: any) => {
         await this.props.disputesStore.create(values);
       } else {
         await this.props.disputesStore.update({ ...values, id: this.state.disputeId });
-        const dispute = { ...values, id: this.state.disputeId };
-        disputesServices.buyermail(dispute.id)
-        .then((result) => {
-            this.ForwardFandCMail(result);
-        })
-        .catch((error) => {
-            console.error('Error in sending email:', error);
-        });
+        
+        await this.ForwardFandCMail(values)
+        
       }
 
       //await this.getAll();
@@ -376,18 +371,7 @@ ForwardFandCMail = async (item: any) => {
     return (
       <Card>
         <Row>
-          {/* <Col
-            xs={{ span: 4, offset: 0 }}
-            sm={{ span: 4, offset: 0 }}
-            md={{ span: 4, offset: 0 }}
-            lg={{ span: 2, offset: 0 }}
-            xl={{ span: 2, offset: 0 }}
-            xxl={{ span: 2, offset: 0 }}
-          >
-            {' '}
-            <h2 style={{whiteSpace:'nowrap'}}>{L('Buyer Query')}</h2>
-          </Col>
-             */}
+          
           <Col
             xs={{ span: 14, offset: 0 }}
             sm={{ span: 15, offset: 0 }}
@@ -398,11 +382,7 @@ ForwardFandCMail = async (item: any) => {
           >
           </Col>
         </Row>
-        {/* <Row>
-          <Col sm={{ span: 10, offset: 0 }}>
-            <Search placeholder={this.L('Filter')} onSearch={this.handleSearch} />
-          </Col>
-        </Row> */}
+        
         <Row style={{ marginTop: 20 }}>
           <Col
             xs={{ span: 24, offset: 0 }}
