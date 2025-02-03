@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, Modal, Col, Row, Button  } from 'antd';
+import { Form, Input, Modal, Col, Row, Button,message  } from 'antd';
 import { FormInstance } from 'antd/lib/form';
 import { L } from '../../../../lib/abpUtility';
 import DisputesStrore from '../../../../stores/DisputesStrore';
@@ -389,26 +389,42 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
       title={L('Disputes')}
       width={550}
       footer={[
-        <Button
-          key="forward"
-          type="primary"
-          onClick={() => {
-            setActionType('forward');
-            formRef.current?.submit(); // Triggers form's onFinish
-          }}
-        >
+        initialData?.status !== 3 && (  // Button will show only when status is not 3
+          <Button
+            key="forward"
+            type="primary"
+            onClick={() => {
+              setActionType('forward');
+              formRef.current?.submit(); // This triggers the form's onFinish
+            }}
+          >
           Forward to F&C
-        </Button>,
-        <Button
-          key="close"
-          type="primary"
-          onClick={() => {
-            setActionType('close');
-            formRef.current?.submit(); // Triggers form's onFinish
-          }}
-        >
-          Close
-        </Button>,
+        </Button>
+        ),
+<Button
+  key="close"
+  type="primary"
+  onClick={() => {
+    Modal.confirm({
+      title: 'Are you sure? You want to close the Query?',
+      onOk: async () => {
+        try {
+          setActionType('close'); // Set action type before submitting
+          await formRef.current?.submit(); // Ensure submission is awaited if needed
+          message.success('Query Closed');
+        } catch (error) {
+          console.error('Error when closing query:', error);
+          message.error('Failed to close the query');
+        }
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  }}
+>
+  Close
+</Button>
       ]}
     >
       <Form
