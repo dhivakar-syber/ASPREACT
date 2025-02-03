@@ -29,6 +29,8 @@ const PayRetroAccountsDashboard: React.SFC = () => {
       const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  
       const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   const [isSupplierSubmitModalOpen, setIsSupplierSubmitModalOpen] = React.useState<boolean>(false); // To control modal visibility
+  const disputedataStoreInstance = new DisputedataStore(); // Move outside render
+
   const SettingsIcon = () => (
     <span role="img" aria-label="home" className="anticon">
     <img src={settingsIcon} alt="Settings" />
@@ -843,7 +845,7 @@ function barstatus(status:any) {
       </Modal>
       	</Tabs.TabPane>
     <Tabs.TabPane tab="Queries" key="3">
-    <AccountQueryModal disputesStore={new DisputedataStore}
+    <AccountQueryModal disputesStore={disputedataStoreInstance}
                          AccountDashboardInput ={dashboardinput} />
 
     </Tabs.TabPane>

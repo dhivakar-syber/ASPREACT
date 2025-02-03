@@ -221,7 +221,7 @@ IntimateToBuyerMail = async (item: any) => {
 //     };
 
   public render() {
-    this.getAll();
+    // this.getAll();
     console.log(this.props.disputesStore);
     const { disputedata } = this.props.disputesStore;
     const columns = [
@@ -270,7 +270,7 @@ IntimateToBuyerMail = async (item: any) => {
             },
           }),
          },    
-          { title: L('Rejection'), dataIndex: 'supplierRejectionCode', key: 'SupplierRejectionFk.supplierRejectionCode', width: 150, render: (text: string) => <div>{text}</div>,
+          { title: L('Predefined Query'), dataIndex: 'supplierRejectionCode', key: 'SupplierRejectionFk.supplierRejectionCode', width: 150, render: (text: string) => <div>{text}</div>,
           onHeaderCell: () => ({
             style: {
               backgroundColor: '#005f7f', // Set header background color for this column
@@ -279,7 +279,7 @@ IntimateToBuyerMail = async (item: any) => {
           }),
          },
  
-      { title: L('Query'), dataIndex: 'disputedata.query', key: 'query', width: 150, render: (text: string, record: any) =>
+      { title: L('Additional Query'), dataIndex: 'disputedata.query', key: 'query', width: 150, render: (text: string, record: any) =>
         <div>{record.dispute?.query || ''}</div>,
         onHeaderCell: () => ({
           style: {
