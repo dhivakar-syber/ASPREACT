@@ -404,33 +404,7 @@ const SettingsIcon = () => (
     };
 
 
-  // const handleClickOutside = (event: MouseEvent) => {
-  //   const target = event.target as HTMLElement;
-  //   if (!target.closest(".dropdown-container")) {
-  //     setOpenDropdownId(null);
-  //   }
-  // };
-
-  // React.useEffect(() => {
-  //   document.addEventListener("click", handleClickOutside);
-  //   return () => {
-  //     document.removeEventListener("click", handleClickOutside);
-  //   };
-  // }, []);
-
-  // const toggleDropdown = (id:any,event: React.MouseEvent) => {
-  //   event.stopPropagation();
-  //   // Toggle the dropdown for the clicked row
-  //   setOpenDropdownId((prevId) => (prevId === id ? null : id));
-  // };
-
-  // const handleDropdownAction = (action: string, id: number,event: React.MouseEvent) => {
-  //   event.stopPropagation();
-  //   console.log(`Action: ${action}, Row ID: ${id}`);
-  //   setSubmitIdRow(id);
-  //   setIsApproveRejectModalOpen(true);
-  //   // Placeholder for dropdown action logic
-  // };
+  
   const handleClickAction = ( id: number) => {
     console.log(` Row ID: ${id}`);
     // Placeholder for dropdown action logic

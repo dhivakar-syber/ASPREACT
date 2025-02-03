@@ -1425,7 +1425,7 @@ function barstatus(status:any) {
                       )}
                     </div>  
                   </td>
-                  <td style={{border: '1px solid #ddd' }}>0 Query Raised</td>
+                  <td style={{padding: '10px',border: '1px solid #ddd',fontWeight:'bold' }}>{row.querycount}  Query Raised</td>
                   <td style={{ padding: '10px', border: '1px solid #ddd' }}>{row.buyerName}</td>
                   <td style={{ padding: '10px', border: '1px solid #ddd' }}>
                     {row.partno}-{row.versionNo}
