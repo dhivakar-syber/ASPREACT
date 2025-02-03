@@ -87,7 +87,7 @@ const CreateOrUpdateDahBoardDisputesData: React.FC<ICreateOrUpdateDahBoardDisput
             </Select>                   
             </Form.Item>
         <Form.Item label={L('Additional Query')} name={'query'} {...formItemLayout}>
-              <Input/>
+              <textarea/>
             </Form.Item> 
             <Form.Item label={L('SupplementarySummaryId')} name={'supplementarySummaryId'} {...formItemLayout} style={{ display: 'none' }}>
             <Input />

@@ -264,23 +264,6 @@ ForwardFandCMail = async (item: any) => {
 
   
   
-
-  // handleSearch = (value: string) => {
-  //   this.setState({ filter: value }, async () => await this.getAll());
-  // };
-
-  // handleexcelexport = () =>{
-  //   this.props.cbfcdataStore.getExcelExport();
-  // }
-  
-  
-//    handleFileUpload = (event:any) => {
-//       const file = event.target.files[0];
-//       if (file) {
-//         this.props.DisputesStrore.importExcel(file);
-//       }
-//     };
-
   public render() {
     // this.getAll();
     console.log(this.props.disputesStore);

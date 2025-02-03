@@ -1179,6 +1179,7 @@ function barstatus(status:any) {
                 </th>
                 {[
                   'Action',
+                  'Query',
                   'Buyer Name',
                   'Part No - Version',
                   'Report Date',
@@ -1424,6 +1425,7 @@ function barstatus(status:any) {
                       )}
                     </div>  
                   </td>
+                  <td style={{border: '1px solid #ddd' }}>0 Query Raised</td>
                   <td style={{ padding: '10px', border: '1px solid #ddd' }}>{row.buyerName}</td>
                   <td style={{ padding: '10px', border: '1px solid #ddd' }}>
                     {row.partno}-{row.versionNo}
