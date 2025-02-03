@@ -51,6 +51,8 @@ const SettingsIcon = () => (
     invoicetype:0,
     Date:null,
     });
+    const disputedataStoreInstance = new DisputedataStore(); // Move outside render
+
 
   var userid='0';
   
@@ -954,7 +956,7 @@ function barstatus(status:any) {
       </Modal>
     </Tabs.TabPane>
     <Tabs.TabPane tab="Queries" key="3">
-    <BuyerQueryModal disputesStore={ new DisputedataStore}
+    <BuyerQueryModal disputesStore={disputedataStoreInstance}
                      BuyerDashboardInput={dashboardinput}
     />
 </Tabs.TabPane>

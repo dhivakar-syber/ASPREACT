@@ -1,8 +1,10 @@
 import * as React from 'react';
-import { Form, Input, Modal,Col,Row,Button} from 'antd';
+import { Form, Input, Modal,Col,Row,Button, Tooltip, message} from 'antd';
 import { FormInstance } from 'antd/lib/form';
 import { L } from '../../../../lib/abpUtility';
 import DisputesStrore from '../../../../stores/DisputesStrore';
+import supplementarySummariesService from '../../../../services/SupplementarySummaries/supplementarySummariesService';
+import SupplierModalView from './supplierModalView';
 
 export interface ICreateOrUpdateDahBoardDisputesDataProps {
   visible: boolean;
@@ -15,9 +17,26 @@ export interface ICreateOrUpdateDahBoardDisputesDataProps {
   disputesStrore: DisputesStrore;
 }
 
-class CreateOrUpdateDahBoarddisputedata extends React.Component<ICreateOrUpdateDahBoardDisputesDataProps> {
-  render() {
-    const { visible, onCancel, onCreate, formRef, initialData } = this.props;
+const CreateOrUpdateDahBoarddisputedata: React.FC<ICreateOrUpdateDahBoardDisputesDataProps> =({
+
+  visible,
+  modalType,
+  onCreate,
+  onCancel,
+  formRef,
+  initialData,
+}) => {
+
+    const [annexuremodalData, annexuresetModalData] = React.useState<any[]>([]);
+    const [modalData, setModalData] = React.useState<any[]>([]);
+    const [supplementaryData, setSupplementaryData] = React.useState<any[]>([]);
+    // const [hoveredRowId, setHoveredRowId] = React.useState<number | null>(null);
+    const [ selectedRow,setSelectedRow] = React.useState<any | null>(null); // To manage selected row for modal
+    // const [ setSelectedRow] = React.useState<any | null>(null); // To manage selected row for modal
+    const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false); // To control modal visibility
+
+
+    console.log(selectedRow)
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 18 },
@@ -38,6 +57,44 @@ class CreateOrUpdateDahBoarddisputedata extends React.Component<ICreateOrUpdateD
         }
       };
 
+  const handleRowClick = async (row: number) => {
+    // if ((e.target as HTMLElement).tagName !== 'INPUT') {
+    setSelectedRow(row); // Set the clicked row data
+    setIsModalOpen(true); // Open the modal
+
+    try {
+      const result = await supplementarySummariesService.GetAllsupplementarySummarybyId(row); // Await the Promise
+      console.log('ImplementationDateChange',result[0]);
+      setSupplementaryData([]);
+      setSupplementaryData(result[0]);
+      // console.log('SupplementaryData',result) // Assuming the result contains the data in 'data' field
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+    try {
+      const result = await supplementarySummariesService.grndata(row); // Await the Promise
+      setModalData(result);
+      console.log('setmodaldata',result) // Assuming the result contains the data in 'data' field
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+    try {
+      const annexureresult = await supplementarySummariesService.annexuredata(row); // Await the Promise
+      annexuresetModalData(annexureresult);
+      console.log('annexuresetmodaldata',annexureresult) // Assuming the result contains the data in 'data' field
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } 
+  // } 
+};
+//const { Item } = Form;
+
+const handleModalClose = () => {
+  setIsModalOpen(false); // Close the modal
+  setSelectedRow(null);  // Clear the selected row data
+};
+
+
 
       
 
@@ -52,8 +109,39 @@ class CreateOrUpdateDahBoarddisputedata extends React.Component<ICreateOrUpdateD
           okText="Initiate to Account"  // Change OK button text
           cancelText="Close"
           footer={[
-            <Button key="ok" type="primary" onClick={() => formRef.current?.submit()}>
-            Inimate To Buyer
+            <Tooltip title="Click here to view the contract details" key="view-details">
+            <Button
+              key="viewDetails"
+              type="default"
+              onClick={() => {
+                // Call your function to load contract details using the supplementary summary id
+                handleRowClick(initialData.supplementarySummaryId);
+              }}
+            >
+              View Contract Details
+            </Button>
+          </Tooltip>,
+            <Button key="ok" type="primary" onClick={() => {
+            
+            Modal.confirm({
+              title: 'Are you sure? You want to Intimate the Buyer?',
+              onOk: async () => {
+                try {
+                  // setActionType('forward');// Set action type before submitting
+                   await formRef.current?.submit()
+                   
+                  message.success('Intimated to Buyer');
+                } catch (error) {
+                  console.error('Error when Intimated the Buyer:', error);
+                  message.error('Failed to Intimated the Buyer');
+                }
+              },
+              onCancel() {
+                console.log('Cancel');
+              },
+            });
+            }}>
+            Intimate To Buyer
           </Button>,
            
           ]}
@@ -111,8 +199,28 @@ class CreateOrUpdateDahBoarddisputedata extends React.Component<ICreateOrUpdateD
                     </Form.Item>
                 </Col>
                 <Col span={12}>
-                 <Form.Item label={L('Accounts Remarks')} name="accountsRemarks" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} style={{ fontWeight: 'bold' }}>
-                    <textarea  value={initialData.accountsRemarks || ''} style={{  color: 'black' }}/>
+                 <Form.Item label={L('Accounts Remarks')} name="accountsRemarks" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} 
+                 style={{ fontWeight: 'bold', // Smooth transition
+                  }}>
+                    <textarea  value={initialData.accountsRemarks || ''} style={{  
+                      border: '1px solid #d9d9d9',
+                      // borderRadius: '5px',
+                      padding: '4px',
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      backgroundColor: '#fff',
+                      transition: 'border 0.3s ease, box-shadow 0.3s ease', }}
+                      
+                      onFocus={(e) => {
+                        e.currentTarget.style.border = '1px solid #3cb48c';
+                        e.currentTarget.style.boxShadow = '0 0 5px #3cb48c';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.border = '1px solid #d9d9d9';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
+                      />
                     </Form.Item>
                 </Col>
            </Row>
@@ -123,10 +231,20 @@ class CreateOrUpdateDahBoarddisputedata extends React.Component<ICreateOrUpdateD
             </Form.Item>
 
           </Form>
+                {/* Supplier Modal inside the same Modal */}
+      {isModalOpen && (
+        <SupplierModalView
+          // selectedRow={selectedRow}
+          modalData={modalData}
+          annexureModalData={annexuremodalData}
+          supplementaryData = {supplementaryData}
+          onClose={handleModalClose}
+        />
+      )}
         </Modal>
       </div>
     );
-  }
+
 }
 
 export default CreateOrUpdateDahBoarddisputedata;
