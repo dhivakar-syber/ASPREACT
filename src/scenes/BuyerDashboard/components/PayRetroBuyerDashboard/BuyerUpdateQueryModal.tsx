@@ -201,7 +201,7 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
           </Col>
           <Col span={12}>
             <Form.Item label={L('Status')} name="status" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} style={{ fontWeight: 'bold' }}>
-              <Input disabled  style={{ color: 'black' }} />
+              <Input disabled value='asedwfdwefw' style={{ color: 'black' }} />
             </Form.Item>
           </Col>
         </Row>

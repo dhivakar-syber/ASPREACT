@@ -91,7 +91,7 @@ const SettingsIcon = () => (
 
           setBuyers(buyers.data.result || []);
           setselectedbuyers({name:buyers.data.result[0].name,value:buyers.data.result[0].id});
-          getsuppliers(buyers.data.result)
+          getsuppliers(buyers.data.result[0].id)
           setselectedcategory(0);
           getparts([],buyers.data.result)
 

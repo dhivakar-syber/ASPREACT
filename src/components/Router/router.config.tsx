@@ -79,7 +79,7 @@ export const appRouters: any = [
   {
     path: '/dashboard',
     name: 'dashboard',
-    permission: '',
+    permission: 'Pages.Tenant.Dashboard',
     title: 'Supplier Dashboard',
     icon: SupplierIcon,
     showInMenu: true,
