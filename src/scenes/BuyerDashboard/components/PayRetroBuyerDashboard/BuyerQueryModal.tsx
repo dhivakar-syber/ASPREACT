@@ -14,7 +14,7 @@ import { BuyerDashboardInput } from "./BuyerDashboardInput";
 
 
 export interface IDisputesProps {
-  disputesStore: DisputesStrore;
+  // disputesStore: DisputesStrore;
   BuyerDashboardInput: BuyerDashboardInput; 
 }
 
@@ -79,8 +79,8 @@ const getStatusLabel = (status: number): string => {
 
 @inject(Stores.DisputesStore)
 @observer
-class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState> {
-    
+class BuyerQueryModal extends AppComponentBase<IDisputesProps, IDisputesdataState> {
+   private disputesStore = new DisputesStrore();
   formRef = React.createRef<FormInstance>();
   
 
@@ -112,11 +112,11 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
   } 
 
   async getAll() {
-    if (!this.props.disputesStore) {
+    if (!this.disputesStore) {
         console.error('cbfcdatastore is undefined');
         return;
     }
-    await this.props.disputesStore.buyergetAll(this.props.BuyerDashboardInput);
+    await this.disputesStore.buyergetAll(this.props.BuyerDashboardInput);
   }
 
   handleTableChange = (pagination: any) => {
@@ -137,9 +137,9 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
     let returnedValue: any;
 
     if (entityDto.id === 0) {
-      await this.props.disputesStore.createDisputeData();
+      await this.disputesStore.createDisputeData();
     } else {
-      returnedValue = await this.props.disputesStore.get(entityDto);
+      returnedValue = await this.disputesStore.get(entityDto);
     }
 
     this.setState({
@@ -159,7 +159,7 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
     this.Modal();
 
     setTimeout(() => {
-      this.formRef.current?.setFieldsValue({ ...this.props.disputesStore.editDispute });
+      this.formRef.current?.setFieldsValue({ ...this.disputesStore.editDispute });
     }, 100);
 }
 
@@ -170,7 +170,7 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
     confirm({
       title: 'Do you Want to delete these items?',
       onOk() {
-        self.props.disputesStore.delete(input);
+        self.disputesStore.delete(input);
       },
       onCancel() {
         console.log('Cancel');
@@ -196,9 +196,9 @@ ForwardFandCMail = async (item: any) => {
         values.status = 1;
       }
       if (this.state.disputeId === 0) {
-        await this.props.disputesStore.create(values);
+        await this.disputesStore.create(values);
       } else {
-        await this.props.disputesStore.update({ ...values, id: this.state.disputeId });
+        await this.disputesStore.update({ ...values, id: this.state.disputeId });
         
         await this.ForwardFandCMail(values)
         
@@ -233,10 +233,10 @@ ForwardFandCMail = async (item: any) => {
     }
   
     if (this.state.disputeId === 0) {
-        await this.props.disputesStore.create(values);
+        await this.disputesStore.create(values);
     } else {
         const updatedItem = { ...values, id: this.state.disputeId };
-        await this.props.disputesStore.update(updatedItem);
+        await this.disputesStore.update(updatedItem);
 
         
         this.ClosrQueryMail(values);
@@ -253,8 +253,8 @@ ForwardFandCMail = async (item: any) => {
   
   public render() {
     // this.getAll();
-    console.log(this.props.disputesStore);
-    const { disputedata } = this.props.disputesStore;
+    console.log(this.disputesStore);
+    const { disputedata } = this.disputesStore;
     const columns = [
         {
             title: L('Actions'),
@@ -401,11 +401,11 @@ ForwardFandCMail = async (item: any) => {
             this.formRef.current?.resetFields();
           }}
           initialData={this.state.initialData}
-          disputesStrore={this.props.disputesStore}
+          disputesStrore={this.disputesStore}
         />
       </Card>
     );
   }
 }
 
-export default DisputesDatas;
+export default BuyerQueryModal;

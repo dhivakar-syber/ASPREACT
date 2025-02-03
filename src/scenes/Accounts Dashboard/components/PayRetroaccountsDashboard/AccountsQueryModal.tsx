@@ -15,7 +15,7 @@ import { AccountDashboardInput } from './AccountsDashboardInput';
 //import { EnumCurrency,EnumTransaction } from '../../../src/enum'
 
 export interface IDisputesProps {
-    disputesStore: DisputesStrore;
+    // disputesStore: DisputesStrore;
     AccountDashboardInput:AccountDashboardInput;
 }
 
@@ -74,8 +74,9 @@ const getStatusLabel = (status: number): string => {
 
 @inject(Stores.DisputesStore)
 @observer
-class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState> {
+class AccountQueryModal extends AppComponentBase<IDisputesProps, IDisputesdataState> {
     
+  private disputesStore = new DisputesStrore();
   formRef = React.createRef<FormInstance>();
   
 
@@ -108,11 +109,11 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
   } 
 
   async getAll() {
-    if (!this.props.disputesStore) {
+    if (!this.disputesStore) {
         console.error('cbfcdatastore is undefined');
         return;
     }
-    await this.props.disputesStore.accountgetAll(this.props.AccountDashboardInput);
+    await this.disputesStore.accountgetAll(this.props.AccountDashboardInput);
   }
 
   handleTableChange = (pagination: any) => {
@@ -130,9 +131,9 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
     let returnedValue: any;
 
     if (entityDto.id === 0) {
-      await this.props.disputesStore.createDisputeData();
+      await this.disputesStore.createDisputeData();
     } else {
-      returnedValue = await this.props.disputesStore.get(entityDto);
+      returnedValue = await this.disputesStore.get(entityDto);
     }
 
     this.setState({
@@ -153,7 +154,7 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
     this.Modal();
 
     setTimeout(() => {
-      this.formRef.current?.setFieldsValue({ ...this.props.disputesStore.editDispute });
+      this.formRef.current?.setFieldsValue({ ...this.disputesStore.editDispute });
     }, 100);
 }
 
@@ -164,7 +165,7 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
     confirm({
       title: 'Do you Want to delete these items?',
       onOk() {
-        self.props.disputesStore.delete(input);
+        self.disputesStore.delete(input);
       },
       onCancel() {
         console.log('Cancel');
@@ -190,10 +191,10 @@ IntimateToBuyerMail = async (item: any) => {
             values.status = 3;
         }
       if (this.state.userId === 0) {
-        await this.props.disputesStore.create(values);
+        await this.disputesStore.create(values);
       } else {
         
-        await this.props.disputesStore.update({ ...values, id: this.state.userId });
+        await this.disputesStore.update({ ...values, id: this.state.userId });
         this.IntimateToBuyerMail(values);
        
       }
@@ -222,8 +223,8 @@ IntimateToBuyerMail = async (item: any) => {
 
   public render() {
     // this.getAll();
-    console.log(this.props.disputesStore);
-    const { disputedata } = this.props.disputesStore;
+    console.log(this.disputesStore);
+    const { disputedata } = this.disputesStore;
     const columns = [
         {
             title: L('Actions'),
@@ -395,11 +396,11 @@ IntimateToBuyerMail = async (item: any) => {
           modalType={this.state.userId === 0 ? 'edit' : 'create'}
           onCreate={this.handleCreate}
           initialData={this.state.initialData}
-          disputesStrore={this.props.disputesStore}
+          disputesStrore={this.disputesStore}
         />
       </Card>
     );
   }
 }
 
-export default DisputesDatas;
+export default AccountQueryModal;

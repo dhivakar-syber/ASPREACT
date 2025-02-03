@@ -6,7 +6,7 @@ import  DashboardCards  from "../PayRetroaccountsDashboard/DashboardCards";
 import ApproveorRejectModal from "../ApproveorRejectModal"
 import { FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
 import AccountQueryModal from "./AccountsQueryModal"
-import DisputedataStore from "../../../../stores/DisputesStrore";
+// import DisputedataStore from "../../../../stores/DisputesStrore";
 import settingsIcon from "../../../../images/Setting.svg";
 
 
@@ -29,7 +29,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
       const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  
       const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   const [isSupplierSubmitModalOpen, setIsSupplierSubmitModalOpen] = React.useState<boolean>(false); // To control modal visibility
-  const disputedataStoreInstance = new DisputedataStore(); // Move outside render
+  // const disputedataStoreInstance = new DisputedataStore(); // Move outside render
 
   const SettingsIcon = () => (
     <span role="img" aria-label="home" className="anticon">
@@ -845,7 +845,7 @@ function barstatus(status:any) {
       </Modal>
       	</Tabs.TabPane>
     <Tabs.TabPane tab="Queries" key="3">
-    <AccountQueryModal disputesStore={disputedataStoreInstance}
+    <AccountQueryModal 
                          AccountDashboardInput ={dashboardinput} />
 
     </Tabs.TabPane>
