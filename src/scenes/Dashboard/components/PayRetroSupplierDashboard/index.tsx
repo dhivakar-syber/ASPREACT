@@ -983,7 +983,7 @@ function barstatus(status:any) {
 }
 
 const Loading = () => (
-  <div><div
+  <div
   style={{
     position: 'fixed', // Keeps it at the center without affecting scrolling
     top: '50%', 
@@ -995,8 +995,6 @@ const Loading = () => (
   <Spin size="large" />
   
 </div >
-
-</div>
 
 );
 
@@ -1197,7 +1195,7 @@ const Loading = () => (
                 ))}
               </tr>
               <tr style={{ backgroundColor: '#005f7f', color: '#fff', textAlign: 'left' }}>
-                <td colSpan={11}></td>
+                <td colSpan={12}></td>
 
                 <td style={{ border: '1px solid #ffffff1a' }} colSpan={4}>
                   <div className="progress-tube">
