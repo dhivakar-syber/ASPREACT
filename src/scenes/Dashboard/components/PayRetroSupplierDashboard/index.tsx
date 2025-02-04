@@ -29,6 +29,7 @@ import AnalysisPieChart from "../PieChartExample";
 
 
 
+
 declare var abp: any;
 
 const SettingsIcon = () => (
@@ -70,6 +71,8 @@ const PayRetroSupplierDashboard: React.FC<{ sessionStore?: SessionStore }> = ({
 const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
 const [showDownloadButton, setShowDownloadButton] = React.useState<boolean>(false);
 const [hasRole, setHasRole] = React.useState<boolean>(false);
+const [progress, setProgress] = useState(0);
+const [loading, setloading] = React.useState<boolean>(false);
 
 
 
@@ -228,19 +231,7 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
 
   };
 
-  // const DocumentCard = () => {
-  //   return (
-  //     <div className="relative w-64 p-4 border rounded-lg shadow-md">
-  //       {/* Display the 'New' icon if isNew is true */}
-  //       { (
-  //         <div className="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-1 rounded-bl-lg">
-  //           New
-  //         </div>
-  //       )}
-        
-  //     </div>
-  //   );
-  // };
+  
 
   const LoadsupplementarySummary=async (supplierDashboardInput:SupplierDashboardInput)=>
   {
@@ -308,22 +299,7 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
 
 
 
-  // const handleClickOutside = (event: MouseEvent) => {
-  //   const target = event.target as HTMLElement;
-  //   if (!target.closest(".dropdown-container")) {
-  //     setOpenDropdownId(null);
-  //   }
-  //   if (isModalOpen && !target.closest(".supplier-modal-container")) {
-  //     handleModalClose(); // Close the modal if clicked outside
-  //   }
-  // };
-
-  // React.useEffect(() => {
-  //   document.addEventListener("click", handleClickOutside);
-  //   return () => {
-  //     document.removeEventListener("click", handleClickOutside);
-  //   };
-  // }, [isModalOpen]);
+  
 
 
   const toggleDropdown = (id:any,event: React.MouseEvent) => {
@@ -492,46 +468,48 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
 
  
 
-  const handleCreate = async(item:any) => {
+  const handleCreate = async (item: any) => {
     const form = formRef.current;
-    const { selectedLookupItem, selectedBuyerLookupItem, selectedSupplierLookupItem} = state;
-
-    if (selectedLookupItem?.id) {
-      form?.setFieldsValue({ summariesId: selectedLookupItem.id });
-    }
-
-    
-
-    if (selectedBuyerLookupItem?.id) {
-      form?.setFieldsValue({ buyerId: selectedBuyerLookupItem.id });
-    }
-
-    if (selectedSupplierLookupItem?.id) {
-      form?.setFieldsValue({ buyerId: selectedSupplierLookupItem.id });
-    }
-
+    const { selectedLookupItem, selectedBuyerLookupItem, selectedSupplierLookupItem } = state;
+  
+    if (selectedLookupItem?.id) form?.setFieldsValue({ summariesId: selectedLookupItem.id });
+    if (selectedBuyerLookupItem?.id) form?.setFieldsValue({ buyerId: selectedBuyerLookupItem.id });
+    if (selectedSupplierLookupItem?.id) form?.setFieldsValue({ supplierId: selectedSupplierLookupItem.id });
+  
+    setProgress(20);
+    setloading(true) // Start progress
+  
     form!.validateFields().then(async (values: any) => {
-      
       if (values.supplementarySummaryId == null) {
         values.supplementarySummaryId = currentRowId;
       }
-      
-      console.log('values',values);
-      console.log('item',item);
-         await disputesStore.create(values).then(function(){
-
-          message.success(` Query Raised Intimation Sent to   ${values.buyerName}`);
-
-        });  
-      
+  
+      setProgress(50); // Midway through validation
+  
+      console.log('values', values);
+      console.log('item', item);
+  
+      await disputesStore.create(values).then(async function () {
+        setProgress(100); // Task completed
+       
+        message.success(`Query Raised Intimation Sent to ${values.buyerName}`);
+        setloading(false);
+        var   supplierDashboardInput: SupplierDashboardInput = {
+          Supplierid: selectedsuppliers.value,
+          Buyerids: selectedbuyers,
+          Partids: [],
+          invoicetype:selectedcategory
+        };
+        setdashboardinput(supplierDashboardInput);
+        await LoadsupplementarySummary(supplierDashboardInput);
+      });
+  
+      setTimeout(() => setProgress(0), 500); // Reset progress bar after short delay
+  
       setState(prevState => ({ ...prevState, modalVisible: false }));
       form!.resetFields();
     });
-
-    
   
- 
-       
     setIsQueryModalVisible(false);
   };
 
@@ -1004,8 +982,28 @@ function barstatus(status:any) {
 
 }
 
+const Loading = () => (
+  <div><div
+  style={{
+    position: 'fixed', // Keeps it at the center without affecting scrolling
+    top: '50%', 
+    left: '50%', 
+    transform: 'translate(-50%, -50%)', // Centering trick
+    textAlign: 'center',
+  }}
+>
+  <Spin size="large" />
+  
+</div >
+
+</div>
+
+);
+
   return (
     <div>
+{!loading && <div>
+      
       <div
         style={{
           background: '#fafafa',
@@ -1520,7 +1518,21 @@ function barstatus(status:any) {
             </Tabs.TabPane>
           </Tabs> 
       </Card>
-
+      {progress > 0 && (
+          <div style={{ 
+            position: "fixed", 
+            top: 50, 
+            left: 20, 
+            width: "80%", 
+            zIndex: 9999, 
+            background: "white", 
+            padding: "5px 0" 
+          }}>
+      
+        </div>
+      )}
+    </div>}
+{loading&&Loading()}
     </div>
   );
 
