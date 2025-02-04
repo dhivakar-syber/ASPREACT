@@ -6,7 +6,7 @@ import { Row, Col,Select, Tabs,Button,Modal,message,Card, Tooltip } from 'antd';
 import { FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
 import { BuyerDashboardInput } from "./BuyerDashboardInput";
 import BuyerQueryModal from "./BuyerQueryModal"
-import DisputedataStore from "../../../../stores/DisputesStrore";
+//import DisputedataStore from "../../../../stores/DisputesStrore";
 //import { keys } from "mobx";
 import settingsIcon from "../../../../images/Setting.svg";
 import SessionStore from "../../../../stores/sessionStore";
@@ -51,11 +51,6 @@ const SettingsIcon = () => (
     invoicetype:0,
     Date:null,
     });
-    // const disputedataStoreInstance = new DisputedataStore(); // Move outside render
-
-
-  var userid='0';
-  
   
 
   React.useEffect(() => {
@@ -68,29 +63,8 @@ const SettingsIcon = () => (
         const requiredRoles = ["admin", "PayRetroAdmin","Admin","payretroadmin"];
         const hasRole = roles.some(role => requiredRoles.includes(role));
         setHasRole(hasRole);
-         if (roles.includes('admin') || roles.includes('PayRetroAdmin') || roles.includes('Admin')|| roles.includes('payretroadmin')) {
-          userid = '0';
-        } else {
-          userid = abp.session.userId;
-        }
         
-
-        const buyers = await supplementarySummariesService.GetLoginBuyer(userid);
-        setBuyers(buyers.data.result || []);
-        if(abp.session.userId===1||abp.session.userId===2)
-        {
-          
-          setselectedbuyers({name:"Select All",value:0})
-          setBuyers(buyers.data.result || []);
-          setselectedcategory(['Select All']);
-          await getsuppliers(0)
-          await getparts([],0)
-          setselectedcategory(0);
-          await LoadsupplementarySummary(dashboardinput);
-       
-        }
-        else{
-
+        const buyers = await supplementarySummariesService.GetLoginBuyer(abp.session.userId);
           setBuyers(buyers.data.result || []);
           setselectedbuyers({name:buyers.data.result[0].name,value:buyers.data.result[0].id});
           getsuppliers(buyers.data.result[0].id)
@@ -108,8 +82,6 @@ const SettingsIcon = () => (
       
           setdashboardinput(buyerdashboard);
             await LoadsupplementarySummary(buyerdashboard);
-      
-        }
         console.log('buyers',buyers.data.result);
         
       } catch (error) {
@@ -328,9 +300,9 @@ const SettingsIcon = () => (
       setrowBuyerstatus(carddetails.data.result.buyerpending.toFixed(2));
       setrowAccountsStatus(carddetails.data.result.accountspending.toFixed(2));
   
-      const disput = new DisputedataStore();
+     // const disput = new DisputedataStore();
 
-      await disput.buyergetAll(buyerdashboardinput);
+      //await disput.buyergetAll(buyerdashboardinput);
         
   
   

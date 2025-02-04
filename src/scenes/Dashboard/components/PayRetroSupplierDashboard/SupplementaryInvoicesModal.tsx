@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Modal, Button, Input, Select, DatePicker, Upload, message, Table } from "antd";
+import { Modal, Button, Input, Select, DatePicker, Upload, message, Table ,Spin} from "antd";
 import { UploadOutlined,FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/es/upload";
 import { ColumnsType } from "antd/es/table";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
-import FullScreenLoader from "./fullscreenloader";
+
 
 interface SupplementaryInvoiceModalProps {
   rowId: string | null;
@@ -39,7 +39,7 @@ const SupplementaryInvoiceModal: React.FC<SupplementaryInvoiceModalProps> = ({
   const [tableData, setTableData] = useState<TableData[]>([]); 
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(false); 
+  const [loading, setloading] = React.useState<boolean>(false);
   
   const handleCancel = () => {
     setTableData([]);      // Clear table data
@@ -94,7 +94,7 @@ for (let i = 1; i <= t; i++) {
       message.error("Please fill in all fields and upload files.");
       return;
     }
-    setIsLoading(true)
+    setloading(true)
 
     const formData = new FormData();
     if (rowId) {
@@ -126,7 +126,7 @@ for (let i = 1; i <= t; i++) {
       if (response.result.supplementaryhasSignature && response.success&&response.result.annexurehasSignature) {
         message.success("Supplementary Invoice uploaded successfully.");
         
-        setIsLoading(true); 
+        setloading(true); 
         
         try {
             if (rowId) {
@@ -135,7 +135,7 @@ for (let i = 1; i <= t; i++) {
         } catch (error) {
             console.error("Error updating table data:", error);
         } finally {
-            setIsLoading(false); 
+            setloading(false); 
         }
     
         
@@ -263,24 +263,32 @@ async function downloadFile({ path }: { path: string }): Promise<void> {
     }
   ];
 
-  // const data: TableData[] = [
-  //   {
-  //     annexureGroup: "Group 1",
-  //     invoice: "INV-12345",
-  //     date: "2023-12-28",
-  //     invoiceFile: "Invoice.pdf",
-  //     annexureFile: "Annexure.pdf",
-  //     attachmentFile: "Attachment.xlsx",
-  //   },
-  // ];
+  const Loading = () => (
+    <div
+    style={{
+      position: 'fixed', // Keeps it at the center without affecting scrolling
+      top: '50%', 
+      left: '50%', 
+      transform: 'translate(-50%, -50%)', // Centering trick
+      textAlign: 'center',
+    }}
+  >
+    <Spin size="large" />
+    
+  </div >
+  
+  );
+  
 
   return (
-    <Modal
+    <div>
+      {!loading&&<Modal
       title="Supplementary Invoice/Credit Note Upload"
       visible={visible} // Control modal visibility
       onCancel={handleCancel} // Handle modal close
       footer={null}
       width={700}
+      
     >
       <div className="row mb-4">
         <div className="col-md-3" style = {{paddingTop: '20px'}}>
@@ -409,8 +417,11 @@ async function downloadFile({ path }: { path: string }): Promise<void> {
           />
         )}
       </Modal>
-      {isLoading&&FullScreenLoader}
-    </Modal>
+      
+    </Modal>}
+      {loading&&Loading()}
+    
+    </div>
   );
 };
 

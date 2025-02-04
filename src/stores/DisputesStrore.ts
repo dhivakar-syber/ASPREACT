@@ -150,14 +150,14 @@ class DisputedataStore {
   }
 
   @action
-  async buyergetAll(input:BuyerDashboardInput) {
-    let result = await disputesService.buyergetAll(input);
+  async buyergetAll(input:BuyerDashboardInput,skipcount:any) {
+    let result = await disputesService.buyergetAll(input,skipcount);
     this.disputedata = result;
   }
 
   @action
-  async accountgetAll(input:AccountDashboardInput) {
-    let result = await disputesService.accountgetAll(input);
+  async accountgetAll(input:AccountDashboardInput,skipcount:any) {
+    let result = await disputesService.accountgetAll(input,skipcount);
     this.disputedata = result;
   }
 

@@ -87,7 +87,7 @@ class supplementarySummariesService{
       try {
         
         const result = await http.get(
-          'api/services/app/SupplementarySummaries/GetLoginSupplier2',{ params:{input:input}  },
+          'api/services/app/SupplementarySummaries/GetLoginSupplier2',{ params:{userid:input}  },
            
         );
         return result;
@@ -101,7 +101,7 @@ class supplementarySummariesService{
     try {
       
       const result = await http.get(
-        'api/services/app/SupplementarySummaries/GetLoginBuyer2',{ params:{input:input}  },
+        'api/services/app/SupplementarySummaries/GetLoginBuyer2',{ params:{userid:input}  },
          
       );
       return result;

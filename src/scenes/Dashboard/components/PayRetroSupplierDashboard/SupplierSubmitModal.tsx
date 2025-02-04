@@ -68,12 +68,26 @@ const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({
         
       });
   };
-
+const Loading = () => (
+    <div
+    style={{
+      position: 'fixed', // Keeps it at the center without affecting scrolling
+      top: '50%', 
+      left: '50%', 
+      transform: 'translate(-50%, -50%)', // Centering trick
+      textAlign: 'center',
+    }}
+  >
+    <Spin size="large" />
+    
+  </div >
+  
+  );
   if (!isOpen) return null;
 
   return (
     <div>
-    <div
+      {!loading&&<div
       className="modal fade show"
       style={{
         position: "fixed",
@@ -102,7 +116,7 @@ const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({
             textAlign: "left",
           }}
         >
-          <b>Approval Send Box</b>
+          <b>Buyer Approval Send Box</b>
         </h6>
         <div className="col-md-12">
           <div className="rm-a3-remarks-container">
@@ -164,7 +178,9 @@ const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({
         </Button>
       </div>
       
-    </div>
+    </div>}
+    {loading&&Loading()}
+    
     </div>
   );
 };
