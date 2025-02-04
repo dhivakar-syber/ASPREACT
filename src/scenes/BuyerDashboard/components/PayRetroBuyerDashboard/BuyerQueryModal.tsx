@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Button, Card, Col, Dropdown, Menu, Modal, Row, Table,message} from 'antd';
+import { Button, Card, Col,Modal, Row, Table,message} from 'antd';
 import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../../../components/AppComponentBase';
@@ -9,16 +9,13 @@ import { EntityDto } from '../../../../services/dto/entityDto';
 import { L } from '../../../../lib/abpUtility';
 import Stores from '../../../../stores/storeIdentifier';
 import DisputesStrore from '../../../../stores/DisputesStrore';
-import disputesServices from '../../../../services/Disputes/disputesServices';
 import { FormInstance } from 'antd/lib/form';
 import { BuyerDashboardInput } from "./BuyerDashboardInput";
 
-//import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
-//import { EnumCurrency,EnumTransaction } from '../../../src/enum'
 
 export interface IDisputesProps {
-  disputesStore: DisputesStrore;
-  BuyerDashboardInput: BuyerDashboardInput; // Ensure the type is correct
+  // disputesStore: DisputesStrore;
+  BuyerDashboardInput: BuyerDashboardInput; 
 }
 
 export interface IDisputesdataState {
@@ -57,7 +54,7 @@ type BuyerLookupItem = {
 };
 
 const confirm = Modal.confirm;
-//const Search = Input.Search;
+
 
 const getStatusLabel = (status: number): string => {
   switch (status) {
@@ -82,8 +79,8 @@ const getStatusLabel = (status: number): string => {
 
 @inject(Stores.DisputesStore)
 @observer
-class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState> {
-    
+class BuyerQueryModal extends AppComponentBase<IDisputesProps, IDisputesdataState> {
+   private disputesStore = new DisputesStrore();
   formRef = React.createRef<FormInstance>();
   
 
@@ -115,13 +112,13 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
   } 
 
   async getAll() {
-    if (!this.props.disputesStore) {
+    if (!this.disputesStore) {
         console.error('cbfcdatastore is undefined');
         return;
     }
     const skipcount = this.state.skipCount;
     
-    await this.props.disputesStore.buyergetAll( this.props.BuyerDashboardInput,skipcount);
+    await this.disputesStore.buyergetAll( this.props.BuyerDashboardInput,skipcount);
   }
 
   handleTableChange = (pagination: any) => {
@@ -148,9 +145,9 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
     let returnedValue: any;
 
     if (entityDto.id === 0) {
-      await this.props.disputesStore.createDisputeData();
+      await this.disputesStore.createDisputeData();
     } else {
-      returnedValue = await this.props.disputesStore.get(entityDto);
+      returnedValue = await this.disputesStore.get(entityDto);
     }
 
     this.setState({
@@ -170,7 +167,7 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
     this.Modal();
 
     setTimeout(() => {
-      this.formRef.current?.setFieldsValue({ ...this.props.disputesStore.editDispute });
+      this.formRef.current?.setFieldsValue({ ...this.disputesStore.editDispute });
     }, 100);
 }
 
@@ -181,7 +178,7 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
     confirm({
       title: 'Do you Want to delete these items?',
       onOk() {
-        self.props.disputesStore.delete(input);
+        self.disputesStore.delete(input);
       },
       onCancel() {
         console.log('Cancel');
@@ -196,8 +193,6 @@ ForwardFandCMail = async (item: any) => {
     
   console.log(item);
 
-  
-
   message.success(`Buyer to F&C Forwarded Query Intimation  Mail Sent to - ${item.accoutantName}`);
 
 };
@@ -209,17 +204,12 @@ ForwardFandCMail = async (item: any) => {
         values.status = 1;
       }
       if (this.state.disputeId === 0) {
-        await this.props.disputesStore.create(values);
+        await this.disputesStore.create(values);
       } else {
-        await this.props.disputesStore.update({ ...values, id: this.state.disputeId });
-        const dispute = { ...values, id: this.state.disputeId };
-        disputesServices.buyermail(dispute.id)
-        .then((result) => {
-            this.ForwardFandCMail(result);
-        })
-        .catch((error) => {
-            console.error('Error in sending email:', error);
-        });
+        await this.disputesStore.update({ ...values, id: this.state.disputeId });
+        
+        await this.ForwardFandCMail(values)
+        
       }
 
       this.setState({ modalVisible: false });
@@ -250,19 +240,14 @@ ForwardFandCMail = async (item: any) => {
     }
   
     if (this.state.disputeId === 0) {
-        await this.props.disputesStore.create(values);
+        await this.disputesStore.create(values);
     } else {
         const updatedItem = { ...values, id: this.state.disputeId };
-        await this.props.disputesStore.update(updatedItem);
+        await this.disputesStore.update(updatedItem);
 
-        // Corrected function name and syntax for the 'done' callback
-        disputesServices.buyermail(updatedItem.id)
-            .then((result) => {
-                this.ClosrQueryMail(result);
-            })
-            .catch((error) => {
-                console.error('Error in sending email:', error);
-            });
+        
+        this.ClosrQueryMail(values);
+            
     }
   
   
@@ -272,26 +257,10 @@ ForwardFandCMail = async (item: any) => {
 
   
   
-
-  // handleSearch = (value: string) => {
-  //   this.setState({ filter: value }, async () => await this.getAll());
-  // };
-
-  // handleexcelexport = () =>{
-  //   this.props.cbfcdataStore.getExcelExport();
-  // }
-  
-  
-//    handleFileUpload = (event:any) => {
-//       const file = event.target.files[0];
-//       if (file) {
-//         this.props.DisputesStrore.importExcel(file);
-//       }
-//     };
-
   public render() {
-    console.log(this.props.disputesStore);
-    const { disputedata } = this.props.disputesStore;
+    // this.getAll();
+    console.log(this.disputesStore);
+    const { disputedata } = this.disputesStore;
     const columns = [
         {
             title: L('Actions'),
@@ -299,20 +268,8 @@ ForwardFandCMail = async (item: any) => {
             render: (text: string, item: any) => (
               <div>
            {item.dispute?.status !== 2 ? (
-          <Dropdown
-            trigger={['click']}
-            overlay={
-              <Menu>
-                <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.dispute?.id })}>
-                  {L('Edit')}
-                </Menu.Item>
-              </Menu>
-            }
-            placement="bottomLeft"
-          >
-            <Button type="primary">{L('Actions')}</Button>
-          </Dropdown>
-        ) : <Button type="primary" disabled>{L('Actions')}</Button>}
+          <Button onClick={() => this.createOrUpdateModalOpen({ id: item.dispute?.id })} type="primary">{L('Response')}</Button>
+        ) : <Button type="primary" disabled>{L('Response')}</Button>}
             </div>
             ),
             onHeaderCell: () => ({
@@ -400,18 +357,7 @@ ForwardFandCMail = async (item: any) => {
     return (
       <Card>
         <Row>
-          {/* <Col
-            xs={{ span: 4, offset: 0 }}
-            sm={{ span: 4, offset: 0 }}
-            md={{ span: 4, offset: 0 }}
-            lg={{ span: 2, offset: 0 }}
-            xl={{ span: 2, offset: 0 }}
-            xxl={{ span: 2, offset: 0 }}
-          >
-            {' '}
-            <h2 style={{whiteSpace:'nowrap'}}>{L('Buyer Query')}</h2>
-          </Col>
-             */}
+          
           <Col
             xs={{ span: 14, offset: 0 }}
             sm={{ span: 15, offset: 0 }}
@@ -422,11 +368,7 @@ ForwardFandCMail = async (item: any) => {
           >
           </Col>
         </Row>
-        {/* <Row>
-          <Col sm={{ span: 10, offset: 0 }}>
-            <Search placeholder={this.L('Filter')} onSearch={this.handleSearch} />
-          </Col>
-        </Row> */}
+        
         <Row style={{ marginTop: 20 }}>
           <Col
             xs={{ span: 24, offset: 0 }}
@@ -465,11 +407,11 @@ ForwardFandCMail = async (item: any) => {
             this.formRef.current?.resetFields();
           }}
           initialData={this.state.initialData}
-          disputesStrore={this.props.disputesStore}
+          disputesStrore={this.disputesStore}
         />
       </Card>
     );
   }
 }
 
-export default DisputesDatas;
+export default BuyerQueryModal;

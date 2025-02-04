@@ -87,7 +87,25 @@ const CreateOrUpdateDahBoardDisputesData: React.FC<ICreateOrUpdateDahBoardDisput
             </Select>                   
             </Form.Item>
         <Form.Item label={L('Additional Query')} name={'query'} {...formItemLayout}>
-              <Input/>
+              <textarea style={{                       
+                border: '1px solid #d9d9d9',
+                      // borderRadius: '5px',
+                      padding: '4px',
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      backgroundColor: '#fff',
+                      transition: 'border 0.3s ease, box-shadow 0.3s ease',  }}
+                      
+                      onFocus={(e) => {
+                        e.currentTarget.style.border = '1px solid #3cb48c';
+                        e.currentTarget.style.boxShadow = '0 0 5px #3cb48c';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.border = '1px solid #d9d9d9';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
+                      />
             </Form.Item> 
             <Form.Item label={L('SupplementarySummaryId')} name={'supplementarySummaryId'} {...formItemLayout} style={{ display: 'none' }}>
             <Input />

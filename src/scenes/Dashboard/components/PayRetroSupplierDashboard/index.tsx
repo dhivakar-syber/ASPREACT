@@ -29,6 +29,7 @@ import AnalysisPieChart from "../PieChartExample";
 
 
 
+
 declare var abp: any;
 
 const SettingsIcon = () => (
@@ -70,6 +71,8 @@ const PayRetroSupplierDashboard: React.FC<{ sessionStore?: SessionStore }> = ({
 const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
 const [showDownloadButton, setShowDownloadButton] = React.useState<boolean>(false);
 const [hasRole, setHasRole] = React.useState<boolean>(false);
+const [progress, setProgress] = useState(0);
+const [loading, setloading] = React.useState<boolean>(false);
 
 
 
@@ -228,19 +231,7 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
 
   };
 
-  // const DocumentCard = () => {
-  //   return (
-  //     <div className="relative w-64 p-4 border rounded-lg shadow-md">
-  //       {/* Display the 'New' icon if isNew is true */}
-  //       { (
-  //         <div className="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-1 rounded-bl-lg">
-  //           New
-  //         </div>
-  //       )}
-        
-  //     </div>
-  //   );
-  // };
+  
 
   const LoadsupplementarySummary=async (supplierDashboardInput:SupplierDashboardInput)=>
   {
@@ -308,22 +299,7 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
 
 
 
-  // const handleClickOutside = (event: MouseEvent) => {
-  //   const target = event.target as HTMLElement;
-  //   if (!target.closest(".dropdown-container")) {
-  //     setOpenDropdownId(null);
-  //   }
-  //   if (isModalOpen && !target.closest(".supplier-modal-container")) {
-  //     handleModalClose(); // Close the modal if clicked outside
-  //   }
-  // };
-
-  // React.useEffect(() => {
-  //   document.addEventListener("click", handleClickOutside);
-  //   return () => {
-  //     document.removeEventListener("click", handleClickOutside);
-  //   };
-  // }, [isModalOpen]);
+  
 
 
   const toggleDropdown = (id:any,event: React.MouseEvent) => {
@@ -492,46 +468,48 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
 
  
 
-  const handleCreate = async(item:any) => {
+  const handleCreate = async (item: any) => {
     const form = formRef.current;
-    const { selectedLookupItem, selectedBuyerLookupItem, selectedSupplierLookupItem} = state;
-
-    if (selectedLookupItem?.id) {
-      form?.setFieldsValue({ summariesId: selectedLookupItem.id });
-    }
-
-    
-
-    if (selectedBuyerLookupItem?.id) {
-      form?.setFieldsValue({ buyerId: selectedBuyerLookupItem.id });
-    }
-
-    if (selectedSupplierLookupItem?.id) {
-      form?.setFieldsValue({ buyerId: selectedSupplierLookupItem.id });
-    }
-
+    const { selectedLookupItem, selectedBuyerLookupItem, selectedSupplierLookupItem } = state;
+  
+    if (selectedLookupItem?.id) form?.setFieldsValue({ summariesId: selectedLookupItem.id });
+    if (selectedBuyerLookupItem?.id) form?.setFieldsValue({ buyerId: selectedBuyerLookupItem.id });
+    if (selectedSupplierLookupItem?.id) form?.setFieldsValue({ supplierId: selectedSupplierLookupItem.id });
+  
+    setProgress(20);
+    setloading(true) // Start progress
+  
     form!.validateFields().then(async (values: any) => {
-      
       if (values.supplementarySummaryId == null) {
         values.supplementarySummaryId = currentRowId;
       }
-      
-      console.log('values',values);
-      console.log('item',item);
-         await disputesStore.create(values).then(function(){
-
-          message.success(` Query Raised Intimation Sent to   ${values.buyerName}`);
-
-        });  
-      
+  
+      setProgress(50); // Midway through validation
+  
+      console.log('values', values);
+      console.log('item', item);
+  
+      await disputesStore.create(values).then(async function () {
+        setProgress(100); // Task completed
+       
+        message.success(`Query Raised Intimation Sent to ${values.buyerName}`);
+        setloading(false);
+        var   supplierDashboardInput: SupplierDashboardInput = {
+          Supplierid: selectedsuppliers.value,
+          Buyerids: selectedbuyers,
+          Partids: [],
+          invoicetype:selectedcategory
+        };
+        setdashboardinput(supplierDashboardInput);
+        await LoadsupplementarySummary(supplierDashboardInput);
+      });
+  
+      setTimeout(() => setProgress(0), 500); // Reset progress bar after short delay
+  
       setState(prevState => ({ ...prevState, modalVisible: false }));
       form!.resetFields();
     });
-
-    
   
- 
-       
     setIsQueryModalVisible(false);
   };
 
@@ -813,14 +791,6 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
   };
     
 
-  // const loadgrndata = (supplementaryid: number) => {
-  //   const result =  supplementarySummariesService.grndata(supplementaryid);
-  //   InvoiceTable(result);
-  //   console.log('grndata-',result)
-  // };
-  
-
-
   
 
   const InvoiceTable = ({ data }: { data: any[] }) => {
@@ -836,10 +806,9 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
               <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>PartNo</th>
               <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Invoice No</th>
               <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>InvoiceDate</th>
-              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Qty</th>
-              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Price (GRN)</th>
-              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Paid Price (CBFC)</th>
-              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Paid Amount (CBFC)</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Qty</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Price (GRN)</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Paid Amount (CBFC)</th>
             </tr>
           </thead>
           <tbody >
@@ -853,10 +822,9 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
                   <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.partNo}</td>
                   <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.invoiceNo}</td>
                   <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(item.invoicedate)}</td>
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.quantity}</td>
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.paidAmount}</td>
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.paidAmount}</td>
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.paidAmount}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.quantity}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.invoiceRate}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.paidAmount}</td>
                 </tr>
               ))
             ):''}
@@ -935,17 +903,16 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
           <thead>
           <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left", borderRadius: '2px' }}>
           
-            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>S.No</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "left"}}>S.No</th>
             <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Annexure Group</th>
             <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Part No</th>
             <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Invoice No</th>
             <th style={{width:"120px",padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>InvoiceDate</th>
-            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Old Contract</th>
-            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>New Contract</th>
-            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Paid Price(CBFC)</th>
-            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Diff Value</th>
-            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Qty</th>
-            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Total</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Old Contract</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>New Contract</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Diff Value</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Qty</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Total</th>
             <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Currency</th>
             <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Supp.Inv.No/Credit Note</th>
             <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Supp.Inv.Date/Credit Note Date</th>
@@ -960,20 +927,19 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
                   backgroundColor:
                   index % 2 === 0 ? '#f9f9f9' : '#fff',
                 }}>
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{index + 1}</td>
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.versionNo}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "left"}}>{index + 1}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "center"}}>{item.versionNo}</td>
                   <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.partno}</td>
                   <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.invoiceNo}</td>
                   <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(item.invoiceDate)}</td>
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.oldValue}</td>
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.newValue}</td>
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}></td>
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.diffValue}</td>
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.qty}</td>
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.total}</td>
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.currency}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.oldValue}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.newValue}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.diffValue}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.qty}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.total}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.currency==0?'INR':item.currency==1?'USD':''}</td>
                   <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.supplementaryInvoiceNo}</td>
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(item.supplementaryInvoiceDate)}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.supplementaryInvoiceDate?formatDate(item.supplementaryInvoiceDate):''}</td>
                 </tr>
               ))
             ):''}
@@ -1016,8 +982,26 @@ function barstatus(status:any) {
 
 }
 
+const Loading = () => (
+  <div
+  style={{
+    position: 'fixed', // Keeps it at the center without affecting scrolling
+    top: '50%', 
+    left: '50%', 
+    transform: 'translate(-50%, -50%)', // Centering trick
+    textAlign: 'center',
+  }}
+>
+  <Spin size="large" />
+  
+</div >
+
+);
+
   return (
     <div>
+{!loading && <div>
+      
       <div
         style={{
           background: '#fafafa',
@@ -1191,6 +1175,7 @@ function barstatus(status:any) {
                 </th>
                 {[
                   'Action',
+                  'Query',
                   'Buyer Name',
                   'Part No - Version',
                   'Report Date',
@@ -1210,7 +1195,7 @@ function barstatus(status:any) {
                 ))}
               </tr>
               <tr style={{ backgroundColor: '#005f7f', color: '#fff', textAlign: 'left' }}>
-                <td colSpan={11}></td>
+                <td colSpan={12}></td>
 
                 <td style={{ border: '1px solid #ffffff1a' }} colSpan={4}>
                   <div className="progress-tube">
@@ -1436,6 +1421,7 @@ function barstatus(status:any) {
                       )}
                     </div>  
                   </td>
+                  <td style={{padding: '10px',border: '1px solid #ddd',fontWeight:'bold' }}>{row.querycount>0?row.querycount+' Query Raised':''}  </td>
                   <td style={{ padding: '10px', border: '1px solid #ddd' }}>{row.buyerName}</td>
                   <td style={{ padding: '10px', border: '1px solid #ddd' }}>
                     {row.partno}-{row.versionNo}
@@ -1530,7 +1516,21 @@ function barstatus(status:any) {
             </Tabs.TabPane>
           </Tabs> 
       </Card>
-
+      {progress > 0 && (
+          <div style={{ 
+            position: "fixed", 
+            top: 50, 
+            left: 20, 
+            width: "80%", 
+            zIndex: 9999, 
+            background: "white", 
+            padding: "5px 0" 
+          }}>
+      
+        </div>
+      )}
+    </div>}
+{loading&&Loading()}
     </div>
   );
 

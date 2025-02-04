@@ -6,7 +6,7 @@ import  DashboardCards  from "../PayRetroaccountsDashboard/DashboardCards";
 import ApproveorRejectModal from "../ApproveorRejectModal"
 import { FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
 import AccountQueryModal from "./AccountsQueryModal"
-import DisputedataStore from "../../../../stores/DisputesStrore";
+// import DisputedataStore from "../../../../stores/DisputesStrore";
 import settingsIcon from "../../../../images/Setting.svg";
 
 
@@ -29,6 +29,8 @@ const PayRetroAccountsDashboard: React.SFC = () => {
       const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  
       const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   const [isSupplierSubmitModalOpen, setIsSupplierSubmitModalOpen] = React.useState<boolean>(false); // To control modal visibility
+  // const disputedataStoreInstance = new DisputedataStore(); // Move outside render
+
   const SettingsIcon = () => (
     <span role="img" aria-label="home" className="anticon">
     <img src={settingsIcon} alt="Settings" />
@@ -694,7 +696,7 @@ function barstatus(status:any) {
                 // }}
               >
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{index+1}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.document ===null && row.iscreditnote === false?row.document ='Supplementary Invoice':row.document }</td>
+                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.isCreditNote?'Credit Note' : 'Supplementary Invoice'}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryInvoiceNo}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(row.supplementaryInvoiceDate)}</td>
                 <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{row.total}</td>
@@ -843,7 +845,7 @@ function barstatus(status:any) {
       </Modal>
       	</Tabs.TabPane>
     <Tabs.TabPane tab="Queries" key="3">
-    <AccountQueryModal disputesStore={new DisputedataStore}
+    <AccountQueryModal 
                          AccountDashboardInput ={dashboardinput} />
 
     </Tabs.TabPane>

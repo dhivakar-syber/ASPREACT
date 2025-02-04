@@ -31,7 +31,6 @@ const SupplementaryView = ({
               <th>InvoiceDate</th>
               <th>Qty</th>
               <th>Price (GRN)</th>
-              <th>Paid Price (CBFC)</th>
               <th>Paid Amount (CBFC)</th>
             </tr>
           </thead>
@@ -44,8 +43,7 @@ const SupplementaryView = ({
                   <td>{item.invoiceNo}</td>
                   <td>{item.invoicedate}</td>
                   <td>{item.quantity}</td>
-                  <td>{item.paidAmount}</td>
-                  <td>{item.paidAmount}</td>
+                  <td>{item.invoiceRate}</td>
                   <td>{item.paidAmount}</td>
                 </tr>
               ))

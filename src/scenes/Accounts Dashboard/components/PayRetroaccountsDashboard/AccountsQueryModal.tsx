@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Button, Card, Col, Dropdown, Menu, Modal, Row, Table,message} from 'antd';
+import { Button, Card, Col, Modal, Row, Table,message} from 'antd';
 import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../../../components/AppComponentBase';
@@ -10,13 +10,12 @@ import { L } from '../../../../lib/abpUtility';
 import Stores from '../../../../stores/storeIdentifier';
 import DisputesStrore from '../../../../stores/DisputesStrore';
 import { FormInstance } from 'antd/lib/form';
-import disputesServices from '../../../../services/Disputes/disputesServices';
 import { AccountDashboardInput } from './AccountsDashboardInput';
 //import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
 //import { EnumCurrency,EnumTransaction } from '../../../src/enum'
 
 export interface IDisputesProps {
-    disputesStore: DisputesStrore;
+    // disputesStore: DisputesStrore;
     AccountDashboardInput:AccountDashboardInput;
 }
 
@@ -75,8 +74,9 @@ const getStatusLabel = (status: number): string => {
 
 @inject(Stores.DisputesStore)
 @observer
-class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState> {
+class AccountQueryModal extends AppComponentBase<IDisputesProps, IDisputesdataState> {
     
+  private disputesStore = new DisputesStrore();
   formRef = React.createRef<FormInstance>();
   
 
@@ -109,12 +109,12 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
   } 
 
   async getAll() {
-    if (!this.props.disputesStore) {
+    if (!this.disputesStore) {
         console.error('cbfcdatastore is undefined');
         return;
     }
     const skipcount = this.state.skipCount;
-    await this.props.disputesStore.accountgetAll(this.props.AccountDashboardInput,skipcount);
+    await this.disputesStore.accountgetAll(this.props.AccountDashboardInput,skipcount);
   }
 
   handleTableChange = (pagination: any) => {
@@ -132,9 +132,9 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
     let returnedValue: any;
 
     if (entityDto.id === 0) {
-      await this.props.disputesStore.createDisputeData();
+      await this.disputesStore.createDisputeData();
     } else {
-      returnedValue = await this.props.disputesStore.get(entityDto);
+      returnedValue = await this.disputesStore.get(entityDto);
     }
 
     this.setState({
@@ -155,7 +155,7 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
     this.Modal();
 
     setTimeout(() => {
-      this.formRef.current?.setFieldsValue({ ...this.props.disputesStore.editDispute });
+      this.formRef.current?.setFieldsValue({ ...this.disputesStore.editDispute });
     }, 100);
 }
 
@@ -166,7 +166,7 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
     confirm({
       title: 'Do you Want to delete these items?',
       onOk() {
-        self.props.disputesStore.delete(input);
+        self.disputesStore.delete(input);
       },
       onCancel() {
         console.log('Cancel');
@@ -192,17 +192,11 @@ IntimateToBuyerMail = async (item: any) => {
             values.status = 3;
         }
       if (this.state.userId === 0) {
-        await this.props.disputesStore.create(values);
+        await this.disputesStore.create(values);
       } else {
-        const dispute = { ...values, id: this.state.userId };
-        await this.props.disputesStore.update({ ...values, id: this.state.userId });
-        disputesServices.buyermail(dispute.id)
-                    .then((result) => {
-                        this.IntimateToBuyerMail(result);
-                    })
-                    .catch((error) => {
-                        console.error('Error in sending email:', error);
-                    });
+        
+        await this.disputesStore.update({ ...values, id: this.state.userId });
+        this.IntimateToBuyerMail(values);
        
       }
 
@@ -229,38 +223,27 @@ IntimateToBuyerMail = async (item: any) => {
 //     };
 
   public render() {
-    this.getAll();
-    console.log(this.props.disputesStore);
-    const { disputedata } = this.props.disputesStore;
+    // this.getAll();
+    console.log(this.disputesStore);
+    const { disputedata } = this.disputesStore;
     const columns = [
-        {
-            title: L('Actions'),
-            width: 150,
-            render: (text: string, item: any) => (
-              <div>
-                <Dropdown
-                  trigger={['click']}
-                  overlay={
-                    <Menu>
-                       {/* <Menu.Item onClick={() => this.delete({ id: item.disputedata?.id })}>{L('view')}</Menu.Item> */}
-                      <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.dispute?.id })}>{L('Edit')}</Menu.Item>                      
-                    </Menu>
-                  }
-                  placement="bottomLeft"
-                >
-                  <Button type="primary" >
-                    {L('Actions')}
-                  </Button>
-                </Dropdown>
-              </div>
-            ),
-            onHeaderCell: () => ({
-              style: {
-                backgroundColor: '#005f7f', // Set header background color for this column
-                color: '#fff',
-              },
-            }),
-          },
+         {
+                    title: L('Actions'),
+                    width: 150,
+                    render: (text: string, item: any) => (
+                      <div>
+                   {item.dispute?.status !== 2 ? (
+                  <Button onClick={() => this.createOrUpdateModalOpen({ id: item.dispute?.id })} type="primary">{L('Response')}</Button>
+                ) : <Button type="primary" disabled>{L('Response')}</Button>}
+                    </div>
+                    ),
+                    onHeaderCell: () => ({
+                      style: {
+                        backgroundColor: '#005f7f', // Set header background color for this column
+                        color: '#fff',
+                      },
+                    }),
+                  },
 
           { title: L('BuyerName'), dataIndex: 'buyerShortId', key: 'buyerFk.buyerShortId', width: 150, render: (text: string) => <div>{text}</div>,
           onHeaderCell: () => ({
@@ -278,7 +261,7 @@ IntimateToBuyerMail = async (item: any) => {
             },
           }),
          },    
-          { title: L('Rejection'), dataIndex: 'supplierRejectionCode', key: 'SupplierRejectionFk.supplierRejectionCode', width: 150, render: (text: string) => <div>{text}</div>,
+          { title: L('Predefined Query'), dataIndex: 'supplierRejectionCode', key: 'SupplierRejectionFk.supplierRejectionCode', width: 150, render: (text: string) => <div>{text}</div>,
           onHeaderCell: () => ({
             style: {
               backgroundColor: '#005f7f', // Set header background color for this column
@@ -287,7 +270,7 @@ IntimateToBuyerMail = async (item: any) => {
           }),
          },
  
-      { title: L('Query'), dataIndex: 'disputedata.query', key: 'query', width: 150, render: (text: string, record: any) =>
+      { title: L('Additional Query'), dataIndex: 'disputedata.query', key: 'query', width: 150, render: (text: string, record: any) =>
         <div>{record.dispute?.query || ''}</div>,
         onHeaderCell: () => ({
           style: {
@@ -403,11 +386,11 @@ IntimateToBuyerMail = async (item: any) => {
           modalType={this.state.userId === 0 ? 'edit' : 'create'}
           onCreate={this.handleCreate}
           initialData={this.state.initialData}
-          disputesStrore={this.props.disputesStore}
+          disputesStrore={this.disputesStore}
         />
       </Card>
     );
   }
 }
 
-export default DisputesDatas;
+export default AccountQueryModal;

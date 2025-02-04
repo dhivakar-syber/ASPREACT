@@ -137,17 +137,7 @@ class disputesService {
     return result.data.result;
   }
 
-  public async buyermail(DocId: number) {
-    try {
-      const result = await http.get('api/services/app/Disputes/GetBuyerMail', {
-        params: { DocId } // Use an object to pass parameters
-      });
-      return result.data.result; // Access the nested result
-    } catch (error) {
-      console.error('Error fetching buyer mail:', error);
-      throw error; // Re-throw the error for further handling
-    }
-  }
+  
 
   public async getBuyerAndSupplierNameAsync(id: number | string): Promise<any> {
     try {
