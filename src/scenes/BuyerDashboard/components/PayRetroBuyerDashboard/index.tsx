@@ -326,9 +326,9 @@ const SettingsIcon = () => (
       setrowBuyerstatus(carddetails.data.result.buyerpending.toFixed(2));
       setrowAccountsStatus(carddetails.data.result.accountspending.toFixed(2));
   
-      const disput = new DisputedataStore();
+     // const disput = new DisputedataStore();
 
-      await disput.buyergetAll(buyerdashboardinput);
+      //await disput.buyergetAll(buyerdashboardinput);
         
   
   

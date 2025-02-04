@@ -113,7 +113,8 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
         console.error('cbfcdatastore is undefined');
         return;
     }
-    await this.props.disputesStore.accountgetAll(this.props.AccountDashboardInput);
+    const skipcount = this.state.skipCount;
+    await this.props.disputesStore.accountgetAll(this.props.AccountDashboardInput,skipcount);
   }
 
   handleTableChange = (pagination: any) => {

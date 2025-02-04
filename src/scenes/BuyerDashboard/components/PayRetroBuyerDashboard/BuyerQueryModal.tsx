@@ -119,15 +119,23 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
         console.error('cbfcdatastore is undefined');
         return;
     }
-    await this.props.disputesStore.buyergetAll(this.props.BuyerDashboardInput);
+    const skipcount = this.state.skipCount;
+    
+    await this.props.disputesStore.buyergetAll( this.props.BuyerDashboardInput,skipcount);
   }
 
   handleTableChange = (pagination: any) => {
-    this.setState({ skipCount: (pagination.current - 1) * this.state.maxResultCount! }, 
-    // async () => await this.getAll()
-  
-  );
-  };
+    if (!pagination.current) {
+        console.error('Pagination current page is undefined');
+        return;
+    }
+
+    const skipCount = (pagination.current - 1) * (this.state.maxResultCount ?? 10);
+
+    this.setState({ skipCount }, async () => {
+        await this.getAll();
+    });
+};
 
   Modal = () => {
     this.setState({
@@ -214,7 +222,6 @@ ForwardFandCMail = async (item: any) => {
         });
       }
 
-      //await this.getAll();
       this.setState({ modalVisible: false });
       form!.resetFields();
     });
@@ -258,7 +265,6 @@ ForwardFandCMail = async (item: any) => {
             });
     }
   
-   // await this.getAll();
   
     this.setState({ modalVisible: false });
     form.resetFields();
@@ -284,7 +290,6 @@ ForwardFandCMail = async (item: any) => {
 //     };
 
   public render() {
-    // this.getAll();
     console.log(this.props.disputesStore);
     const { disputedata } = this.props.disputesStore;
     const columns = [
