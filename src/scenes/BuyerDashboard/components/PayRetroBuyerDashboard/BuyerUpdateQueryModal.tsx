@@ -122,74 +122,79 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
       title={L('Disputes')}
       width={550}
       footer={[
-                // Add a "View Contract Details" button in the footer.
-                <Tooltip title="Click here to view the contract details" key="view-details">
-                <Button
-                  key="viewDetails"
-                  type="default"
-                  onClick={() => {
-                    // Call your function to load contract details using the supplementary summary id
-                    handleRowClick(initialData.supplementarySummaryId);
-                  }}
-                >
-                  View Contract Details
-                </Button>
-              </Tooltip>,
-        initialData?.status !== 3 && (  // Button will show only when status is not 3
-          <Button
-            key="forward"
-            type="primary"
-            onClick={() => {
-              Modal.confirm({
-                title: 'Are you sure? You want to forward the Query to F&C?',
-                onOk: async () => {
-                  try {
-                    setActionType('forward');// Set action type before submitting
-                     await formRef.current?.submit(); // This triggers the form's onFinish
-                    message.success('Query Forwarded to F&C');
-                  } catch (error) {
-                    console.error('Error when forwarding query:', error);
-                    message.error('Failed to Forward the query to F&C');
-                  }
-                },
-                onCancel() {
-                  console.log('Cancel');
-                },
-              });
-            }}
-          >
-          Forward to F&C
-        </Button>
-        ),
-<Button
-  key="close"
-  type="primary"
-  onClick={() => {
-    Modal.confirm({
-      title: 'Are you sure? You want to close the Query?',
-      onOk: async () => {
-        try {
-          setActionType('close'); // Set action type before submitting
-          await formRef.current?.submit(); // Ensure submission is awaited if needed
-          message.success('Query Closed');
-        } catch (error) {
-          console.error('Error when closing query:', error);
-          message.error('Failed to close the query');
-        }
-      },
-      onCancel() {
-        console.log('Cancel');
-      },
-    });
-  }}
->
-  Close
-</Button>
+        <div key="footer-buttons" style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+          {/* Left-aligned button */}
+          <Tooltip title="Click here to view the contract details">
+            <Button
+              key="viewDetails"
+              type="default"
+              onClick={() => handleRowClick(initialData.supplementarySummaryId)}
+            >
+              View Contract Details
+            </Button>
+          </Tooltip>
+      
+          {/* Right-aligned buttons */}
+          <div>
+            {initialData?.status !== 3 && (
+              <Button
+                key="forward"
+                type="primary"
+                onClick={() => {
+                  Modal.confirm({
+                    title: 'Are you sure? You want to forward the Query to F&C?',
+                    onOk: async () => {
+                      try {
+                        setActionType('forward'); // Set action type before submitting
+                        await formRef.current?.submit(); // This triggers the form's onFinish
+                        message.success('Query Forwarded to F&C');
+                      } catch (error) {
+                        console.error('Error when forwarding query:', error);
+                        message.error('Failed to Forward the query to F&C');
+                      }
+                    },
+                    onCancel() {
+                      console.log('Cancel');
+                    },
+                  });
+                }}
+              >
+                Forward to F&C
+              </Button>
+            )}
+      
+            <Button
+              key="close"
+              type="primary"
+              onClick={() => {
+                Modal.confirm({
+                  title: 'Are you sure? You want to close the Query?',
+                  onOk: async () => {
+                    try {
+                      setActionType('close'); // Set action type before submitting
+                      await formRef.current?.submit(); // Ensure submission is awaited if needed
+                      message.success('Query Closed');
+                    } catch (error) {
+                      console.error('Error when closing query:', error);
+                      message.error('Failed to close the query');
+                    }
+                  },
+                  onCancel() {
+                    console.log('Cancel');
+                  },
+                });
+              }}
+            >
+              Close
+            </Button>
+          </div>
+        </div>
       ]}
+      
     >
       <Form
         ref={formRef}
-        initialValues={initialData}
+        initialValues={{...initialData,status: getStatusLabel(initialData.status) }}
         onFinish={(values) => {
           if (actionType === 'forward') {
             onCreate(values); // Handle Forward to F&C
@@ -227,7 +232,7 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
         <Row gutter={16}>
         <Col span={12}>
             <Form.Item label={L('Status')} name="status" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} style={{ fontWeight: 'bold' }}>
-              <Input disabled value={getStatusLabel(initialData.status) || ''} style={{ color: 'black' }} />
+              <Input disabled style={{ color: 'black' }} />
             </Form.Item>
           </Col>
           <Col span={12}>
