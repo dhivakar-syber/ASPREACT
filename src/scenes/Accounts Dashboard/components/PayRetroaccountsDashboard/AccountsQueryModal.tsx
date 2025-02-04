@@ -113,7 +113,8 @@ class AccountQueryModal extends AppComponentBase<IDisputesProps, IDisputesdataSt
         console.error('cbfcdatastore is undefined');
         return;
     }
-    await this.disputesStore.accountgetAll(this.props.AccountDashboardInput);
+    const skipcount = this.state.skipCount;
+    await this.disputesStore.accountgetAll(this.props.AccountDashboardInput,skipcount);
   }
 
   handleTableChange = (pagination: any) => {

@@ -75,16 +75,16 @@ class disputesService {
 
 
 
-  public async buyergetAll(input:BuyerDashboardInput) {
+  public async buyergetAll(input:BuyerDashboardInput,skipcount:any) {
     console.log('Buyerdashboardinput-disputeinput',input)
-    const result = await http.get('api/services/app/Disputes/BuyerGetAll', { params:{ Supplierids:input.Supplierids,Buyerid:input.Buyerid}},);
+    const result = await http.get('api/services/app/Disputes/BuyerGetAll', { params:{ Supplierids:input.Supplierids,Buyerid:input.Buyerid,skipcount:skipcount}},);
     
     console.log('Buyerdashboardinput-disputeinput-result',result.data.result)
     return result.data.result;
   }
 
-  public async accountgetAll(input:AccountDashboardInput) { 
-    let result = await http.get('api/services/app/Disputes/AccountsGetAll', { params: input });
+  public async accountgetAll(input:AccountDashboardInput,skipcount:any) { 
+    let result = await http.get('api/services/app/Disputes/AccountsGetAll', { params:{Supplierids:input.Supplierids,Buyerid:input.Buyerids,skipcount:skipcount}},);
     return result.data.result;
   }
 
