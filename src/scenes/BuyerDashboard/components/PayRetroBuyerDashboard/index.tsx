@@ -6,7 +6,7 @@ import { Row, Col,Select, Tabs,Button,Modal,message,Card, Tooltip,Spin } from 'a
 import { FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
 import { BuyerDashboardInput } from "./BuyerDashboardInput";
 import BuyerQueryModal from "./BuyerQueryModal"
-import DisputedataStore from "../../../../stores/DisputesStrore";
+//import DisputedataStore from "../../../../stores/DisputesStrore";
 //import { keys } from "mobx";
 import settingsIcon from "../../../../images/Setting.svg";
 import SessionStore from "../../../../stores/sessionStore";
