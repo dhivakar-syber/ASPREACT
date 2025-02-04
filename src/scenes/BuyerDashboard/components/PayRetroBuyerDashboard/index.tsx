@@ -53,11 +53,6 @@ const SettingsIcon = () => (
     invoicetype:0,
     Date:null,
     });
-    // const disputedataStoreInstance = new DisputedataStore(); // Move outside render
-
-
-  var userid='0';
-  
   
 
   React.useEffect(() => {
@@ -70,29 +65,8 @@ const SettingsIcon = () => (
         const requiredRoles = ["admin", "PayRetroAdmin","Admin","payretroadmin"];
         const hasRole = roles.some(role => requiredRoles.includes(role));
         setHasRole(hasRole);
-         if (roles.includes('admin') || roles.includes('PayRetroAdmin') || roles.includes('Admin')|| roles.includes('payretroadmin')) {
-          userid = '0';
-        } else {
-          userid = abp.session.userId;
-        }
         
-
-        const buyers = await supplementarySummariesService.GetLoginBuyer(userid);
-        setBuyers(buyers.data.result || []);
-        if(abp.session.userId===1||abp.session.userId===2)
-        {
-          
-          setselectedbuyers({name:"Select All",value:0})
-          setBuyers(buyers.data.result || []);
-          setselectedcategory(['Select All']);
-          await getsuppliers(0)
-          await getparts([],0)
-          setselectedcategory(0);
-          await LoadsupplementarySummary(dashboardinput);
-       
-        }
-        else{
-
+        const buyers = await supplementarySummariesService.GetLoginBuyer(abp.session.userId);
           setBuyers(buyers.data.result || []);
           setselectedbuyers({name:buyers.data.result[0].name,value:buyers.data.result[0].id});
           getsuppliers(buyers.data.result[0].id)
@@ -110,8 +84,6 @@ const SettingsIcon = () => (
       
           setdashboardinput(buyerdashboard);
             await LoadsupplementarySummary(buyerdashboard);
-      
-        }
         console.log('buyers',buyers.data.result);
         
       } catch (error) {

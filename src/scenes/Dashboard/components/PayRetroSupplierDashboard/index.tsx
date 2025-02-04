@@ -73,6 +73,7 @@ const [showDownloadButton, setShowDownloadButton] = React.useState<boolean>(fals
 const [hasRole, setHasRole] = React.useState<boolean>(false);
 const [progress, setProgress] = useState(0);
 const [loading, setloading] = React.useState<boolean>(false);
+const [tableloading, settableloading] = React.useState<boolean>(false);
 
 
 
@@ -90,15 +91,6 @@ const [loading, setloading] = React.useState<boolean>(false);
   
   const [isLoading, setIsLoading] = useState(false);
   
-  
-
-  var userid='0';
-  
-
-
-  
-    
-
   React.useEffect(() => {
 
     
@@ -110,8 +102,6 @@ const [loading, setloading] = React.useState<boolean>(false);
       
       try {
 
-        const roles = sessionStore?.currentLogin?.user?.roles || [];
-
         const session = await sessionServices.getCurrentLoginInformations();
         console.log(session.user.roles);
         const rolesfromsession = session.user.roles;
@@ -120,33 +110,11 @@ const [loading, setloading] = React.useState<boolean>(false);
         console.log('HasRole:',hasRole);
         setHasRole(hasRole)
       
-          if (roles.includes('admin') || roles.includes('PayRetroAdmin') || roles.includes('Admin')|| roles.includes('payretroadmin')) {
-            userid = '0';
-          } else {
-            userid = abp.session.userId;
-          }
-        
-        
 
-        const suppliers = await supplementarySummariesService.GetAllSuppliers(userid);
+        const suppliers = await supplementarySummariesService.GetAllSuppliers(abp.session.userId);
         console.log('suppliers',suppliers)
+        
         setSuppliers(suppliers.data.result || []);
-        if(abp.session.userId===1||abp.session.userId===2)
-        {
-          
-          setselectedsuppliers({name:"Select All",value:0})
-          setSuppliers(suppliers.data.result || []);
-          setselectedcategory(['Select All']);
-          await getbuyers(0)
-          await getparts(0,[])
-          setselectedcategory(0);
-          await LoadsupplementarySummary(dashboardinput);
-       
-        }
-        else{
-          console.log('Selected_supplier',suppliers.data.result[0].name)
-
-          setSuppliers(suppliers.data.result || []);
           setselectedsuppliers({name:suppliers.data.result[0].name,value:suppliers.data.result[0].id});
           getbuyers(suppliers.data.result[0].id)
           getparts(suppliers.data.result[0].id,[])
@@ -162,7 +130,6 @@ const [loading, setloading] = React.useState<boolean>(false);
           setdashboardinput(supplierDashboardInput);
 
           await LoadsupplementarySummary(supplierDashboardInput);
-        }
         console.log('Suppliers',suppliers.data.result);
         
       } catch (error) {
@@ -177,6 +144,8 @@ const [loading, setloading] = React.useState<boolean>(false);
   }, [selectedRows]);
   
   const handlesupplierChange = async  (value:any, option:any) => {
+
+    settableloading(true)
     
     console.log('selectedSuppliers',option,value)
     setselectedsuppliers({name:option.label,value:value});
@@ -195,7 +164,7 @@ const [loading, setloading] = React.useState<boolean>(false);
     };
     setdashboardinput(supplierDashboardInput);
     await LoadsupplementarySummary(supplierDashboardInput);
-
+    settableloading(false);
 
   };
 
@@ -204,6 +173,8 @@ const [loading, setloading] = React.useState<boolean>(false);
   };
   
   const handlebuyerChange =async  (selectedValues: any[]) => {
+
+    settableloading(true)
     
     setselectedbuyers(selectedValues);
     console.log('selectedbuyers',selectedValues)
@@ -218,6 +189,8 @@ const [loading, setloading] = React.useState<boolean>(false);
     };
     setdashboardinput(supplierDashboardInput);
     await LoadsupplementarySummary(supplierDashboardInput);
+
+    settableloading(false)
   };
 
 
@@ -267,6 +240,7 @@ const [loading, setloading] = React.useState<boolean>(false);
 
   const handlepartChange =async  (selectedValues: any[]) => {
     
+    settableloading(true)
     setselectedparts(selectedValues);
     console.log('selectedparts',selectedValues)
 
@@ -278,11 +252,14 @@ const [loading, setloading] = React.useState<boolean>(false);
     };
     setdashboardinput(supplierDashboardInput);
     await LoadsupplementarySummary(supplierDashboardInput);
+    settableloading(false)
   };
 
  
 
   const handlecategorychange = async(value: number) => {
+
+    settableloading(true)
     console.log(`selected ${value}`);
     setselectedcategory(value);
 
@@ -294,6 +271,8 @@ const [loading, setloading] = React.useState<boolean>(false);
     };
     setdashboardinput(supplierDashboardInput);
     await LoadsupplementarySummary(supplierDashboardInput);
+
+    settableloading(false)
     
   };
 
@@ -563,14 +542,7 @@ const [loading, setloading] = React.useState<boolean>(false);
 
     return `${day}-${month}-${year}`; 
 }
-//   function formatDateToInput( d:string) {
-//     const date = new Date(d); 
-//     const year = date.getFullYear(); 
-//     const month = String(date.getMonth() + 1).padStart(2, '0'); 
-//     const day = String(date.getDate()).padStart(2, '0'); 
 
-//     return `${year}-${month}-${day}`;  
-// }
 
   const [hoveredRowId, setHoveredRowId] = React.useState<number | null>(null);
 
@@ -1044,6 +1016,28 @@ const Loading = () => (
               </div>
           </Col>
         ):''}
+        <Col className="gutter-row" span={5}>
+            <div style={{ textAlign: 'left' }}>
+              <span style={{padding: "2px"}}>Buyers</span>
+              <Select
+                mode="multiple"
+                style={{ width: '200px' }}
+                placeholder="Select one or more Buyers"
+                options={buyers.map((buyer) => ({
+                  label: buyer.name,
+                  value: buyer.value,
+                }))}
+                value={selectedbuyers}
+                //value={[]}
+                onChange={handlebuyerChange}
+                showSearch
+                optionLabelProp="label"
+                filterOption={(input: any, buyers: any) =>
+                  buyers?.label.toLowerCase().includes(input.toLowerCase())
+                }
+              />
+            </div>
+          </Col>
           <Col className="gutter-row" span={5}>
             <div style={{ textAlign: 'left' }}>
               <span style={{padding: "2px"}}>Category</span>
@@ -1070,28 +1064,7 @@ const Loading = () => (
               />
             </div>
           </Col>
-          <Col className="gutter-row" span={5}>
-            <div style={{ textAlign: 'left' }}>
-              <span style={{padding: "2px"}}>Buyers</span>
-              <Select
-                mode="multiple"
-                style={{ width: '200px' }}
-                placeholder="Select one or more Buyers"
-                options={buyers.map((buyer) => ({
-                  label: buyer.name,
-                  value: buyer.value,
-                }))}
-                value={selectedbuyers}
-                //value={[]}
-                onChange={handlebuyerChange}
-                showSearch
-                optionLabelProp="label"
-                filterOption={(input: any, buyers: any) =>
-                  buyers?.label.toLowerCase().includes(input.toLowerCase())
-                }
-              />
-            </div>
-          </Col>
+          
           <Col className="gutter-row" span={5}>
             <div style={{ textAlign: 'left' }}>
               <span style={{padding: "2px"}}>Parts</span>
@@ -1143,8 +1116,7 @@ const Loading = () => (
         </Row>
 
         <br></br>
-        
-  <Tabs defaultActiveKey="1">
+        {!tableloading&&<Tabs defaultActiveKey="1">
     <Tabs.TabPane tab="Home" key="1">
         <div style={{ marginTop: '20px', overflowX: 'auto' }}>
           <table
@@ -1514,7 +1486,8 @@ const Loading = () => (
             supplementaryDocStatus={tableData}
             />
             </Tabs.TabPane>
-          </Tabs> 
+          </Tabs>}
+          {tableloading && Loading()}
       </Card>
       {progress > 0 && (
           <div style={{ 
