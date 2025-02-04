@@ -43,20 +43,20 @@ const CreateOrUpdateDahBoarddisputedata: React.FC<ICreateOrUpdateDahBoardDispute
     };
 
     const getStatusLabel = (status: number): string => {
-        switch (status) {
-          case 0:
-            return "Open";
-          case 1:
-            return "Forwarded To FandC";
-          case 2:
-            return "Close";
-          case 3:
-            return "Inimated To Buyer";
-          default:
-            return "Unknown";
-        }
-      };
-
+      switch (status) {
+        case 0:
+          return 'Open';
+        case 1:
+          return 'Forwarded To FandC';
+        case 2:
+          return 'Close';
+        case 3:
+          return 'Inimated To Buyer';
+        default:
+          return 'Unknown';
+      }
+    };
+    
   const handleRowClick = async (row: number) => {
     // if ((e.target as HTMLElement).tagName !== 'INPUT') {
     setSelectedRow(row); // Set the clicked row data
@@ -109,6 +109,7 @@ const handleModalClose = () => {
           okText="Initiate to Account"  // Change OK button text
           cancelText="Close"
           footer={[
+          <div key="footer-buttons" style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
             <Tooltip title="Click here to view the contract details" key="view-details">
             <Button
               key="viewDetails"
@@ -120,7 +121,7 @@ const handleModalClose = () => {
             >
               View Contract Details
             </Button>
-          </Tooltip>,
+          </Tooltip>
             <Button key="ok" type="primary" onClick={() => {
             
             Modal.confirm({
@@ -142,14 +143,15 @@ const handleModalClose = () => {
             });
             }}>
             Intimate To Buyer
-          </Button>,
+          </Button>
+          </div>
            
           ]}
         
         >
           <Form
             ref={formRef}
-            initialValues={initialData}
+            initialValues={{...initialData,status: getStatusLabel(initialData.status) }}
             onFinish={onCreate}
           >
            <Row gutter={16}>
@@ -177,18 +179,11 @@ const handleModalClose = () => {
                 </Col>
             </Row>
             <Row gutter={16}>
-                <Col span={12}>
-                <Form.Item label={L('Supplementary Summary')} name="supplementarySummaryId" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} style={{ fontWeight: 'bold' }}>
-                    <Input disabled value = {initialData.supplementarySummaryId} style={{  color: 'black' }}/>
-                    </Form.Item>
-                </Col>
-                <Col span={12}>
+            <Col span={12}>
                 <Form.Item label={L('Status')} name="status" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} style={{ fontWeight: 'bold' }}>
-                    <Input disabled value={getStatusLabel(initialData.status) || ''} style={{  color: 'black' }}/>
+                    <Input disabled  style={{  color: 'black' }}/>
                     </Form.Item>
                 </Col>
-           </Row>
-           <Row gutter={16}>
                 <Col span={12}>
                 <Form.Item label={L('Buyer Remarks')} name="buyerRemarks" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} style={{ fontWeight: 'bold' }}>
                     <Input disabled value={initialData.buyerRemarks || ''} style={{  color: 'black' }} onChange={(e) => {
@@ -198,6 +193,11 @@ const handleModalClose = () => {
             }}/>
                     </Form.Item>
                 </Col>
+
+
+           </Row>
+           <Row gutter={16}>
+
                 <Col span={12}>
                  <Form.Item label={L('Accounts Remarks')} name="accountsRemarks" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} 
                  style={{ fontWeight: 'bold', // Smooth transition
@@ -221,6 +221,11 @@ const handleModalClose = () => {
                         e.currentTarget.style.boxShadow = 'none';
                       }}
                       />
+                    </Form.Item>
+                </Col>
+                <Col span={12}>
+                <Form.Item label={L('Supplementary Summary')} name="supplementarySummaryId" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} style={{ fontWeight: 'bold' ,display:'none'}} >
+                    <Input disabled value = {initialData.supplementarySummaryId} style={{  color: 'black' }}/>
                     </Form.Item>
                 </Col>
            </Row>

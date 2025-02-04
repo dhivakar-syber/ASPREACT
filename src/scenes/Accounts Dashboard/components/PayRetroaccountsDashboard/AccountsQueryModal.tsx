@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Button, Card, Col, Dropdown, Menu, Modal, Row, Table,message} from 'antd';
+import { Button, Card, Col, Modal, Row, Table,message} from 'antd';
 import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../../../components/AppComponentBase';
@@ -226,34 +226,23 @@ IntimateToBuyerMail = async (item: any) => {
     console.log(this.disputesStore);
     const { disputedata } = this.disputesStore;
     const columns = [
-        {
-            title: L('Actions'),
-            width: 150,
-            render: (text: string, item: any) => (
-              <div>
-                <Dropdown
-                  trigger={['click']}
-                  overlay={
-                    <Menu>
-                       {/* <Menu.Item onClick={() => this.delete({ id: item.disputedata?.id })}>{L('view')}</Menu.Item> */}
-                      <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.dispute?.id })}>{L('Edit')}</Menu.Item>                      
-                    </Menu>
-                  }
-                  placement="bottomLeft"
-                >
-                  <Button type="primary" >
-                    {L('Actions')}
-                  </Button>
-                </Dropdown>
-              </div>
-            ),
-            onHeaderCell: () => ({
-              style: {
-                backgroundColor: '#005f7f', // Set header background color for this column
-                color: '#fff',
-              },
-            }),
-          },
+         {
+                    title: L('Actions'),
+                    width: 150,
+                    render: (text: string, item: any) => (
+                      <div>
+                   {item.dispute?.status !== 2 ? (
+                  <Button onClick={() => this.createOrUpdateModalOpen({ id: item.dispute?.id })} type="primary">{L('Response')}</Button>
+                ) : <Button type="primary" disabled>{L('Response')}</Button>}
+                    </div>
+                    ),
+                    onHeaderCell: () => ({
+                      style: {
+                        backgroundColor: '#005f7f', // Set header background color for this column
+                        color: '#fff',
+                      },
+                    }),
+                  },
 
           { title: L('BuyerName'), dataIndex: 'buyerShortId', key: 'buyerFk.buyerShortId', width: 150, render: (text: string) => <div>{text}</div>,
           onHeaderCell: () => ({
