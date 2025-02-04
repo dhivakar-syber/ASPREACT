@@ -177,8 +177,7 @@ editdata:any = null;
 IntimateToBuyerMail = async (item: any) => {
    
       console.log(item);
-  
-      message.success(`Buyer to F&C Forwarded Query Intimation  Mail Sent to - ${item.accoutantName}`);
+      message.success(`F&C to Buyer Forwarded Query Intimation  Mail Sent to - ${item.accoutantName}`);
       
 
   };
@@ -386,6 +385,7 @@ IntimateToBuyerMail = async (item: any) => {
           onCreate={this.handleCreate}
           initialData={this.state.initialData}
           disputesStrore={this.disputesStore}
+
         />
       </Card>
     );

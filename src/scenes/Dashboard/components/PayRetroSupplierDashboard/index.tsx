@@ -985,11 +985,16 @@ function barstatus(status:any) {
 const Loading = () => (
   <div
   style={{
-    position: 'fixed', // Keeps it at the center without affecting scrolling
-    top: '50%', 
-    left: '50%', 
-    transform: 'translate(-50%, -50%)', // Centering trick
-    textAlign: 'center',
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Darker overlay
+    zIndex: 1000, // Ensure it appears above everything
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   }}
 >
   <Spin size="large" />

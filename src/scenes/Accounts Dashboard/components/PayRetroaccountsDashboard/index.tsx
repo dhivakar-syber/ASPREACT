@@ -1,13 +1,15 @@
 import * as React from "react";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
 import { AccountDashboardInput } from "./AccountsDashboardInput";
-import { Row, Col,Select, message,Tabs,Button,Modal,Card, Tooltip} from 'antd';
+import { Row, Col,Select, message,Tabs,Button,Modal,Card, Tooltip, Spin} from 'antd';
 import  DashboardCards  from "../PayRetroaccountsDashboard/DashboardCards";
 import ApproveorRejectModal from "../ApproveorRejectModal"
 import { FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
 import AccountQueryModal from "./AccountsQueryModal"
 // import DisputedataStore from "../../../../stores/DisputesStrore";
 import settingsIcon from "../../../../images/Setting.svg";
+import { useState } from "react";
+import DisputedataStore from "../../../../stores/DisputesStrore";
 
 
 const PayRetroAccountsDashboard: React.SFC = () => {
@@ -29,7 +31,9 @@ const PayRetroAccountsDashboard: React.SFC = () => {
       const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  
       const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   const [isSupplierSubmitModalOpen, setIsSupplierSubmitModalOpen] = React.useState<boolean>(false); // To control modal visibility
-  // const disputedataStoreInstance = new DisputedataStore(); // Move outside render
+  const disputedataStoreInstance = new DisputedataStore(); // Move outside render
+  const [loading, setLoading] = useState(false); // Manage the loading state here
+
 
   const SettingsIcon = () => (
     <span role="img" aria-label="home" className="anticon">
@@ -48,6 +52,8 @@ const PayRetroAccountsDashboard: React.SFC = () => {
     DocumentStatusFilter:selectedstatus ,
     });
 
+      const [isLoading, setIsLoading] = useState(false);
+    console.log(isLoading,setLoading,setIsLoading)
   React.useEffect(() => {
     
     
@@ -452,9 +458,26 @@ function barstatus(status:any) {
 
   };
 
-
+  const Loading = () => (
+    <div><div
+    style={{
+      position: 'fixed', // Keeps it at the center without affecting scrolling
+      top: '50%', 
+      left: '50%', 
+      transform: 'translate(-50%, -50%)', // Centering trick
+      textAlign: 'center',
+    }}
+  >
+    <Spin size="large" />
+    
+  </div >
+  </div >
+  );
+  
   return (
     <div>
+      {!loading && <div>
+
       <div
               style={{
                 background: '#fafafa',
@@ -846,13 +869,16 @@ function barstatus(status:any) {
       	</Tabs.TabPane>
     <Tabs.TabPane tab="Queries" key="3">
     <AccountQueryModal 
+                         disputesStore={disputedataStoreInstance}
                          AccountDashboardInput ={dashboardinput} />
 
     </Tabs.TabPane>
   </Tabs> 
      
   </Card> 
-     
+  </div>}
+  {loading&&Loading()}
+
     </div>
   );
 };
