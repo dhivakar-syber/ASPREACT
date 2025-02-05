@@ -196,14 +196,8 @@ class BuyerQueryModal extends AppComponentBase<IDisputesProps, IDisputesdataStat
 editdata:any = null;
 
 
-ForwardFandCMail = async (item: any) => {
-    
-  console.log(item);
 
-  message.success(`Buyer to F&C Forwarded Query Intimation  Mail Sent to - ${item.accoutantName}`);
-
-};
-  handleCreate = () => {
+ForwardFandButton = () => {
     const form = this.formRef.current;
    
     form!.validateFields().then(async (values: any) => {
@@ -215,25 +209,18 @@ ForwardFandCMail = async (item: any) => {
       } else {
         await this.disputesStore.update({ ...values, id: this.state.disputeId });
         
-        await this.ForwardFandCMail(values)
+        message.success(`Buyer  to F&C  Query Forwarded Intimation  Mail Sent `);
         
       }
 
       this.setState({ modalVisible: false });
-      form!.resetFields();
+      //form!.resetFields();
     });
   };
 
-  ClosrQueryMail = async (item: any) => {
   
-    console.log(item);
-
-    
-    message.success(`Query Closed Information Sent to - ${item.supplierName}`);
   
-};
-  
-  handleSubmit = async () => {
+  ClosrQueryButton = async () => {
     const form = this.formRef.current;
   
     if (!form) {
@@ -253,13 +240,13 @@ ForwardFandCMail = async (item: any) => {
         await this.disputesStore.update(updatedItem);
 
         
-        this.ClosrQueryMail(values);
+        message.success(`Query Closed Information Sent to - ${values.supplierName}`);
             
     }
   
   
     this.setState({ modalVisible: false });
-    form.resetFields();
+    //form.resetFields();
 };
 
   
@@ -404,9 +391,9 @@ ForwardFandCMail = async (item: any) => {
 
           formRef={this.formRef}
           visible={this.state.modalVisible}
-          onsubmit={this.handleSubmit}
+          onsubmit={this.ClosrQueryButton}
           modalType={this.state.disputeId === 0 ? 'edit' : 'create'}
-          onCreate={this.handleCreate}
+          onCreate={this.ForwardFandButton}
           onclose={() => {
             this.setState({
               modalVisible: false,
