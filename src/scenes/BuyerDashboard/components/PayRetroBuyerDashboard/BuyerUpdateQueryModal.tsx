@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, Modal, Col, Row, Button,message, Tooltip, Spin  } from 'antd';
+import { Form, Input, Modal, Col, Row, Button,message, Tooltip,Spin  } from 'antd';
 import { FormInstance } from 'antd/lib/form';
 import { L } from '../../../../lib/abpUtility';
 import DisputesStrore from '../../../../stores/DisputesStrore';
@@ -56,29 +56,7 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
     }
   };
 
-    // const LoadsupplementarySummary=async (supplierDashboardInput:SupplierDashboardInput)=>
-    // {
-  
-    // var  result = await supplementarySummariesService.loadsupplementarySummary(supplierDashboardInput);
-    //   setTableData(result.data.result || []);
-    //   console.log("Supplementary_top_table", result.data.result);
-  
-    //   const carddetails = await supplementarySummariesService.carddetails(supplierDashboardInput);
-  
-    //   setrowsupplierstatus(carddetails.data.result.supplierpending.toFixed(2));
-    //   setrowBuyerstatus(carddetails.data.result.buyerpending.toFixed(2));
-    //   setrowAccountsStatus(carddetails.data.result.accountspending.toFixed(2));
-
-    // }
-
-  //   function formatDate(d:Date) {
-  //     const date = new Date(d);
-  //     const year = date.getFullYear();
-  //     const month = String(date.getMonth() + 1).padStart(2, '0'); 
-  //     const day = String(date.getDate()).padStart(2, '0'); 
-  
-  //     return `${day}-${month}-${year}`; 
-  //  }
+    
     const handleRowClick = async (row: number) => {
       
       setSelectedRow(row); 
@@ -138,28 +116,29 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
   );
   
     const handleIntimateToFandC = async () => {
-    // const { setloading } = this.props; // Access setloading from props
+    
   
     Modal.confirm({
       title: 'Are you sure? You want to forward the Query to F&C?',
       onOk: async () => {
         try {
-          // Optionally, you can set action type or other logic before submitting
+          
+          
+          
           setActionType('forward'); // Set action type before submitting
           await formRef.current?.submit();
-          setloading(true); // Set loading to true before operation
-          message.success('Intimated to F&C');
+          setIsModalOpen(false); 
+          setloading(true); 
+          
         } catch (error) {
           console.error('Error when forwarding query:', error);
           message.error('Failed to Forward the query to F&C');
         } 
         finally {
-          setloading(false); // Set loading to false after operation completes
+          setloading(false); 
         }
       },
-      onCancel() {
-        console.log('Cancel');
-      },
+      
     });
     };
     const handleQueryClose = async () => {
@@ -171,14 +150,15 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
         try {
           setActionType('close'); // Set action type before submitting
           await formRef.current?.submit(); // Ensure submission is awaited if needed
-          setloading(true); // Set loading to true before operation
-          message.success('Query Closed');
+          setIsModalOpen(false); 
+          setloading(true);
+         
         } catch (error) {
           console.error('Error when closing query:', error);
           message.error('Failed to close the query');
         }
         finally {
-          setloading(false); // Set loading to false after operation completes
+          // Set loading to false after operation completes
         }
       },
       onCancel() {
@@ -189,7 +169,7 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
 
   return (
   <div>
-    {!loading ? (
+    
   <div>
     <Modal  
       visible={visible}
@@ -305,36 +285,7 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
         </Row>
   
         <Row gutter={16}>
-        {/* <Col span={12}>
-        <Tooltip title="Click Here to View the Contract Details!">
-            <div
-              onClick={() => handleRowClick(initialData.supplementarySummaryId)}
-              onMouseEnter={() => setHoveredRowId(initialData.supplementarySummaryId)}
-              onMouseLeave={() => setHoveredRowId(null)}
-              style={{
-                backgroundColor:
-                  hoveredRowId === initialData.supplementarySummaryId
-                    ? '#f1f1f1'
-                    : Number(initialData.supplementarySummaryId) % 2 === 0
-                    ? '#f9f9f9'
-                    : '#fff',
-                cursor: 'pointer',
-                padding: '5px',
-                borderRadius: '5px',
-              }}
-            >
-              <Form.Item
-                label={L('Supplementary Summary')}
-                name="supplementarySummaryId"
-                labelCol={{ span: 24 }}
-                wrapperCol={{ span: 24 }}
-                style={{ fontWeight: 'bold' }}
-              >
-                {/* <Input disabled value={initialData.supplementarySummaryId} style={{ color: 'black' }} /> */}
-              {/* </Form.Item>
-            </div>
-            </Tooltip>
-          </Col> */} 
+        
 {initialData?.status === 3 && (
   <Col span={12}>
     <Form.Item
@@ -365,7 +316,7 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
           <Input />
         </Form.Item>
       </Form>
-  
+      {loading && Loading()}
       
       {isModalOpen && (
         <SupplierModalView
@@ -378,9 +329,7 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
         )}
       </Modal>
     </div>
-  ) : (
-    Loading()
-  )}
+  
 </div>
 );
   
