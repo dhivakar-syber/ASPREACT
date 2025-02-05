@@ -115,7 +115,7 @@ class AccountQueryModal extends AppComponentBase<IDisputesProps, IDisputesdataSt
       }
   }
   
-  async getAll() {
+  getAll = async () => {
     if (!this.disputesStore) {
         console.error('cbfcdatastore is undefined');
         return;

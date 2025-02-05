@@ -6,14 +6,11 @@ import { Row, Col,Select, Tabs,Button,Modal,message,Card, Tooltip } from 'antd';
 import { FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
 import { BuyerDashboardInput } from "./BuyerDashboardInput";
 import BuyerQueryModal from "./BuyerQueryModal"
-//import DisputedataStore from "../../../../stores/DisputesStrore";
-//import { keys } from "mobx";
 import settingsIcon from "../../../../images/Setting.svg";
 import SessionStore from "../../../../stores/sessionStore";
 import { inject, observer } from "mobx-react"; // Import MobX utilities
 
 import ApproveorRejectModal from "../ApproveorRejectModal"
-// import { useState } from "react";
 
 declare var abp: any;
 //const skipCount=0;

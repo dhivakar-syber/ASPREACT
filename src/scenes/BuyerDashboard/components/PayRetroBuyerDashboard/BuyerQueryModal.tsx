@@ -14,7 +14,7 @@ import { BuyerDashboardInput } from "./BuyerDashboardInput";
 
 
 export interface IDisputesProps {
-   
+  // disputesStore:DisputesStrore;
   BuyerDashboardInput: BuyerDashboardInput; 
 }
 
@@ -80,7 +80,7 @@ const getStatusLabel = (status: number): string => {
 @inject(Stores.DisputesStore)
 @observer
 class BuyerQueryModal extends AppComponentBase<IDisputesProps, IDisputesdataState> {
-   private disputesStore = new DisputesStrore();
+   public disputesStore = new DisputesStrore();
   formRef = React.createRef<FormInstance>();
   
 
@@ -118,15 +118,14 @@ class BuyerQueryModal extends AppComponentBase<IDisputesProps, IDisputesdataStat
     }
 }
 
-  async getAll() {
-    if (!this.disputesStore) {
-        console.error('disputestore is undefined');
-        return;
-    }
-      const skipcount = this.state.skipCount;
-    
-     await this.disputesStore.buyergetAll( this.props.BuyerDashboardInput,skipcount);
+getAll = async () => {
+  if (!this.disputesStore) {
+      console.error('disputesStore is undefined');
+      return;
   }
+  const skipcount = this.state.skipCount;
+  await this.disputesStore.buyergetAll(this.props.BuyerDashboardInput, skipcount);
+};
 
   handleTableChange = (pagination: any) => {
     if (!pagination.current) {
@@ -408,13 +407,14 @@ ForwardFandCMail = async (item: any) => {
           modalType={this.state.disputeId === 0 ? 'edit' : 'create'}
           onCreate={this.handleCreate}
           onclose={() => {
-            this.setState({
+            this.setState({ 
               modalVisible: false,
             });
             this.formRef.current?.resetFields();
           }}
           initialData={this.state.initialData}
           disputesStrore={this.disputesStore}
+          onUpdate={this.getAll}
         />
       </Card>
     );

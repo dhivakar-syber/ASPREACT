@@ -46,26 +46,25 @@ const AnnexureTable = ({ data }: { data: any[] }) => {
 </div>
       <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px",
             borderRadius: '5px' }}>
-        <thead>
-        <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left", borderRadius: '2px' }}>
-        
-          <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>S.No</th>
-          <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Annexure Group</th>
-          <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Part No</th>
-          <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Invoice No</th>
-          <th style={{width:"120px",padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>InvoiceDate</th>
-          <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Old Contract</th>
-          <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>New Contract</th>
-          <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Paid Price(CBFC)</th>
-          <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Diff Value</th>
-          <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Qty</th>
-          <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Total</th>
-          <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Currency</th>
-          <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Supp.Inv.No/Credit Note</th>
-          <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Supp.Inv.Date/Credit Note Date</th>
-        </tr>
+          <thead>
+          <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left", borderRadius: '2px' }}>
           
-        </thead>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "left"}}>S.No</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Annexure Group</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Part No</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Invoice No</th>
+            <th style={{width:"120px",padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>InvoiceDate</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Old Contract</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>New Contract</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Diff Value</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Qty</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Total</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Currency</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Supp.Inv.No/Credit Note</th>
+            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Supp.Inv.Date/Credit Note Date</th>
+          </tr>
+            
+          </thead>
         <tbody >
           {data && data.length > 0 ? (
             data.map((item:any, index:any) => (
@@ -74,23 +73,22 @@ const AnnexureTable = ({ data }: { data: any[] }) => {
                 backgroundColor:
                 index % 2 === 0 ? '#f9f9f9' : '#fff',
               }}>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{index + 1}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.versionNo}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.partno}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.invoiceNo}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(item.invoiceDate)}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.oldValue}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.newValue}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}></td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.diffValue}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.qty}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.total}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.currency}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.supplementaryInvoiceNo}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.supplementaryInvoiceDate ? formatDate(item.supplementaryInvoiceDate) : ""}</td>
-              </tr>
-            ))
-          ):''}
+              <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "left"}}>{index + 1}</td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "center"}}>{item.versionNo}</td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.partno}</td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.invoiceNo}</td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(item.invoiceDate)}</td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.oldValue}</td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.newValue}</td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.diffValue}</td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.qty}</td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.total}</td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.currency==0?'INR':item.currency==1?'USD':''}</td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.supplementaryInvoiceNo}</td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.supplementaryInvoiceDate?formatDate(item.supplementaryInvoiceDate):''}</td>
+            </tr>
+          ))
+        ):''}
         </tbody>
       </table>
     </div>
@@ -104,18 +102,17 @@ const InvoiceTable = ({ data }: { data: any[] }) => {
       <h3>CBFC Information</h3>
       <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px",
             borderRadius: '5px' }}>
-        <thead>
-        <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" , borderRadius: '2px'}}>
-            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>S.no</th>
-            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>PartNo</th>
-            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Invoice No</th>
-            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>InvoiceDate</th>
-            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Qty</th>
-            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Price (GRN)</th>
-            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Paid Price (CBFC)</th>
-            <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Paid Amount (CBFC)</th>
-          </tr>
-        </thead>
+          <thead>
+          <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" , borderRadius: '2px'}}>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>S.no</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>PartNo</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Invoice No</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>InvoiceDate</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Qty</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Price (GRN)</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Paid Amount (CBFC)</th>
+            </tr>
+          </thead>
         <tbody >
           {data && data.length > 0 ? (
             data.map((item:any, index:any) => (
@@ -123,17 +120,16 @@ const InvoiceTable = ({ data }: { data: any[] }) => {
                 backgroundColor:
                 index % 2 === 0 ? '#f9f9f9' : '#fff',
               }}>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{index + 1}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.partNo}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.invoiceNo}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(item.invoicedate)}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.quantity}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.paidAmount}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.paidAmount}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.paidAmount}</td>
-              </tr>
-            ))
-          ):''}
+              <td style={{ padding: "10px", border: "1px solid #ddd" }}>{index + 1}</td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.partNo}</td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.invoiceNo}</td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(item.invoicedate)}</td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.quantity}</td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.invoiceRate}</td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.paidAmount}</td>
+            </tr>
+          ))
+        ):''}
         </tbody>
       </table>
     </div>
