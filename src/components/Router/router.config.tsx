@@ -77,6 +77,15 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../scenes/BackgroundJobDashboard')),
   },
   {
+    path: '/l4dashboard',
+    name: 'L4 & L3 Dashboard',
+    permission: '',
+    title: 'L4 & L3 Dashboard',
+    icon: TagsOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/L3 & L4 Dashboard')),
+  },
+  {
     path: '/dashboard',
     name: 'dashboard',
     permission: 'Pages.Tenant.Dashboard',

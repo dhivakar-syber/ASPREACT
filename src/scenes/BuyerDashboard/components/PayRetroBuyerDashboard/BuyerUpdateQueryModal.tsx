@@ -139,6 +139,7 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
         finally {
           setloading(false); 
           await onUpdate();
+          //setloading(false); 
         }
       },
       
