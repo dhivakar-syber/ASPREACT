@@ -54,7 +54,7 @@ type BuyerLookupItem = {
   displayName: string;
 };
 const confirm = Modal.confirm;
-const skipCount = 0;
+// const skipCount = 0;
 
 
 const getStatusLabel = (status: number): string => {
@@ -121,7 +121,7 @@ class AccountQueryModal extends AppComponentBase<IDisputesProps, IDisputesdataSt
         return;
     }
 
-    // const skipcount = this.state.skipCount;
+    const skipCount = this.state.skipCount;
     await this.disputesStore.accountgetAll(this.props.AccountDashboardInput,skipCount);
   }
 
@@ -394,7 +394,7 @@ IntimateToBuyerMail = async (item: any) => {
           onCreate={this.handleCreate}
           initialData={this.state.initialData}
           disputesStrore={this.disputesStore}
-
+          onUpdate={this.getAll}
         />
       </Card>
     );

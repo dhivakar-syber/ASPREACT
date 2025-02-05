@@ -13,7 +13,7 @@ export interface ICreateOrUpdateDahBoardDisputesDataProps {
   onCancel: () => void;
   formRef: React.RefObject<FormInstance>;
   initialData?: any;
-
+  onUpdate:() => void;
   disputesStrore: DisputesStrore;
 }
 
@@ -25,6 +25,7 @@ const CreateOrUpdateDahBoarddisputedata: React.FC<ICreateOrUpdateDahBoardDispute
   onCancel,
   formRef,
   initialData,
+  onUpdate
 }) => {
 
     const [annexuremodalData, annexuresetModalData] = React.useState<any[]>([]);
@@ -103,6 +104,7 @@ const handleModalClose = () => {
       try {
         // Optionally, you can set action type or other logic before submitting
         await formRef.current?.submit();
+        setIsModalOpen(false); 
         setloading(true); // Set loading to true before operation
         message.success('Intimated to Buyer');
       } catch (error) {
@@ -110,12 +112,11 @@ const handleModalClose = () => {
         message.error('Failed to Intimate the Buyer');
       } 
       finally {
-        setloading(false); // Set loading to false after operation completes
+        setloading(false); 
+        await onUpdate();
       }
     },
-    onCancel() {
-      console.log('Cancel');
-    },
+
   });
   };
 

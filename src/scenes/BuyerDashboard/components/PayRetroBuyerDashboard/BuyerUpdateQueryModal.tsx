@@ -15,6 +15,7 @@ export interface ICreateOrUpdateDahBoardDisputesDataProps {
   formRef: React.RefObject<FormInstance>;
   initialData?: any;
   disputesStrore: DisputesStrore;
+  onUpdate: () => void;
 }
 
 const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDisputesDataProps> = ({
@@ -24,6 +25,7 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
   onclose,
   formRef,
   initialData,
+  onUpdate
 }) => {
     // const [tableData, setTableData] = React.useState<any[]>([]);
     // const [ setTableData] = React.useState<any[]>([]);
@@ -136,6 +138,7 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
         } 
         finally {
           setloading(false); 
+          await onUpdate();
         }
       },
       
@@ -149,7 +152,7 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
       onOk: async () => {
         try {
           setActionType('close'); // Set action type before submitting
-          await formRef.current?.submit(); // Ensure submission is awaited if needed
+          await formRef.current?.submit();
           setIsModalOpen(false); 
           setloading(true);
          
@@ -158,12 +161,11 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
           message.error('Failed to close the query');
         }
         finally {
-          // Set loading to false after operation completes
+          setloading(false); 
+          await onUpdate();
         }
       },
-      onCancel() {
-        console.log('Cancel');
-      },
+
     });
     };
 

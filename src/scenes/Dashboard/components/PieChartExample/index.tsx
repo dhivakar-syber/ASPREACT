@@ -108,25 +108,14 @@ class AnalysisPieChart extends React.Component<SupplementaryDocStatusProps> {
       }
     });
     // const totalSum = Object.values(statusTotals).reduce((sum, val) => sum + val, 0);
-
     return Object.entries(statusTotals)
-    .map(([name, value]) => {
-      let formattedValue = value;
-      
-      // If the value is less than 1 lakh, show it in Lakhs
-      if (value < 100000) {
-        formattedValue = value / 100000; // Convert to Lakhs
-      } else {
-        formattedValue = value / 10000000; // Convert to Crores
-      }
-  
-      return {
-        name,
-        value: parseFloat(formattedValue.toFixed(2)), // Format value to 2 decimal places
-        color: STATUS_COLORS[name],
-      };
-    })
+    .map(([name, value]) => ({
+      name,
+      value, // Keep the raw value instead of converting it to a percentage
+      color: STATUS_COLORS[name],
+    }))
     .filter((item) => item.value > 0); // Remove items with zero value
+  
   
   }  
 
@@ -172,7 +161,7 @@ class AnalysisPieChart extends React.Component<SupplementaryDocStatusProps> {
     return (
       <div style={{ textAlign: "center" }}>
         <h3><b>{title}</b></h3>
-        <PieChart width={400} height={400} key={chartKey}>
+        <PieChart width={500} height={500} key={chartKey}>
           <Pie
             dataKey="value"
             data={chartData}
