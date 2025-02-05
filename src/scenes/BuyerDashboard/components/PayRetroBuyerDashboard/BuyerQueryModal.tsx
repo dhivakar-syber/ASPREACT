@@ -401,7 +401,7 @@ ForwardFandButton = () => {
           }}
           initialData={this.state.initialData}
           disputesStrore={this.disputesStore}
-          onUpdate={this.getAll}
+          //onUpdate={this.getAll}
         />
       </Card>
     );

@@ -135,7 +135,7 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
           message.error('Failed to Forward the query to F&C');
         } 
         finally {
-          setloading(false); 
+          //setloading(false); 
         }
       },
       
