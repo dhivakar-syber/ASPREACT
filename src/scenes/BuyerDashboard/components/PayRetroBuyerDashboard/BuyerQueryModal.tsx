@@ -14,7 +14,7 @@ import { BuyerDashboardInput } from "./BuyerDashboardInput";
 
 
 export interface IDisputesProps {
-  // disputesStore: DisputesStrore;
+   
   BuyerDashboardInput: BuyerDashboardInput; 
 }
 
@@ -113,7 +113,7 @@ class BuyerQueryModal extends AppComponentBase<IDisputesProps, IDisputesdataStat
 
   async getAll() {
     if (!this.disputesStore) {
-        console.error('cbfcdatastore is undefined');
+        console.error('disputestore is undefined');
         return;
     }
     const skipcount = this.state.skipCount;

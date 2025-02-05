@@ -153,6 +153,7 @@ class DisputedataStore {
   async buyergetAll(input:BuyerDashboardInput,skipcount:any) {
     let result = await disputesService.buyergetAll(input,skipcount);
     this.disputedata = result;
+    console.log('Result',result);
   }
 
   @action
@@ -185,19 +186,7 @@ class DisputedataStore {
 
   
 
-//    async importExcel(file: File): Promise<any> {
-//     try {
-//         if (!file) {
-//             throw new Error("No file provided");
-//         }
-        
-//         const items = await cbfcdataService.inportExceldata(file);
-//         return items;
-//     } catch (error) {
-//         console.error("Error importing Excel file:", error);
-//         throw error; // Optionally rethrow the error to propagate it
-//     }
-// }
+
 }
 
 export default  DisputedataStore;
