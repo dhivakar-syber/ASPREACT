@@ -111,14 +111,21 @@ class BuyerQueryModal extends AppComponentBase<IDisputesProps, IDisputesdataStat
     await this.getAll();
   } 
 
+  async componentDidUpdate(prevProps:IDisputesProps) {
+    // Run getAll() only if BuyerDashboardInput has changed
+    if (prevProps.BuyerDashboardInput !== this.props.BuyerDashboardInput) {
+        await this.getAll();
+    }
+}
+
   async getAll() {
     if (!this.disputesStore) {
         console.error('disputestore is undefined');
         return;
     }
-    const skipcount = this.state.skipCount;
+      const skipcount = this.state.skipCount;
     
-    await this.disputesStore.buyergetAll( this.props.BuyerDashboardInput,skipcount);
+     await this.disputesStore.buyergetAll( this.props.BuyerDashboardInput,skipcount);
   }
 
   handleTableChange = (pagination: any) => {

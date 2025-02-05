@@ -84,7 +84,10 @@ class disputesService {
   }
 
   public async accountgetAll(input:AccountDashboardInput,skipcount:any) { 
-    let result = await http.get('api/services/app/Disputes/AccountsGetAll', { params:{Supplierids:input.Supplierids,Buyerid:input.Buyerids,skipcount:skipcount}},);
+    console.log('AccountDashboardInput-disputeinput',input)
+    console.log('AccountDashboardInput-disputeinput',typeof input.Buyerids)
+    let result = await http.get('api/services/app/Disputes/AccountsGetAll', { params:{Supplierids:input.Supplierids,Buyerids:input.Buyerids,skipcount:skipcount}},);
+    console.log('AccountDashboardInput-disputeinput-result',result.data.result)
     return result.data.result;
   }
 

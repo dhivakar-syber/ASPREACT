@@ -8,6 +8,7 @@ import { FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
 import AccountQueryModal from "./AccountsQueryModal"
 // import DisputedataStore from "../../../../stores/DisputesStrore";
 import settingsIcon from "../../../../images/Setting.svg";
+// import DisputedataStore from "../../../../stores/DisputesStrore";
 
 
 const PayRetroAccountsDashboard: React.SFC = () => {
@@ -29,7 +30,8 @@ const PayRetroAccountsDashboard: React.SFC = () => {
       const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  
       const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   const [isSupplierSubmitModalOpen, setIsSupplierSubmitModalOpen] = React.useState<boolean>(false); // To control modal visibility
-  // const disputedataStoreInstance = new DisputedataStore(); // Move outside render
+  
+
 
   const SettingsIcon = () => (
     <span role="img" aria-label="home" className="anticon">
@@ -452,9 +454,25 @@ function barstatus(status:any) {
 
   };
 
-
+  // const Loading = () => (
+  //   <div><div
+  //   style={{
+  //     position: 'fixed', // Keeps it at the center without affecting scrolling
+  //     top: '50%', 
+  //     left: '50%', 
+  //     transform: 'translate(-50%, -50%)', // Centering trick
+  //     textAlign: 'center',
+  //   }}
+  // >
+  //   <Spin size="large" />
+    
+  // </div >
+  // </div >
+  // );
+  
   return (
     <div>
+
       <div
               style={{
                 background: '#fafafa',
@@ -845,15 +863,13 @@ function barstatus(status:any) {
       </Modal>
       	</Tabs.TabPane>
     <Tabs.TabPane tab="Queries" key="3">
-    <AccountQueryModal 
-                         AccountDashboardInput ={dashboardinput} />
+    <AccountQueryModal AccountDashboardInput ={dashboardinput} />
 
     </Tabs.TabPane>
   </Tabs> 
      
   </Card> 
-     
-    </div>
+  </div>
   );
 };
 

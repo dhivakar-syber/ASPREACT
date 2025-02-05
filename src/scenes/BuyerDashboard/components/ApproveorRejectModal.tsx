@@ -37,6 +37,7 @@ const BuyersApproval: React.FC<ApproveRejectModalModalProps> = ({
 
   const [approveLoading, setApproveLoading] = useState(false); // Loading state for approve
   const [rejectLoading, setRejectLoading] = useState(false); // Loading state for reject
+  const [loading, setloading] = React.useState<boolean>(false);
 
   const handleApproveSubmit = () => {
     form.validateFields()
@@ -48,6 +49,7 @@ const BuyersApproval: React.FC<ApproveRejectModalModalProps> = ({
         }
 
         setApproveLoading(true); // Start approve loading
+        setloading(true); // Set loading to true before operation
         supplementarySummariesService
           .supplementaryInvoicebuyerapprove(submitIdRow, submitRemarks)
           .then((result: any) => {
@@ -61,6 +63,7 @@ const BuyersApproval: React.FC<ApproveRejectModalModalProps> = ({
           })
           .finally(() => {
             setApproveLoading(false); // Stop approve loading
+            setloading(false); // Set loading to true before operation
           });
       })
       .catch((errorInfo) => {
@@ -78,6 +81,7 @@ const BuyersApproval: React.FC<ApproveRejectModalModalProps> = ({
         }
 
         setRejectLoading(true); // Start reject loading
+        setloading(true); // Set loading to true before operation
         supplementarySummariesService
           .supplementaryInvoicebuyerreject(submitIdRow, submitRemarks)
           .then((result: any) => {
@@ -89,16 +93,42 @@ const BuyersApproval: React.FC<ApproveRejectModalModalProps> = ({
             console.error('Error during submission:', error);
             message.error('Rejection failed. Please try again.');
           })
-          .finally(() => {
-            setRejectLoading(false); // Stop reject loading
-          });
+          // .finally(() => {
+          //   setRejectLoading(false); // Stop reject loading
+          //   setloading(false); // Set loading to true before operation
+          // });
       })
       .catch((errorInfo) => {
         console.error('Validation Failed:', errorInfo);
       });
   };
 
+    const Loading = () => (
+      <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)', // Darker overlay
+        zIndex: 1000, // Ensure it appears above everything
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Spin size="large" />
+      
+    </div >
+    
+    );
+    
+
   return (
+    <div>
+    {!loading ? (
+      <div>
     <Modal
       title="Buyers Approve/Reject Modal"
       visible={isOpen}
@@ -177,8 +207,13 @@ const BuyersApproval: React.FC<ApproveRejectModalModalProps> = ({
           )}
         </Button>
       </div>
-    </Modal>
-  );
+      </Modal>
+    </div>
+  ) : (
+    Loading()
+  )}
+</div>
+);
 };
 
 export default BuyersApproval;

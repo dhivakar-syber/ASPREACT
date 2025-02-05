@@ -2,7 +2,7 @@ import * as React from "react";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
 
 import  DashboardCards  from "./BuyerDashboardCards";
-import { Row, Col,Select, Tabs,Button,Modal,message,Card, Tooltip,Spin } from 'antd';
+import { Row, Col,Select, Tabs,Button,Modal,message,Card, Tooltip } from 'antd';
 import { FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
 import { BuyerDashboardInput } from "./BuyerDashboardInput";
 import BuyerQueryModal from "./BuyerQueryModal"
@@ -13,8 +13,10 @@ import SessionStore from "../../../../stores/sessionStore";
 import { inject, observer } from "mobx-react"; // Import MobX utilities
 
 import ApproveorRejectModal from "../ApproveorRejectModal"
+// import { useState } from "react";
 
 declare var abp: any;
+//const skipCount=0;
 const SettingsIcon = () => (
   <span role="img" aria-label="home" className="anticon">
   <img src={settingsIcon} alt="Settings" />
@@ -43,8 +45,7 @@ const SettingsIcon = () => (
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   const [isApproveRejectModalOpen, setIsApproveRejectModalOpen] = React.useState<boolean>(false); // To control modal visibility
   const [hasRole, setHasRole] = React.useState<boolean>(false);
-  const [loading, setloading] = React.useState<boolean>(false);
-
+  // const [queryloading, setqueryloading] = React.useState<boolean>(false);
   const [dashboardinput, setdashboardinput] = React.useState<BuyerDashboardInput>({
     Supplierids:[0],
     Buyerid:0,
@@ -242,9 +243,8 @@ const SettingsIcon = () => (
     
     const approveSubmit = async(item: any) => {
       
-      setloading(true);
 
-     
+      message.success(`${item.document} Approval Mail sent to Accounts`);
 
 
         var   buyerdashboard: BuyerDashboardInput = {
@@ -257,14 +257,12 @@ const SettingsIcon = () => (
         };
     
         setdashboardinput(buyerdashboard);
-          await LoadsupplementarySummary(buyerdashboard);   
-          setloading(false)    
-          message.success(`${item.document} Approval Mail sent to Accounts`);   
+          await LoadsupplementarySummary(buyerdashboard);          
     };
     const rejectSubmit = async(item: any) => {
 
-        setloading(true);
-       
+        
+        message.success(`${item.document} Rejected Mail sent to ${item.suppliername}`);
 
         var   buyerdashboard: BuyerDashboardInput = {
           Supplierids:selectedsuppliers,
@@ -276,9 +274,7 @@ const SettingsIcon = () => (
         };
     
         setdashboardinput(buyerdashboard);
-          await LoadsupplementarySummary(buyerdashboard);   
-          setloading(false);  
-          message.success(`${item.document} Rejected Mail sent to ${item.suppliername}`);
+          await LoadsupplementarySummary(buyerdashboard);     
     };
     const getsuppliers =async  (supplybuyers: number) => {
       
@@ -307,9 +303,9 @@ const SettingsIcon = () => (
       setrowBuyerstatus(carddetails.data.result.buyerpending.toFixed(2));
       setrowAccountsStatus(carddetails.data.result.accountspending.toFixed(2));
   
-     // const disput = new DisputedataStore();
-
-      //await disput.buyergetAll(buyerdashboardinput);
+    // const disput = new DisputedataStore();
+      // setqueryloading(true)
+     // await disput.buyergetAll(buyerdashboardinput,skipCount);
         
   
   
@@ -426,7 +422,25 @@ const SettingsIcon = () => (
 
 }
 
+// const handleSupplementrypdfButtonClick = async (pdfPath: string) => {
+//     try {
+        
+//         const response = await supplementarySummariesService.GetFile(pdfPath);
 
+//         if (response && response.fileBytes && response.fileType) {
+//             // Convert the fileBytes (base64 string) into a data URL
+//             const dataUrl = `data:${response.fileType};base64,${response.fileBytes}`;
+            
+//             // Set the generated data URL to display in the iframe
+//             setPdfUrl(dataUrl);
+//             setIsModalVisible(true); // Open the modal
+//         } else {
+//             console.error("Invalid file response:", response);
+//         }
+//     } catch (error) {
+//         console.error("Error fetching the PDF file:", error);
+//     }
+// };
 
 function barstatus(status:any) {
 
@@ -447,26 +461,8 @@ function barstatus(status:any) {
 
 }
 
-const Loading = () => (
-  <div
-  style={{
-    position: 'fixed', // Keeps it at the center without affecting scrolling
-    top: '50%', 
-    left: '50%', 
-    transform: 'translate(-50%, -50%)', // Centering trick
-    textAlign: 'center',
-  }}
->
-  <Spin size="large" />
-  
-</div >
-
-);
-
-
   return (
     <div>
-      {!loading&&<div>
       <div
               style={{
                 background: '#fafafa',
@@ -813,7 +809,48 @@ const Loading = () => (
     </button>}
     </Tooltip>                
 
-    
+    {/* Only render dropdown if it's active
+    {openDropdownId === row.id && (
+      <div
+        style={{
+          position: "absolute", // Fixed position ensures it is not constrained within the table's scroll
+          top: "100%", // Adjust as needed to position above the button
+          left: "0",
+          backgroundColor: "#fff",
+          boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+          zIndex: 999, // Ensure dropdown is above the button
+          //width: "10px",
+          overflow: "visible", // Allow the dropdown to exceed the parent container
+        }}
+      >
+        <button
+          style={{
+            width: "100%",
+            backgroundColor: "#fff",
+            color: "#071437",
+            border: "none",
+            padding: "10px",
+            textAlign: 'left',
+            transition: 'background-color 0.3s', // Smooth transition for background color change
+            cursor: 'pointer', // Add pointer cursor for a better user experience
+            marginBottom: "5px",
+          }}
+          onMouseEnter={(e) => {
+            const target = e.target as HTMLButtonElement; // Type assertion
+            target.style.backgroundColor = '#f3efef'; // Change background on hover
+          }}
+          onMouseLeave={(e) => {
+            const target = e.target as HTMLButtonElement; // Type assertion
+            target.style.backgroundColor = '#fff'; // Revert background when hover ends
+          }}
+          onClick={(event) => {handleDropdownAction("Action 1", row.id, event)
+            setOpenDropdownId(null); // Close the dropdown
+          }}
+        >
+          Approve/Reject
+        </button>
+      </div>
+    )} */}
   </div>
 </td>
 
@@ -877,8 +914,6 @@ const Loading = () => (
   </Card>
       
           
-  </div>}
-    {loading&&Loading()}
     </div>
   );
 };

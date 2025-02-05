@@ -54,7 +54,7 @@ type BuyerLookupItem = {
   displayName: string;
 };
 const confirm = Modal.confirm;
-
+const skipCount = 0;
 
 
 const getStatusLabel = (status: number): string => {
@@ -108,13 +108,21 @@ class AccountQueryModal extends AppComponentBase<IDisputesProps, IDisputesdataSt
     await this.getAll();
   } 
 
+  async componentDidUpdate(prevProps:IDisputesProps) {
+      // Run getAll() only if BuyerDashboardInput has changed
+      if (prevProps.AccountDashboardInput !== this.props.AccountDashboardInput) {
+          await this.getAll();
+      }
+  }
+  
   async getAll() {
     if (!this.disputesStore) {
         console.error('cbfcdatastore is undefined');
         return;
     }
-    const skipcount = this.state.skipCount;
-    await this.disputesStore.accountgetAll(this.props.AccountDashboardInput,skipcount);
+
+    // const skipcount = this.state.skipCount;
+    await this.disputesStore.accountgetAll(this.props.AccountDashboardInput,skipCount);
   }
 
   handleTableChange = (pagination: any) => {
@@ -178,8 +186,7 @@ editdata:any = null;
 IntimateToBuyerMail = async (item: any) => {
    
       console.log(item);
-  
-      message.success(`Buyer to F&C Forwarded Query Intimation  Mail Sent to - ${item.accoutantName}`);
+      message.success(`F&C to Buyer Forwarded Query Intimation  Mail Sent to - ${item.accoutantName}`);
       
 
   };
@@ -387,6 +394,7 @@ IntimateToBuyerMail = async (item: any) => {
           onCreate={this.handleCreate}
           initialData={this.state.initialData}
           disputesStrore={this.disputesStore}
+
         />
       </Card>
     );

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, Modal, Col, Row, Button,message, Tooltip  } from 'antd';
+import { Form, Input, Modal, Col, Row, Button,message, Tooltip, Spin  } from 'antd';
 import { FormInstance } from 'antd/lib/form';
 import { L } from '../../../../lib/abpUtility';
 import DisputesStrore from '../../../../stores/DisputesStrore';
@@ -34,6 +34,7 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
   // const [hoveredRowId, setHoveredRowId] = React.useState<number | null>(null);
   const [ selectedRow,setSelectedRow] = React.useState<any | null>(null); // To manage selected row for modal
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false); // To control modal visibility
+        const [loading, setloading] = React.useState<boolean>(false);
     
       console.log(selectedRow)
       console.log(isModalOpen)
@@ -115,10 +116,85 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
     setSelectedRow(null);  
   };
 
+  const Loading = () => (
+    <div
+    style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.7)', // Darker overlay
+      zIndex: 1000, // Ensure it appears above everything
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+  >
+    <Spin size="large" />
+    
+  </div >
+  
+  );
+  
+    const handleIntimateToFandC = async () => {
+    // const { setloading } = this.props; // Access setloading from props
+  
+    Modal.confirm({
+      title: 'Are you sure? You want to forward the Query to F&C?',
+      onOk: async () => {
+        try {
+          // Optionally, you can set action type or other logic before submitting
+          setActionType('forward'); // Set action type before submitting
+          await formRef.current?.submit();
+          setloading(true); // Set loading to true before operation
+          message.success('Intimated to F&C');
+        } catch (error) {
+          console.error('Error when forwarding query:', error);
+          message.error('Failed to Forward the query to F&C');
+        } 
+        finally {
+          setloading(false); // Set loading to false after operation completes
+        }
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+    };
+    const handleQueryClose = async () => {
+    // const { setloading } = this.props; // Access setloading from props
+  
+    Modal.confirm({
+      title: 'Are you sure? You want to close the Query?',
+      onOk: async () => {
+        try {
+          setActionType('close'); // Set action type before submitting
+          await formRef.current?.submit(); // Ensure submission is awaited if needed
+          setloading(true); // Set loading to true before operation
+          message.success('Query Closed');
+        } catch (error) {
+          console.error('Error when closing query:', error);
+          message.error('Failed to close the query');
+        }
+        finally {
+          setloading(false); // Set loading to false after operation completes
+        }
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+    };
+
   return (
-    <Modal
+  <div>
+    {!loading ? (
+  <div>
+    <Modal  
       visible={visible}
       onCancel={onclose}
+      // onOk={() => formRef.current?.submit()}
       title={L('Disputes')}
       width={550}
       footer={[
@@ -140,24 +216,7 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
               <Button
                 key="forward"
                 type="primary"
-                onClick={() => {
-                  Modal.confirm({
-                    title: 'Are you sure? You want to forward the Query to F&C?',
-                    onOk: async () => {
-                      try {
-                        setActionType('forward'); // Set action type before submitting
-                        await formRef.current?.submit(); // This triggers the form's onFinish
-                        message.success('Query Forwarded to F&C');
-                      } catch (error) {
-                        console.error('Error when forwarding query:', error);
-                        message.error('Failed to Forward the query to F&C');
-                      }
-                    },
-                    onCancel() {
-                      console.log('Cancel');
-                    },
-                  });
-                }}
+                onClick={handleIntimateToFandC} // Call the new function
               >
                 Forward to F&C
               </Button>
@@ -166,24 +225,7 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
             <Button
               key="close"
               type="primary"
-              onClick={() => {
-                Modal.confirm({
-                  title: 'Are you sure? You want to close the Query?',
-                  onOk: async () => {
-                    try {
-                      setActionType('close'); // Set action type before submitting
-                      await formRef.current?.submit(); // Ensure submission is awaited if needed
-                      message.success('Query Closed');
-                    } catch (error) {
-                      console.error('Error when closing query:', error);
-                      message.error('Failed to close the query');
-                    }
-                  },
-                  onCancel() {
-                    console.log('Cancel');
-                  },
-                });
-              }}
+              onClick={handleQueryClose}
             >
               Close
             </Button>
@@ -293,11 +335,19 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
             </div>
             </Tooltip>
           </Col> */} 
-          <Col span={12}>
-            <Form.Item label={L('Accounts Remarks')} name="accountsRemarks" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} style={{ fontWeight: 'bold' }} hidden>
-              <Input disabled value={initialData.accountsRemarks || ''} style={{ color: 'black' }} />
-            </Form.Item>
-          </Col>
+{initialData?.status === 3 && (
+  <Col span={12}>
+    <Form.Item
+      label={L('Accounts Remarks')}
+      name="accountsRemarks"
+      labelCol={{ span: 24 }}
+      wrapperCol={{ span: 24 }}
+      style={{ fontWeight: 'bold' }}
+    >
+      <Input disabled value={initialData.accountsRemarks || ''} style={{ color: 'black' }} />
+    </Form.Item>
+  </Col>
+)}
           <Col span={12}>
           <Form.Item
                 label={L('Supplementary Summary')}
@@ -324,11 +374,15 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
           annexureModalData={annexuremodalData}
           supplementaryData = {supplementaryData}
           onClose={handleModalClose}
-        />
-      )}
-    </Modal>
-  );
-  
+          />
+        )}
+      </Modal>
+    </div>
+  ) : (
+    Loading()
+  )}
+</div>
+);
   
 };
 export default CreateOrUpdateDahBoardDisputedata

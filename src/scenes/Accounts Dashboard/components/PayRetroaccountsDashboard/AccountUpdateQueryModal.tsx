@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Form, Input, Modal,Col,Row,Button, Tooltip, message} from 'antd';
+import { Form, Input, Modal,Col,Row,Button, Tooltip, message, Spin} from 'antd';
 import { FormInstance } from 'antd/lib/form';
 import { L } from '../../../../lib/abpUtility';
 import DisputesStrore from '../../../../stores/DisputesStrore';
@@ -34,7 +34,7 @@ const CreateOrUpdateDahBoarddisputedata: React.FC<ICreateOrUpdateDahBoardDispute
     const [ selectedRow,setSelectedRow] = React.useState<any | null>(null); // To manage selected row for modal
     // const [ setSelectedRow] = React.useState<any | null>(null); // To manage selected row for modal
     const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false); // To control modal visibility
-
+    const [loading, setloading] = React.useState<boolean>(false);
 
     console.log(selectedRow)
     const formItemLayout = {
@@ -94,13 +94,58 @@ const handleModalClose = () => {
   setSelectedRow(null);  // Clear the selected row data
 };
 
+  const handleIntimateToBuyer = async () => {
+  // const { setloading } = this.props; // Access setloading from props
 
+  Modal.confirm({
+    title: 'Are you sure? You want to Intimate the Buyer?',
+    onOk: async () => {
+      try {
+        // Optionally, you can set action type or other logic before submitting
+        await formRef.current?.submit();
+        setloading(true); // Set loading to true before operation
+        message.success('Intimated to Buyer');
+      } catch (error) {
+        console.error('Error when Intimated the Buyer:', error);
+        message.error('Failed to Intimate the Buyer');
+      } 
+      finally {
+        setloading(false); // Set loading to false after operation completes
+      }
+    },
+    onCancel() {
+      console.log('Cancel');
+    },
+  });
+  };
 
+  const Loading = () => (
+    <div
+    style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.7)', // Darker overlay
+      zIndex: 1000, // Ensure it appears above everything
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+  >
+    <Spin size="large" />
+    
+  </div >
+  
+  );
       
 
     return (
       <div>
-        <Modal
+      {!loading ? (
+        <div>
+          <Modal
           visible={visible}
           onCancel={onCancel}
           onOk={() => formRef.current?.submit()}
@@ -122,28 +167,13 @@ const handleModalClose = () => {
               View Contract Details
             </Button>
           </Tooltip>
-            <Button key="ok" type="primary" onClick={() => {
-            
-            Modal.confirm({
-              title: 'Are you sure? You want to Intimate the Buyer?',
-              onOk: async () => {
-                try {
-                  // setActionType('forward');// Set action type before submitting
-                   await formRef.current?.submit()
-                   
-                  message.success('Intimated to Buyer');
-                } catch (error) {
-                  console.error('Error when Intimated the Buyer:', error);
-                  message.error('Failed to Intimated the Buyer');
-                }
-              },
-              onCancel() {
-                console.log('Cancel');
-              },
-            });
-            }}>
-            Intimate To Buyer
-          </Button>
+          <Button
+                key="ok"
+                type="primary"
+                onClick={handleIntimateToBuyer} // Call the new function
+              >
+                Intimate To Buyer
+              </Button>
           </div>
            
           ]}
@@ -244,12 +274,15 @@ const handleModalClose = () => {
           annexureModalData={annexuremodalData}
           supplementaryData = {supplementaryData}
           onClose={handleModalClose}
-        />
-      )}
-        </Modal>
-      </div>
-    );
-
+          />
+        )}
+      </Modal>
+    </div>
+  ) : (
+    Loading()
+  )}
+</div>
+);
 }
 
 export default CreateOrUpdateDahBoarddisputedata;
