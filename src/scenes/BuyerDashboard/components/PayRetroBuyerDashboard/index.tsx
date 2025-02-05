@@ -13,8 +13,10 @@ import SessionStore from "../../../../stores/sessionStore";
 import { inject, observer } from "mobx-react"; // Import MobX utilities
 
 import ApproveorRejectModal from "../ApproveorRejectModal"
+// import { useState } from "react";
 
 declare var abp: any;
+//const skipCount=0;
 const SettingsIcon = () => (
   <span role="img" aria-label="home" className="anticon">
   <img src={settingsIcon} alt="Settings" />
@@ -43,6 +45,7 @@ const SettingsIcon = () => (
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   const [isApproveRejectModalOpen, setIsApproveRejectModalOpen] = React.useState<boolean>(false); // To control modal visibility
   const [hasRole, setHasRole] = React.useState<boolean>(false);
+  // const [queryloading, setqueryloading] = React.useState<boolean>(false);
   const [dashboardinput, setdashboardinput] = React.useState<BuyerDashboardInput>({
     Supplierids:[0],
     Buyerid:0,
@@ -300,9 +303,9 @@ const SettingsIcon = () => (
       setrowBuyerstatus(carddetails.data.result.buyerpending.toFixed(2));
       setrowAccountsStatus(carddetails.data.result.accountspending.toFixed(2));
   
-     // const disput = new DisputedataStore();
-
-      //await disput.buyergetAll(buyerdashboardinput);
+    // const disput = new DisputedataStore();
+      // setqueryloading(true)
+     // await disput.buyergetAll(buyerdashboardinput,skipCount);
         
   
   
