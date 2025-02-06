@@ -806,48 +806,7 @@ function barstatus(status:any) {
     </button>}
     </Tooltip>                
 
-    {/* Only render dropdown if it's active
-    {openDropdownId === row.id && (
-      <div
-        style={{
-          position: "absolute", // Fixed position ensures it is not constrained within the table's scroll
-          top: "100%", // Adjust as needed to position above the button
-          left: "0",
-          backgroundColor: "#fff",
-          boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
-          zIndex: 999, // Ensure dropdown is above the button
-          //width: "10px",
-          overflow: "visible", // Allow the dropdown to exceed the parent container
-        }}
-      >
-        <button
-          style={{
-            width: "100%",
-            backgroundColor: "#fff",
-            color: "#071437",
-            border: "none",
-            padding: "10px",
-            textAlign: 'left',
-            transition: 'background-color 0.3s', // Smooth transition for background color change
-            cursor: 'pointer', // Add pointer cursor for a better user experience
-            marginBottom: "5px",
-          }}
-          onMouseEnter={(e) => {
-            const target = e.target as HTMLButtonElement; // Type assertion
-            target.style.backgroundColor = '#f3efef'; // Change background on hover
-          }}
-          onMouseLeave={(e) => {
-            const target = e.target as HTMLButtonElement; // Type assertion
-            target.style.backgroundColor = '#fff'; // Revert background when hover ends
-          }}
-          onClick={(event) => {handleDropdownAction("Action 1", row.id, event)
-            setOpenDropdownId(null); // Close the dropdown
-          }}
-        >
-          Approve/Reject
-        </button>
-      </div>
-    )} */}
+    
   </div>
 </td>
 

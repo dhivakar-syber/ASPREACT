@@ -13,6 +13,7 @@ import http from '../httpService';
 import {SupplierDashboardInput} from '../../scenes/Dashboard/components/PayRetroSupplierDashboard/SupplierDashboardInput'
 import { BuyerDashboardInput } from '../../scenes/BuyerDashboard/components/PayRetroBuyerDashboard/BuyerDashboardInput';
 import { AccountDashboardInput } from '../../scenes/Accounts Dashboard/components/PayRetroaccountsDashboard/AccountsDashboardInput';
+import { l4dashboardinput } from '../../scenes/L3 & L4 Dashboard/l4dashboardinput';
 
 class supplementarySummariesService{
 
@@ -29,6 +30,23 @@ class supplementarySummariesService{
           throw error; 
         }
     }
+
+
+    public async loadl4supplementarySummary(input: l4dashboardinput) {
+      try {
+        
+        const result = await http.get(
+          'api/services/app/SupplementarySummaries/L4DashboardDetails',{ params: input },
+           
+        );
+        return result;
+      } catch (error) {
+        console.error('Error fetching supplementary summaries:', error);
+        throw error; 
+      }
+  }
+
+
 
     public async accountsDashboardSummaries(input: AccountDashboardInput) {
       try {
@@ -138,6 +156,19 @@ public async GetAllSuppliersaccountsdashboard(input:number[]) {
     throw error; 
   }
 }
+public async GetAllBuyersforL4Dashboard(input:number[]) {
+  try {
+    
+    const result = await http.get(
+      'api/services/app/SupplementarySummaries/GetAllBuyersforl4Dashboard',{ params: { teams:input } },
+       
+    );
+    return result;
+  } catch (error) {
+    console.error('Error fetching supplementary summaries:', error);
+    throw error; 
+  }
+}
 public async GetAllBuyersList(input:number) {
   try {
     
@@ -151,6 +182,20 @@ public async GetAllBuyersList(input:number) {
     throw error; 
   }
 }
+public async GetAllTeams() {
+  try {
+    
+    const result = await http.get(
+      'api/services/app/SupplementarySummaries/GetAllTeams',
+       
+    );
+    return result;
+  } catch (error) {
+    console.error('Error fetching supplementary summaries:', error);
+    throw error; 
+  }
+}
+
 public async GetAllSupplierListBuyerDashboard(input:number) {
   try {
     
@@ -244,6 +289,23 @@ public async GetAllParts(supplierid:string,buyerid:string) {
       throw error; 
     }
 }
+
+
+public async l4carddetails(input: l4dashboardinput) {
+  try {
+    
+    const result = await http.get(
+      'api/services/app/SupplementarySummaries/GetAllsupplementarySummaryContractDataTestvalueaccountsdashboard',{ params: input },
+       
+    );
+    return result;
+  } catch (error) {
+    console.error('Error fetching supplementary summaries:', error);
+    throw error; 
+  }
+}
+
+
 
   public async Buyerdashboardcarddetails(input: BuyerDashboardInput) {
     try {
