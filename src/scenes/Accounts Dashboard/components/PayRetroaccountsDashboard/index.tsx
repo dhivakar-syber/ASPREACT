@@ -109,9 +109,9 @@ const PayRetroAccountsDashboard: React.SFC = () => {
         getparts(selectedValues,selectedbuyers);
     
         var   accountDashboardInput: AccountDashboardInput = {
-          Supplierids: selectedsuppliers,
+          Supplierids: selectedValues,
         Buyerids: selectedbuyers,
-        Partids: selectedValues,
+        Partids: selectedparts,
         invoicetype:selectedcategory,
         Date:selectedDate,
         DocumentStatusFilter:selectedstatus
@@ -231,15 +231,15 @@ const PayRetroAccountsDashboard: React.SFC = () => {
   
    
   
-    const handlecategorychange = async(selectedValues: any[]) => {
+    const handlecategorychange = async(selectedValues: number) => {
       console.log('selected', selectedValues);
       setselectedcategory(selectedValues);
   
       var   accountDashboardInput: AccountDashboardInput = {
         Supplierids: selectedsuppliers,
         Buyerids: selectedbuyers,
-        Partids: selectedValues,
-        invoicetype:selectedcategory,
+        Partids: selectedparts,
+        invoicetype:selectedValues,
         Date:selectedDate,
         DocumentStatusFilter:selectedstatus
       };
