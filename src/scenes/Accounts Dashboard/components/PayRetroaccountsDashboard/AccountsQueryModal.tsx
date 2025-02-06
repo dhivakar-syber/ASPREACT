@@ -394,7 +394,7 @@ IntimateToBuyerMail = async (item: any) => {
           onCreate={this.handleCreate}
           initialData={this.state.initialData}
           disputesStrore={this.disputesStore}
-
+          onUpdate={this.getAll}
         />
       </Card>
     );
