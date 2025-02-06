@@ -102,7 +102,7 @@ const Loading = () => (
         backgroundColor: "#fff",
         padding: "20px",
         borderRadius: "8px",
-        boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+        boxShadow: "0 10px 20px rgba(0,0,0,0.4)", // increased shadow
         zIndex: 9999,
         width: "35%", // Adjusting modal width
         maxHeight: "80vh", // Limit modal height
@@ -160,7 +160,7 @@ const Loading = () => (
             <Spin size="default" /> // Increased spinner size
           ) : (
             <>
-              <Submiticon /> send to Buyer
+              <Submiticon /> Send to Buyer
             </>
           )}
         </Button>

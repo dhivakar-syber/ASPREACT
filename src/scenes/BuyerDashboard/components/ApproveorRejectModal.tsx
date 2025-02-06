@@ -155,8 +155,8 @@ const BuyersApproval: React.FC<ApproveRejectModalModalProps> = ({
             style={{ fontSize: "18px", border: '1px solid #d9d9d9',outline: 'none',    
               transition: 'border-color 0.3s, box-shadow 0.3s' }}  // Corrected here
               onFocus={(e) => {
-                e.target.style.border = '0.5px solid #3cb48c';
-                e.target.style.boxShadow = '0 0 3px #3cb48c'; // Glow effect
+                e.target.style.border = '0.5px solid #5097AB';
+                e.target.style.boxShadow = '0 0 3px #5097AB'; // Glow effect
               }}
               onBlur={(e) => {
                 e.target.style.border = '0.5px solid #d9d9d9';

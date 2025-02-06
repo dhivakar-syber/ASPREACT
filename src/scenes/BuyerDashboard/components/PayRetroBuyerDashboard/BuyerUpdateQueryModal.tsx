@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, Modal, Col, Row, Button,message, Tooltip,Spin  } from 'antd';
+import { Form, Input, Modal, Col, Row, Button,message, Tooltip  } from 'antd';
 import { FormInstance } from 'antd/lib/form';
 import { L } from '../../../../lib/abpUtility';
 import DisputesStrore from '../../../../stores/DisputesStrore';
@@ -8,6 +8,7 @@ import SupplierModalView from './supplierModalView';
 
 export interface ICreateOrUpdateDahBoardDisputesDataProps {
   visible: boolean;
+  setloading: (value: boolean) => void; // Expecting a function
   modalType: string;
   onCreate: (item: any) => void;
   onsubmit: (item: any) => void;
@@ -20,6 +21,7 @@ export interface ICreateOrUpdateDahBoardDisputesDataProps {
 
 const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDisputesDataProps> = ({
   visible,
+  setloading,
   onCreate,
   onsubmit,
   onclose,
@@ -36,7 +38,7 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
   // const [hoveredRowId, setHoveredRowId] = React.useState<number | null>(null);
   const [ selectedRow,setSelectedRow] = React.useState<any | null>(null); // To manage selected row for modal
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false); // To control modal visibility
-        const [loading, setloading] = React.useState<boolean>(false);
+        // const [loading, setloading] = React.useState<boolean>(false);
     
       console.log(selectedRow)
       console.log(isModalOpen)
@@ -96,26 +98,6 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
     setSelectedRow(null);  
   };
 
-  const Loading = () => (
-    <div
-    style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.7)', // Darker overlay
-      zIndex: 1000, // Ensure it appears above everything
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}
-  >
-    <Spin size="large" />
-    
-  </div >
-  
-  );
   
     const handleIntimateToFandC = async () => {
     
@@ -126,19 +108,17 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
         try {
           
           
-          
+          setloading(true);           
           setActionType('forward'); // Set action type before submitting
           await formRef.current?.submit();
-          setIsModalOpen(false); 
-          setloading(true); 
-          
+          setIsModalOpen(false);
+          await onUpdate(); 
         } catch (error) {
           console.error('Error when forwarding query:', error);
           message.error('Failed to Forward the query to F&C');
         } 
         finally {
-          setloading(false); 
-          await onUpdate();
+           
           //setloading(false); 
         }
       },
@@ -152,18 +132,18 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
       title: 'Are you sure? You want to close the Query?',
       onOk: async () => {
         try {
+          setloading(true);          
           setActionType('close'); // Set action type before submitting
           await formRef.current?.submit();
           setIsModalOpen(false); 
-          setloading(true);
-         
+          // setloading(true);
+          await onUpdate();
         } catch (error) {
           console.error('Error when closing query:', error);
           message.error('Failed to close the query');
         }
         finally {
-          setloading(false); 
-          await onUpdate();
+        //  setloading(false); 
         }
       },
 
@@ -273,8 +253,8 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
                       transition: 'border 0.3s ease, box-shadow 0.3s ease',  }} 
                       
                       onFocus={(e) => {
-                        e.currentTarget.style.border = '1px solid #3cb48c';
-                        e.currentTarget.style.boxShadow = '0 0 5px #3cb48c';
+                        e.currentTarget.style.border = '1px solid #5097AB';
+                        e.currentTarget.style.boxShadow = '0 0 5px #5097AB';
                       }}
                       onBlur={(e) => {
                         e.currentTarget.style.border = '1px solid #d9d9d9';
@@ -319,7 +299,6 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
           <Input />
         </Form.Item>
       </Form>
-      {loading && Loading()}
       
       {isModalOpen && (
         <SupplierModalView

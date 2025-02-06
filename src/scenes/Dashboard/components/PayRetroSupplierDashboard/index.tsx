@@ -598,6 +598,7 @@ const [tableloading, settableloading] = React.useState<boolean>(false);
   // }
 
   const Suppliermodalview = (selectedRow: any) => {
+    console.log(selectedRow)
     const handleInsideClick = (e: React.MouseEvent) => {
       // Prevent modal from closing when clicking inside the modal
       e.stopPropagation();
@@ -736,19 +737,21 @@ const [tableloading, settableloading] = React.useState<boolean>(false);
                     <p>Accounted Value</p>
                     <p>Version No</p>
                     <p>Implementation Date</p>
-                    <p>Change</p>
+                    {selectedRow.documentStatus === 0 && <p>Change</p>}
                   </Col>
                   <Col span={12} style={{ fontSize: '12px' }}>
                     <p><span>: {selectedRow?.accoutedPrice}</span></p>
                     <p><span>: {selectedRow?.accountedValue}</span></p>
                     <p><span>: {selectedRow?.versionNo}</span></p>
                     <p><span>: {formatDate(selectedRow.implementationDate)}</span></p>
-                    <DatePicker
-      //value={selectedRow?.implementationDate ? dayjs(selectedRow?.implementationDate) : null} // Using dayjs
-      onChange={handleDateChange}
-      format="YYYY-MM-DD"
-      style={{ width: '100%' }}
-    />
+                    {selectedRow.documentStatus === 0 && (
+  <DatePicker
+    // value={selectedRow?.implementationDate ? dayjs(selectedRow.implementationDate) : null} // Using dayjs
+    onChange={handleDateChange}
+    format="YYYY-MM-DD"
+    style={{ width: '100%' }}
+  />
+)}
                   </Col>
                 </Row>
               </div>

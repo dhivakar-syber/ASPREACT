@@ -11,6 +11,7 @@ import Stores from '../../../../stores/storeIdentifier';
 import DisputesStrore from '../../../../stores/DisputesStrore';
 import { FormInstance } from 'antd/lib/form';
 import { AccountDashboardInput } from './AccountsDashboardInput';
+import Spin from 'antd/es/spin';
 //import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
 //import { EnumCurrency,EnumTransaction } from '../../../src/enum'
 
@@ -23,6 +24,7 @@ export interface IDisputesdataState {
   modalVisible: boolean;
   maxResultCount: number;
   skipCount: number;
+  refreshloading:boolean;
   userId: number;
   initialData: {
     supplierName: string;
@@ -84,6 +86,7 @@ class AccountQueryModal extends AppComponentBase<IDisputesProps, IDisputesdataSt
     modalVisible: false,
     maxResultCount: 10,
     skipCount: 0,
+    refreshloading:false,
     userId: 0,
     initialData: {
     supplierName: "",
@@ -181,7 +184,9 @@ class AccountQueryModal extends AppComponentBase<IDisputesProps, IDisputesdataSt
       },
     });
   }
-  
+  setLoading = (value: boolean) => {
+    this.setState({ refreshloading: value });
+  };
 editdata:any = null;
 IntimateToBuyerMail = async (item: any) => {
    
@@ -209,9 +214,33 @@ IntimateToBuyerMail = async (item: any) => {
 
       await this.getAll();
       this.setState({ modalVisible: false });
+      message.success("Intimated to Buyer")
+      this.setState({ refreshloading: false });
       form!.resetFields();
     });
   };
+
+    Loading = () => (
+    <div
+    style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.7)', // Darker overlay
+      zIndex: 1000, // Ensure it appears above everything
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+  >
+    <Spin size="large" />
+    
+  </div >
+  
+  );
+  
 
   handleSearch = (value: string) => {
     this.setState({ filter: value }, async () => await this.getAll());
@@ -381,6 +410,7 @@ IntimateToBuyerMail = async (item: any) => {
             />
           </Col>
         </Row>
+        {this.state.refreshloading && this.Loading()}
         <AccountUpdateQuery
           formRef={this.formRef}
           visible={this.state.modalVisible}
@@ -395,6 +425,7 @@ IntimateToBuyerMail = async (item: any) => {
           initialData={this.state.initialData}
           disputesStrore={this.disputesStore}
           onUpdate={this.getAll}
+          setloading={this.setLoading}         
         />
       </Card>
     );

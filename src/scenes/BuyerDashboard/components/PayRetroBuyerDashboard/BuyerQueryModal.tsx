@@ -11,6 +11,7 @@ import Stores from '../../../../stores/storeIdentifier';
 import DisputesStrore from '../../../../stores/DisputesStrore';
 import { FormInstance } from 'antd/lib/form';
 import { BuyerDashboardInput } from "./BuyerDashboardInput";
+import Spin from 'antd/es/spin';
 
 
 export interface IDisputesProps {
@@ -20,7 +21,7 @@ export interface IDisputesProps {
 
 export interface IDisputesdataState {
   modalVisible: boolean;
-  maxResultCount: number;
+  refreshloading:boolean;
   skipCount: number;
   disputeId: number;
   initialData: {
@@ -86,6 +87,7 @@ class BuyerQueryModal extends AppComponentBase<IDisputesProps, IDisputesdataStat
 
   state = {
     modalVisible: false,
+    refreshloading:false,
     maxResultCount: 10,
     skipCount: 0,
     disputeId: 0,
@@ -194,7 +196,9 @@ getAll = async () => {
   
 editdata:any = null;
 
-
+setLoading = (value: boolean) => {
+  this.setState({ refreshloading: value });
+};
 
 ForwardFandButton = () => {
     const form = this.formRef.current;
@@ -207,12 +211,14 @@ ForwardFandButton = () => {
         await this.disputesStore.create(values);
       } else {
         await this.disputesStore.update({ ...values, id: this.state.disputeId });
-        
+        message.success("Forwarded to F&C")
         message.success(`Buyer  to F&C  Query Forwarded Intimation  Mail Sent `);
         
       }
 
       this.setState({ modalVisible: false });
+
+      this.setState({ refreshloading: false });
       //form!.resetFields();
     });
   };
@@ -245,9 +251,30 @@ ForwardFandButton = () => {
   
   
     this.setState({ modalVisible: false });
+    this.setState({ refreshloading: false });
     //form.resetFields();
 };
 
+  Loading = () => (
+    <div
+    style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.7)', // Darker overlay
+      zIndex: 1000, // Ensure it appears above everything
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+  >
+    <Spin size="large" />
+    
+  </div >
+  
+  );
   
   
   public render() {
@@ -386,6 +413,8 @@ ForwardFandButton = () => {
                           />
           </Col>
         </Row>
+        {this.state.refreshloading && this.Loading()}
+
         <BuyerUpdateQueryModal
 
           formRef={this.formRef}
@@ -401,8 +430,9 @@ ForwardFandButton = () => {
           }}
           initialData={this.state.initialData}
           disputesStrore={this.disputesStore}
-          //onUpdate={this.getAll}
-        />
+          onUpdate={this.getAll}
+          setloading={this.setLoading}         
+           />
       </Card>
     );
   }

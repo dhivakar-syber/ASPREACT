@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Form, Input, Modal,Col,Row,Button, Tooltip, message, Spin} from 'antd';
+import { Form, Input, Modal,Col,Row,Button, Tooltip, message} from 'antd';
 import { FormInstance } from 'antd/lib/form';
 import { L } from '../../../../lib/abpUtility';
 import DisputesStrore from '../../../../stores/DisputesStrore';
@@ -9,6 +9,7 @@ import SupplierModalView from './supplierModalView';
 export interface ICreateOrUpdateDahBoardDisputesDataProps {
   visible: boolean;
   modalType: string;
+  setloading: (value: boolean) => void; // Expecting a function
   onCreate: (item: any) => void;
   onCancel: () => void;
   formRef: React.RefObject<FormInstance>;
@@ -25,7 +26,8 @@ const CreateOrUpdateDahBoarddisputedata: React.FC<ICreateOrUpdateDahBoardDispute
   onCancel,
   formRef,
   initialData,
-  onUpdate
+  onUpdate,
+  setloading
 }) => {
 
     const [annexuremodalData, annexuresetModalData] = React.useState<any[]>([]);
@@ -35,7 +37,7 @@ const CreateOrUpdateDahBoarddisputedata: React.FC<ICreateOrUpdateDahBoardDispute
     const [ selectedRow,setSelectedRow] = React.useState<any | null>(null); // To manage selected row for modal
     // const [ setSelectedRow] = React.useState<any | null>(null); // To manage selected row for modal
     const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false); // To control modal visibility
-    const [loading, setloading] = React.useState<boolean>(false);
+    // const [loading, setloading] = React.useState<boolean>(false);
 
     console.log(selectedRow)
     const formItemLayout = {
@@ -102,49 +104,28 @@ const handleModalClose = () => {
     title: 'Are you sure? You want to Intimate the Buyer?',
     onOk: async () => {
       try {
-        // Optionally, you can set action type or other logic before submitting
+        setloading(true);          
         await formRef.current?.submit();
         setIsModalOpen(false); 
-        setloading(true); // Set loading to true before operation
-        message.success('Intimated to Buyer');
+        await onUpdate();
+
       } catch (error) {
         console.error('Error when Intimated the Buyer:', error);
         message.error('Failed to Intimate the Buyer');
       } 
       finally {
-        setloading(false); 
-        await onUpdate();
+        // setloading(false); 
+
       }
     },
 
   });
   };
 
-  const Loading = () => (
-    <div
-    style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.7)', // Darker overlay
-      zIndex: 1000, // Ensure it appears above everything
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}
-  >
-    <Spin size="large" />
-    
-  </div >
-  
-  );
       
 
     return (
       <div>
-      {!loading ? (
         <div>
           <Modal
           visible={visible}
@@ -183,8 +164,8 @@ const handleModalClose = () => {
           <Form
             ref={formRef}
             initialValues={{...initialData,status: getStatusLabel(initialData.status) }}
-            onFinish={onCreate}
-          >
+            onFinish={(values) => onCreate(values)} // Pass values dynamically on submit
+            >
            <Row gutter={16}>
                 <Col span={12}>
                     <Form.Item label={L('SupplierName')} name="supplierName"  labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} style={{ fontWeight: 'bold' }}>
@@ -244,8 +225,8 @@ const handleModalClose = () => {
                       transition: 'border 0.3s ease, box-shadow 0.3s ease', }}
                       
                       onFocus={(e) => {
-                        e.currentTarget.style.border = '1px solid #3cb48c';
-                        e.currentTarget.style.boxShadow = '0 0 5px #3cb48c';
+                        e.currentTarget.style.border = '1px solid #5097AB';
+                        e.currentTarget.style.boxShadow = '0 0 5px #5097AB';
                       }}
                       onBlur={(e) => {
                         e.currentTarget.style.border = '1px solid #d9d9d9';
@@ -267,7 +248,7 @@ const handleModalClose = () => {
             </Form.Item>
 
           </Form>
-                {/* Supplier Modal inside the same Modal */}
+
       {isModalOpen && (
         <SupplierModalView
           // selectedRow={selectedRow}
@@ -279,9 +260,7 @@ const handleModalClose = () => {
         )}
       </Modal>
     </div>
-  ) : (
-    Loading()
-  )}
+
 </div>
 );
 }

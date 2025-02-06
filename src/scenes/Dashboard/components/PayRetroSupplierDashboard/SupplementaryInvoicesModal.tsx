@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Button, Input, Select, DatePicker, Upload, message, Table ,Spin} from "antd";
+import { Modal, Button, Input, Select, DatePicker, Upload, message, Table ,Spin, Tooltip} from "antd";
 import { UploadOutlined,FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/es/upload";
 import { ColumnsType } from "antd/es/table";
@@ -21,6 +21,9 @@ interface TableData {
   supplementaryinvoicepath:string,
   annexurepdfpath:string,
   annexureexcelpath:string,
+  supplementaryFilename:string,
+  annexureFileName:string,
+  excelfilename:string,
 
 }
 
@@ -32,6 +35,9 @@ const SupplementaryInvoiceModal: React.FC<SupplementaryInvoiceModalProps> = ({
 }) => {
   const [annexureGroup, setAnnexureGroup] = useState<string | "1"| undefined>(undefined);
   const [invoiceNo, setInvoiceNo] = useState<string>("");
+  const [supplementaryFilename, setsupplementaryFilename] = useState<string>("");
+  const [annexureFileName, setannexureFileName] = useState<string>("");
+  // const [excelfilename, setexcelfilename] = useState<string>("");
   const [invoiceDate, setInvoiceDate] = useState<string | undefined>(undefined);
   const [annexureFile, setAnnexureFile] = useState<RcFile | null>(null);
   const [attachmentFile, setAttachmentFile] = useState<RcFile | null>(null);
@@ -47,6 +53,16 @@ const SupplementaryInvoiceModal: React.FC<SupplementaryInvoiceModalProps> = ({
   };
   let t = AnnexureVersion;
 let v = [];
+const formatDateToDDMMYY = (date:Date) => {
+  if (!(date instanceof Date)) {
+    date = new Date(date);
+  }
+  return new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: '2-digit',
+  }).format(date);
+};
 for (let i = 1; i <= t; i++) {
   v.push(i);
 }
@@ -54,7 +70,7 @@ for (let i = 1; i <= t; i++) {
   const updateTableData = async (rowId: string) => {
     try {
       const uploadData = await supplementarySummariesService.supplementaryuploadeddetails(rowId);
-  
+      console.log(uploadData)
       const newData: TableData[] = uploadData.list
   .filter((item: any) => 
     item.annexuregroup !== null &&
@@ -62,16 +78,22 @@ for (let i = 1; i <= t; i++) {
     item.supplementaryinvoicedate !== null &&
     item.supplementaryannexurepath !== null &&
     item.annexurepath !== null &&
-    item.attachment3 !== null
+    item.attachment3 !== null &&
+    item.fileName !== null &&
+    item.annexureFileName !== null &&
+    item.fileName3 !== null 
   )
   .map((item: any) => ({
     annexureVersionNo: uploadData.annexureVersionNo,
     annexuregroup: item.annexuregroup,
     supplementaryinvoiceNo: item.supplementaryinvoiceNo,
-    supplementaryinvoicedate: item.supplementaryinvoicedate,
+    supplementaryinvoicedate: formatDateToDDMMYY(item.supplementaryinvoicedate),
     supplementaryinvoicepath: item.supplementaryannexurepath,
     annexurepdfpath: item.annexurepath,
     annexureexcelpath: item.attachment3,
+    supplementaryFilename: item.fileName,
+    annexureFileName: item.annexureFileName,
+    excelfilename: item.fileName3
   }));
   
       // Use concat instead of spread
@@ -150,7 +172,9 @@ for (let i = 1; i <= t; i++) {
       message.error("An error occurred during the upload process.");
     }
   };  
-  const handleSupplementrypdfButtonClick = async (pdfPath: string) => {
+  const handleSupplementrypdfButtonClick = async (pdfPath: string,filename:string) => {
+    setsupplementaryFilename(filename);
+
     try {
         // Fetch file data from the API
         const response = await supplementarySummariesService.GetFile(pdfPath);
@@ -172,7 +196,8 @@ for (let i = 1; i <= t; i++) {
   const handleSupplementryPathCancel = () => {
     setIsModalVisible(false); // Close the modal
   };
-  const handleAnnexurepdfButtonClick = async (pdfPath: string) => {
+  const handleAnnexurepdfButtonClick = async (pdfPath: string,filename:string) => {
+    setannexureFileName(filename);
     try {
         // Fetch file data from the API
         const response = await supplementarySummariesService.GetFile(pdfPath);
@@ -228,37 +253,43 @@ async function downloadFile({ path }: { path: string }): Promise<void> {
   };
   const columns: ColumnsType<TableData> = [
     { title: "Annexure Group", dataIndex: "annexuregroup" },
-    { title: "Supplementary Invoice/Credit Note", dataIndex: "supplementaryinvoiceNo" },
+    { title: "Supplementary Invoice/CreditNote", dataIndex: "supplementaryinvoiceNo" },
     { title: "Date", dataIndex: "supplementaryinvoicedate" },
     {
       title: "Supplementary Invoice/Credit Note File",
       dataIndex: "supplementaryinvoicepath", // Keep the original title
       render: (_, record) => (
-        <Button type="link" onClick={() => handleSupplementrypdfButtonClick(record.supplementaryinvoicepath)}>
-          <FilePdfOutlined style={{ marginRight: 8 }} />
+        <Tooltip title={record.supplementaryFilename}>
+        <Button type="link" onClick={() => handleSupplementrypdfButtonClick(record.supplementaryinvoicepath,record.supplementaryFilename)}>
+          <FilePdfOutlined style={{ marginRight: 8, fontSize: '16px', verticalAlign: 'middle' }}  />
         </Button>
+        </Tooltip>
       ),
     },
     {
       title: "Annexure File",
       dataIndex: "annexurepdfpath", // Keep the original title
       render: (_, record) => (
-        <Button type="link"onClick={() => handleAnnexurepdfButtonClick(record.annexurepdfpath)}>
-          <FilePdfOutlined style={{ marginRight: 8 }} />
-        </Button>
+        <Tooltip title={record.annexureFileName}>
+          <Button type="link" onClick={() => handleAnnexurepdfButtonClick(record.annexurepdfpath,record.annexureFileName)}>
+            <FilePdfOutlined style={{ marginRight: 8, fontSize: '16px', verticalAlign: 'middle' }} />
+          </Button>
+        </Tooltip>
       ),
-    },
+    },    
     {
       title: "Annexure Attachment",
       dataIndex: "annexureexcelpath", // Keep the original title
       render: (_, record) => (
+        <Tooltip title={record.excelfilename}>
         <Button type="link"onClick={() =>
           downloadFile({
             path: record.annexureexcelpath,
           })
         }>
-          <FileExcelOutlined />
+          <FileExcelOutlined style={{ marginRight: 8, fontSize: '16px', verticalAlign: 'middle' }} />
         </Button>
+        </Tooltip>
       ),
     }
   ];
@@ -386,10 +417,10 @@ async function downloadFile({ path }: { path: string }): Promise<void> {
       </div>
 
       <Table columns={columns} dataSource={tableData} pagination={false} className="custom-ant-table" 
-      style={{fontSize:'12px'}}
+      style={{fontSize:'18px'}}
       />
       <Modal
-        title="View PDF"
+        title={supplementaryFilename}
         visible={isModalVisible}
         onCancel={handleSupplementryPathCancel}
         footer={null}
@@ -406,7 +437,7 @@ async function downloadFile({ path }: { path: string }): Promise<void> {
         )}
       </Modal>
       <Modal
-        title="View PDF"
+        title={annexureFileName}
         visible={isModalVisible}
         onCancel={handleAnnexurePathCancel}
         footer={null}
