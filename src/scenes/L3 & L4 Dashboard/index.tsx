@@ -3,6 +3,12 @@ import { Row, Col,Select, Tabs } from 'antd';
 // import  DashboardCards  from "../Dashboard/components/PayRetroSupplierDashboard/DashboardCards";
 import { l4dashboardinput } from "../L3 & L4 Dashboard/l4dashboardinput";
 import supplementarySummariesService from "../../services/SupplementarySummaries/supplementarySummariesService";
+import AnalysisDonutChart from "./DonutChart";
+import AnalysisBarChart from "./BarChart";
+import AnalysisCreditNoteBarChart from "./CreditNoteBarChart";
+import AnalysisCreditNoteDonutChart from "./CreditNoteDonutChart";
+import AnalysisPieChart from "./PieChart";
+import AnalysisCreditNotePieChart from "./CreditNotePieChart";
 //../../../../../../PayRetroSupplierDashboard/DashboardCards
 //declare var abp: any;
 
@@ -201,7 +207,7 @@ const [selectedcategory, setselectedcategory] =React.useState<any>(String);
                       <Select
                         mode="multiple"
                         style={{ width: '200px' }}
-                        placeholder="Select one or more Buyers"
+                        placeholder="Select one or more Teams"
                         options={teams.map((team) => ({
                           label: team.name,
                           value: team.value,
@@ -350,8 +356,54 @@ const [selectedcategory, setselectedcategory] =React.useState<any>(String);
         </table>
 
                   </Tabs.TabPane>
-                  <Tabs.TabPane tab="Analysis" key="2">
-                  </Tabs.TabPane>
+  <Tabs.TabPane tab="Analysis" key="2">
+    <Tabs>
+       <Tabs.TabPane tab="SupplementaryInvoice" key="1">
+       <div
+    style={{
+      display: 'flex', // To display elements side by side
+      // justifyContent: 'space-between', // Space between the charts
+      gap: '10px', // Reduced gap between charts
+    }}
+  >
+    <div style={{ width: '500px', height: '400px' }}>
+      <AnalysisDonutChart supplementaryDocStatus={TableData} />
+    </div>
+    <div style={{ height: '500px' }}>
+      <AnalysisPieChart supplementaryDocStatus={TableData} />
+    </div>
+
+  </div>
+
+    <div style={{ flex: 1, height: '500px' }}>
+      <AnalysisBarChart supplementaryDocStatus={TableData} />
+    </div>
+      </Tabs.TabPane>
+
+      <Tabs.TabPane tab="Credit Note" key="2">
+      <div
+    style={{
+      display: 'flex', // To display elements side by side
+      // justifyContent: 'space-between', // Space between the charts
+      gap: '10px', // Reduced gap between charts
+    }}
+  >
+    <div style={{ flex: 'none', width: '500px', height: '400px' }}>
+      <AnalysisCreditNoteDonutChart supplementaryDocStatus={TableData} />
+    </div>
+
+    <div style={{ height: '500px' }}>
+      <AnalysisCreditNotePieChart supplementaryDocStatus={TableData} />
+    </div>
+  </div>
+  <div style={{ flex: 1, height: '500px' }}>
+      <AnalysisCreditNoteBarChart supplementaryDocStatus={TableData} />
+    </div>
+      </Tabs.TabPane>
+
+    </Tabs>
+ 
+</Tabs.TabPane>
                 </Tabs>
     </div>
   );
