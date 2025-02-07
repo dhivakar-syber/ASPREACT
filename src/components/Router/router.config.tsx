@@ -79,7 +79,7 @@ export const appRouters: any = [
   {
     path: '/l4dashboard',
     name: 'L4 & L3 Dashboard',
-    permission: '',
+    permission: 'Pages.SectionHead.Dashboard',
     title: 'L4 & L3 Dashboard',
     icon: TagsOutlined,
     showInMenu: true,
