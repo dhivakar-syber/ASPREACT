@@ -1,85 +1,153 @@
 import React from "react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import {
+  BarChart,
+  Bar,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  XAxis,
+  LabelList
+} from "recharts";
+import dayjs from "dayjs";
 
 interface TableData {
-  team: string;
+  creationTime: string; // ISO format date
   supplierPendingValue: number;
   buyerPendingValue: number;
   fandCPendingValue: number;
-  iscreditnote: boolean; // Adding the iscreditnote field
+  iscreditnote: boolean;
 }
 
 interface AnalysisBarChartProps {
   supplementaryDocStatus: TableData[];
 }
 
-const AnalysisBarChart: React.FC<AnalysisBarChartProps> = ({ supplementaryDocStatus }) => {
-  // Filter the data based on iscreditnote = false
-  const filteredData = supplementaryDocStatus.filter(item => !item.iscreditnote);
+// Function to get the start of each time bucket dynamically
+const categorizeDataByDays = (data: TableData[]) => {
+  const today = dayjs();
+  
+  return data.reduce((acc, curr) => {
+    const creationDate = dayjs(curr.creationTime);
+    const diffDays = today.diff(creationDate, "day");
 
-  // Aggregate values by team
-  const aggregatedData = filteredData.reduce((acc, curr) => {
-    // Find if the team already exists in the accumulator
-    const existingTeam = acc.find(item => item.name === curr.team);
-    
-    if (existingTeam) {
-      // If team exists, sum up the pending values for each category
-      existingTeam.Supplier += curr.supplierPendingValue;
-      existingTeam.Buyer += curr.buyerPendingValue;
-      existingTeam.FandC += curr.fandCPendingValue;
+    let category: any;
+    if (diffDays >= 0 && diffDays <= 15) category = "15";
+    else if (diffDays > 15 && diffDays <= 30) category = "30";
+    else if (diffDays > 30 && diffDays <= 45) category = "45";
+    else if (diffDays > 45 && diffDays <= 60) category = "60";
+    else if (diffDays > 60 && diffDays <= 90) category = "90";
+    else category = "91+";
+
+    const existingCategory = acc.find((item) => item.name === category);
+    if (existingCategory) {
+      existingCategory.Supplier += curr.supplierPendingValue;
+      existingCategory.Buyer += curr.buyerPendingValue;
+      existingCategory.FandC += curr.fandCPendingValue;
     } else {
-      // Otherwise, add a new entry for the team
       acc.push({
-        name: curr.team,
+        total: curr.buyerPendingValue + curr.supplierPendingValue + curr.fandCPendingValue,
+        name: category,
         Supplier: curr.supplierPendingValue,
         Buyer: curr.buyerPendingValue,
         FandC: curr.fandCPendingValue,
       });
     }
     return acc;
-  }, [] as { name: string, Supplier: number, Buyer: number, FandC: number }[]);
+  }, [] as { total: number; name: string; Supplier: number; Buyer: number; FandC: number }[] );
+};
 
-  // Sort teams by custom order (e.g., TTGI1, TTGI2, ...)
+const AnalysisBarChart: React.FC<AnalysisBarChartProps> = ({ supplementaryDocStatus }) => {
+  // Filter records where iscreditnote is false
+  const filteredData = supplementaryDocStatus.filter(item => !item.iscreditnote);
+
+  // Aggregate and categorize the data dynamically
+  const aggregatedData = categorizeDataByDays(filteredData);
+
+  // Sort data by X-axis categories
   const sortedData = aggregatedData.sort((a, b) => {
-    const numA = parseInt(a.name.replace(/\D/g, ''), 10);
-    const numB = parseInt(b.name.replace(/\D/g, ''), 10);
-    return numA - numB; // Sort numerically based on the numeric part of the team names
+    const order = ["15", "30", "45", "60", "90", "91+"];
+    return order.indexOf(a.name) - order.indexOf(b.name);
   });
+
+  // Custom Tooltip to display the total value
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      const total = payload[0].payload.Supplier + payload[0].payload.Buyer + payload[0].payload.FandC;
+      return (
+        <div style={{ backgroundColor: "#fff", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }}>
+          <p>{`${label} days`}</p>
+          <p>{`Total Pending Value: ${total}`}</p>
+          <p>{`Supplier: ${payload[0].payload.Supplier}`}</p>
+          <p>{`Buyer: ${payload[0].payload.Buyer}`}</p>
+          <p>{`FandC: ${payload[0].payload.FandC}`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const CustomLabel = ({ x, y, width, height, value }: any) => {  // Added width and height
+    if (value > 0) {
+      const centerX = x + width / 2; // Calculate center of the bar
+      const centerY = y + height / 2; // Calculate center of the bar
+
+      return (
+        <text x={centerX} y={centerY} dominantBaseline="middle" textAnchor="middle" fill="black" fontSize={12}> {/* White text for visibility */}
+          {value}
+        </text>
+      );
+    }
+    return null;
+  };
 
   return (
     <div
       style={{
-        width: '100%',
-        overflowX: 'auto', // Enable horizontal scrolling if necessary
-        border: '2px solid #ccc',
-        borderRadius: '10px',
-        paddingTop: '45px',
+        width: "100%",
+        overflowX: "auto",
+        border: "2px solid #ccc",
+        borderRadius: "10px",
+        paddingTop: "45px",
       }}
     >
-      <ResponsiveContainer width="100%" height={350}>
-        <BarChart data={sortedData} margin={{ top: 40, right: 30, left: 20, bottom: 50 }}>
-          {/* Title Positioned at the top-left corner */}
-          <text
-            x="10"
-            y="5"
-            textAnchor="start"
-            dominantBaseline="hanging"
-            fontSize="18px"
-            fontWeight="bold"
-          >
-            Team-wise Pending
-          </text>
+    <ResponsiveContainer width="100%" height={350}>
+  <BarChart data={sortedData} margin={{ top: 40, right: 30, left: 20, bottom: 50 }} barGap={1} barCategoryGap="5%">
+    <text
+      x="50%"
+      y="5"
+      textAnchor="middle"
+      dominantBaseline="hanging"
+      fontSize="18px"
+      fontWeight="bold"
+    >
+      Pending Analysis by Days
+    </text>
 
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="Supplier" fill="#8884d8" />
-          <Bar dataKey="Buyer" fill="#82ca9d" />
-          <Bar dataKey="FandC" fill="#ffc658" />
-        </BarChart>
-      </ResponsiveContainer>
+    <CartesianGrid strokeDasharray="3 3" />
+
+    {/* Custom X-Axis for each category */}
+    <XAxis dataKey="name" />
+
+    {/* Custom Tooltip */}
+    <Tooltip content={<CustomTooltip />} />
+
+    {/* Custom Legend */}
+    <Legend />
+
+    {/* Stacked Bars with custom label */}
+    <Bar dataKey="Supplier" stackId="stack" fill="#8884d8" barSize={80}>
+      <LabelList dataKey="Supplier" content={<CustomLabel />} />
+    </Bar>
+    <Bar dataKey="Buyer" stackId="stack" fill="#82ca9d" barSize={80}>
+      <LabelList dataKey="Buyer" content={<CustomLabel />} />
+    </Bar>
+    <Bar dataKey="FandC" stackId="stack" fill="#ffc658" barSize={80}>
+      <LabelList dataKey="FandC" content={<CustomLabel />} />
+    </Bar>
+  </BarChart>
+</ResponsiveContainer>
+
     </div>
   );
 };

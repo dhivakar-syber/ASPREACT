@@ -362,7 +362,7 @@ const [selectedcategory, setselectedcategory] =React.useState<any>(String);
        <div
     style={{
       display: 'flex', // To display elements side by side
-      // justifyContent: 'space-between', // Space between the charts
+       justifyContent: 'center', // Space between the charts
       gap: '10px', // Reduced gap between charts
     }}
   >
@@ -384,7 +384,7 @@ const [selectedcategory, setselectedcategory] =React.useState<any>(String);
       <div
     style={{
       display: 'flex', // To display elements side by side
-      // justifyContent: 'space-between', // Space between the charts
+       justifyContent: 'center', // Space between the charts
       gap: '10px', // Reduced gap between charts
     }}
   >
