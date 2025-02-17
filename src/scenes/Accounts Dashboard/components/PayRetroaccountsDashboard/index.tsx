@@ -14,12 +14,12 @@ import settingsIcon from "../../../../images/Setting.svg";
 const PayRetroAccountsDashboard: React.SFC = () => {
   const [tableData, setTableData] = React.useState<any[]>([]);
   // const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
-  const [selectedsuppliers, setselectedsuppliers] =React.useState<any[]>([]);  
+  const [selectedsuppliers, setselectedsuppliers] =React.useState<any[0]>([0]);  
   const [suppliers, setSuppliers] =React.useState<any[]>([]);
   const [selectedcategory, setselectedcategory] =React.useState<any>(String);
   const [selectedstatus, setselectedstatus] =React.useState<number|null>(0);
   const [buyers, setBuyers] =React.useState<any[]>([]);
-    const [selectedbuyers, setselectedbuyers] =React.useState<any[]>([]);
+    const [selectedbuyers, setselectedbuyers] =React.useState<any[0]>([0]);
   const [parts, setParts] =React.useState<any[]>([]);
   const [selectedparts, setselectedparts] =React.useState<any[]>([]);
   const [rowsupplierstatus, setrowsupplierstatus] = React.useState<number | null>(0); 
