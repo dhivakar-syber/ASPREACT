@@ -154,7 +154,7 @@ public async GetAllSuppliersaccountsdashboard(input:number[]) {
   } catch (error) {
     console.error('Error fetching supplementary summaries:', error);
     throw error; 
-  }
+  } 
 }
 public async GetAllBuyersforL4Dashboard(input:number[]) {
   try {
