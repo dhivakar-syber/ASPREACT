@@ -85,12 +85,12 @@ class CreateOrUpdateRole extends React.Component<ICreateOrUpdateRoleProps> {
               <Form.Item label={L('RoleName')} name={'name'} rules={rules.name} >
                 <Input />
               </Form.Item>
-              <Form.Item label={L('DisplayName')} name={'displayName'} rules={rules.displayName} >
+              {/* <Form.Item label={L('DisplayName')} name={'displayName'} rules={rules.displayName} >
                 <Input />
               </Form.Item>
               <Form.Item label={L('Description')} name={'description'} >
                 <Input />
-              </Form.Item>
+              </Form.Item> */}
             </TabPane>
             <TabPane tab={L('RolePermission')} key={'permission'} forceRender={true}>
               <Form.Item {...tailFormItemLayout} name={'grantedPermissionNames'} valuePropName={'value'}>
