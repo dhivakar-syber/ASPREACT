@@ -18,9 +18,9 @@ const [TableData, setTableData] =React.useState<any[]>([]);
 const [teams, setteams] =React.useState<any[]>([]);  
 const [selectedteams, setselectedteams] =React.useState<any[]>([]);  
 const [buyers, setBuyers] =React.useState<any[]>([]);
-const [selectedbuyers, setselectedbuyers] =React.useState<any[0]>([0]);
+const [selectedbuyers, setselectedbuyers] =React.useState<any[]>([]);
 const [suppliers, setSuppliers] =React.useState<any[]>([]);
-const [selectedsuppliers, setselectedsuppliers] = React.useState<any[0]>([0]);
+const [selectedsuppliers, setselectedsuppliers] = React.useState<any[]>([]);
 const [selectedcategory, setselectedcategory] =React.useState<any>(String);
 // const [dashboardinput, setdashboardinput] = React.useState<l4dashboardinput>({
 //   Teams: [],   
@@ -46,7 +46,7 @@ const [selectedcategory, setselectedcategory] =React.useState<any>(String);
             setteams(Teams.data.result || []);
             setselectedteams([]);
 
-            const Buyers = await supplementarySummariesService.GetAllBuyersList(0);
+            const Buyers = await supplementarySummariesService.GetAllBuyersforL4Dashboard([]);
                         console.log('buyers',Buyers)
                         setBuyers(Buyers.data.result || []);
                        // setselectedbuyers([]);

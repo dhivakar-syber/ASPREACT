@@ -31,6 +31,20 @@ class supplementarySummariesService{
         }
     }
 
+    public async Queryexecution(input:string) {
+      try {
+        
+        const result = await http.get(
+          'api/services/app/SupplementarySummaries/getsqldetails',{ params:{query:input}  },
+           
+        );
+        return result.data.result;
+      } catch (error) {
+        console.error('Error fetching sql:', error);
+        throw error; 
+      }
+  }
+
 
     public async loadl4supplementarySummary(input: l4dashboardinput) {
       try {
