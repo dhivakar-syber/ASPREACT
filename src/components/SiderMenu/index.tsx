@@ -6,7 +6,7 @@ import * as React from 'react';
 import { Avatar, Col, Layout, Menu } from 'antd';
 import { L, isGranted } from '../../lib/abpUtility';
 
-import AbpLogo from '../../images/abp-logo-long.png';
+import AbpLogo from '../../images/Payretronewlogo.png';
 import { appRouters } from '../../components/Router/router.config';
 import utils from '../../utils/utils';
 
@@ -48,14 +48,14 @@ const SiderMenu = (props: ISiderMenuProps) => {
     >
      
       {collapsed ? (
-        <Col style={{ textAlign: 'center', marginTop: 15, marginBottom: 10 }}>
-          <Avatar shape="square" style={{ height: 27, width: 64 }} src={AbpLogo} />
+        <Col style={{ textAlign: 'center', marginTop: 26, marginBottom: 10 }}>
+          <Avatar shape="square" style={{ height: 27, width: 64,paddingBottom:10 }} src={AbpLogo} />
         </Col>
       ) : (
-        <Col style={{ textAlign: 'center', marginTop: 15, marginBottom: 10 }}>
-          <Avatar shape="square" style={{ height: 54, width: 128 }} src={AbpLogo} />
+        <Col style={{ textAlign: 'center', marginTop: 14, marginBottom: 10 }}>
+          <Avatar shape="square" style={{ height: 40, width: 160 }} src={AbpLogo} />
         </Col>
-      )}
+      )}  <div className=""></div>
 
       <Menu theme="dark" style={{fontSize: '12px'}} mode="inline" selectedKeys={[currentRoute ? currentRoute.path : '']}>
         {appRouters

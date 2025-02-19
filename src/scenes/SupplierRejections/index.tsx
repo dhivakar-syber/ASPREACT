@@ -11,9 +11,33 @@ import Stores from '../../stores/storeIdentifier';
 import supplierRejectionStore from '../../stores/supplierRejectionStore';
 import { FormInstance } from 'antd/lib/form';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
+import sessionService from '../../services/session/sessionService';
 
-const userPermissions = ["Pages.Administration.SupplierRejections.Create", "Pages.Administration.SupplierRejections.Edit","Pages.Administration.SupplierRejections.Delete"];
-const hasPermission = (permission: string): boolean => userPermissions.includes(permission);
+// const userPermissions = ["Pages.Administration.SupplierRejections.Create", "Pages.Administration.SupplierRejections.Edit","Pages.Administration.SupplierRejections.Delete"];
+// const hasPermission = (permission: string): boolean => userPermissions.includes(permission);
+const getUserPermissions = async (): Promise<string[]> => {
+  try {
+    // Fetch the current login information asynchronously
+    const currentLoginInfo = await sessionService.getCurrentLoginInformations();
+    console.log('User',currentLoginInfo);
+    // Assuming permissions are inside the 'permissions' field of the object
+    const permissions: string[] = currentLoginInfo?.user?.permissions || [];
+    console.log('permissions',permissions)
+    return permissions;
+  } catch (error) {
+    console.error("Error fetching user permissions:", error);
+    return [];  // Return an empty array if there's an error
+  }
+};
+
+const hasPermission = async (permission: string): Promise<boolean> => {
+  const userPermissions = await getUserPermissions();
+  return userPermissions.includes(permission);
+};
+
+hasPermission("Pages.Administration.SupplierRejections").then(hasPerm => {
+  console.log('is',hasPerm);  // true or false based on the session data
+});
 
 export interface ISupplierRejectionProps {
   supplierRejectionStore: supplierRejectionStore;
@@ -28,6 +52,9 @@ export interface ISupplierRejectionState {
   codeFilter:string;
   descriptionFilter:string;
   showAdvancedFilters: boolean;
+  hasCreatePermission: boolean;
+  hasDeletePermission: boolean;
+  hasEditPermission: boolean;
 }
 const confirm = Modal.confirm;
 const Search = Input.Search;
@@ -46,11 +73,24 @@ class SupplierRejection extends AppComponentBase<ISupplierRejectionProps, ISuppl
     codeFilter:'',
     descriptionFilter:'',
     showAdvancedFilters: false,
+    hasCreatePermission: false,
+    hasDeletePermission: false,
+    hasEditPermission: false,
   };
 
   async componentDidMount() {
     await this.getAll();
+    await this.checkPermissions();
   }
+  checkPermissions = async () => {
+    const hasPermissionCreate = await hasPermission("Pages.Administration.SupplierRejections.Create");
+    this.setState({ hasCreatePermission: hasPermissionCreate });
+    const hasPermissionDelete = await hasPermission("Pages.Administration.SupplierRejections.Delete");
+    this.setState({ hasDeletePermission: hasPermissionDelete });
+    const hasPermissionEdit = await hasPermission("Pages.Administration.SupplierRejections.Edit");
+    this.setState({ hasEditPermission: hasPermissionEdit });
+  };
+
 
   async getAll() {
     if (!this.props.supplierRejectionStore) {
@@ -173,6 +213,7 @@ editdata:any = null;
   public render() {
     console.log(this.props.supplierRejectionStore);
     const { supplierRejections } = this.props.supplierRejectionStore;
+    const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
     const columns = [
         {
             title: L('Actions'),
@@ -183,9 +224,9 @@ editdata:any = null;
                   trigger={['click']}
                   overlay={
                     <Menu>
-                      {hasPermission("Pages.Administration.SupplierRejections.Edit") && (
+                      {hasEditPermission && (
                       <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.supplierRejection?.id })}>{L('Edit')}</Menu.Item>)}
-                      {hasPermission("Pages.Administration.SupplierRejections.Delete") && (
+                      {hasDeletePermission && (
                       <Menu.Item onClick={() => this.delete({ id: item.supplierRejection?.id })}>{L('Delete')}</Menu.Item>)}
                     </Menu>
                   }
@@ -261,7 +302,8 @@ editdata:any = null;
             xl={{ span: 1, offset: 21 }}
             xxl={{ span: 1, offset: 21 }}
           >
-            <Button type="primary"  icon={<PlusOutlined/>} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} style={{marginLeft:'-50px'}}>Create Rejections</Button>
+            {hasCreatePermission  && (
+            <Button type="primary"  icon={<PlusOutlined/>} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} style={{marginLeft:'-50px'}}>Create Rejections</Button>)}
           </Col>
         </Row>
         <Row>

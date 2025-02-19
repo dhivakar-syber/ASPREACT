@@ -1,10 +1,10 @@
-import React ,{useRef,useState} from "react";
+import React ,{ useRef,useState} from "react";
 
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
 import annexureDetailsService from "../../../../services/annexureDetails/annexureDetailsService";
 import { SupplierDashboardInput } from "./SupplierDashboardInput";
 import  DashboardCards  from "../PayRetroSupplierDashboard/DashboardCards";
-import { Row, Col,Select,message, Card,Modal,Button,DatePicker,Spin,Tag, Tabs } from 'antd';
+import { Row, Col,Select,message, Card,Modal,Button,DatePicker,Spin,Tag, Tabs, Table, Checkbox, Dropdown, Menu } from 'antd';
 import SupplierSubmitModal from './SupplierSubmitModal';
 import SupplementaryInvoiceModal from "./SupplementaryInvoicesModal";
 import DisputesStore from "../../../../stores/DisputesStrore";
@@ -15,6 +15,7 @@ import DisputeHistoryModal from "../../../Dashboard/components/PayRetroSupplierD
 import disputesServices from "../../../../services/Disputes/disputesServices";
 import sessionServices from "../../../../services/session/sessionService";
 //import CreateOrUpdateDisputes from '../../../../scenes/Disputes/components/createOrUpdateDisputes'; // Import the modal component
+import './index.css'; // or your CSS file
 
 //import { IDisputesdataState } from "../../../Disputes";
 import settingsIcon from "../../../../images/Setting.svg";
@@ -22,6 +23,8 @@ import SessionStore from "../../../../stores/sessionStore";
 import { inject, observer } from "mobx-react"; // Import MobX utilities
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import AnalysisPieChart from "../PieChartExample";
+import { CheckboxChangeEvent } from "antd/lib/checkbox";
+import { MenuInfo } from "rc-menu/lib/interface";
 
 
 
@@ -45,7 +48,7 @@ const PayRetroSupplierDashboard: React.FC<{ sessionStore?: SessionStore }> = ({
 }) => {
   const [tableData, setTableData] = React.useState<any[]>([]);
   const [disputeData,setDisputeData] = useState<any[]>([]);
-  const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
+  // const [openDropdownId, setOpenDropdownId] = React.useState<number | null>(null);
   const [selectedRow, setSelectedRow] = React.useState<any | null>(null); // To manage selected row for modal
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false); // To control modal visibility
   const [isSupplierSubmitModalOpen, setIsSupplierSubmitModalOpen] = React.useState<boolean>(false); // To control modal visibility
@@ -281,19 +284,19 @@ const [tableloading, settableloading] = React.useState<boolean>(false);
   
 
 
-  const toggleDropdown = (id:any,event: React.MouseEvent) => {
-    event.stopPropagation();
-    // Toggle the dropdown for the clicked row
-    setOpenDropdownId(openDropdownId === id ? null : id);
-  };
+  // const toggleDropdown = (id:any,event: React.MouseEvent) => {
+  //   event.stopPropagation();
+  //   // Toggle the dropdown for the clicked row
+  //   setOpenDropdownId(openDropdownId === id ? null : id);
+  // };
 
   
   const handleDisputeHisotryAction = async (
     action: string,
     id: number,
-    event: React.MouseEvent
+    // event: React.MouseEvent
   ) => {
-    event.stopPropagation();
+    // event.stopPropagation();
     console.log(`Action: ${action}, Row ID: ${id}`);
     setSubmitIdRow(id);
 
@@ -325,8 +328,8 @@ const [tableloading, settableloading] = React.useState<boolean>(false);
   const handlehistoryCancel = () => {
     setIsHistoryModalVisible(false); // close the modal
   };
-  const checkAnyQueryIsOpen = async (id: number, event: React.MouseEvent): Promise<{ isOpen: boolean, count: number }> => {
-    event.stopPropagation(); // Stop event propagation immediately
+  const checkAnyQueryIsOpen = async (id: number, event: MenuInfo): Promise<{ isOpen: boolean, count: number }> => {
+    event.domEvent.stopPropagation(); // Stop event propagation immediately
   
     try {
       // Fetch data from disputesStore
@@ -379,9 +382,9 @@ const [tableloading, settableloading] = React.useState<boolean>(false);
     }
   };  
 
-  const handleSupplierSubmitAction = (action: string, id: number, event: React.MouseEvent) => {
+  const handleSupplierSubmitAction = (action: string, id: number, event: MenuInfo) => {
     //setdropdownclick(false);
-    event.stopPropagation();
+    event.domEvent.stopPropagation();
     console.log(action, id);
     setSubmitIdRow(id);
     // Open the modal
@@ -392,8 +395,8 @@ const [tableloading, settableloading] = React.useState<boolean>(false);
   };
 
   
-  const handleRaiseQueryAction = async (buttonName: string, rowId: string, event: React.MouseEvent) => {
-    event.stopPropagation();
+  const handleRaiseQueryAction = async (buttonName: string, rowId: string) => {
+    // event.stopPropagation();
     setIsModalOpen(false);
     setCurrentRowId(rowId); // Set the rowId when the button is clicked
     //setdropdownclick(false);
@@ -514,8 +517,8 @@ const [tableloading, settableloading] = React.useState<boolean>(false);
 
 
   };
-  const handleSupplementaryDropdownAction = (buttonName: string, rowId: string, AnnexureVersionNo:number, event: React.MouseEvent) => {
-    event.stopPropagation();
+  const handleSupplementaryDropdownAction = (buttonName: string, rowId: string, AnnexureVersionNo:number) => {
+    // event.stopPropagation();
     setIsModalOpen(false);
     //setdropdownclick(false);
     setAnnexureVersionNo(AnnexureVersionNo);
@@ -546,9 +549,9 @@ const [tableloading, settableloading] = React.useState<boolean>(false);
 
   const [hoveredRowId, setHoveredRowId] = React.useState<number | null>(null);
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>, rowId: number) => {
-    e.stopPropagation();
-    const isChecked = e.target.checked;
+  const handleCheckboxChange = (e: CheckboxChangeEvent, rowId: number) => {
+    e.stopPropagation(); // Stop event bubbling
+    const isChecked = e.target.checked;  
   
     setSelectedRows((prevSelected) => {
       const updatedSelectedRows = isChecked
@@ -562,7 +565,7 @@ const [tableloading, settableloading] = React.useState<boolean>(false);
     });
   };
 
-  const handleRowClick = async (e: React.MouseEvent<HTMLTableRowElement>,row: any) => {
+  const handleRowClick = async (e: React.MouseEvent<HTMLElement>,row: any) => {
     if ((e.target as HTMLElement).tagName !== 'INPUT') {
     setSelectedRow(row); // Set the clicked row data
     setIsModalOpen(true); // Open the modal
@@ -978,6 +981,9 @@ const Loading = () => (
 
 );
 
+
+// const shouldShowNewTagColumn = tableData.some(row => istoday(formatDate(row.createtime)));
+
   return (
     <div>
 {!loading && <div>
@@ -1125,375 +1131,289 @@ const Loading = () => (
 
         <br></br>
         {!tableloading&&<Tabs defaultActiveKey="1">
-    <Tabs.TabPane tab="Home" key="1">
-        <div style={{ marginTop: '20px', overflowX: 'auto' }}>
-          <table
-            style={{
-              width: '100%',
-              borderCollapse: 'collapse',
-              marginTop: '20px',
-              fontSize: '12px',
-              whiteSpace: 'nowrap',
-             
-            }}
-          >
-            <thead>
-              <tr style={{ backgroundColor: '#005f7f', color: '#fff', textAlign: 'left', borderRadius: '2px' }}>
-                <th style={{ padding: '10px', border: '1px solid #ffffff1a', borderRadius: '2px' }}>
-                  <input
-                    type="checkbox"
-                    onChange={(e) => {
-                      const isChecked = e.target.checked;
-
-                      if (isChecked) {
-                        setSelectedRows(tableData.map((row) => row.id)); // Select all rows
-                      } else {
-                        setSelectedRows([]); // Deselect all rows
-                      }
-                    }}
-                  />
-                </th>
-                {[
-                  'Action',
-                  'Query',
-                  'Buyer Name',
-                  'Part No - Version',
-                  'Report Date',
-                  'Ageing',
-                  'Supplementary Invoice/Credit Note',
-                  'Date',
-                  'From',
-                  'To',
-                  'Value',
-                  'Supplier',
-                  'Buyer',
-                  'F&C',
-                ].map((header) => (
-                  <th key={header} style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px',textAlign:'center' }}>
-                    {header}
-                  </th>
-                ))}
-              </tr>
-              <tr style={{ backgroundColor: '#005f7f', color: '#fff', textAlign: 'left' }}>
-                <td colSpan={12}></td>
-
-                <td style={{ border: '1px solid #ffffff1a' }} colSpan={4}>
-                  <div className="progress-tube">
-                    <div style={{ width: '50px', textAlign: 'center' }}>{rowsupplierstatus}</div>
-                    <div style={{ width: '50px', textAlign: 'center' }}>{rowBuyerstatus}</div>
-                    <div style={{ width: '50px', textAlign: 'center' }}>{rowAccountsStatus}</div>
-                  </div>
-                </td>
-              </tr>
-            </thead>
-            <tbody>
-              {tableData.map((row) => (
-                <tr
-                  key={row.id}
-                  onClick={(e) => handleRowClick(e, row)} // Add click event here
-                  onMouseEnter={() => setHoveredRowId(row.id)}
-                  onMouseLeave={() => setHoveredRowId(null)}
-                  style={{
-                    backgroundColor:
-                      hoveredRowId === row.id ? '#f1f1f1' : row.id % 2 === 0 ? '#f9f9f9' : '#fff',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
-                  {istoday(formatDate(row.createtime)) && (
-        <Tag color="yellow">
-          <ExclamationCircleFilled style={{ marginLeft: 4 }} />
-          New
-        </Tag>
-      )}
-                    <input
-                      type="checkbox"
-                      checked={selectedRows.includes(row.id)}
-                      onChange={(e) => handleCheckboxChange(e, row.id)}
-                    />
-                  </td>
-                  <td style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>
-
-                
-                  <div className="p-4 grid grid-cols-3 gap-4">
-     
-         
-        
-     
-    </div>
     
-
-                    <div
-                      className="dropdown-container"
-                      style={{ position: 'relative', whiteSpace: 'normal' }}
-                    >
-                      
-                      <div
-                        style={{
-                          padding: '5px 10px',
-                          cursor: 'pointer',
-                        }}
-                        onClick={(event) => toggleDropdown(row.id, event)} // Ensure this function handles the dropdown toggle
-                      >
-                        <SettingsIcon />
-                      </div>
-
-                      {openDropdownId === row.id && (
-                        <div
-                          style={{
-                            position: 'absolute',
-                            top: '100%',
-                            left: '0',
-                            backgroundColor: '#fff',
-                            boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-                            zIndex: 999,
-                            padding: '10px',
-                            width: '325px',
-                            
-                          }}
-                        >
-                          {row.documentStatus === 0 && (
-                            <>
-                              <button
-  style={{
-    width: '100%',
-    backgroundColor: '#fff',
-    color: '#071437',
-    border: 'none',
-    padding: '10px',
-    marginBottom: '5px',
-    textAlign: 'left',
-    cursor: 'pointer', // Add pointer cursor for a better user experience
-    transition: 'background-color 0.3s', // Smooth transition for background color change
-  }}
-  onMouseEnter={(e) => {
-    const target = e.target as HTMLButtonElement; // Type assertion
-    target.style.backgroundColor = '#f3efef'; // Change background on hover
-  }}
-  onMouseLeave={(e) => {
-    const target = e.target as HTMLButtonElement; // Type assertion
-    target.style.backgroundColor = '#fff'; // Revert background when hover ends
-  }}
-  onClick={(event) => {
-    handleSupplementaryDropdownAction(
-      'Supplementary Invoice/Credit Note Details',
-      row.id,
-      row.annexureVersionNo,
-      event
-    ); // Call the action
-    setOpenDropdownId(null); // Close the dropdown
-  }}
->
-  Supplementary Invoice/Credit Note Details
-</button>
-
-
-                              <button
-                                style={{
-                                  width: '100%',
-                                  backgroundColor: '#fff',
-                                  color: '#071437',
-                                  border: 'none',
-                                  padding: '10px',
-                                  marginBottom: '5px',
-                                  textAlign: 'left',
-                                }}
-                                onMouseEnter={(e) => {
-                                  const target = e.target as HTMLButtonElement; // Type assertion
-                                  target.style.backgroundColor = '#f3efef'; // Change background on hover
-                                }}
-                                onMouseLeave={(e) => {
-                                  const target = e.target as HTMLButtonElement; // Type assertion
-                                  target.style.backgroundColor = '#fff'; // Revert background when hover ends
-                                }}
-
-                                onClick={async (event) => {
-                                  try {
-                                    const { isOpen, count } = await checkAnyQueryIsOpen(row.id, event); // Destructure isOpen and count from the returned object
-                                
-                                    if (isOpen && row.isdocumentuploaded) {
-                                      handleSupplierSubmitAction('Submit', row.id, event);
-                                    } else {
-
-                                      event.stopPropagation();
-
-                                        if(!row.isdocumentuploaded)
-                                        {
-                                          message.warning('Upload All Documents');
-
-                                        }
-                                        if(!isOpen)
-                                        {
-                                          message.warn(`You have ${count} open queries. Please close the previous queries first.`); // Correct string interpolation
-                                        }
-
-                                      
-                                    }
-
-                                  } catch (error) {
-                                    console.error("Error checking query status:", error);
-                                    message.error("An error occurred while checking query status");
-                                  } finally {
-                                    setOpenDropdownId(null); // Ensure the dropdown is closed regardless of success or failure
-                                  }
-                                }}
-                                
-                              >
-                                Send To Buyer
-                              </button>
-
-                              <button
-                                  style={{
-                                    width: '100%',
-                                    backgroundColor: '#fff',
-                                    color: '#071437',
-                                    border: 'none',
-                                    padding: '10px',
-                                    marginBottom: '5px',
-                                    textAlign: 'left',
-                                  }}
-                                  onMouseEnter={(e) => {
-                                    const target = e.target as HTMLButtonElement; // Type assertion
-                                    target.style.backgroundColor = '#f3efef'; // Change background on hover
-                                  }}
-                                  onMouseLeave={(e) => {
-                                    const target = e.target as HTMLButtonElement; // Type assertion
-                                    target.style.backgroundColor = '#fff'; // Revert background when hover ends
-                                  }}
-                                  onClick={(event) => {
-                                    handleRaiseQueryAction('Raise Query', row.id, event); // Call your function
-                                    setOpenDropdownId(null); // Close dropdown
-                                  }}
-                                >
-                                  Raise Query
-                                </button>
-
-                            </>
-                          )}
-
-                          {/* "History of Query" button is now always visible */}
-                          <button
-                            style={{
-                              width: '100%',
-                              backgroundColor: '#fff',
-                              color: '#071437',
-                              border: 'none',
-                              padding: '10px',
-                              marginBottom: '5px',
-                              textAlign: 'left',
-                            }}
-                            onMouseEnter={(e) => {
-                              const target = e.target as HTMLButtonElement; // Type assertion
-                              target.style.backgroundColor = '#f3efef'; // Change background on hover
-                            }}
-                            onMouseLeave={(e) => {
-                              const target = e.target as HTMLButtonElement; // Type assertion
-                              target.style.backgroundColor = '#fff'; // Revert background when hover ends
-                            }}
-                            onClick={(event) =>{
-                              handleDisputeHisotryAction('History of Query', row.id, event)
-                              setOpenDropdownId(null); // Close dropdown
-                            }}
-                          >
-                            History of Query
-                          </button>
-                        </div>
-                      )}
-                    </div>  
-                  </td>
-                  <td style={{padding: '10px',border: '1px solid #ddd',fontWeight:'bold' }}>{row.querycount>0?row.querycount+' Query Raised':''}  </td>
-                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>{row.buyerName}</td>
-                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
-                    {row.partno}-{row.versionNo}
-                  </td>
-                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
-                    {formatDate(row.createtime)}
-                  </td>
-                  <td style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>
-                    {row.ageing}
-                  </td>
-                  
-                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
-                    {row.supplementaryInvoiceNo}
-                  </td>
-                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
-                    {row.supplementaryinvoicedatestring}
-                  </td>
-                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
-                    {formatDate(row.contractFromDate)}
-                  </td>
-                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
-                    {formatDate(row.contractToDate)}
-                  </td>
-                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>{row.total}</td>
-
-                  <td style={{ padding: '10px', border: '1px solid #ddd' }} colSpan={3}>
-                    <div className="progress-tube">
-                      <div
-                        className={supplierstatus(row.documentStatus)}
-                        style={{ width: '50px' }}
-                      ></div>
-                      <div
-                        className={barstatus(row.buyerApprovalStatus)}
-                        style={{ width: '50px' }}
-                      ></div>
-                      <div
-                        className={barstatus(row.accountantApprovalStatus)}
-                        style={{ width: '50px' }}
-                      ></div>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <SupplierSubmitModal
-          isOpen={isSupplierSubmitModalOpen}
-          onClose={closeSupplierSubmitModal}
-          submitIdRow={submitIdRow}
-          supplementaryInvoiceSubmit={supplementaryInvoiceSubmit}
-        />
-        <SupplementaryInvoiceModal
-          rowId={currentRowId}
-          AnnexureVersion={AnnexureVersionNo} // Pass rowId to the modal
-          visible={isModalVisible} // Control visibility of the modal
-          onCancel={handleCloseModal} // Function to close modal
-        />
-
-        {isHistoryModalVisible && (
-          <DisputeHistoryModal
-            rowId={submitIdRow}
-            visible={isHistoryModalVisible}
-            onCancel={handlehistoryCancel}
-            data={disputeData}
-            // Function to close modal
-          />
-        )}
-        {isLoading && <div style={{ paddingTop: 100, textAlign: 'center' }}>
-    <Spin size="large" />
-  </div>}
-        {isModalOpen && modalData && Suppliermodalview(selectedRow)}
-        {isQueryModalVisible && (
-          <CreateOrUpdateDisputes
-            visible={isQueryModalVisible}
-            modalType="view"
-            onCreate={handleCreate}
-            onCancel={handleCancel}
-            disputesStrore={new DisputesStore()}
-            initialData={{
-              supplierName: initialData.supplierName,
-              buyerName: initialData.buyerShortId,
-            }}
-            formRef={formRef}
-          />
-        )}
-                      </Tabs.TabPane>
-            <Tabs.TabPane tab="Analysis" key="3">
+            <Tabs.TabPane tab="Summary" key="1">
             <AnalysisPieChart
             supplementaryDocStatus={tableData}
             />
             </Tabs.TabPane>
+            <Tabs.TabPane tab="Home" key="2">
+  {isLoading ? (
+    <div style={{ paddingTop: 100, textAlign: 'center' }}>
+      <Spin size="large" />
+    </div>
+  ) : (
+    <>
+      <Table
+        rowKey="id"
+        columns={[
+          {
+            title: (
+              <Checkbox
+                onChange={(e) =>
+                  setSelectedRows(e.target.checked ? tableData.map(row => row.id) : [])
+                }
+              />
+            ),
+            dataIndex: 'select',
+            render: (_, row) => (
+              <>
+                <Checkbox
+                  checked={selectedRows.includes(row.id)}
+                  onChange={(e) => handleCheckboxChange(e, row.id)}
+                  onClick={(e) => e.stopPropagation()} // Prevents row selection when clicking the checkbox
+                />
+                {/* Check if the row's creation date is today */}
+                {istoday(formatDate(row.createtime)) && (
+                  <Tag color="yellow">
+                    <ExclamationCircleFilled style={{ marginLeft: 4 }} />
+                    New
+                  </Tag>
+                )}
+              </>
+            ),
+            width: 50, // Set the width here
+          },
+          
+
+          {
+            title: 'Action',
+            dataIndex: 'action',
+            render: (_, row) => (
+              <Dropdown
+  overlay={
+    <Menu>
+      {row.documentStatus === 0 && (
+        <>
+          <Menu.Item onClick={(event) => { 
+            event.domEvent.stopPropagation();
+            handleSupplementaryDropdownAction('Supplementary Invoice Details', row.id, row.annexureVersionNo);
+          }}>
+            Supplementary Invoice Details/Credit Note
+          </Menu.Item>
+          <Menu.Item onClick={async (event) => {
+            event.domEvent.stopPropagation();
+            try {
+              const { isOpen, count } = await checkAnyQueryIsOpen(row.id, event);
+              if (isOpen && row.isdocumentuploaded) {
+                handleSupplierSubmitAction('Submit', row.id, event);
+              } else {
+                if (!row.isdocumentuploaded) {
+                  message.warning('Upload All Documents');
+                }
+                if (!isOpen) {
+                  message.warn(`You have ${count} open queries. Please close the previous queries first.`);
+                }
+              }
+            } catch (error) {
+              console.error("Error checking query status:", error);
+              message.error("An error occurred while checking query status");
+            }
+          }}>
+            Send To Buyer
+          </Menu.Item>
+          <Menu.Item onClick={(event) => { 
+            event.domEvent.stopPropagation();
+            handleRaiseQueryAction('Raise Query', row.id);
+          }}>
+            Raise Query
+          </Menu.Item>
+        </>
+      )}
+      <Menu.Item onClick={(event) => { 
+        event.domEvent.stopPropagation();
+        handleDisputeHisotryAction('History of Query', row.id);
+      }}>
+        History of Query
+      </Menu.Item>
+    </Menu>
+  }
+  trigger={['click']}
+  placement="bottomRight" // Ensures it appears at the bottom-right of the button
+  getPopupContainer={(triggerNode) => (triggerNode.parentNode as HTMLElement) || document.body}
+> 
+  <div onClick={(e) => e.stopPropagation()} style={{ cursor: 'pointer' }}>
+    <SettingsIcon />
+  </div>
+</Dropdown>
+
+            ),
+            width: 100,
+          },
+
+          { title: 'Query', dataIndex: 'querycount', render: (count) => (count > 0 ? `${count} Query Raised` : '') ,width:100},
+          { title: 'Buyer Name', dataIndex: 'buyerName' ,width:200},
+          { title: 'Part No - Version', dataIndex: 'partno', render: (_, row) => `${row.partno}-${row.versionNo}` ,width:150},
+          { title: 'Report Date', dataIndex: 'createtime', render: formatDate ,width:120},
+          { title: 'Ageing', dataIndex: 'ageing', align: 'center' ,width:100},
+          { title: 'Supplementary Invoice/Credit Note', dataIndex: 'supplementaryInvoiceNo',width:300 },
+          { title: 'Date', dataIndex: 'supplementaryinvoicedatestring',width:120 },
+          { title: 'From', dataIndex: 'contractFromDate', render: formatDate ,width:120},
+          { title: 'To', dataIndex: 'contractToDate', render: formatDate ,width:120},
+          { title: 'Value', dataIndex: 'total' ,width:100},
+          {
+            title:'Supplier' ,
+            children:[
+              {
+                title: rowsupplierstatus,
+                dataIndex: 'status',
+                className: 'no-border-column', // Add custom class
+                render: (_, row) => (
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <div className="progress-tube">
+                      <div
+                        className={supplierstatus(row.documentStatus)}
+                        style={{ width: '50px', height: '10px' }}
+                      ></div>
+                    </div>
+                  </div>
+                ),
+                width: 100,
+              }
+            ]
+          },
+          {
+            title:'Buyer' ,
+            children:[
+              {
+                title: rowBuyerstatus,
+                dataIndex: 'status',
+                className: 'no-border-column', // Add custom class
+                render: (_, row) => (
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <div className="progress-tube">
+                      <div
+                        className={barstatus(row.buyerApprovalStatus)}
+                        style={{ width: '50px', height: '10px' }}
+                      ></div>
+                    </div>
+                  </div>
+                ),
+                width: 100,
+              }
+            ]
+          },
+          {
+            title:'F&C' ,
+            children:[
+              {
+                title: rowAccountsStatus,
+                dataIndex: 'status',
+                className: 'no-border-column', // Add custom class
+                render: (_, row) => (
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <div className="progress-tube">
+                      <div
+                        className={barstatus(row.accountantApprovalStatus)}
+                        style={{ width: '50px', height: '10px' }}
+                      ></div>
+                    </div>
+                  </div>
+                ),
+                width: 100,
+              }
+            ]
+          },
+                    
+]}
+            dataSource={tableData}
+            className="custom-table" // Add the custom class here
+            pagination={{ pageSize: 10 }}
+            bordered
+            scroll={{ x: 'max-content' }} 
+            // rowSelection={{
+            //   selectedRowKeys: selectedRows, // Ensure selectedRows is an array of numbers
+            //   onChange: (selectedRowKeys) => {
+            //     setSelectedRows(selectedRowKeys as number[]); // Cast Key[] to number[]
+            //   },
+            // }}
+            onRow={(row) => ({
+              onClick: (e) => handleRowClick(e, row), // Trigger function on click anywhere on the row
+              onMouseEnter: () => setHoveredRowId(row.id),
+              onMouseLeave: () => setHoveredRowId(null),
+              style: {
+                backgroundColor:
+                  hoveredRowId === row.id
+                    ? '#f1f1f1'
+                    : row.id % 2 === 0
+                    ? '#f9f9f9'
+                    : '#fff',
+                cursor: 'pointer',
+              },
+            })}
+            
+  //           summary={() => (
+  //   <thead>
+
+  //     <tr style={{ backgroundColor: '#005f7f', color: '#fff', textAlign: 'left' }}>
+  //       <td colSpan={12}></td>
+  //       <td style={{ border: '1px solid #ffffff1a' }} colSpan={4}>
+  //         {/* Progress Tube for Statuses */}
+  //         <div className="progress-tube">
+  //           <div style={{ width: '50px', textAlign: 'center' }}>{rowsupplierstatus}</div>
+  //           <div style={{ width: '50px', textAlign: 'center' }}>{rowBuyerstatus}</div>
+  //           <div style={{ width: '50px', textAlign: 'center' }}>{rowAccountsStatus}</div>
+  //         </div>
+  //       </td>
+  //     </tr>
+  //   </thead>
+  // )}
+  // components={{
+  //   header: {
+  //     cell: (props) => {
+  //       return (
+  //         <th {...props} style={{ borderBottom: '2px solid #005f7f' }}>
+  //           {props.children}
+  //         </th>
+  //       );
+  //     },
+  //   },
+  // }}
+            />
+      {/* Modals */}
+      <SupplierSubmitModal
+        isOpen={isSupplierSubmitModalOpen}
+        onClose={closeSupplierSubmitModal}
+        submitIdRow={submitIdRow}
+        supplementaryInvoiceSubmit={supplementaryInvoiceSubmit}
+      />
+
+      <SupplementaryInvoiceModal
+        rowId={currentRowId}
+        AnnexureVersion={AnnexureVersionNo}
+        visible={isModalVisible}
+        onCancel={handleCloseModal}
+      />
+
+      {isHistoryModalVisible && (
+        <DisputeHistoryModal
+          rowId={submitIdRow}
+          visible={isHistoryModalVisible}
+          onCancel={handlehistoryCancel}
+          data={disputeData}
+        />
+      )}
+
+      {isModalOpen && modalData && Suppliermodalview(selectedRow)}
+
+      {isQueryModalVisible && (
+        <CreateOrUpdateDisputes
+          visible={isQueryModalVisible}
+          modalType="view"
+          onCreate={handleCreate}
+          onCancel={handleCancel}
+          disputesStrore={new DisputesStore()}
+          initialData={{
+            supplierName: initialData.supplierName,
+            buyerName: initialData.buyerShortId,
+          }}
+          formRef={formRef}
+        />
+      )}
+    </>
+  )}
+</Tabs.TabPane>
+
           </Tabs>}
           {tableloading && Loading()}
       </Card>

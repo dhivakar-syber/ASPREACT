@@ -2,7 +2,7 @@ import * as React from "react";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
 
 import  DashboardCards  from "./BuyerDashboardCards";
-import { Row, Col,Select, Tabs,Button,Modal,message,Card, Tooltip } from 'antd';
+import { Row, Col,Select, Tabs,Button,Modal,message,Card, Tooltip ,Table} from 'antd';
 import { FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
 import { BuyerDashboardInput } from "./BuyerDashboardInput";
 import BuyerQueryModal from "./BuyerQueryModal"
@@ -42,6 +42,7 @@ const SettingsIcon = () => (
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   const [isApproveRejectModalOpen, setIsApproveRejectModalOpen] = React.useState<boolean>(false); // To control modal visibility
   const [hasRole, setHasRole] = React.useState<boolean>(false);
+    // const [isLoading, setIsLoading] = React.useState(false);
   // const [queryloading, setqueryloading] = React.useState<boolean>(false);
   const [dashboardinput, setdashboardinput] = React.useState<BuyerDashboardInput>({
     Supplierids:[0],
@@ -633,198 +634,267 @@ function barstatus(status:any) {
     
 <br></br>
 <Tabs defaultActiveKey="1">
-    <Tabs.TabPane tab="Home" key="1">
-      <div style={{ marginTop: "20px" }}>
-        
-        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px",whiteSpace:'nowrap',
-              borderRadius: '5px', }}>
-          <thead>
-          <tr style={{ backgroundColor: '#005f7f', color: '#fff', textAlign: 'left', borderRadius: '2px' }}>
-          {[
-                "S.No",
-                "PartNumber - Version",
-                "Annexure Group",
-                "Supplier Name",
-                "From",
-                "To",
-                "Supplier",
-                "Buyer",
-                "F&C",
-              ].map((header) => (
-                <th key={header} style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px' }}>
-                  {header}
-                </th>
-              ))}
-            </tr>
-            <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
-
-            <td  colSpan={6}>
-  
-</td>
-              
-            <td style={{  border: "1px solid #ffffff1a" }} colSpan={3}>
-  <div className="progress-tube">
-    <div  style={{  width: "50px",textAlign:"center" }}>{rowsupplierstatus}</div>
-    <div  style={{ width: "50px",textAlign:"center" }}>{rowBuyerstatus}</div>
-    <div  style={{ width: "50px",textAlign:"center" }}>{rowAccountsStatus}</div>
-  </div>
-</td>
-            </tr>
-          </thead>
-          <tbody>
-            {tableData.map((row,index) => (
-              <tr>
-                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{index+1}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.partno} - {row.partversionNo}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.versionNo}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{row.suppliername}-{row.suppliercode}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{formatDate(row.contractFromDate)}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{formatDate(row.contractToDate)}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" ,textAlign:"center"}} colSpan={3}>
-                    <div className="progress-tube">
-                      <div className={supplierstatus(row.documentStatus)} style={{ width: "50px" }}></div>
-                      <div className={barstatus(row.buyerApprovalStatus)} style={{ width: "50px" }}></div>
-                      <div className={barstatus(row.accountantApprovalStatus)} style={{ width: "50px" }}></div>
-                    </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-    </Tabs.TabPane>
-    <Tabs.TabPane tab="Approvals" key="2">
-      <div style={{ marginTop: "20px", overflowX: 'auto' }}>
-        
-        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px",
-              borderRadius: '5px', }}>
-          <thead>
-          <tr style={{ backgroundColor: '#005f7f', color: '#fff', textAlign: 'left', borderRadius: '2px' }}>
-          {[
-                "S.No",
-                "Document",
-                "Document Number",
-                "Date",
-                "Value",
-                "Ageing",
-                "Documents",
-                "Accounting Number",
-                "Accounting Date",
-                "Action",
-                "Supplier",
-                "Buyer",
-                "F&C",
-              ].map((header) => (
-                <th key={header} style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px' }}>
-                  {header}
-                </th>
-              ))}
-            </tr>
-            <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" }}>
-
-            <td  colSpan={10}>
-  
-</td>
-              
-            <td style={{  border: "1px solid #ffffff1a" }} colSpan={3}>
-  <div className="progress-tube">
-    <div  style={{  width: "50px",textAlign:"center" }}>{rowsupplierstatus}</div>
-    <div  style={{ width: "50px",textAlign:"center" }}>{rowBuyerstatus}</div>
-    <div  style={{ width: "50px",textAlign:"center" }}>{rowAccountsStatus}</div>
-  </div>
-</td>
-            </tr>
-          </thead>
-          <tbody>
-            {tableData.map((row,index) => (
-              <tr
-              >
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{index+1}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.document}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryInvoiceNo}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.supplementaryInvoiceDate?formatDate(row.supplementaryInvoiceDate):''}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.total}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.ageing}</td>
-                
-                <td style={{ padding: "10px", border: "1px solid #ddd", width: "175px" }}>
-                  <span>
-                    {row.supplementaryInvoicePath && (
-                        <Tooltip title="Supplementary Invoice/Credit Note">
-
-                      <Button
-                        type="link"
-                        onClick={() => handleSupplementrypdfButtonClick(row.supplementaryInvoicePath)}
+<Tabs.TabPane tab="Home" key="1">
+        <Card>
+          <Row>
+            <Col
+                        xs={{ span: 14, offset: 0 }}
+                        sm={{ span: 15, offset: 0 }}
+                        md={{ span: 15, offset: 0 }}
+                        lg={{ span: 1, offset: 21 }}
+                        xl={{ span: 1, offset: 21 }}
+                        xxl={{ span: 1, offset: 21 }}
                       >
-                        <FilePdfOutlined />
-                      </Button>
-                      </Tooltip>
-                    )}
-                    {row.annecurePath && (
-                    <Tooltip title="Annexure">
-                      <Button
-                        type="link"
-                        onClick={() => handleAnnexurepdfButtonClick(row.annecurePath)}
+                      </Col>
+                    </Row>
+                    
+                    <Row style={{ marginTop: 20 }}>
+                      <Col
+                        xs={{ span: 24, offset: 0 }}
+                        sm={{ span: 24, offset: 0 }}
+                        md={{ span: 24, offset: 0 }}
+                        lg={{ span: 24, offset: 0 }}
+                        xl={{ span: 24, offset: 0 }}
+                        xxl={{ span: 24, offset: 0 }}
                       >
-                        <FilePdfOutlined />
-                      </Button>
-                      </Tooltip>
-                    )}
-                    {row.supplementaryInvoicePath3 && (
-                      <Tooltip title="Annexure Attachment">
-                      <Button
-                        type="link"
-                        onClick={() =>downloadFile({path: row.supplementaryInvoicePath3 })}>
-                        <FileExcelOutlined />
-                      </Button>
-                      </Tooltip>
-                    )}
-                  </span>
-                </td>
+  <Table
+    rowKey="id"// Ensure unique key
+    scroll={{ x: 'max-content' }}
+    columns={[
+      { 
+        title: 'S.No', 
+        dataIndex: 'index', 
+        render: (_, __, index) => index + 1, // Index starts from 0, so adding 1
+        width: 80 
+      },
+      { 
+        title: 'Part No - Version', 
+        dataIndex: 'partno', 
+        render: (_, row) => `${row.partno}-${row.partversionNo}`,
+        width: 150 
+      },
+      { title: 'Annexure Group', dataIndex: 'versionNo', width: 120 },
+      { title: 'Buyer Name', dataIndex: 'buyername', width: 200 }, // Fixed duplicate suppliername field
+      { 
+        title: 'Supplier Name', 
+        dataIndex: 'suppliername', 
+        render: (_, row) => `${row.suppliername}-${row.suppliercode}`, 
+        width: 150 
+      },
+      { title: 'From', dataIndex: 'contractFromDate', render: formatDate, width: 120 },
+      { title: 'To', dataIndex: 'contractToDate', render: formatDate, width: 120 },
+      {
+        title: 'Supplier',
+        children: [
+          {
+            title: rowsupplierstatus,
+            dataIndex: 'documentStatus',
+            className: 'no-border-column',
+            render: (_, row) => (
+              <div className="progress-tube">
+                <div className={supplierstatus(row.documentStatus)} style={{ width: '50px', height: '10px' }}></div>
+              </div>
+            ),
+            width: 100,
+          },
+        ],
+      },
+      {
+        title: 'Buyer',
+        children: [
+          {
+            title: rowBuyerstatus,
+            dataIndex: 'buyerApprovalStatus',
+            className: 'no-border-column',
+            render: (_, row) => (
+              <div className="progress-tube">
+                <div className={barstatus(row.buyerApprovalStatus)} style={{ width: '50px', height: '10px' }}></div>
+              </div>
+            ),
+            width: 100,
+          },
+        ],
+      },
+      {
+        title: 'F&C',
+        children: [
+          {
+            title: rowAccountsStatus,
+            dataIndex: 'accountantApprovalStatus',
+            className: 'no-border-column',
+            render: (_, row) => (
+              <div className="progress-tube">
+                <div className={barstatus(row.accountantApprovalStatus)} style={{ width: '50px', height: '10px' }}></div>
+              </div>
+            ),
+            width: 100,
+          },
+        ],
+      },
+    ]}
+    dataSource={tableData}
+    className="custom-table"
+    pagination={{ pageSize: 10 }}
+    bordered
+  />
+  </Col>
+            </Row>
+        </Card>
+            
+</Tabs.TabPane>
 
-                <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
-  {row.accountingNo}
-</td>
-<td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
-  {row.accountingDate ? formatDate(row.accountingDate) : ''}
-</td>
-<td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>
-  <div className="dropdown-container" style={{ position: "relative"}}>
-  <Tooltip title="Approve or Reject">
-    {row.buyerApprovalStatus==1&&<button
-      style={{
-        backgroundColor: "transparent", // Fixed from "none" to "transparent"
-        border: "none",
-        padding: "5px 10px",
-        cursor: "pointer",
-        position: "relative", // This ensures the dropdown is positioned relative to this button
-        //zIndex: openDropdownId === row.id ? 10 : 1, // Higher z-index for active dropdown
-      }}
-      onClick={(event) => handleClickAction(row.id)}
-    >
-      <SettingsIcon />
-    </button>}
-    </Tooltip>                
-
-    
-  </div>
-</td>
-
-
-                <td style={{ padding: "10px", border: "1px solid #ddd" }} colSpan={3}>
-  <div className="progress-tube">
-    <div className={supplierstatus(row.documentStatus)} style={{ width: "50px" }}></div>
-    <div className={barstatus(row.buyerApprovalStatus)} style={{ width: "50px" }}></div>
-    <div className={barstatus(row.accountantApprovalStatus)} style={{ width: "50px" }}></div>
-  </div>
-</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+<Tabs.TabPane tab="Approvals" key="2">
+<Card>
+          <Row>
+            <Col
+                        xs={{ span: 14, offset: 0 }}
+                        sm={{ span: 15, offset: 0 }}
+                        md={{ span: 15, offset: 0 }}
+                        lg={{ span: 1, offset: 21 }}
+                        xl={{ span: 1, offset: 21 }}
+                        xxl={{ span: 1, offset: 21 }}
+                      >
+                      </Col>
+                    </Row>
+                    
+                    <Row style={{ marginTop: 20 }}>
+                      <Col
+                        xs={{ span: 24, offset: 0 }}
+                        sm={{ span: 24, offset: 0 }}
+                        md={{ span: 24, offset: 0 }}
+                        lg={{ span: 24, offset: 0 }}
+                        xl={{ span: 24, offset: 0 }}
+                        xxl={{ span: 24, offset: 0 }}
+                      >
+  <Table
+    rowKey={(row) => row.supplementaryInvoiceNo || row.id}
+    dataSource={tableData}
+    className="custom-table"
+    pagination={{ pageSize: 10 }}
+    bordered
+    scroll={{ x: 'max-content' }}
+    columns={[
+      { 
+        title: 'S.No', 
+        dataIndex: 'index', 
+        render: (_, __, index) => index + 1, 
+        width: 60 
+      },
+      { title: 'Document', dataIndex: 'document', width: 120 },
+      { title: 'Document Number', dataIndex: 'supplementaryInvoiceNo', width: 150 },
+      { 
+        title: 'Date', 
+        dataIndex: 'supplementaryInvoiceDate', 
+        render: (date) => date ? formatDate(date) : '', 
+        width: 120 
+      },
+      { title: 'Value', dataIndex: 'total', width: 120 },
+      { title: 'Ageing', dataIndex: 'ageing', width: 100 },
+      { 
+        title: 'Documents', 
+        dataIndex: 'documents', 
+        render: (_, row) => (
+          <span>
+            {row.supplementaryInvoicePath && (
+              <Tooltip title="Supplementary Invoice/Credit Note">
+                <Button type="link" onClick={() => handleSupplementrypdfButtonClick(row.supplementaryInvoicePath)}>
+                  <FilePdfOutlined />
+                </Button>
+              </Tooltip>
+            )}
+            {row.annecurePath && (
+              <Tooltip title="Annexure">
+                <Button type="link" onClick={() => handleAnnexurepdfButtonClick(row.annecurePath)}>
+                  <FilePdfOutlined />
+                </Button>
+              </Tooltip>
+            )}
+            {row.supplementaryInvoicePath3 && (
+              <Tooltip title="Annexure Attachment">
+                <Button type="link" onClick={() => downloadFile({ path: row.supplementaryInvoicePath3 })}>
+                  <FileExcelOutlined />
+                </Button>
+              </Tooltip>
+            )}
+          </span>
+        ),
+        width: 175
+      },
+      { title: 'Accounting Number', dataIndex: 'accountingNo', width: 150 },
+      { 
+        title: 'Accounting Date', 
+        dataIndex: 'accountingDate', 
+        render: (date) => date ? formatDate(date) : '', 
+        width: 120 
+      },
+      { 
+        title: 'Action', 
+        dataIndex: 'action', 
+        render: (_, row) => (
+          row.buyerApprovalStatus === 1 && (
+            <Tooltip title="Approve or Reject">
+              <Button type="link" onClick={() => handleClickAction(row.id)}>
+                <SettingsIcon />
+              </Button>
+            </Tooltip>
+          )
+        ),
+        width: 100
+      },
+      {
+        title: 'Supplier',
+        children: [
+          {
+            title: rowsupplierstatus,
+            dataIndex: 'documentStatus',
+            className: 'no-border-column',
+            render: (_, row) => (
+              <div className="progress-tube">
+                <div className={supplierstatus(row.documentStatus)} style={{ width: '50px', height: '10px' }}></div>
+              </div>
+            ),
+            width: 100,
+          },
+        ],
+      },
+      {
+        title: 'Buyer',
+        children: [
+          {
+            title: rowBuyerstatus,
+            dataIndex: 'buyerApprovalStatus',
+            className: 'no-border-column',
+            render: (_, row) => (
+              <div className="progress-tube">
+                <div className={barstatus(row.buyerApprovalStatus)} style={{ width: '50px', height: '10px' }}></div>
+              </div>
+            ),
+            width: 100,
+          },
+        ],
+      },
+      {
+        title: 'F&C',
+        children: [
+          {
+            title: rowAccountsStatus,
+            dataIndex: 'accountantApprovalStatus',
+            className: 'no-border-column',
+            render: (_, row) => (
+              <div className="progress-tube">
+                <div className={barstatus(row.accountantApprovalStatus)} style={{ width: '50px', height: '10px' }}></div>
+              </div>
+            ),
+            width: 100,
+          },
+        ],
+      },
+    ]}
+                          />
+          </Col>
+        </Row>
         <ApproveorRejectModal isOpen={isApproveRejectModalOpen} onCancel={closeApproveRejectModal} submitIdRow={submitIdRow}
         approveSubmit={approveSubmit} rejectSubmit={rejectSubmit} />
-      </div>
 <Modal
         title="View PDF"
         visible={isModalVisible}
@@ -859,6 +929,7 @@ function barstatus(status:any) {
           />
         )}
       </Modal>
+      </Card>
     </Tabs.TabPane>
     <Tabs.TabPane tab="Queries" key="3">
     <BuyerQueryModal 

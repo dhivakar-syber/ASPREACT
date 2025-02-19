@@ -12,10 +12,36 @@ import Stores from '../../stores/storeIdentifier';
 import fileMasterStore from '../../stores/fileMasterStore';
 import { FormInstance } from 'antd/lib/form';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
+import sessionService from '../../services/session/sessionService';
 //import { EnumMovementType } from '../../enum'
 
-const userPermissions = ["Pages.Administration.FileMasters.Create", "Pages.Administration.FileMasters.Edit","Pages.Administration.FileMasters.Delete"];
-const hasPermission = (permission: string): boolean => userPermissions.includes(permission);
+// const userPermissions = ["Pages.Administration.FileMasters.Create", "Pages.Administration.FileMasters.Edit","Pages.Administration.FileMasters.Delete"];
+// const hasPermission = (permission: string): boolean => userPermissions.includes(permission);
+
+const getUserPermissions = async (): Promise<string[]> => {
+  try {
+    // Fetch the current login information asynchronously
+    const currentLoginInfo = await sessionService.getCurrentLoginInformations();
+    console.log('User',currentLoginInfo);
+    // Assuming permissions are inside the 'permissions' field of the object
+    const permissions: string[] = currentLoginInfo?.user?.permissions || [];
+    console.log('permissions',permissions)
+    return permissions;
+  } catch (error) {
+    console.error("Error fetching user permissions:", error);
+    return [];  // Return an empty array if there's an error
+  }
+};
+
+const hasPermission = async (permission: string): Promise<boolean> => {
+  const userPermissions = await getUserPermissions();
+  return userPermissions.includes(permission);
+};
+
+hasPermission("Pages.Administration.FileMasters").then(hasPerm => {
+  console.log('is',hasPerm);  // true or false based on the session data
+});
+
 
 export interface IFileMasterdataProps {
   filemasterStore: fileMasterStore;
@@ -39,6 +65,9 @@ export interface IfileMasterState {
   BuyerNameFilter: string;
   SupplierNameFilter: string;
   showAdvancedFilters: boolean;
+  hasCreatePermission: boolean;
+  hasDeletePermission: boolean;
+  hasEditPermission: boolean;
   selectedLookupItem: LookupItem | null;
   selectedSupplierLookupItem: SupplierLookupItem | null;
   selectedBuyerLookupItem: BuyerLookupItem | null;
@@ -81,6 +110,9 @@ class FileMaster extends AppComponentBase<IFileMasterdataProps, IfileMasterState
     BuyerNameFilter: '',
     SupplierNameFilter: '',
     showAdvancedFilters: false,
+    hasCreatePermission: false,
+    hasDeletePermission: false,
+    hasEditPermission: false,
     selectedLookupItem: null as LookupItem | null,
     selectedSupplierLookupItem: null as SupplierLookupItem | null,
     selectedBuyerLookupItem: null as BuyerLookupItem | null,
@@ -88,7 +120,18 @@ class FileMaster extends AppComponentBase<IFileMasterdataProps, IfileMasterState
 
   async componentDidMount() {
     await this.getAll();
+    await this.checkPermissions();
   }
+
+  
+  checkPermissions = async () => {
+    const hasPermissionCreate = await hasPermission("Pages.Administration.FileMasters.Create");
+    this.setState({ hasCreatePermission: hasPermissionCreate });
+    const hasPermissionDelete = await hasPermission("Pages.Administration.FileMasters.Delete");
+    this.setState({ hasDeletePermission: hasPermissionDelete });
+    const hasPermissionEdit = await hasPermission("Pages.Administration.FileMasters.Edit");
+    this.setState({ hasEditPermission: hasPermissionEdit });
+  };
 
   async getAll() {
     if (!this.props.filemasterStore) {
@@ -305,6 +348,7 @@ editdata:any = null;
   public render() {
     console.log(this.props.filemasterStore);
     const { fileMaster } = this.props.filemasterStore;
+    const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
     const columns = [
         {
             title: L('Actions'),
@@ -315,9 +359,9 @@ editdata:any = null;
                   trigger={['click']}
                   overlay={
                     <Menu>
-                      {hasPermission("Pages.Administration.FileMasters.Edit") && (
+                      {hasEditPermission && (
                       <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.fileMaster?.id })}>{L('Edit')}</Menu.Item>)}
-                      {hasPermission("Pages.Administration.FileMasters.Delete") && (
+                       {hasDeletePermission && (
                       <Menu.Item onClick={() => this.delete({ id: item.fileMaster?.id })}>{L('Delete')}</Menu.Item>)}
                     </Menu>
                     
@@ -407,7 +451,7 @@ editdata:any = null;
             xxl={{ span: 1, offset: 21 }}
           >
 
-            {hasPermission('Pages.Administration.FileMasters.Create') && (
+{hasCreatePermission && (
             <Button type="primary"  icon={<PlusOutlined />} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} style={{marginLeft:'-100px'}}>Create FileMaster</Button>)}
           </Col>
         </Row>

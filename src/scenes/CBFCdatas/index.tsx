@@ -11,8 +11,34 @@ import cbfcdataStore from '../../stores/cbfcdataStore';
 import { FormInstance } from 'antd/lib/form';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
 import { EnumCurrency,EnumTransaction } from '../../../src/enum'
+import sessionService from '../../services/session/sessionService';
 //import { Moment } from 'moment-timezone';
 //import { useState } from 'react';
+
+
+const getUserPermissions = async (): Promise<string[]> => {
+  try {
+    // Fetch the current login information asynchronously
+    const currentLoginInfo = await sessionService.getCurrentLoginInformations();
+    console.log('User',currentLoginInfo);
+    // Assuming permissions are inside the 'permissions' field of the object
+    const permissions: string[] = currentLoginInfo?.user?.permissions || [];
+    console.log('permissions',permissions)
+    return permissions;
+  } catch (error) {
+    console.error("Error fetching user permissions:", error);
+    return [];  // Return an empty array if there's an error
+  }
+};
+
+const hasPermission = async (permission: string): Promise<boolean> => {
+  const userPermissions = await getUserPermissions();
+  return userPermissions.includes(permission);
+};
+
+hasPermission("Pages.Administration.CBFCdatas").then(hasPerm => {
+  console.log('is',hasPerm);  // true or false based on the session data
+});
 
 export interface ICBFCdataProps {
   cbfcdataStore: cbfcdataStore;
@@ -36,6 +62,9 @@ export interface ICBFCdataState {
   partPartNoFilter:string;
   buyerNameFilter:string;
   supplierNameFilter:string;
+  hasCreatePermission: boolean;
+  hasDeletePermission: boolean;
+  hasEditPermission: boolean;
   showAdvancedFilters: boolean;
 }
 type LookupItem = {
@@ -77,6 +106,9 @@ class CBFCDatas extends AppComponentBase<ICBFCdataProps, ICBFCdataState> {
     buyerNameFilter: '',
     supplierNameFilter: '',
     showAdvancedFilters: false,
+    hasCreatePermission: false,
+    hasDeletePermission: false,
+    hasEditPermission: false,
     selectedLookupItem: null as LookupItem | null,
     selectedSupplierLookupItem: null as SupplierLookupItem | null,
     selectedBuyerLookupItem: null as BuyerLookupItem | null,
@@ -85,7 +117,17 @@ class CBFCDatas extends AppComponentBase<ICBFCdataProps, ICBFCdataState> {
 
   async componentDidMount() {
     await this.getAll();
+    await this.checkPermissions();
   }
+
+  checkPermissions = async () => {
+    const hasPermissionCreate = await hasPermission("Pages.Administration.CBFCdatas.Create");
+    this.setState({ hasCreatePermission: hasPermissionCreate });
+    const hasPermissionDelete = await hasPermission("Pages.Administration.CBFCdatas.Delete");
+    this.setState({ hasDeletePermission: hasPermissionDelete });
+    const hasPermissionEdit = await hasPermission("Pages.Administration.CBFCdatas.Edit");
+    this.setState({ hasEditPermission: hasPermissionEdit });
+  };
 
   async getAll() {
     if (!this.props.cbfcdataStore) {
@@ -322,6 +364,7 @@ editdata:any = null;
   public render() {
     console.log(this.props.cbfcdataStore);
     const { cbfcdata } = this.props.cbfcdataStore;
+    const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
     const columns = [
         {
             title: L('Actions'),
@@ -332,8 +375,10 @@ editdata:any = null;
                   trigger={['click']}
                   overlay={
                     <Menu>
-                      <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.cbfCdata?.id })}>{L('Edit')}</Menu.Item>
-                      <Menu.Item onClick={() => this.delete({ id: item.cbfCdata?.id })}>{L('Delete')}</Menu.Item>
+                      {hasEditPermission && (
+                      <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.cbfCdata?.id })}>{L('Edit')}</Menu.Item>)}
+                      {hasDeletePermission && (
+                      <Menu.Item onClick={() => this.delete({ id: item.cbfCdata?.id })}>{L('Delete')}</Menu.Item>)}
                     </Menu>
                   }
                   placement="bottomLeft"
@@ -427,7 +472,8 @@ editdata:any = null;
             xl={{ span: 1, offset: 21 }}
             xxl={{ span: 1, offset: 21 }}
           >
-            <Button type="primary"  icon={<PlusOutlined/>} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} style={{marginLeft:'-50px'}}>Create CBFCDatas</Button>
+            {hasCreatePermission && (
+            <Button type="primary"  icon={<PlusOutlined/>} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} style={{marginLeft:'-50px'}}>Create CBFCDatas</Button>)}
           </Col>
         </Row>
         <Row>

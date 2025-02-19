@@ -9,8 +9,32 @@ import Stores from '../../stores/storeIdentifier';
 import PlantStore from '../../stores/PlantStore';
 import { FormInstance } from 'antd/lib/form';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
+import sessionService from '../../services/session/sessionService';
 
 
+const getUserPermissions = async (): Promise<string[]> => {
+  try {
+    // Fetch the current login information asynchronously
+    const currentLoginInfo = await sessionService.getCurrentLoginInformations();
+    console.log('User',currentLoginInfo);
+    // Assuming permissions are inside the 'permissions' field of the object
+    const permissions: string[] = currentLoginInfo?.user?.permissions || [];
+    console.log('permissions',permissions)
+    return permissions;
+  } catch (error) {
+    console.error("Error fetching user permissions:", error);
+    return [];  // Return an empty array if there's an error
+  }
+};
+
+const hasPermission = async (permission: string): Promise<boolean> => {
+  const userPermissions = await getUserPermissions();
+  return userPermissions.includes(permission);
+};
+
+hasPermission("Pages.Administration.Plants").then(hasPerm => {
+  console.log('is',hasPerm);  // true or false based on the session data
+});
 
 
 export interface IPlantProps {
@@ -26,6 +50,9 @@ export interface IPlantState {
   nameFilter:string;
   descriptionFilter:string;
   showAdvancedFilters: boolean;
+  hasCreatePermission: boolean;
+  hasDeletePermission: boolean;
+  hasEditPermission: boolean;
 }
 
 
@@ -46,13 +73,25 @@ class Plant extends AppComponentBase<IPlantProps, IPlantState> {
     filter: '',
     nameFilter:'',
     descriptionFilter:'',
-    showAdvancedFilters: false
+    showAdvancedFilters: false,
+    hasCreatePermission: false,
+    hasDeletePermission: false,
+    hasEditPermission: false,
   };
 
   async componentDidMount() {
     await this.getAll();
+    await this.checkPermissions();
   }
 
+  checkPermissions = async () => {
+    const hasPermissionCreate = await hasPermission("Pages.Administration.Plants.Create");
+    this.setState({ hasCreatePermission: hasPermissionCreate });
+    const hasPermissionDelete = await hasPermission("Pages.Administration.Plants.Delete");
+    this.setState({ hasDeletePermission: hasPermissionDelete });
+    const hasPermissionEdit = await hasPermission("Pages.Administration.Plants.Edit");
+    this.setState({ hasEditPermission: hasPermissionEdit });
+  };
   async getAll() {
 
     const filters = {
@@ -176,6 +215,7 @@ class Plant extends AppComponentBase<IPlantProps, IPlantState> {
 
   public render() {
     const { plant } = this.props.plantsStore;
+    const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
     const columns = [
         {
             title: L('Actions'),
@@ -186,8 +226,10 @@ class Plant extends AppComponentBase<IPlantProps, IPlantState> {
                   trigger={['click']}
                   overlay={
                     <Menu>
-                      <Menu.Item onClick={() => this.createOrEditeModalOpen({ id: item.plant?.id })}>{L('Edit')}</Menu.Item>
-                      <Menu.Item onClick={() => this.delete({ id: item.plant?.id })}>{L('Delete')}</Menu.Item>
+                      {hasEditPermission && (
+                      <Menu.Item onClick={() => this.createOrEditeModalOpen({ id: item.plant?.id })}>{L('Edit')}</Menu.Item>)}
+                      {hasDeletePermission && (
+                      <Menu.Item onClick={() => this.delete({ id: item.plant?.id })}>{L('Delete')}</Menu.Item>)}
                     </Menu>
                   }
                   placement="bottomLeft"
@@ -267,7 +309,9 @@ class Plant extends AppComponentBase<IPlantProps, IPlantState> {
             lg={{ span: 1, offset: 21 }}
             xl={{ span: 1, offset: 21 }}
             xxl={{ span: 1, offset: 30 }}
-          > <Button type="primary"   icon={<PlusOutlined />} onClick={() => this.createOrEditeModalOpen({ id: 0 })} style={{marginLeft: '-100px'}}>Create Plants</Button>
+          > 
+          {hasCreatePermission && (
+          <Button type="primary"   icon={<PlusOutlined />} onClick={() => this.createOrEditeModalOpen({ id: 0 })} style={{marginLeft: '-100px'}}>Create Plants</Button>)}
 
           </Col>
         </Row>

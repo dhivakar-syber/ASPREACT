@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col,Select, Tabs } from 'antd';
+import { Row, Col,Select, Tabs, Table, Card } from 'antd';
 // import  DashboardCards  from "../Dashboard/components/PayRetroSupplierDashboard/DashboardCards";
 import { l4dashboardinput } from "../L3 & L4 Dashboard/l4dashboardinput";
 import supplementarySummariesService from "../../services/SupplementarySummaries/supplementarySummariesService";
@@ -297,67 +297,8 @@ const [selectedcategory, setselectedcategory] =React.useState<any>(String);
                  
                 </Row>
                 <Tabs defaultActiveKey="1">
-                  <Tabs.TabPane tab="Home" key="1">
-                  <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px" ,whiteSpace:"nowrap"}}>
-          <thead>
-            <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left",fontWeight: 'normal' }}>
-              {[
-                "S.No",
-                "Team",
-                "Buyer",
-                "Supplier Name",
-                "Supplier Code",
-                "Value",
-                "Supplier",
-                "Buyer",
-                "F&C",
-                
-              ].map((header) => (
-                <th key={header} style={{ padding: "10px", border: "1px solid #ffffff1a",fontWeight: 'normal' }}>
-                  {header}
-                </th>
-              ))}
-            </tr>
-            <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "right",fontWeight: 'normal' }}>
-
-              <td  colSpan={5}>
-
-              </td>
-                
-              <td style={{  border: "1px solid #ddd" }} colSpan={4}>
-              <div className="progress-tube">
-              <div  style={{  width: "50px",textAlign:"center" ,fontWeight: 'bold'}}>{(TableData.reduce((acc, row) => acc + (row.value || 0), 0) / 10000000).toFixed(2)} Cr</div>
-              <div  style={{  width: "50px",textAlign:"right",fontWeight: 'bold' }}>{(TableData.reduce((acc, row) => acc + (row.supplierPendingValue || 0), 0) / 10000000).toFixed(2)} Cr</div>
-              <div  style={{ width: "50px",textAlign:"right",fontWeight: 'bold' }}>{(TableData.reduce((acc, row) => acc + (row.buyerPendingValue || 0), 0) / 10000000).toFixed(2)} Cr</div>
-              <div  style={{ width: "50px",textAlign:"right" ,fontWeight: 'bold'}}>{(TableData.reduce((acc, row) => acc + (row.fandCPendingValue || 0), 0) / 10000000).toFixed(2)} Cr</div>
-              </div>
-              </td>
-           </tr>
-          </thead>
-          <tbody>
-            {TableData.map((row,index) => (
-              <tr
-                key={row.id}
-               
-              >
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{index+1}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.team}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{row.buyer}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd" }}>{(row.supplierName)}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd", }}>{row.suppliercode}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd", textAlign:'right'}}>{row.value}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:'right' }}>{row.supplierPendingValue}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:'right' }}>{row.buyerPendingValue}</td>
-                <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:'right' }}>{row.fandCPendingValue}</td>
-                
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-                  </Tabs.TabPane>
-  <Tabs.TabPane tab="Analysis" key="2">
-    <Tabs>
+                  <Tabs.TabPane tab="Summary" key="1">
+                  <Tabs>
        <Tabs.TabPane tab="SupplementaryInvoice" key="1">
        <div
     style={{
@@ -402,6 +343,135 @@ const [selectedcategory, setselectedcategory] =React.useState<any>(String);
       </Tabs.TabPane>
 
     </Tabs>
+
+                  </Tabs.TabPane>
+  <Tabs.TabPane tab="Home" key="2">
+  <Card>
+            <Row>
+              <Col
+                          xs={{ span: 14, offset: 0 }}
+                          sm={{ span: 15, offset: 0 }}
+                          md={{ span: 15, offset: 0 }}
+                          lg={{ span: 1, offset: 21 }}
+                          xl={{ span: 1, offset: 21 }}
+                          xxl={{ span: 1, offset: 21 }}
+                        >
+                        </Col>
+                      </Row>
+                      
+                      <Row style={{ marginTop: 20 }}>
+                        <Col
+                          xs={{ span: 24, offset: 0 }}
+                          sm={{ span: 24, offset: 0 }}
+                          md={{ span: 24, offset: 0 }}
+                          lg={{ span: 24, offset: 0 }}
+                          xl={{ span: 24, offset: 0 }}
+                          xxl={{ span: 24, offset: 0 }}
+                        >
+
+<Table
+  rowKey="id"
+  columns = {[
+      {
+        title: "S.No",
+        dataIndex: "serialNo",
+        key: "serialNo",
+        render: (_, __, index) => index + 1,
+        width: 70,
+      },
+      {
+        title: "Team",
+        dataIndex: "team",
+        key: "team",
+        width: 120,
+      },
+      {
+        title: "Buyer",
+        dataIndex: "buyer",
+        key: "buyer",
+        width: 120,
+      },
+      {
+        title: "Supplier Name",
+        dataIndex: "supplierName",
+        key: "supplierName",
+        width: 200,
+      },
+      {
+        title: "Supplier Code",
+        dataIndex: "suppliercode",
+        key: "suppliercode",
+        width: 120,
+      },
+      {
+        title: 'Value',
+        children: [
+          {
+            title: (<div  style={{  width: "50px",textAlign:"center" ,fontWeight: 'bold'}}>{(TableData.reduce((acc, row) => acc + (row.value || 0), 0) / 10000000).toFixed(2)} Cr</div>
+          ),
+            dataIndex: 'value',
+            
+            render: (_, row) => (
+              row.value
+            ),
+            width: 100,
+          },
+        ],
+      },
+      {
+        title: 'Supplier',
+        children: [
+          {
+            title: (<div  style={{  width: "50px",textAlign:"right",fontWeight: 'bold' }}>{(TableData.reduce((acc, row) => acc + (row.supplierPendingValue || 0), 0) / 10000000).toFixed(2)} Cr</div>
+          ),
+            dataIndex: 'supplierPendingValue',
+            render: (_, row) => (
+              row.supplierPendingValue
+            ),
+            width: 100,
+          },
+        ],
+      },
+      {
+        title: 'Buyer',
+        children: [
+          {
+            title: (<div  style={{ width: "50px",textAlign:"right",fontWeight: 'bold' }}>{(TableData.reduce((acc, row) => acc + (row.buyerPendingValue || 0), 0) / 10000000).toFixed(2)} Cr</div>
+          ),
+            dataIndex: 'buyerPendingValue',
+            render: (_, row) => (
+              row.buyerPendingValue
+            ),
+            width: 100,
+          },
+        ],
+      },
+      {
+        title: 'F&C',
+        children: [
+          {
+            title: (<div  style={{ width: "50px",textAlign:"right" ,fontWeight: 'bold'}}>{(TableData.reduce((acc, row) => acc + (row.fandCPendingValue || 0), 0) / 10000000).toFixed(2)} Cr</div>
+          ),
+            dataIndex: 'accountantApprovalStatus',
+            render: (_, row) => (
+              row.fandCPendingValue
+            ),
+            width: 100,
+          },
+        ],
+      },
+
+
+  ]}
+  dataSource={TableData}
+    className="custom-table"
+    pagination={{ pageSize: 10 }}
+    scroll={{ x: 'max-content' }}
+    bordered
+  />
+  </Col>
+  </Row>
+  </Card>
  
 </Tabs.TabPane>
                 </Tabs>

@@ -13,6 +13,9 @@ import Stores from '../../stores/storeIdentifier';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
 
+// const userPermissions = ["Pages.Administration.Roles.Create", "Pages.Administration.Roles.Edit","Pages.Administration.Roles.Delete"];
+// const hasPermission = (permission: string): boolean => userPermissions.includes(permission);
+
 export interface IRoleProps {
   roleStore: RoleStore;
   sessionStore: SessionStore;
@@ -133,15 +136,15 @@ class Role extends AppComponentBase<IRoleProps, IRoleState> {
     const {currentLogin} = this.props.sessionStore
     console.log(allPermissions);
     console.log(currentLogin);
-    const specificPermissionsToShow = ["Pages", "Administration", "Disputes","Create new Query","Edit dispute","Delete dispute","Roles","Creating new role",
-      "Editing role","Supplier Dashboard","Buyer Dashboard","Accounts Dashboard","Users","Creating new user","Editing user","Deleting user","Annexure details"
-    ,"Create new annexure detail","Delete annexure detail","Edit annexure detail"];
-    const permissionsToDisplay = currentLogin.user.roles.includes('Admin')
-    ? allPermissions
-  : allPermissions.filter(permission =>
-      specificPermissionsToShow.includes(permission.displayName)
-    );
-    console.log(permissionsToDisplay);
+  //   const specificPermissionsToShow = ["Pages", "Administration", "Disputes","Create new Query","Edit dispute","Delete dispute","Roles","Creating new role",
+  //     "Editing role","Supplier Dashboard","Buyer Dashboard","Accounts Dashboard","Users","Creating new user","Editing user","Deleting user","Annexure details"
+  //   ,"Create new annexure detail","Delete annexure detail","Edit annexure detail"];
+  //   const permissionsToDisplay = currentLogin.user.roles.includes('Admin')
+  //   ? allPermissions
+  // : allPermissions.filter(permission =>
+  //     specificPermissionsToShow.includes(permission.displayName)
+  //   );
+  //   console.log(permissionsToDisplay);
     const columns = [
       { title: L('RoleName'), dataIndex: 'displayName', key: 'displayName', width: 150, render: (text: string) => <div>{text}</div> },
       { title: L('DisplayName'), dataIndex: 'displayName', key: 'displayName', width: 150, render: (text: string) => <div>{text}</div> },
@@ -228,7 +231,7 @@ class Role extends AppComponentBase<IRoleProps, IRoleState> {
           }
           modalType={this.state.roleId === 0 ? 'edit' : 'create'}
           onOk={this.handleCreate}
-          permissions={permissionsToDisplay}
+          permissions={allPermissions}
           roleStore={this.props.roleStore}
           formRef={this.formRef}
         />

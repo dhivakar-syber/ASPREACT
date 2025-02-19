@@ -11,7 +11,32 @@ import Stores from '../../stores/storeIdentifier';
 import buyerStore from '../../stores/buyerstore';
 import { FormInstance } from 'antd/lib/form';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
+import sessionService from '../../services/session/sessionService';
 //import { EnumCurrency,EnumTransaction } from '../../../src/enum'
+
+const getUserPermissions = async (): Promise<string[]> => {
+  try {
+    // Fetch the current login information asynchronously
+    const currentLoginInfo = await sessionService.getCurrentLoginInformations();
+    console.log('User',currentLoginInfo);
+    // Assuming permissions are inside the 'permissions' field of the object
+    const permissions: string[] = currentLoginInfo?.user?.permissions || [];
+    console.log('permissions',permissions)
+    return permissions;
+  } catch (error) {
+    console.error("Error fetching user permissions:", error);
+    return [];  // Return an empty array if there's an error
+  }
+};
+
+const hasPermission = async (permission: string): Promise<boolean> => {
+  const userPermissions = await getUserPermissions();
+  return userPermissions.includes(permission);
+};
+
+hasPermission("Pages.Administration.Buyers").then(hasPerm => {
+  console.log('is',hasPerm);  // true or false based on the session data
+});
 
 export interface IBuyerProps {
   buyerStore: buyerStore;
@@ -30,6 +55,9 @@ export interface IBuyerStore {
   userNameFilter:string;
   userName2Filter:string;
   userName3Filter:string;
+  hasCreatePermission: boolean;
+  hasDeletePermission: boolean;
+  hasEditPermission: boolean;
   showAdvancedFilters: boolean;
 }
 interface buyerLookupItem {
@@ -67,6 +95,9 @@ class Buyers extends AppComponentBase<IBuyerProps, IBuyerStore> {
     userName2Filter:'',
     userName3Filter:'',
     showAdvancedFilters: false,
+    hasCreatePermission: false,
+    hasDeletePermission: false,
+    hasEditPermission: false,
     //selectedLookupItem: null as LookupItem | null,
     selectedBuyerLookupItem: null as buyerLookupItem | null,
     selectedL3UserLookupItem: null as l3UserLookupItem | null,
@@ -75,8 +106,18 @@ class Buyers extends AppComponentBase<IBuyerProps, IBuyerStore> {
 
   async componentDidMount() {
     await this.getAll();
+    await this.checkPermissions();
   }
 
+  
+  checkPermissions = async () => {
+    const hasPermissionCreate = await hasPermission("Pages.Administration.Buyers.Create");
+    this.setState({ hasCreatePermission: hasPermissionCreate });
+    const hasPermissionDelete = await hasPermission("Pages.Administration.Buyers.Delete");
+    this.setState({ hasDeletePermission: hasPermissionDelete });
+    const hasPermissionEdit = await hasPermission("Pages.Administration.Buyers.Edit");
+    this.setState({ hasEditPermission: hasPermissionEdit });
+  };
   componentDidUpdate(prevProps: IBuyerProps) {
     // Check if the `editUser` data has changed from the backend
     if (this.props.buyerStore.editUser !== prevProps.buyerStore.editUser) {
@@ -252,6 +293,8 @@ editdata:any = null;
   public render() {
     console.log(this.props.buyerStore);
     const { buyer } = this.props.buyerStore;
+    const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
+
     const columns = [
       {
           title: L('Actions'),
@@ -262,6 +305,7 @@ editdata:any = null;
                       trigger={['click']}
                       overlay={
                           <Menu>
+                            {hasEditPermission && (
                               <Menu.Item
                             onClick={() => {
                               console.log('Buyer ID:', item.buyer?.id); // Log the buyer ID
@@ -270,10 +314,11 @@ editdata:any = null;
                             }}
                           >
                             {L('Edit')}
-                          </Menu.Item>
+                          </Menu.Item>)}
+                          {hasDeletePermission && (
                               <Menu.Item onClick={() => this.delete({ id: item.buyer?.id })}>
                                   {L('Delete')}
-                              </Menu.Item>
+                              </Menu.Item>)}
                           </Menu>
                       }
                       placement="bottomLeft"
@@ -356,12 +401,13 @@ editdata:any = null;
           xl={{ span: 1, offset: 21 }}
           xxl={{ span: 1, offset: 21 }}
         >
+          {hasCreatePermission && (
           <Button
             type="primary"
             shape="circle"
             icon={<PlusOutlined />}
             onClick={() => this.createOrUpdateModalOpen({ id: 0 })}
-          />
+          />)}
         </Col>
       </Row>
       <Row style={{ marginTop: 20 }}>

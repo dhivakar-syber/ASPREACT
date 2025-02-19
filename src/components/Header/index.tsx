@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { Avatar, Badge, Col, Dropdown, Menu, Row } from 'antd';
 import { LogoutOutlined } from '@ant-design/icons';
-import payretrolog from '../../images/Payretro.png'
+import payretrolog from '../../images/Daimler_Logo.png'
 
 import { L } from '../../lib/abpUtility';
 // import LanguageSelect from '../LanguageSelect';
@@ -48,7 +48,7 @@ export class Header extends React.Component<IHeaderProps> {
           ) : (
             <MenuFoldOutlined className="trigger" onClick={this.props.toggle} />
           )} */}
-          <img style={{ width: '75px', margin: '10px'}} src={payretrolog}></img>
+          <img style={{ width: '130px', margin: '10px'}} src={payretrolog}></img>
         </Col>
         <Col style={{ padding: '0px 15px 0px 15px', textAlign: 'right' }} span={12}>
           {/* <LanguageSelect /> {'   '} */}

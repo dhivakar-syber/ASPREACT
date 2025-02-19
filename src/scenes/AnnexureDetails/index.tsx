@@ -12,9 +12,35 @@ import annexureDetailsStore from '../../stores/annexureDetailsStore';
 import { FormInstance } from 'antd/lib/form';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
 import { EnumCurrency } from '../../../src/enum'
+import sessionService from '../../services/session/sessionService';
 
-const userPermissions = ["Pages.Administration.AnnexureDetails.Create", "Pages.Administration.AnnexureDetails.Edit","Pages.Administration.AnnexureDetails.Delete"];
-const hasPermission = (permission: string): boolean => userPermissions.includes(permission);
+// const userPermissions = ["Pages.Administration.AnnexureDetails.Create", "Pages.Administration.AnnexureDetails.Edit","Pages.Administration.AnnexureDetails.Delete"];
+// const hasPermission = (permission: string): boolean => userPermissions.includes(permission);
+
+const getUserPermissions = async (): Promise<string[]> => {
+  try {
+    // Fetch the current login information asynchronously
+    const currentLoginInfo = await sessionService.getCurrentLoginInformations();
+    console.log('User',currentLoginInfo);
+    // Assuming permissions are inside the 'permissions' field of the object
+    const permissions: string[] = currentLoginInfo?.user?.permissions || [];
+    console.log('permissions',permissions)
+    return permissions;
+  } catch (error) {
+    console.error("Error fetching user permissions:", error);
+    return [];  // Return an empty array if there's an error
+  }
+};
+
+const hasPermission = async (permission: string): Promise<boolean> => {
+  const userPermissions = await getUserPermissions();
+  return userPermissions.includes(permission);
+};
+
+hasPermission("Pages.Administration.AnnexureDetails").then(hasPerm => {
+  console.log('is',hasPerm);  // true or false based on the session data
+});
+
 
 export interface IAnnexureDetailsProps {
   annexureDetailsStore: annexureDetailsStore;
@@ -51,7 +77,10 @@ export interface IAnnexureDetailsState {
   partPartNoFilter:string,
   buyerNameFilter:string,
   supplierNameFilter:string,
-  showAdvancedFilters: boolean
+  showAdvancedFilters: boolean,
+  hasCreatePermission: boolean,
+  hasDeletePermission: boolean,
+  hasEditPermission: boolean,
 }
 type LookupItem = {
   id: number;
@@ -105,6 +134,9 @@ class AnnexureDetails extends AppComponentBase<IAnnexureDetailsProps, IAnnexureD
     buyerNameFilter:'',
     supplierNameFilter:'',
     showAdvancedFilters: false,
+    hasCreatePermission: false,
+    hasDeletePermission: false,
+    hasEditPermission: false,
     selectedLookupItem: null as LookupItem | null,
     selectedSupplierLookupItem: null as SupplierLookupItem | null,
     selectedBuyerLookupItem: null as BuyerLookupItem | null,
@@ -112,7 +144,16 @@ class AnnexureDetails extends AppComponentBase<IAnnexureDetailsProps, IAnnexureD
 
   async componentDidMount() {
     await this.getAll();
+    await this.checkPermissions();
   }
+  checkPermissions = async () => {
+    const hasPermissionCreate = await hasPermission("Pages.Administration.AnnexureDetails.Create");
+    this.setState({ hasCreatePermission: hasPermissionCreate });
+    const hasPermissionDelete = await hasPermission("Pages.Administration.AnnexureDetails.Delete");
+    this.setState({ hasDeletePermission: hasPermissionDelete });
+    const hasPermissionEdit = await hasPermission("Pages.Administration.AnnexureDetails.Edit");
+    this.setState({ hasEditPermission: hasPermissionEdit });
+  };
 
   async getAll() {
     if (!this.props.annexureDetailsStore) {
@@ -411,6 +452,8 @@ editdata:any = null;
   public render() {
     console.log(this.props.annexureDetailsStore);
     const { annexureDetail } = this.props.annexureDetailsStore;
+    const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
+
     const columns = [
         {
             title: L('Actions'),
@@ -421,9 +464,9 @@ editdata:any = null;
                   trigger={['click']}
                   overlay={
                     <Menu>
-                      {hasPermission("Pages.Administration.AnnexureDetails.Edit") && (
+                      {hasEditPermission && (
                       <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.annexureDetail?.id })}>{L('Edit')}</Menu.Item>)}
-                      {hasPermission("Pages.Administration.AnnexureDetails.Delete") && (
+                      {hasDeletePermission && (
                       <Menu.Item onClick={() => this.delete({ id: item.annexureDetail?.id })}>{L('Delete')}</Menu.Item>)}
                     </Menu>
                   }
@@ -528,7 +571,8 @@ editdata:any = null;
             xl={{ span: 1, offset: 21 }}
             xxl={{ span: 1, offset: 21 }}
           >
-            <Button type="primary"  icon={<PlusOutlined/>} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} style={{marginLeft:'-50px'}}>Create Annexure Details</Button>
+            {hasCreatePermission && (
+            <Button type="primary"  icon={<PlusOutlined/>} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} style={{marginLeft:'-50px'}}>Create Annexure Details</Button>)}
           </Col>
         </Row>
         <Row>

@@ -83,7 +83,7 @@ const AnnexureTable = ({ data }: { data: any[] }) => {
               <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.diffValue}</td>
               <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.qty}</td>
               <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.total}</td>
-              <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.currency==0?'INR':item.currency==1?'USD':''}</td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.currency===0?'INR':item.currency===1?'USD':''}</td>
               <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.supplementaryInvoiceNo}</td>
               <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.supplementaryInvoiceDate?formatDate(item.supplementaryInvoiceDate):''}</td>
             </tr>

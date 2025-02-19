@@ -11,9 +11,34 @@ import Stores from '../../stores/storeIdentifier';
 import approvalWorkflowStore from '../../stores/approvalWorkflowStore';
 import { FormInstance } from 'antd/lib/form';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
+import sessionService from '../../services/session/sessionService';
 
-const userPermissions = ["Pages.Administration.ApprovalWorkflows.Create", "Pages.Administration.ApprovalWorkflows.Edit","Pages.Administration.ApprovalWorkflows.Delete"];
-const hasPermission = (permission: string): boolean => userPermissions.includes(permission);
+// const userPermissions = ["Pages.Administration.ApprovalWorkflows.Create", "Pages.Administration.ApprovalWorkflows.Edit","Pages.Administration.ApprovalWorkflows.Delete"];
+// const hasPermission = (permission: string): boolean => userPermissions.includes(permission);
+
+const getUserPermissions = async (): Promise<string[]> => {
+  try {
+    // Fetch the current login information asynchronously
+    const currentLoginInfo = await sessionService.getCurrentLoginInformations();
+    console.log('User',currentLoginInfo);
+    // Assuming permissions are inside the 'permissions' field of the object
+    const permissions: string[] = currentLoginInfo?.user?.permissions || [];
+    console.log('permissions',permissions)
+    return permissions;
+  } catch (error) {
+    console.error("Error fetching user permissions:", error);
+    return [];  // Return an empty array if there's an error
+  }
+};
+
+const hasPermission = async (permission: string): Promise<boolean> => {
+  const userPermissions = await getUserPermissions();
+  return userPermissions.includes(permission);
+};
+
+hasPermission("Pages.Administration.ApprovalWorkflows").then(hasPerm => {
+  console.log('is',hasPerm);  // true or false based on the session data
+});
 
 export interface IApprovalWorkflowsProps {
   approvalWorkflowStore: approvalWorkflowStore;
@@ -33,6 +58,9 @@ export interface IApprovalWorkflowsState {
   buyerid:number,
   supplierid:number,
   filterVisible: boolean;
+  hasCreatePermission: boolean;
+  hasDeletePermission: boolean;
+  hasEditPermission: boolean;
 }
 type BuyerLookupItem = {
   id: number;
@@ -75,6 +103,9 @@ class ApprovalWorkflows extends AppComponentBase<IApprovalWorkflowsProps, IAppro
     userName3Filter:'',
     buyerid:0,
     supplierid:0,
+    hasCreatePermission: false,
+    hasDeletePermission: false,
+    hasEditPermission: false,
     selectedUserLookupItem: null as UserLookupItem | null,
     selectedUser2LookupItem: null as User2LookupItem | null,
     selectedUser3LookupItem: null as User3LookupItem | null,
@@ -85,7 +116,17 @@ class ApprovalWorkflows extends AppComponentBase<IApprovalWorkflowsProps, IAppro
 
   async componentDidMount() {
     await this.getAll();
+    await this.checkPermissions();
   }
+
+  checkPermissions = async () => {
+    const hasPermissionCreate = await hasPermission("Pages.Administration.ApprovalWorkflows.Create");
+    this.setState({ hasCreatePermission: hasPermissionCreate });
+    const hasPermissionDelete = await hasPermission("Pages.Administration.ApprovalWorkflows.Delete");
+    this.setState({ hasDeletePermission: hasPermissionDelete });
+    const hasPermissionEdit = await hasPermission("Pages.Administration.ApprovalWorkflows.Edit");
+    this.setState({ hasEditPermission: hasPermissionEdit });
+  };
 
   async getAll() {
     if (!this.props.approvalWorkflowStore) {
@@ -233,6 +274,8 @@ editdata:any = null;
   public render() {
     console.log(this.props.approvalWorkflowStore);
     const { approvalWorkflow } = this.props.approvalWorkflowStore;
+    const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
+
     const columns = [
         {
             title: L('Actions'),
@@ -243,9 +286,9 @@ editdata:any = null;
                   trigger={['click']}
                   overlay={
                     <Menu>
-                      {hasPermission("Pages.Administration.ApprovalWorkflows.Edit") && (
+                      {hasEditPermission && (
                       <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.approvalWorkflow?.id })}>{L('Edit')}</Menu.Item>)}
-                      {hasPermission("Pages.Administration.ApprovalWorkflows.Delete") && (
+                      {hasDeletePermission && (
                       <Menu.Item onClick={() => this.delete({ id: item.approvalWorkflow?.id })}>{L('Delete')}</Menu.Item>)}
                     </Menu>
                   }
@@ -322,7 +365,8 @@ editdata:any = null;
             xl={{ span: 1, offset: 21 }}
             xxl={{ span: 1, offset: 21 }}
           >
-            <Button type="primary"  icon={<PlusOutlined/>} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} style={{marginLeft:'-50px'}}>Create Approval Workflows</Button>
+            {hasCreatePermission && (
+            <Button type="primary"  icon={<PlusOutlined/>} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} style={{marginLeft:'-50px'}}>Create Approval Workflows</Button>)}
           </Col>
         </Row>
         <Row>

@@ -16,6 +16,7 @@ import NotFoundRoute from '../Router/NotFoundRoute';
 import SessionStore from '../../stores/sessionStore';
 import Stores from '../../stores/storeIdentifier';
 import { inject, observer } from 'mobx-react';
+import sessionService from '../../services/session/sessionService';
 
 const { Content } = Layout;
 
@@ -32,8 +33,43 @@ class AppLayout extends React.Component<ILoginProps> {
   state = {
     collapsed: true, 
     hovering: false, 
+    hasRole:false
   };
 
+  componentDidMount() {
+    this.updateStateBasedOnRoles();
+  }
+
+  componentDidUpdate(prevProps: ILoginProps) {
+    if (prevProps.sessionStore !== this.props.sessionStore) {
+      this.updateStateBasedOnRoles();
+    }
+  }
+
+  updateStateBasedOnRoles = async () => {
+    try {
+      const currentLoginInfo = await sessionService.getCurrentLoginInformations();
+      console.log('User', currentLoginInfo);
+  
+      const permissions: string[] = currentLoginInfo?.user?.roles || [];
+      console.log('permissions', permissions);
+  
+      const requiredRoles = ["admin", "PayRetroAdmin", "Admin", "payretroadmin"];
+      const hasRole = permissions.some((role: string) => requiredRoles.includes(role));
+  
+      console.log('HasRole:', hasRole);
+  
+      // Update the state based on the presence of the required role
+      this.setState({ hasRole }, () => {
+        // Callback function executed after state update and re-render
+        console.log('State has been updated:', this.state.hasRole);
+      });
+    } catch (error) {
+      console.error("Error fetching user permissions:", error);
+      // Handle the error appropriately
+    }
+  };  
+  
 
   onHoverStart = () => {
     this.setState({ collapsed: false, hovering: true });
@@ -56,6 +92,7 @@ class AppLayout extends React.Component<ILoginProps> {
     } = this.props;
 
     const roles = this.props.sessionStore?.currentLogin?.user?.roles;
+    // const requiredroles = ["admin","Admin","PayRetroAdmin"]
     console.log('Roles',roles);
     
     let redirectPath = '';
@@ -77,14 +114,14 @@ class AppLayout extends React.Component<ILoginProps> {
     const { collapsed } = this.state;
 
     const layout = (
-      <Layout style={{ minHeight: '100vh' }}>
-        <div
-          onMouseEnter={this.onHoverStart}
-          onMouseLeave={this.onHoverEnd}
-          style={{
-            transition: 'width 0.2s ease', 
-          }}
-        >
+<Layout style={{ minHeight: '100vh' }}>
+  <div
+    onMouseEnter={this.state.hasRole ? this.onHoverStart : () => this.setState({ collapsed: true, hovering: false })}
+    onMouseLeave={this.state.hasRole ? this.onHoverEnd : () => this.setState({ collapsed: true, hovering: false })}
+    style={{
+      transition: 'width 0.2s ease',
+    }}
+  >
           <SiderMenu path={path} onCollapse={this.onCollapse} history={history} collapsed={collapsed} />
         </div>
         <Layout>

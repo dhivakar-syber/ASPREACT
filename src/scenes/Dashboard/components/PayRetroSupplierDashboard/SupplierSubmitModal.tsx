@@ -91,6 +91,19 @@ const Loading = () => (
   if (!isOpen) return null;
 
   return (
+    <div
+    className="modal-backdrop"
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100vw",
+      height: "100vh",
+      backgroundColor: "rgba(0,0,0,0.5)", // Semi-transparent background
+      zIndex: 9998, // Lower than modal but above other elements
+    }}
+    onClick={onClose} // Prevent click propagation
+  >
     <div>
       {!loading&&<div
       className="modal fade show"
@@ -112,6 +125,7 @@ const Loading = () => (
       tabIndex={-2}
       role="modal"
       aria-hidden="true"
+      onClick={(e) => e.stopPropagation()} // Prevent click propagation
     >
       <div className="modal-dialog modal-md" role="document">
         <h6
@@ -186,6 +200,7 @@ const Loading = () => (
     </div>}
     {loading&&Loading()}
     
+    </div>
     </div>
   );
 };

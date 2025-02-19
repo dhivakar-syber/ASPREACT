@@ -12,9 +12,34 @@ import supplementarySummariesStore from '../../stores/supplementarySummariesStor
 import { FormInstance } from 'antd/lib/form';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
 import { DocumentStatus} from '../../enum'
+import sessionService from '../../services/session/sessionService';
 
-const userPermissions = ["Pages.Administration.SupplementarySummaries.Create", "Pages.Administration.SupplementarySummaries.Edit","Pages.Administration.SupplementarySummaries.Delete"];
-const hasPermission = (permission: string): boolean => userPermissions.includes(permission);
+// const userPermissions = ["Pages.Administration.SupplementarySummaries.Create", "Pages.Administration.SupplementarySummaries.Edit","Pages.Administration.SupplementarySummaries.Delete"];
+// const hasPermission = (permission: string): boolean => userPermissions.includes(permission);
+
+const getUserPermissions = async (): Promise<string[]> => {
+  try {
+    // Fetch the current login information asynchronously
+    const currentLoginInfo = await sessionService.getCurrentLoginInformations();
+    console.log('User',currentLoginInfo);
+    // Assuming permissions are inside the 'permissions' field of the object
+    const permissions: string[] = currentLoginInfo?.user?.permissions || [];
+    console.log('permissions',permissions)
+    return permissions;
+  } catch (error) {
+    console.error("Error fetching user permissions:", error);
+    return [];  // Return an empty array if there's an error
+  }
+};
+
+const hasPermission = async (permission: string): Promise<boolean> => {
+  const userPermissions = await getUserPermissions();
+  return userPermissions.includes(permission);
+};
+
+hasPermission("Pages.Administration.SupplementarySummaries").then(hasPerm => {
+  console.log('is',hasPerm);  // true or false based on the session data
+});
 
 
 export interface ISupplementarySummariesProps {
@@ -60,6 +85,9 @@ export interface ISupplementarySummariesState {
   invoicetype: number | null;
   queryraisedactive: number | null;
   showAdvancedFilters: boolean;
+  hasCreatePermission: boolean;
+  hasDeletePermission: boolean;
+  hasEditPermission: boolean;
 }
 type LookupItem = {
   id: number;
@@ -123,12 +151,26 @@ class SupplementarySummaries extends AppComponentBase<ISupplementarySummariesPro
     invoicetype: null as number | null,
     queryraisedactive: null as number | null,
     showAdvancedFilters: false,
+    hasCreatePermission: false,
+    hasDeletePermission: false,
+    hasEditPermission: false,
   };
 
   async componentDidMount() {
     await this.getAll();
+    await this.checkPermissions();
+
   }
 
+  
+  checkPermissions = async () => {
+    const hasPermissionCreate = await hasPermission("Pages.Administration.SupplementarySummaries.Create");
+    this.setState({ hasCreatePermission: hasPermissionCreate });
+    const hasPermissionDelete = await hasPermission("Pages.Administration.SupplementarySummaries.Delete");
+    this.setState({ hasDeletePermission: hasPermissionDelete });
+    const hasPermissionEdit = await hasPermission("Pages.Administration.SupplementarySummaries.Edit");
+    this.setState({ hasEditPermission: hasPermissionEdit });
+  };
   async getAll() {
     if (!this.props.supplementarySummariesStore) {
         console.error('supplementarySummariesStore is undefined');
@@ -489,6 +531,7 @@ handleQueryRaisedSearch = (value: number) => {
   public render() {
     console.log(this.props.supplementarySummariesStore);
     const { supplementarySummary } = this.props.supplementarySummariesStore;
+    const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
     const columns = [
         {
             title: L('Actions'),
@@ -499,9 +542,9 @@ handleQueryRaisedSearch = (value: number) => {
                   trigger={['click']}
                   overlay={
                     <Menu>
-                      {hasPermission("Pages.Administration.SupplementarySummaries.Edit") && (
+                      {hasEditPermission && (
                       <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.supplementarySummary?.id })}>{L('Edit')}</Menu.Item>)}
-                      {hasPermission("Pages.Administration.SupplementarySummaries.Delete") && (
+                        {hasDeletePermission && (
                       <Menu.Item onClick={() => this.delete({ id: item.supplementarySummary?.id })}>{L('Delete')}</Menu.Item>)}
                     </Menu>
                     
@@ -627,7 +670,7 @@ handleQueryRaisedSearch = (value: number) => {
             xl={{ span: 1, offset: 21 }}
             xxl={{ span: 1, offset: 21 }}
           >
-            {hasPermission('Pages.Administration.SupplementarySummaries.Create') && (
+            {hasCreatePermission && (
             <Button type="primary" shape="circle" icon={<PlusOutlined />} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} />)}
           </Col>
         </Row>

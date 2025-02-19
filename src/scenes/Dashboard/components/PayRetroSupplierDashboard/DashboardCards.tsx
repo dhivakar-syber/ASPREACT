@@ -72,29 +72,26 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ SupplierDashboardInputs
           
         </Col>
       ))}
-      <Col style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", position: "relative", right: '-2rem', top: 0}}>
-                  <div className="col-1 status">
-                    <div className="progress-dot">
-                      <span className="dot approved"></span>
-                      <div className="status-text" style={{ marginRight: "1px" }}>
-                        Approved
-                      </div>
-                    </div>
-                    <div className="progress-dot">
-                    <span className="dot pending"></span>
-                      <div className="status-text" style={{ marginRight: "10px" }}>
-                        Pending
-                      </div>
-                    </div>
-
-                    <div className="progress-dot">
-                    <span className="dot rejected"></span>
-                      <div className="status-text" style={{ marginRight: "5px" }}>
-                        Rejected
-                      </div>
-                    </div>
-                  </div>
-                </Col>
+      <Col style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", position: "relative", right: '-2rem', top: 0}}>
+      <div className="">
+        <div className="progress-dot">
+          <span className="dot approved"></span>
+          <div className="status-text" style={{ marginRight: "1px" }}>Approved</div>
+        </div>
+        <div className="progress-dot">
+          <span className="dot pending"></span>
+          <div className="status-text" style={{ marginRight: "10px" }}>Pending</div>
+        </div>
+        <div className="progress-dot">
+          <span className="dot rejected"></span>
+          <div className="status-text" style={{ marginRight: "5px" }}>Rejected</div>
+        </div>
+        <div className="progress-dot">
+          <span className="dot not-submitted"></span>
+          <div className="status-text" style={{ marginRight: "5px" }}>Not Submitted</div>
+        </div>
+      </div>
+      </Col>
     </Row>    
 </div>
     );

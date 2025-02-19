@@ -1,7 +1,7 @@
 import * as React from "react";
 import supplementarySummariesService from "../../services/SupplementarySummaries/supplementarySummariesService";
 
-import { Row, Col, Tabs,Card, Input } from 'antd';
+import { Row, Col, Tabs,Card, Input, Table } from 'antd';
 //import { keys } from "mobx";
 //import settingsIcon from "../../../../images/Setting.svg";
 import SessionStore from "../../stores/sessionStore";
@@ -261,7 +261,7 @@ function workflowStatus(status : any)
 <br></br>
 <Tabs defaultActiveKey="1">
     <Tabs.TabPane tab="Sync Data" key="1">
-      <div style={{ marginTop: "20px" }}>
+      {/* <div style={{ marginTop: "20px" }}>
         
         <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px",whiteSpace:'nowrap',
               borderRadius: '5px', }}>
@@ -301,11 +301,82 @@ function workflowStatus(status : any)
             ))}
           </tbody>
         </table>
-      </div>
+      </div> */}
 
+      <Card>
+                  <Row>
+                    <Col
+                                xs={{ span: 14, offset: 0 }}
+                                sm={{ span: 15, offset: 0 }}
+                                md={{ span: 15, offset: 0 }}
+                                lg={{ span: 1, offset: 21 }}
+                                xl={{ span: 1, offset: 21 }}
+                                xxl={{ span: 1, offset: 21 }}
+                              >
+                              </Col>
+                            </Row>
+                            
+                            <Row style={{ marginTop: 20 }}>
+                              <Col
+                                xs={{ span: 24, offset: 0 }}
+                                sm={{ span: 24, offset: 0 }}
+                                md={{ span: 24, offset: 0 }}
+                                lg={{ span: 24, offset: 0 }}
+                                xl={{ span: 24, offset: 0 }}
+                                xxl={{ span: 24, offset: 0 }}
+                              >
+      
+      <Table
+        rowKey="id"
+        columns={[
+          {
+            title: "S.No",
+            dataIndex: "index",
+            key: "index",
+            align: "center",
+            width: 60,
+            render: (_, __, index) => index + 1, // Auto increment
+          },
+          {
+            title: "Report Date",
+            dataIndex: "reportDate",
+            key: "reportDate",
+            align: "center",
+          },
+          {
+            title: "Status",
+            dataIndex: "status",
+            key: "status",
+          },
+          {
+            title: "Parts Count",
+            dataIndex: "partsCount",
+            key: "partsCount",
+          },
+          {
+            title: "Created Time",
+            dataIndex: "creationTime",
+            key: "creationTime",
+          },
+          {
+            title: "Last Modification Time",
+            dataIndex: "lastModificationTime",
+            key: "lastModificationTime",
+          },
+        
+        ]}
+        dataSource={tableData}
+        className="custom-table"
+        pagination={{ pageSize: 10 }}
+        scroll={{ x: 'max-content' }}
+        bordered
+      />
+        </Col>
+        </Row>
+        </Card>
     </Tabs.TabPane>
     <Tabs.TabPane tab="Import Procure Log" key="2">
-      <div style={{ marginTop: "20px", overflowX: 'auto' }}>
+      {/* <div style={{ marginTop: "20px", overflowX: 'auto' }}>
         
         <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px",
               borderRadius: '5px', }}>
@@ -348,11 +419,78 @@ function workflowStatus(status : any)
           </tbody>
         </table>
        
-      </div>
+      </div> */}
+
+      <Card>
+                  <Row>
+                    <Col
+                                xs={{ span: 14, offset: 0 }}
+                                sm={{ span: 15, offset: 0 }}
+                                md={{ span: 15, offset: 0 }}
+                                lg={{ span: 1, offset: 21 }}
+                                xl={{ span: 1, offset: 21 }}
+                                xxl={{ span: 1, offset: 21 }}
+                              >
+                              </Col>
+                            </Row>
+                            
+                            <Row style={{ marginTop: 20 }}>
+                              <Col
+                                xs={{ span: 24, offset: 0 }}
+                                sm={{ span: 24, offset: 0 }}
+                                md={{ span: 24, offset: 0 }}
+                                lg={{ span: 24, offset: 0 }}
+                                xl={{ span: 24, offset: 0 }}
+                                xxl={{ span: 24, offset: 0 }}
+                              >
+      
+      <Table
+        rowKey="id"
+        columns={[
+          {
+            title: "S.No",
+            dataIndex: "index",
+            key: "index",
+            align: "center",
+            width: 60,
+            render: (_, __, index) => index + 1, // Auto increment
+          },
+          {
+            title: "File Name",
+            dataIndex: "filename",
+            key: "filename",
+            align: "center",
+          },
+          {
+            title: "Status",
+            dataIndex: "status",
+            key: "status",
+          },
+          {
+            title: "Created Time",
+            dataIndex: "creationTime",
+            key: "creationTime",
+          },
+          {
+            title: "Last Modification Time",
+            dataIndex: "lastModificationTime",
+            key: "lastModificationTime",
+          },
+        
+        ]}
+        dataSource={procurelogtableData}
+        className="custom-table"
+        pagination={{ pageSize: 10 }}
+        scroll={{ x: 'max-content' }}
+        bordered
+      />
+        </Col>
+        </Row>
+        </Card>
 
 </Tabs.TabPane>
 <Tabs.TabPane tab="Import CBFC Log" key="3">
-      <div style={{ marginTop: "20px", overflowX: 'auto' }}>
+      {/* <div style={{ marginTop: "20px", overflowX: 'auto' }}>
         
         <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px",
               borderRadius: '5px', }}>
@@ -395,12 +533,81 @@ function workflowStatus(status : any)
           </tbody>
         </table>
        
-      </div>
+      </div> */}
+
+      
+      <Card>
+                  <Row>
+                    <Col
+                                xs={{ span: 14, offset: 0 }}
+                                sm={{ span: 15, offset: 0 }}
+                                md={{ span: 15, offset: 0 }}
+                                lg={{ span: 1, offset: 21 }}
+                                xl={{ span: 1, offset: 21 }}
+                                xxl={{ span: 1, offset: 21 }}
+                              >
+                              </Col>
+                            </Row>
+                            
+                            <Row style={{ marginTop: 20 }}>
+                              <Col
+                                xs={{ span: 24, offset: 0 }}
+                                sm={{ span: 24, offset: 0 }}
+                                md={{ span: 24, offset: 0 }}
+                                lg={{ span: 24, offset: 0 }}
+                                xl={{ span: 24, offset: 0 }}
+                                xxl={{ span: 24, offset: 0 }}
+                              >
+      
+      <Table
+        rowKey="id"
+        columns={[
+          {
+            title: "S.No",
+            dataIndex: "index",
+            key: "index",
+            align: "center",
+            width: 60,
+            render: (_, __, index) => index + 1, // Auto increment
+          },
+          {
+            title: "File Name",
+            dataIndex: "filename",
+            key: "filename",
+            align: "center",
+          },
+          {
+            title: "Status",
+            dataIndex: "status",
+            key: "status",
+          },
+
+          {
+            title: "Created Time",
+            dataIndex: "creationTime",
+            key: "creationTime",
+          },
+          {
+            title: "Last Modification Time",
+            dataIndex: "lastModificationTime",
+            key: "lastModificationTime",
+          },
+        
+        ]}
+        dataSource={cbfclogtableData}
+        className="custom-table"
+        pagination={{ pageSize: 10 }}
+        scroll={{ x: 'max-content' }}
+        bordered
+      />
+        </Col>
+        </Row>
+        </Card>
 
 </Tabs.TabPane>
 
 <Tabs.TabPane tab="Import GRN Log" key="4">
-      <div style={{ marginTop: "20px", overflowX: 'auto' }}>
+      {/* <div style={{ marginTop: "20px", overflowX: 'auto' }}>
         
         <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px",
               borderRadius: '5px', }}>
@@ -443,7 +650,74 @@ function workflowStatus(status : any)
           </tbody>
         </table>
        
-      </div>
+      </div> */}
+
+      <Card>
+                  <Row>
+                    <Col
+                                xs={{ span: 14, offset: 0 }}
+                                sm={{ span: 15, offset: 0 }}
+                                md={{ span: 15, offset: 0 }}
+                                lg={{ span: 1, offset: 21 }}
+                                xl={{ span: 1, offset: 21 }}
+                                xxl={{ span: 1, offset: 21 }}
+                              >
+                              </Col>
+                            </Row>
+                            
+                            <Row style={{ marginTop: 20 }}>
+                              <Col
+                                xs={{ span: 24, offset: 0 }}
+                                sm={{ span: 24, offset: 0 }}
+                                md={{ span: 24, offset: 0 }}
+                                lg={{ span: 24, offset: 0 }}
+                                xl={{ span: 24, offset: 0 }}
+                                xxl={{ span: 24, offset: 0 }}
+                              >
+      
+      <Table
+        rowKey="id"
+        columns={[
+          {
+            title: "S.No",
+            dataIndex: "index",
+            key: "index",
+            align: "center",
+            width: 60,
+            render: (_, __, index) => index + 1, // Auto increment
+          },
+          {
+            title: "File Name",
+            dataIndex: "filename",
+            key: "filename",
+            align: "center",
+          },
+          {
+            title: "Status",
+            dataIndex: "status",
+            key: "status",
+          },
+          {
+            title: "Created Time",
+            dataIndex: "creationTime",
+            key: "creationTime",
+          },
+          {
+            title: "Last Modification Time",
+            dataIndex: "lastModificationTime",
+            key: "lastModificationTime",
+          },
+        
+        ]}
+        dataSource={grnlogtableData}
+        className="custom-table"
+        pagination={{ pageSize: 10 }}
+        scroll={{ x: 'max-content' }}
+        bordered
+      />
+        </Col>
+        </Row>
+        </Card>
 
 </Tabs.TabPane>
 
@@ -461,7 +735,7 @@ function workflowStatus(status : any)
       />
     </div>
   </Col>
-      <div style={{ marginTop: "20px", overflowX: 'auto' }}>
+      {/* <div style={{ marginTop: "20px", overflowX: 'auto' }}>
         
         <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px",
               borderRadius: '5px', }}>
@@ -510,8 +784,90 @@ function workflowStatus(status : any)
           </tbody>
         </table>
        
-      </div>
+      </div> */}
 
+        <Card>
+                  <Row>
+                    <Col
+                                xs={{ span: 14, offset: 0 }}
+                                sm={{ span: 15, offset: 0 }}
+                                md={{ span: 15, offset: 0 }}
+                                lg={{ span: 1, offset: 21 }}
+                                xl={{ span: 1, offset: 21 }}
+                                xxl={{ span: 1, offset: 21 }}
+                              >
+                              </Col>
+                            </Row>
+                            
+                            <Row style={{ marginTop: 20 }}>
+                              <Col
+                                xs={{ span: 24, offset: 0 }}
+                                sm={{ span: 24, offset: 0 }}
+                                md={{ span: 24, offset: 0 }}
+                                lg={{ span: 24, offset: 0 }}
+                                xl={{ span: 24, offset: 0 }}
+                                xxl={{ span: 24, offset: 0 }}
+                              >
+      
+      <Table
+        rowKey="id"
+        columns={[
+          {
+            title: "S.No",
+            dataIndex: "index",
+            key: "index",
+            align: "center",
+            width: 60,
+            render: (_, __, index) => index + 1, // Auto increment
+          },
+          {
+            title: "WorkFlow Name",
+            dataIndex: "workFlowName",
+            key: "workFlowName",
+            align: "center",
+          },
+          {
+            title: "Corelation Id",
+            dataIndex: "correlationId",
+            key: "correlationId",
+          },
+          {
+            title: "WorkFlow Status",
+            dataIndex: "workflowStatus",
+            key: "workflowStatus",
+            render: (status) => workflowStatus(status), // Assuming workflowStatus is a function
+          },
+          {
+            title: "Created At",
+            dataIndex: "createdAt",
+            key: "createdAt",
+          },
+          {
+            title: "Finished At",
+            dataIndex: "finishedAt",
+            key: "finishedAt",
+          },
+          {
+            title: "Faulted At",
+            dataIndex: "faultedAt",
+            key: "faultedAt",
+          },
+          {
+            title: "Cancelled At",
+            dataIndex: "cancelledAt",
+            key: "cancelledAt",
+          },
+        
+        ]}
+        dataSource={workflowInstancesData}
+        className="custom-table"
+        pagination={{ pageSize: 10 }}
+        scroll={{ x: 'max-content' }}
+        bordered
+      />
+        </Col>
+        </Row>
+        </Card>
 </Tabs.TabPane>
   </Tabs>
   </Card>

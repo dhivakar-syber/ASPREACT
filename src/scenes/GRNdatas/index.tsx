@@ -13,9 +13,34 @@ import grndataStore from '../../stores/grndataStore';
 import { FormInstance } from 'antd/lib/form';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
 import { EnumMovementType } from '../../enum'
+import sessionService from '../../services/session/sessionService';
 
-const userPermissions = ["Pages.Administration.GRNMasters.Create", "Pages.Administration.GRNMasters.Edit","Pages.Administration.GRNMasters.Delete"];
-const hasPermission = (permission: string): boolean => userPermissions.includes(permission);
+// const userPermissions = ["Pages.Administration.GRNMasters.Create", "Pages.Administration.GRNMasters.Edit","Pages.Administration.GRNMasters.Delete"];
+// const hasPermission = (permission: string): boolean => userPermissions.includes(permission);
+
+const getUserPermissions = async (): Promise<string[]> => {
+  try {
+    // Fetch the current login information asynchronously
+    const currentLoginInfo = await sessionService.getCurrentLoginInformations();
+    console.log('User',currentLoginInfo);
+    // Assuming permissions are inside the 'permissions' field of the object
+    const permissions: string[] = currentLoginInfo?.user?.permissions || [];
+    console.log('permissions',permissions)
+    return permissions;
+  } catch (error) {
+    console.error("Error fetching user permissions:", error);
+    return [];  // Return an empty array if there's an error
+  }
+};
+
+const hasPermission = async (permission: string): Promise<boolean> => {
+  const userPermissions = await getUserPermissions();
+  return userPermissions.includes(permission);
+};
+
+hasPermission("Pages.Administration.GRNMasters").then(hasPerm => {
+  console.log('is',hasPerm);  // true or false based on the session data
+});
 
 export interface IGRNdataProps {
   grndataStore: grndataStore;
@@ -33,7 +58,10 @@ export interface IGRNdataState {
   partPartNoFilter:string;
   supplierNameFilter:string;
   buyerNameFilter:string;
-  showAdvancedFilters: boolean,
+  showAdvancedFilters: boolean;
+  hasCreatePermission: boolean;
+  hasDeletePermission: boolean;
+  hasEditPermission: boolean;
 }
 type LookupItem = {
   id: number;
@@ -68,6 +96,9 @@ class GRNDatas extends AppComponentBase<IGRNdataProps, IGRNdataState> {
     supplierNameFilter:'',
     buyerNameFilter:'',
     showAdvancedFilters: false,
+    hasCreatePermission: false,
+    hasDeletePermission: false,
+    hasEditPermission: false,
     selectedLookupItem: null as LookupItem | null,
     selectedSupplierLookupItem: null as SupplierLookupItem | null,
     selectedBuyerLookupItem: null as BuyerLookupItem | null,
@@ -75,7 +106,17 @@ class GRNDatas extends AppComponentBase<IGRNdataProps, IGRNdataState> {
 
   async componentDidMount() {
     await this.getAll();
+    await this.checkPermissions();
   }
+
+  checkPermissions = async () => {
+    const hasPermissionCreate = await hasPermission("Pages.Administration.GRNMasters.Create");
+    this.setState({ hasCreatePermission: hasPermissionCreate });
+    const hasPermissionDelete = await hasPermission("Pages.Administration.GRNMasters.Delete");
+    this.setState({ hasDeletePermission: hasPermissionDelete });
+    const hasPermissionEdit = await hasPermission("Pages.Administration.GRNMasters.Edit");
+    this.setState({ hasEditPermission: hasPermissionEdit });
+  };
 
   async getAll() {
     if (!this.props.grndataStore) {
@@ -240,6 +281,7 @@ editdata:any = null;
   public render() {
     console.log(this.props.grndataStore);
     const { grndata } = this.props.grndataStore;
+    const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
     const columns = [
         {
             title: L('Actions'),
@@ -250,9 +292,9 @@ editdata:any = null;
                   trigger={['click']}
                   overlay={
                     <Menu>
-                      {hasPermission("Pages.Administration.GRNMasters.Edit") && (
+                      {hasEditPermission && (
                       <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.grnMaster?.id })}>{L('Edit')}</Menu.Item>)}
-                      {hasPermission("Pages.Administration.GRNMasters.Delete") && (
+                      {hasDeletePermission && (
                       <Menu.Item onClick={() => this.delete({ id: item.grnMaster?.id })}>{L('Delete')}</Menu.Item>)}
                     </Menu>
                     
@@ -343,7 +385,7 @@ editdata:any = null;
             xxl={{ span: 1, offset: 21 }}
           >
 
-            {hasPermission('Pages.Administration.GRNMasters.Create') && (
+            {hasCreatePermission && (
             <Button type="primary"  icon={<PlusOutlined />} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} style={{marginLeft:'-50px'}}>Create GRNDatas</Button>)}
           </Col>
         </Row>

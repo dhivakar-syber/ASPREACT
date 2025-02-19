@@ -16,3 +16,98 @@
     width: 250px; /* Adjust width as needed */
     z-index: 5; /* Adjust if needed for stacking */
   }
+/* In your CSS file (e.g., App.css or a custom CSS file) */
+/* .custom-table .ant-table-thead th {
+  background-color: #005f7f !important;
+  color: #fff !important;
+} */
+
+  /* Apply custom styles to add grid-like appearance */
+.custom-table .ant-table-thead > tr > th,
+.custom-table .ant-table-tbody > tr > td {
+  border: 1px solid rgba(221, 221, 221, 0.5);
+}
+
+.custom-table .ant-table-thead > tr > th {
+  background-color: #005f7f!important;/* Set the background color of the header */
+  color: #fff !important; /* Set the text color of the header */
+}
+
+.ant-table-thead th {
+  border: 1px solid #ddd !important;
+}
+
+
+.ant-table-cell.no-border-column {
+  border-right: none !important;
+  border-left: none !important;
+}
+
+.ant-table-thead .no-border-column {
+  border-bottom: none !important;
+}
+/* Custom scroll bar styles */
+.custom-table::-webkit-scrollbar {
+  width: 4px; /* Vertical scrollbar width (adjust to make it thinner) */
+  height: 4px; /* Horizontal scrollbar height (adjust to make it thinner) */
+}
+
+.custom-table::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Track color */
+}
+
+.custom-table::-webkit-scrollbar-thumb {
+  background: #888; /* Scrollbar thumb color */
+  border-radius: 10px; /* Rounded corners for thumb */
+}
+
+.custom-table::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Thumb color when hovered */
+}
+
+/* Remove borders from the table data cells in these specific columns */
+.no-border-column {
+  border: none !important; /* Remove border for these columns */
+}
+
+/* Ensure borders are visible for the header */
+table th {
+  border: 1px solid #ccc; /* Adjust header border style if needed */
+}
+
+
+.progress-dot {
+  display: flex;
+  align-items: center; /* Aligns dot and text vertically */
+  gap: 8px; /* Adds spacing between dot and text */
+  margin-bottom: 5px; /* Adds spacing between rows */
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Custom colors */
+.approved {
+  background-color: #6EA046; /* Green */
+}
+
+.pending {
+  background-color: #FFFF40; /* Yellow */
+}
+
+.rejected {
+  background-color: #FF0000; /* Red */
+}
+
+.not-submitted {
+  background-color: #444444; /* Gray */
+}
+
+.status-text {
+  font-size: 14px; /* Adjust text size */
+  color: #333; /* Dark gray text for better visibility */
+}

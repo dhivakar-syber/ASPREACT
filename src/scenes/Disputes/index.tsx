@@ -11,7 +11,33 @@ import Stores from '../../stores/storeIdentifier';
 import DisputesStrore from '../../stores/DisputesStrore';
 import { FormInstance } from 'antd/lib/form';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
+import sessionService from '../../services/session/sessionService';
 //import { EnumCurrency,EnumTransaction } from '../../../src/enum'
+
+const getUserPermissions = async (): Promise<string[]> => {
+  try {
+    // Fetch the current login information asynchronously
+    const currentLoginInfo = await sessionService.getCurrentLoginInformations();
+    console.log('User',currentLoginInfo);
+    // Assuming permissions are inside the 'permissions' field of the object
+    const permissions: string[] = currentLoginInfo?.user?.permissions || [];
+    console.log('permissions',permissions)
+    return permissions;
+  } catch (error) {
+    console.error("Error fetching user permissions:", error);
+    return [];  // Return an empty array if there's an error
+  }
+};
+
+const hasPermission = async (permission: string): Promise<boolean> => {
+  const userPermissions = await getUserPermissions();
+  return userPermissions.includes(permission);
+};
+
+hasPermission("Pages.Administration.Disputes").then(hasPerm => {
+  console.log('is',hasPerm);  // true or false based on the session data
+});
+
 
 export interface IDisputesProps {
     disputesStore: DisputesStrore;
@@ -32,6 +58,9 @@ export interface IDisputesdataState {
   BuyerShortIdFilter:string;
   SupplementarySummaryId:number|null;
   filterVisible: boolean;
+  hasCreatePermission: boolean;
+  hasDeletePermission: boolean;
+  hasEditPermission: boolean;
 }
 type SummariesLookupItem = {
   id: number;
@@ -71,6 +100,9 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
     SupplierCodeFilter:'',
     BuyerShortIdFilter:'',
     SupplementarySummaryId:0,
+    hasCreatePermission: false,
+    hasDeletePermission: false,
+    hasEditPermission: false,
     selectedLookupItem: null as SummariesLookupItem | null,
     relectedLookupItem: null as RejectionLookupItem | null,
     selectedSupplierLookupItem: null as SupplierLookupItem | null,
@@ -80,7 +112,19 @@ class DisputesDatas extends AppComponentBase<IDisputesProps, IDisputesdataState>
 
   async componentDidMount() {
     await this.getAll();
+    await this.checkPermissions();
+
   } 
+
+    
+  checkPermissions = async () => {
+    const hasPermissionCreate = await hasPermission("Pages.Administration.Disputes.Create");
+    this.setState({ hasCreatePermission: hasPermissionCreate });
+    const hasPermissionDelete = await hasPermission("Pages.Administration.Disputes.Delete");
+    this.setState({ hasDeletePermission: hasPermissionDelete });
+    const hasPermissionEdit = await hasPermission("Pages.Administration.Disputes.Edit");
+    this.setState({ hasEditPermission: hasPermissionEdit });
+  };
 
   async getAll() {
     if (!this.props.disputesStore) {
@@ -239,6 +283,7 @@ editdata:any = null;
   public render() {
     console.log(this.props.disputesStore);
     const { disputedata } = this.props.disputesStore;
+    const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
     const columns = [
         {
             title: L('Actions'),
@@ -249,8 +294,10 @@ editdata:any = null;
                   trigger={['click']}
                   overlay={
                     <Menu>
-                      <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.disputedata?.id })}>{L('Edit')}</Menu.Item>
-                      <Menu.Item onClick={() => this.delete({ id: item.disputedata?.id })}>{L('Delete')}</Menu.Item>
+                      {hasEditPermission && (
+                      <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.disputedata?.id })}>{L('Edit')}</Menu.Item>)}
+                      {hasDeletePermission && (
+                      <Menu.Item onClick={() => this.delete({ id: item.disputedata?.id })}>{L('Delete')}</Menu.Item>)}
                     </Menu>
                   }
                   placement="bottomLeft"
@@ -298,7 +345,8 @@ editdata:any = null;
             xl={{ span: 1, offset: 21 }}
             xxl={{ span: 1, offset: 21 }}
           >
-            <Button type="primary"  icon={<PlusOutlined/>} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} style={{marginLeft:'-100px'}}>Create DiputesDatas</Button>
+            {hasCreatePermission && (
+            <Button type="primary"  icon={<PlusOutlined/>} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} style={{marginLeft:'-100px'}}>Create DiputesDatas</Button>)}
           </Col>
         </Row>
         <Row>

@@ -121,25 +121,26 @@ class AnalysisPieChart extends React.Component<SupplementaryDocStatusProps> {
 
   // Custom label formatter for pie chart: displays "TotalValue - Status"
   renderCustomLabel = (props: any) => {
-    const { name, value } = props;
+    const { value } = props;
   
     // Determine the appropriate unit (Lakhs or Crores)
     let formattedValue = value;
     let unit = "Crores"; // Default unit
   
     // If the value is less than 1 lakh, show it in Lakhs
-    if (value < 100000) {
-      formattedValue = value / 100000; // Convert to Lakhs
-      unit = "Lakhs";
-    } else {
-      formattedValue = value / 10000000; // Convert to Crores
-    }
+    // if (value < 100000) {
+    //   formattedValue = value / 100000; // Convert to Lakhs
+    //   unit = "Lakhs";
+    // } else {
+    //   formattedValue = value / 10000000; // Convert to Crores
+    //   // unit = "Crores";
+    // }
   
     // Format the value to 2 decimal places
     const formattedValueWithUnit = `${formattedValue.toFixed(2)} ${unit}`;
   
     // Return the formatted label
-    return `${formattedValueWithUnit} - ${name}`;
+    return `${formattedValueWithUnit}`;
   };
   
   
@@ -183,6 +184,15 @@ class AnalysisPieChart extends React.Component<SupplementaryDocStatusProps> {
 
   render() {
     return (
+      <div
+      style={{
+        width: "100%",
+        overflowX: "auto",
+        border: "2px solid #ccc",
+        borderRadius: "10px",
+        paddingTop: "45px",
+      }}
+    >
       <div>
         {/* Row title for Supplementary Invoice */}
         <div style={{ textAlign: "left", marginBottom: "20px" }}>
@@ -205,6 +215,7 @@ class AnalysisPieChart extends React.Component<SupplementaryDocStatusProps> {
           {this.renderPieChart("buyerApproval", true, "credit-note-buyer-approval", "Buyer Approval Value")}
           {this.renderPieChart("accountantApproval", true, "credit-note-accountant-approval", "Accounts Approval Value")}
         </div>
+      </div>
       </div>
     );
   }

@@ -11,9 +11,35 @@ import Stores from '../../stores/storeIdentifier';
 import supplierRaisedQueryStore from '../../stores/supplierRaisedQueryStore';
 import { FormInstance } from 'antd/lib/form';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
+import sessionService from '../../services/session/sessionService';
 
-const userPermissions = ["Pages.Administration.SupplierRaisedQueries.Create", "Pages.Administration.SupplierRaisedQueries.Edit","Pages.Administration.SupplierRaisedQueries.Delete"];
-const hasPermission = (permission: string): boolean => userPermissions.includes(permission);
+// const userPermissions = ["Pages.Administration.SupplierRaisedQueries.Create", "Pages.Administration.SupplierRaisedQueries.Edit","Pages.Administration.SupplierRaisedQueries.Delete"];
+// const hasPermission = (permission: string): boolean => userPermissions.includes(permission);
+
+const getUserPermissions = async (): Promise<string[]> => {
+  try {
+    // Fetch the current login information asynchronously
+    const currentLoginInfo = await sessionService.getCurrentLoginInformations();
+    console.log('User',currentLoginInfo);
+    // Assuming permissions are inside the 'permissions' field of the object
+    const permissions: string[] = currentLoginInfo?.user?.permissions || [];
+    console.log('permissions',permissions)
+    return permissions;
+  } catch (error) {
+    console.error("Error fetching user permissions:", error);
+    return [];  // Return an empty array if there's an error
+  }
+};
+
+const hasPermission = async (permission: string): Promise<boolean> => {
+  const userPermissions = await getUserPermissions();
+  return userPermissions.includes(permission);
+};
+
+hasPermission("Pages.Administration.SupplierRaisedQueries").then(hasPerm => {
+  console.log('is',hasPerm);  // true or false based on the session data
+});
+
 
 export interface ISupplierRaisedQueryProps {
     supplierRaisedQueryStore: supplierRaisedQueryStore;
@@ -32,6 +58,9 @@ export interface ISupplierRaisedQueryState {
   buyerNameFilter:string;
   supplierNameFilter:string;
   showAdvancedFilters: boolean;
+  hasCreatePermission: boolean;
+  hasDeletePermission: boolean;
+  hasEditPermission: boolean;
 }
 type LookupItem = {
   id: number;
@@ -66,6 +95,9 @@ class SupplierRaisedQuery extends AppComponentBase<ISupplierRaisedQueryProps, IS
     buyerNameFilter:'',
     supplierNameFilter:'',
     showAdvancedFilters: false,
+    hasCreatePermission: false,
+    hasDeletePermission: false,
+    hasEditPermission: false,
     selectedLookupItem: null as LookupItem | null,
     selectedSupplierLookupItem: null as SupplierLookupItem | null,
     selectedBuyerLookupItem: null as BuyerLookupItem | null,
@@ -73,8 +105,17 @@ class SupplierRaisedQuery extends AppComponentBase<ISupplierRaisedQueryProps, IS
 
   async componentDidMount() {
     await this.getAll();
+    await this.checkPermissions();
   }
 
+  checkPermissions = async () => {
+    const hasPermissionCreate = await hasPermission("Pages.Administration.SupplierRaisedQueries.Create");
+    this.setState({ hasCreatePermission: hasPermissionCreate });
+    const hasPermissionDelete = await hasPermission("Pages.Administration.SupplierRaisedQueries.Delete");
+    this.setState({ hasDeletePermission: hasPermissionDelete });
+    const hasPermissionEdit = await hasPermission("Pages.Administration.SupplierRaisedQueries.Edit");
+    this.setState({ hasEditPermission: hasPermissionEdit });
+  };
   async getAll() {
     if (!this.props.supplierRaisedQueryStore) {
         console.error('supplierRaisedQueryStore is undefined');
@@ -248,6 +289,7 @@ editdata:any = null;
   public render() {
     console.log(this.props.supplierRaisedQueryStore);
     const { supplierRaisedQuery } = this.props.supplierRaisedQueryStore;
+    const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
     const columns = [
         {
             title: L('Actions'),
@@ -258,9 +300,9 @@ editdata:any = null;
                   trigger={['click']}
                   overlay={
                     <Menu>
-                      {hasPermission("Pages.Administration.SupplierRaisedQueries.Edit") && (
+                      {hasEditPermission && (
                       <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.supplierRaisedQuery?.id })}>{L('Edit')}</Menu.Item>)}
-                      {hasPermission("Pages.Administration.SupplierRaisedQueries.Delete") && (
+                        {hasDeletePermission && (
                       <Menu.Item onClick={() => this.delete({ id: item.supplierRaisedQuery?.id })}>{L('Delete')}</Menu.Item>)}
                     </Menu>
                   }
@@ -352,7 +394,8 @@ editdata:any = null;
             xl={{ span: 1, offset: 21 }}
             xxl={{ span: 1, offset: 21 }}
           >
-            <Button type="primary"  icon={<PlusOutlined/>} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} style={{marginLeft:'-50px'}}>Create Query</Button>
+            {hasCreatePermission && (
+            <Button type="primary"  icon={<PlusOutlined/>} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} style={{marginLeft:'-50px'}}>Create Query</Button>)}
           </Col>
         </Row>
         <Row>

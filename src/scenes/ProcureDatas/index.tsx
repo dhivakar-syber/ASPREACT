@@ -10,8 +10,35 @@ import Stores from '../../stores/storeIdentifier';
 import ProcureStore from '../../stores/procuredatastore';
 import { FormInstance } from 'antd/lib/form';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
+import sessionService from '../../services/session/sessionService';
 //import * as moment from 'moment-timezone';
 //import { Moment } from 'moment-timezone';
+
+
+const getUserPermissions = async (): Promise<string[]> => {
+  try {
+    // Fetch the current login information asynchronously
+    const currentLoginInfo = await sessionService.getCurrentLoginInformations();
+    console.log('User',currentLoginInfo);
+    // Assuming permissions are inside the 'permissions' field of the object
+    const permissions: string[] = currentLoginInfo?.user?.permissions || [];
+    console.log('permissions',permissions)
+    return permissions;
+  } catch (error) {
+    console.error("Error fetching user permissions:", error);
+    return [];  // Return an empty array if there's an error
+  }
+};
+
+const hasPermission = async (permission: string): Promise<boolean> => {
+  const userPermissions = await getUserPermissions();
+  return userPermissions.includes(permission);
+};
+
+hasPermission("Pages.Administration.ProcureDatas").then(hasPerm => {
+  console.log('is',hasPerm);  // true or false based on the session data
+});
+
 
 export interface IProcureProps {
   procureStore: ProcureStore;
@@ -40,6 +67,9 @@ export interface IProcureState {
   BuyerNameFilter:string;
   SupplierNameFilter:string;
   showAdvancedFilters: boolean,
+  hasCreatePermission: boolean;
+  hasDeletePermission: boolean;
+  hasEditPermission: boolean;
 }
 
 
@@ -74,13 +104,26 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
     PartPartNoFilter:'',
     BuyerNameFilter:'',
     SupplierNameFilter:'',
-    showAdvancedFilters: false
+    showAdvancedFilters: false,
+    hasCreatePermission: false,
+    hasDeletePermission: false,
+    hasEditPermission: false,
   };
 
   async componentDidMount() {
     await this.getAll();
+    await this.checkPermissions();
+
   }
 
+  checkPermissions = async () => {
+    const hasPermissionCreate = await hasPermission("Pages.Administration.ProcureDatas.Create");
+    this.setState({ hasCreatePermission: hasPermissionCreate });
+    const hasPermissionDelete = await hasPermission("Pages.Administration.ProcureDatas.Delete");
+    this.setState({ hasDeletePermission: hasPermissionDelete });
+    const hasPermissionEdit = await hasPermission("Pages.Administration.ProcureDatas.Edit");
+    this.setState({ hasEditPermission: hasPermissionEdit });
+  };
   async getAll() {
 
      const filters = {
@@ -330,6 +373,7 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
 
   public render() {
     const { procure } = this.props.procureStore;
+    const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
     const columns = [
         {
             title: L('Actions'),
@@ -340,8 +384,10 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
                   trigger={['click']}
                   overlay={
                     <Menu>
-                      <Menu.Item onClick={() => this.createOrEditeModalOpen({ id: item.procureData?.id })}>{L('Edit')}</Menu.Item>
-                      <Menu.Item onClick={() => this.delete({ id: item.procureData?.id })}>{L('Delete')}</Menu.Item>
+                      {hasEditPermission && (
+                      <Menu.Item onClick={() => this.createOrEditeModalOpen({ id: item.procureData?.id })}>{L('Edit')}</Menu.Item>)}
+                      {hasDeletePermission && (
+                      <Menu.Item onClick={() => this.delete({ id: item.procureData?.id })}>{L('Delete')}</Menu.Item>)}
                     </Menu>
                   }
                   placement="bottomLeft"
@@ -429,7 +475,9 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
             lg={{ span: 1, offset: 21 }}
             xl={{ span: 1, offset: 21 }}
             xxl={{ span: 1, offset: 30 }}
-          > <Button type="primary"   icon={<PlusOutlined />} onClick={() => this.createOrEditeModalOpen({ id: 0 })} style={{marginLeft: '-50px'}}>Create ProcurDatas</Button>
+          > 
+          {hasCreatePermission && (
+          <Button type="primary"   icon={<PlusOutlined />} onClick={() => this.createOrEditeModalOpen({ id: 0 })} style={{marginLeft: '-50px'}}>Create ProcurDatas</Button>)}
 
           </Col>
         </Row>

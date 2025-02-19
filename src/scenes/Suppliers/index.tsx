@@ -14,6 +14,33 @@ import Stores from '../../stores/storeIdentifier';
 import supplierStore from '../../stores/supplierStore';
 import { FormInstance } from 'antd/lib/form';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
+import sessionService from '../../services/session/sessionService';
+
+
+const getUserPermissions = async (): Promise<string[]> => {
+    try {
+      // Fetch the current login information asynchronously
+      const currentLoginInfo = await sessionService.getCurrentLoginInformations();
+      console.log('User',currentLoginInfo);
+      // Assuming permissions are inside the 'permissions' field of the object
+      const permissions: string[] = currentLoginInfo?.user?.permissions || [];
+      console.log('permissions',permissions)
+      return permissions;
+    } catch (error) {
+      console.error("Error fetching user permissions:", error);
+      return [];  // Return an empty array if there's an error
+    }
+  };
+  
+  const hasPermission = async (permission: string): Promise<boolean> => {
+    const userPermissions = await getUserPermissions();
+    return userPermissions.includes(permission);
+  };
+  
+  hasPermission("Pages.Administration.Suppliers").then(hasPerm => {
+    console.log('is',hasPerm);  // true or false based on the session data
+  });
+
 
 export interface SupplierdataProps { 
     supplierStore: supplierStore;
@@ -29,6 +56,9 @@ export interface SupplierdataState {
     CodeFilter:string;
     UserNameFilter:string;
     filterVisible: boolean;
+    hasCreatePermission: boolean;
+    hasDeletePermission: boolean;
+    hasEditPermission: boolean;
 }
 
 type SupplierUserLookupTableDto = {
@@ -57,14 +87,28 @@ class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState>
         CodeFilter:'',
         UserNameFilter:'',
         filterVisible:false,
+        hasCreatePermission: false,
+        hasDeletePermission: false,
+        hasEditPermission: false,
         SupplierLookupItem: null as SupplierUserLookupTableDto | null,
 
     };
 
     async componentDidMount() {
         await this.getAll();
+        await this.checkPermissions();
     }
-  
+    
+
+      checkPermissions = async () => {
+        const hasPermissionCreate = await hasPermission("Pages.Administration.Suppliers.Create");
+        this.setState({ hasCreatePermission: hasPermissionCreate });
+        const hasPermissionDelete = await hasPermission("Pages.Administration.Suppliers.Delete");
+        this.setState({ hasDeletePermission: hasPermissionDelete });
+        const hasPermissionEdit = await hasPermission("Pages.Administration.Suppliers.Edit");
+        this.setState({ hasEditPermission: hasPermissionEdit });
+      };
+
     async getAll() {
         if (!this.props.supplierStore) {
             console.error('supplierStore is undefined');
@@ -178,6 +222,7 @@ class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState>
     public render() {
         console.log(this.props.supplierStore);
         const { supplier } = this.props.supplierStore;
+        const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
         const columns = [
             {
                 title: L('Actions'),
@@ -188,8 +233,10 @@ class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState>
                             trigger={['click']}
                             overlay={
                                 <Menu>
-                                    <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.supplier?.id })}>{L('Edit')}</Menu.Item>
-                                    <Menu.Item onClick={() => this.delete({ id: item.supplier?.id })}>{L('Delete')}</Menu.Item>
+                                    {hasEditPermission && (
+                                    <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.supplier?.id })}>{L('Edit')}</Menu.Item>)}
+                                    {hasDeletePermission && (
+                                    <Menu.Item onClick={() => this.delete({ id: item.supplier?.id })}>{L('Delete')}</Menu.Item>)}
                                 </Menu>
                             }
                             placement="bottomLeft"
@@ -254,7 +301,8 @@ class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState>
                         <h2>{L('supplier')}</h2>
                     </Col>
                     <Col xs={{ span: 14, offset: 0 }} sm={{ span: 15, offset: 0 }} md={{ span: 15, offset: 0 }} lg={{ span: 1, offset: 21 }} xl={{ span: 1, offset: 21 }} xxl={{ span: 1, offset: 21 }}>
-                        <Button type="primary" shape="circle" icon={<PlusOutlined />} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} />
+                    {hasCreatePermission && (
+                        <Button type="primary" shape="circle" icon={<PlusOutlined />} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} />)}
                     </Col>
                 </Row>
                 <Row>
