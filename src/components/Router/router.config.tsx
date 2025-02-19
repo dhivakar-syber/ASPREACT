@@ -86,6 +86,15 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../scenes/L3 & L4 Dashboard')),
   },
   {
+    path: '/SQLqueryExecution',
+    name: 'SQL Window',
+    permission: 'Pages.Tenant.Dashboard',
+    title: 'SQL Window',
+    icon: TagsOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/SQLqueryExecution')),
+  },
+  {
     path: '/dashboard',
     name: 'dashboard',
     permission: 'Pages.Tenant.Dashboard',

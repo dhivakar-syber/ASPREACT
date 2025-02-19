@@ -31,24 +31,24 @@ class CreateOrUpdateRole extends React.Component<ICreateOrUpdateRoleProps> {
       return { label: x.displayName, value: x.name };
     });
 
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 6 },
-        sm: { span: 6 },
-        md: { span: 6 },
-        lg: { span: 6 },
-        xl: { span: 6 },
-        xxl: { span: 6 },
-      },
-      wrapperCol: {
-        xs: { span: 18 },
-        sm: { span: 18 },
-        md: { span: 18 },
-        lg: { span: 18 },
-        xl: { span: 18 },
-        xxl: { span: 18 },
-      },
-    };
+    // const formItemLayout = {
+    //   labelCol: {
+    //     xs: { span: 6 },
+    //     sm: { span: 6 },
+    //     md: { span: 6 },
+    //     lg: { span: 6 },
+    //     xl: { span: 6 },
+    //     xxl: { span: 6 },
+    //   },
+    //   wrapperCol: {
+    //     xs: { span: 18 },
+    //     sm: { span: 18 },
+    //     md: { span: 18 },
+    //     lg: { span: 18 },
+    //     xl: { span: 18 },
+    //     xxl: { span: 18 },
+    //   },
+    // };
 
     const tailFormItemLayout = {
       labelCol: {
@@ -82,15 +82,15 @@ class CreateOrUpdateRole extends React.Component<ICreateOrUpdateRoleProps> {
         <Form ref={this.props.formRef}>
           <Tabs defaultActiveKey={'role'} size={'small'} tabBarGutter={64}>
             <TabPane tab={L('RoleDetails')} key={'role'}>
-              <Form.Item label={L('RoleName')} name={'name'} rules={rules.name} {...formItemLayout}>
+              <Form.Item label={L('RoleName')} name={'name'} rules={rules.name} >
                 <Input />
               </Form.Item>
-              <Form.Item label={L('DisplayName')} name={'displayName'} rules={rules.displayName} {...formItemLayout}>
+              {/* <Form.Item label={L('DisplayName')} name={'displayName'} rules={rules.displayName} >
                 <Input />
               </Form.Item>
-              <Form.Item label={L('Description')} name={'description'} {...formItemLayout}>
+              <Form.Item label={L('Description')} name={'description'} >
                 <Input />
-              </Form.Item>
+              </Form.Item> */}
             </TabPane>
             <TabPane tab={L('RolePermission')} key={'permission'} forceRender={true}>
               <Form.Item {...tailFormItemLayout} name={'grantedPermissionNames'} valuePropName={'value'}>

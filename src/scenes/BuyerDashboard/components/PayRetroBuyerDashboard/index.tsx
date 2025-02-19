@@ -70,7 +70,7 @@ const SettingsIcon = () => (
           setselectedbuyers({name:buyers.data.result[0].name,value:buyers.data.result[0].id});
           getsuppliers(buyers.data.result[0].id)
           setselectedcategory(0);
-          getparts([],buyers.data.result)
+          getparts([],0)
 
           var   buyerdashboard: BuyerDashboardInput = {
             Supplierids:[0],
@@ -94,6 +94,7 @@ const SettingsIcon = () => (
   }, []);
 
 
+  
   const handledatechange = async (value:any)=>{
    console.log('Selected Date',value)
     setSelectedDate(value)

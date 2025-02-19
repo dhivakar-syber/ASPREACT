@@ -108,7 +108,7 @@ class Role extends AppComponentBase<IRoleProps, IRoleState> {
         ...otherValues,
         role: {
           id: this.state.roleId === 0 ? null : this.state.roleId,
-          displayName, // Add displayName to the role object
+          displayName:name, // Add displayName to the role object
           name,        // Add name to the role object
         },
         grantedPermissionNames, // Place grantedPermissionNames outside the role object
@@ -134,20 +134,21 @@ class Role extends AppComponentBase<IRoleProps, IRoleState> {
   public render() {
     const { allPermissions, roles } = this.props.roleStore;
     const {currentLogin} = this.props.sessionStore
+    const isAdmin = currentLogin?.user?.roles?.includes('Admin');
     console.log(allPermissions);
     console.log(currentLogin);
-  //   const specificPermissionsToShow = ["Pages", "Administration", "Disputes","Create new Query","Edit dispute","Delete dispute","Roles","Creating new role",
-  //     "Editing role","Supplier Dashboard","Buyer Dashboard","Accounts Dashboard","Users","Creating new user","Editing user","Deleting user","Annexure details"
-  //   ,"Create new annexure detail","Delete annexure detail","Edit annexure detail"];
-  //   const permissionsToDisplay = currentLogin.user.roles.includes('Admin')
-  //   ? allPermissions
-  // : allPermissions.filter(permission =>
-  //     specificPermissionsToShow.includes(permission.displayName)
-  //   );
-  //   console.log(permissionsToDisplay);
+    const specificPermissionsToShow = ["Pages", "Administration", "Disputes","Create new Query","Edit dispute","Delete dispute","Roles","Creating new role",
+      "Editing role","Supplier Dashboard","Buyer Dashboard","Accounts Dashboard","Users","Creating new user","Editing user","Deleting user","Annexure details"
+    ,"Create new annexure detail","Delete annexure detail","Edit annexure detail","SectionHead Dashboard"];
+    const permissionsToDisplay = isAdmin
+    ? allPermissions
+  : allPermissions.filter(permission =>
+      specificPermissionsToShow.includes(permission.displayName)
+    );
+    console.log(permissionsToDisplay);
     const columns = [
       { title: L('RoleName'), dataIndex: 'displayName', key: 'displayName', width: 150, render: (text: string) => <div>{text}</div> },
-      { title: L('DisplayName'), dataIndex: 'displayName', key: 'displayName', width: 150, render: (text: string) => <div>{text}</div> },
+      // { title: L('DisplayName'), dataIndex: 'displayName', key: 'displayName', width: 150, render: (text: string) => <div>{text}</div> },
       {
         title: L('Actions'),
         width: 150,

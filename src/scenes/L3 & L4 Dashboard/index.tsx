@@ -46,10 +46,10 @@ const [selectedcategory, setselectedcategory] =React.useState<any>(String);
             setteams(Teams.data.result || []);
             setselectedteams([]);
 
-            const Buyers = await supplementarySummariesService.GetAllBuyersList(0);
+            const Buyers = await supplementarySummariesService.GetAllBuyersforL4Dashboard([]);
                         console.log('buyers',Buyers)
                         setBuyers(Buyers.data.result || []);
-                        setselectedbuyers([]);
+                       // setselectedbuyers([]);
 
 
     
@@ -57,7 +57,7 @@ const [selectedcategory, setselectedcategory] =React.useState<any>(String);
             console.log('suppliers',suppliers)
             
             setSuppliers(suppliers.data.result || []);
-            setselectedsuppliers([]);
+           // setselectedsuppliers([]);
             setselectedcategory(0);
               
     
@@ -151,7 +151,7 @@ const [selectedcategory, setselectedcategory] =React.useState<any>(String);
                 
                 const buyers = await supplementarySummariesService.GetAllBuyersforL4Dashboard(teams);
                     setBuyers(buyers.data.result || []);
-                    setselectedbuyers([]);
+                    setselectedbuyers([0]);
               };       
 
               const handlecategorychange = async(selectedValues: number) => {
