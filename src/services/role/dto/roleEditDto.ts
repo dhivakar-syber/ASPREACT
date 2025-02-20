@@ -1,6 +1,6 @@
 export interface RoleEditDto
 {
     id:number;
-    displayName:string;
+    DisplayName:string;
     IsDefault:boolean;
 }
