@@ -1,5 +1,5 @@
-import { PagedFilterAndSortedRequest } from "../../dto/pagedFilterAndSortedRequest";
+import { PagedRoleResultRequestDto } from "../../role/dto/PagedRoleResultRequestDto";
 
-export interface GetallRoleInput extends PagedFilterAndSortedRequest {
+export interface GetallRoleInput extends PagedRoleResultRequestDto {
 filter : string;
 }

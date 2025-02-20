@@ -75,8 +75,8 @@ class RoleStore {
     let result = await roleService.getRoleForEdit(entityDto);
     this.roleEdit.grantedPermissionNames = result.grantedPermissionNames;
     this.roleEdit.permissions = result.permissions;
-    this.roleEdit.role.displayName = result.role.displayName; 
-    this.roleEdit.role.name = result.role.displayName; 
+    this.roleEdit.role.displayName = result.role.DisplayName; 
+    this.roleEdit.role.name = result.role.DisplayName; 
   }
 
   @action
