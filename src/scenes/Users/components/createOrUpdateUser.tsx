@@ -98,7 +98,7 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
       <Modal
         visible={visible}
         cancelText={L('Cancel')}
-        okText={L('OK')}
+        okText={L('Save')}
         onCancel={onCancel}
         onOk={onCreate}
         title={L('User')}
