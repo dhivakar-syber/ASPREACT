@@ -52,9 +52,8 @@ class Role extends AppComponentBase<IRoleProps, IRoleState> {
   async getAll() {
     await this.props.roleStore.getAll({ maxResultCount: this.state.maxResultCount,
        skipCount: this.state.skipCount, 
-       keyword: this.state.filter,
-       //filter: this.state.filter  
-       });
+       keyword: this.state.filter
+      });
   }
 
   handleTableChange = (pagination: any) => {
