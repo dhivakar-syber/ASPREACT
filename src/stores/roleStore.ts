@@ -1,4 +1,4 @@
-import { action, observable } from 'mobx';
+import { action, observable, runInAction } from 'mobx';
 
 import { CreateOrUpdateRoleInput } from '../services/role/dto/createOrUpdateRoleInput';
 import { EntityDto } from '../services/dto/entityDto';
@@ -6,10 +6,10 @@ import { GetAllPermissionsOutput } from '../services/role/dto/getAllPermissionsO
 import { GetAllRoleOutput } from '../services/role/dto/getAllRoleOutput';
 import { GetRoleAsyncInput } from '../services/role/dto/getRoleAsyncInput';
 import { PagedResultDto } from '../services/dto/pagedResultDto';
-import { PagedRoleResultRequestDto } from '../services/role/dto/PagedRoleResultRequestDto';
 import RoleEditModel from '../models/Roles/roleEditModel';
 //import { UpdateRoleInput } from '../services/role/dto/updateRoleInput';
 import roleService from '../services/role/roleService';
+import { PagedFilterAndSortedRequest } from '../services/dto/pagedFilterAndSortedRequest';
 
 class RoleStore {
   @observable roles!: PagedResultDto<GetAllRoleOutput>;
@@ -65,19 +65,32 @@ class RoleStore {
   }
 
   @action
-  async getAllPermissions() {
-    var result = await roleService.getAllPermissions();
+  async getAllPermissions(role:string) {
+    var result = await roleService.getAllPermissions(role);
+    console.log(result.name);
     this.allPermissions = result;
   }
-
   @action
-  async getRoleForEdit(entityDto: EntityDto) {
-    let result = await roleService.getRoleForEdit(entityDto);
-    this.roleEdit.grantedPermissionNames = result.grantedPermissionNames;
-    this.roleEdit.permissions = result.permissions;
-    this.roleEdit.role.displayName = result.role.DisplayName; 
-    this.roleEdit.role.name = result.role.DisplayName; 
+  async getRoleForEdit(entityDto: EntityDto,role: string) {
+      let result = await roleService.getRoleForEdit(entityDto,role);
+  
+      console.log("API Role Response:", result);
+  
+      runInAction(() => {
+          this.roleEdit = {
+              role: {
+                  displayName: result.role.displayName || "",
+                  name: result.role.displayName || "",
+                  id: result.role.id || 0,
+              },
+              permissions: result.permissions || [],
+              grantedPermissionNames: result.grantedPermissionNames || [],
+          };
+      });
+  
+      console.log("Updated Store Role:", this.roleEdit);
   }
+  
 
   @action
   async get(entityDto: EntityDto) {
@@ -86,8 +99,8 @@ class RoleStore {
   }
 
   @action
-  async getAll(pagedFilterAndSortedRequest: PagedRoleResultRequestDto) {
-    let result = await roleService.getAll(pagedFilterAndSortedRequest);
+  async getAll(pagedFilterAndSortedRequest: PagedFilterAndSortedRequest,role:string) {
+    let result = await roleService.getAll(pagedFilterAndSortedRequest,role);
     this.roles = result;
   }
 }

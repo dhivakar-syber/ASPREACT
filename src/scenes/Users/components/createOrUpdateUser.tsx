@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Checkbox, Input, Modal, Tabs, Form } from 'antd';
+import { Checkbox, Input, Modal, Tabs, Form, Space } from 'antd';
 import { GetRoles } from '../../../services/user/dto/getRolesOuput';
 import { L } from '../../../lib/abpUtility';
 import rules from './createOrUpdateUser.validation';
@@ -107,19 +107,20 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
         <Form ref={this.props.formRef}>
           <Tabs defaultActiveKey="userInfo" size="small" tabBarGutter={64}>
             <TabPane tab={L('User')} key="userInfo">
+            <Form.Item label={L('UserName')} {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="userName" rules={rules.userName}>
+                <Input />
+              </Form.Item>
               <Form.Item label={L('Name')} {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="name" rules={rules.name}>
                 <Input />
               </Form.Item>
-              <Form.Item label={L('Surname')} {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="surname" rules={rules.surname}>
+              {/* <Form.Item label={L('Surname')} {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="surname" rules={rules.surname}>
                 <Input />
-              </Form.Item>
-              <Form.Item label={L('UserName')} {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="userName" rules={rules.userName}>
-                <Input />
-              </Form.Item>
+              </Form.Item> */}
+
               <Form.Item label={L('Email')} {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="emailAddress" rules={rules.emailAddress as []}>
                 <Input />
               </Form.Item>
-              {this.props.modalType === 'edit' && (
+              {/* {this.props.modalType === 'edit' && (
                 <>
                   <Form.Item
                     label={L('Password')}
@@ -138,25 +139,30 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
                     <Input type="password" />
                   </Form.Item>
                 </>
-              )}
+              )} */}
               <Form.Item label={L('IsActive')} {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="isActive" valuePropName="checked">
                 <Checkbox>{L('IsActive')}</Checkbox>
               </Form.Item>
             </TabPane>
             <TabPane tab={L('Roles')} key="roles" forceRender>
-              <Form.Item {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="roleNames">
-                {options?.map((role: any) => (
-                  <Checkbox
-                    key={role.value}
-                    value={role.value}
-                    checked={selectedRoles.includes(role.value)}
-                    onChange={(e) => this.handleRoleChange(role.value, e.target.checked)}
-                  >
-                    {role.label}
-                  </Checkbox>
-                ))}
-              </Form.Item>
-            </TabPane>
+  <Form.Item {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="roleNames">
+    <Checkbox.Group>
+      <Space direction="vertical">
+        {options?.map((role: any) => (
+          <Checkbox
+            key={role.value}
+            value={role.value}
+            checked={selectedRoles.includes(role.value)}
+            onChange={(e) => this.handleRoleChange(role.value, e.target.checked)}
+          >
+            {role.label}
+          </Checkbox>
+        ))}
+      </Space>
+    </Checkbox.Group>
+  </Form.Item>
+</TabPane>
+
           </Tabs>
         </Form>
       </Modal>

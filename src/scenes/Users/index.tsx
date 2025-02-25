@@ -47,7 +47,14 @@ class User extends AppComponentBase<IUserProps, IUserState> {
   }
 
   async getAll() {
-    await this.props.userStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
+    const filters = {
+      maxResultCount: this.state.maxResultCount,
+      skipCount: this.state.skipCount,
+      keyword: this.state.filter,
+      Filter: this.state.filter
+    }
+    
+    await this.props.userStore.getAll(filters);
   }
 
   handleTableChange = (pagination: any) => {
@@ -109,18 +116,18 @@ class User extends AppComponentBase<IUserProps, IUserState> {
       const userInput = {
         ...otherValues,
         user: {
-          id:this.state.userId === 0 ? null : this.state.userId,
+          id: this.state.userId === 0 ? null : this.state.userId,
           name,             
-          surname,          
-          userName,         
-          emailAddress,     
+          surname: "--",  // Hardcoded surname
+          userName,        
+          emailAddress,    
           isActive,
-          phoneNumber, 
-          password,
+          phoneNumber:"--", 
+          password:"Daimler@123"
         },
-        assignedRoleNames:selectedRoles, 
+        assignedRoleNames: selectedRoles, 
       };
-  
+      
       if (this.state.userId === 0) {
         await this.props.userStore.create(userInput);
       } else {

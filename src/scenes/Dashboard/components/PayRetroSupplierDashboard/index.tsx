@@ -25,11 +25,27 @@ import { ExclamationCircleFilled } from '@ant-design/icons';
 import AnalysisPieChart from "../PieChartExample";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
 import { MenuInfo } from "rc-menu/lib/interface";
+import sessionService from "../../../../services/session/sessionService";
 
 
 
+const getUserPermissions = async (): Promise<string[]> => {
+  try {
+    const currentLoginInfo = await sessionService.getCurrentLoginInformations();
+    // console.log('User',currentLoginInfo);
+    const permissions: string[] = currentLoginInfo?.user?.permissions || [];
+    // console.log('permissions',permissions)
+    return permissions;
+  } catch (error) {
+    console.error("Error fetching user permissions:", error);
+    return [];
+  }
+};
 
-
+const hasPermission = async (permission: string): Promise<boolean> => {
+  const userPermissions = await getUserPermissions();
+  return userPermissions.includes(permission);
+};
 
 
 
@@ -77,8 +93,13 @@ const [hasRole, setHasRole] = React.useState<boolean>(false);
 const [progress, setProgress] = useState(0);
 const [loading, setloading] = React.useState<boolean>(false);
 const [tableloading, settableloading] = React.useState<boolean>(false);
+const [supplierActionsPermission, setSupplierActionsPermission] = useState(false);
 
-
+const checkPermissions = async () => {
+  const hasPermissionSupplierActions = await hasPermission("Pages.Tenant.Dashboard.Actions");
+  setSupplierActionsPermission(hasPermissionSupplierActions)
+};
+checkPermissions();
 
   // const [implementationDate, setImplementationDate] = React.useState(selectedRow?.implementationDate || '');
   const [dashboardinput, setdashboardinput] = React.useState<SupplierDashboardInput>({
@@ -394,6 +415,25 @@ const [tableloading, settableloading] = React.useState<boolean>(false);
     setIsSupplierSubmitModalOpen(false);
   };
 
+  const handleSupplierReSubmitAction = (action: string, id: number, event: MenuInfo) => {
+    // setdropdownclick(false);
+    Modal.confirm({
+      title: 'Are you sure?',
+      content: 'Do you want to Resubmit the Document?',
+      onOk: async () => {
+        event.domEvent.stopPropagation();
+        console.log(action, id);
+        setSubmitIdRow(id);
+        // Open the modal
+        setIsSupplierSubmitModalOpen(true);
+      },
+      onCancel() {
+        // console.log('Date change cancelled');
+      },
+    });
+  };
+  
+
   
   const handleRaiseQueryAction = async (buttonName: string, rowId: string) => {
     // event.stopPropagation();
@@ -608,8 +648,14 @@ const [tableloading, settableloading] = React.useState<boolean>(false);
     };
     const handleDateChange = async (date: any, dateString: any) => {
       if (date) {
-
-      console.log('changed date',date,dateString);
+        console.log("Formatted Implementation Date:", formatDate(selectedRow.implementationDate));
+        console.log("Changed Date:", formatDate(dateString));
+        console.log("Contract To Date:", formatDate(selectedRow.contractToDate));
+    
+        if (formatDate(dateString) < formatDate(selectedRow.contractToDate)) {
+          message.warn("Selected date cannot be earlier than the implementation date.");
+          return;
+        }
       Modal.confirm({
         title: 'Are you sure?',
         content: 'Do you want to change the Implementation Date?',
@@ -1132,13 +1178,8 @@ const Loading = () => (
         <br></br>
         {!tableloading&&<Tabs defaultActiveKey="1">
     
-            <Tabs.TabPane tab="Summary" key="1">
-            <AnalysisPieChart
-            supplementaryDocStatus={tableData}
-            />
-            </Tabs.TabPane>
-            <Tabs.TabPane tab="Home" key="2">
-  {isLoading ? (
+            <Tabs.TabPane tab="Home" key="1">
+            {isLoading ? (
     <div style={{ paddingTop: 100, textAlign: 'center' }}>
       <Spin size="large" />
     </div>
@@ -1179,11 +1220,12 @@ const Loading = () => (
           {
             title: 'Action',
             dataIndex: 'action',
+            className: supplierActionsPermission ? '' : 'hidden-column',
             render: (_, row) => (
               <Dropdown
   overlay={
     <Menu>
-      {row.documentStatus === 0 && (
+      {(row.documentStatus === 0 || row.documentStatus === 3 ) && (
         <>
           <Menu.Item onClick={(event) => { 
             event.domEvent.stopPropagation();
@@ -1191,6 +1233,7 @@ const Loading = () => (
           }}>
             Supplementary Invoice Details/Credit Note
           </Menu.Item>
+          {row.documentStatus === 0 &&
           <Menu.Item onClick={async (event) => {
             event.domEvent.stopPropagation();
             try {
@@ -1212,6 +1255,7 @@ const Loading = () => (
           }}>
             Send To Buyer
           </Menu.Item>
+          }
           <Menu.Item onClick={(event) => { 
             event.domEvent.stopPropagation();
             handleRaiseQueryAction('Raise Query', row.id);
@@ -1226,13 +1270,36 @@ const Loading = () => (
       }}>
         History of Query
       </Menu.Item>
+      {row.documentStatus === 3 && (
+      <Menu.Item onClick={async (event) => { 
+        event.domEvent.stopPropagation();
+        try {
+          const { isOpen, count } = await checkAnyQueryIsOpen(row.id, event);
+          if (isOpen && row.isdocumentuploaded) {
+            handleSupplierReSubmitAction('ReSubmit', row.id, event);
+          } else {
+            if (!row.isdocumentuploaded) {
+              message.warning('Upload All Documents');
+            }
+            if (!isOpen) {
+              message.warn(`You have ${count} open queries. Please close the previous queries first.`);
+            }
+          }
+        } catch (error) {
+          console.error("Error checking query status:", error);
+          message.error("An error occurred while checking query status");
+        }
+      
+      }}>
+        Resubmit
+      </Menu.Item>)}
     </Menu>
   }
   trigger={['click']}
   placement="bottomRight" // Ensures it appears at the bottom-right of the button
   getPopupContainer={(triggerNode) => (triggerNode.parentNode as HTMLElement) || document.body}
 > 
-  <div onClick={(e) => e.stopPropagation()} style={{ cursor: 'pointer' }}>
+  <div onClick={(e) => e.stopPropagation()} style={{ cursor: 'pointer' ,textAlign: 'center'}}>
     <SettingsIcon />
   </div>
 </Dropdown>
@@ -1320,7 +1387,8 @@ const Loading = () => (
             className="custom-table" // Add the custom class here
             pagination={{ pageSize: 10 }}
             bordered
-            scroll={{ x: 'max-content' }} 
+            scroll={{ x: 'max-content'}} 
+            
             // rowSelection={{
             //   selectedRowKeys: selectedRows, // Ensure selectedRows is an array of numbers
             //   onChange: (selectedRowKeys) => {
@@ -1333,14 +1401,18 @@ const Loading = () => (
               onMouseLeave: () => setHoveredRowId(null),
               style: {
                 backgroundColor:
-                  hoveredRowId === row.id
+                  row.documentStatus === 3
+                    ? '#d8b1b1' // Set red background if documentStatus is 3
+                    : hoveredRowId === row.id
                     ? '#f1f1f1'
                     : row.id % 2 === 0
                     ? '#f9f9f9'
                     : '#fff',
                 cursor: 'pointer',
+                color:  'black', // Optional: Adjust text color for readability
               },
             })}
+            
             
   //           summary={() => (
   //   <thead>
@@ -1413,7 +1485,11 @@ const Loading = () => (
     </>
   )}
 </Tabs.TabPane>
-
+<Tabs.TabPane tab="Summary" key="2">
+<AnalysisPieChart
+            supplementaryDocStatus={tableData}
+            />
+</Tabs.TabPane>
           </Tabs>}
           {tableloading && Loading()}
       </Card>

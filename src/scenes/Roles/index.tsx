@@ -12,6 +12,7 @@ import SessionStore from '../../stores/sessionStore';
 import Stores from '../../stores/storeIdentifier';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
+import sessionService from '../../services/session/sessionService';
 
 // const userPermissions = ["Pages.Administration.Roles.Create", "Pages.Administration.Roles.Edit","Pages.Administration.Roles.Delete"];
 // const hasPermission = (permission: string): boolean => userPermissions.includes(permission);
@@ -27,6 +28,7 @@ export interface IRoleState {
   skipCount: number;
   roleId: number;
   filter: string;
+  role: string;
 }
 
 const confirm = Modal.confirm;
@@ -42,20 +44,31 @@ class Role extends AppComponentBase<IRoleProps, IRoleState> {
     maxResultCount: 10,
     skipCount: 0,
     roleId: 0,
-    filter: ''
+    filter: '',
+    role:''
   };
 
   async componentDidMount() {
     await this.getAll();
+    sessionService.getCurrentLoginInformations().then(currentLoginInfo => {
+      console.log("Current User Role:", currentLoginInfo);
+      this.setState({ role: currentLoginInfo?.user?.userName || "No role found" }, () => {
+        console.log("Updated User Role:", this.state.role); // Logs updated state
+      });
+    });
   }
 
   async getAll() {
-    await this.props.roleStore.getAll({ maxResultCount: this.state.maxResultCount,
-       skipCount: this.state.skipCount, 
-       keyword: this.state.filter
-      });
+    const filters={
+      maxResultCount: this.state.maxResultCount,
+      skipCount: this.state.skipCount, 
+      Filter:this.state.filter
+    }
+
+    await this.props.roleStore.getAll(filters,this.state.role);
   }
 
+  
   handleTableChange = (pagination: any) => {
     this.setState({ skipCount: (pagination.current - 1) * this.state.maxResultCount! }, async () => await this.getAll());
   };
@@ -66,14 +79,15 @@ class Role extends AppComponentBase<IRoleProps, IRoleState> {
     });
   };
 
+
   async createOrUpdateModalOpen(entityDto: EntityDto) {
     if (entityDto.id === 0) {
       this.props.roleStore.createRole();
-      await this.props.roleStore.getAllPermissions();
+      await this.props.roleStore.getAllPermissions(this.state.role);
       await this.props.sessionStore.currentLogin;
     } else {
-      await this.props.roleStore.getRoleForEdit(entityDto);
-      await this.props.roleStore.getAllPermissions();
+      await this.props.roleStore.getRoleForEdit(entityDto,this.state.role);
+      await this.props.roleStore.getAllPermissions(this.state.role);
       await this.props.sessionStore.currentLogin;
     }
 

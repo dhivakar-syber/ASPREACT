@@ -111,3 +111,7 @@ table th {
   font-size: 14px; /* Adjust text size */
   color: #333; /* Dark gray text for better visibility */
 }
+
+.hidden-column {
+  display: none;
+}

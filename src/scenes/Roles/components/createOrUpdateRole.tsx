@@ -28,7 +28,9 @@ const CreateOrUpdateRole: React.FC<ICreateOrUpdateRoleProps> = (props) => {
   const [expandedKeys, setExpandedKeys] = useState<Key[]>([]);
   const [searchValue, setSearchValue] = useState("");
 
-  // Build tree from permissions
+  // Permission Tree Map
+  const permissionMap = new Map<string, string | null>();
+
   const buildPermissionTree = (permissions: GetAllPermissionsOutput[]): DataNode[] => {
     const map = new Map<string, DataNode>();
 
@@ -39,6 +41,7 @@ const CreateOrUpdateRole: React.FC<ICreateOrUpdateRoleProps> = (props) => {
         children: [],
       };
       map.set(permission.name, node);
+      permissionMap.set(permission.name, permission.parentName || null);
     });
 
     const tree: DataNode[] = [];
@@ -69,36 +72,91 @@ const CreateOrUpdateRole: React.FC<ICreateOrUpdateRoleProps> = (props) => {
   useEffect(() => {
     const builtTree = buildPermissionTree(permissions);
     setTreeData(builtTree);
-    setExpandedKeys(getAllKeys(builtTree)); // Expand all nodes by default
+    setExpandedKeys(getAllKeys(builtTree));
   }, [permissions]);
 
   useEffect(() => {
     if (props.visible && props.roleStore.roleEdit.role) {
       const roleData = props.roleStore.roleEdit.role;
       const grantedPermissions = props.roleStore.roleEdit.grantedPermissionNames || [];
-  
+
       props.formRef.current?.setFieldsValue({
         ...roleData,
         grantedPermissionNames: grantedPermissions,
       });
-  
-      setCheckedKeys(grantedPermissions); // Ensure checkboxes reflect the state
+
+      setCheckedKeys(grantedPermissions);
     }
   }, [props.visible, props.roleStore.roleEdit]);
+  const getAllChildKeys = (parentKey: string): string[] => {
+    const findChildren = (nodes: DataNode[], parentKey: string): string[] => {
+      let keys: string[] = [];
   
-
-  const onCheck: TreeProps["onCheck"] = (checkedKeysValue) => {
-    const newCheckedKeys = Array.isArray(checkedKeysValue) ? checkedKeysValue : checkedKeysValue.checked;
-    
-    setCheckedKeys(newCheckedKeys);
-    
-    props.formRef.current?.setFieldsValue({
-      grantedPermissionNames: newCheckedKeys,
-    });
+      nodes.forEach((node) => {
+        if (String(node.key) === parentKey) {
+          node.children?.forEach((child) => {
+            keys.push(String(child.key));
+            Array.prototype.push.apply(keys, findChildren(child.children || [], String(child.key)));
+          });
+        } else if (node.children) {
+          Array.prototype.push.apply(keys, findChildren(node.children, parentKey));
+        }
+      });
+  
+      return keys;
+    };
+  
+    return findChildren(treeData, parentKey);
   };
   
 
-  // Search filter function
+  const getAllParentKeys = (key: string): string[] => {
+    let parents: string[] = [];
+    let current = key;
+    while (permissionMap.has(current)) {
+      const parent = permissionMap.get(current);
+      if (parent) {
+        parents.push(parent);
+        current = parent;
+      } else {
+        break;
+      }
+    }
+    return parents;
+  };
+  const onCheck = (checked: Key[] | { checked: Key[]; halfChecked: Key[] }, info: any) => {
+    const checkedKeysArray = Array.isArray(checked) ? checked : checked.checked;
+    let newCheckedKeys = new Set<Key>(checkedKeysArray.map(String)); // Ensure all keys are strings
+  
+    if (info.checked) {
+      console.log(info)
+      // Check parent nodes up the chain
+      getAllParentKeys(info.node.key).forEach((parent) => newCheckedKeys.add(parent));
+
+    } else {
+      // If all children are unchecked, remove parent check
+      const childKeys = getAllChildKeys(info.node.key);
+      const stillCheckedChildren = childKeys.some((child) => newCheckedKeys.has(child));
+
+      if (!stillCheckedChildren) {
+        getAllParentKeys(info.node.key).forEach((parent) => {
+          const siblingKeys = getAllChildKeys(parent);
+          const isSiblingChecked = siblingKeys.some((child) => newCheckedKeys.has(child));
+
+          if (!isSiblingChecked) {
+            newCheckedKeys.delete(parent);
+          }
+        });
+      }
+    }
+
+    setCheckedKeys(Array.from(newCheckedKeys).map(String));
+
+    props.formRef.current?.setFieldsValue({
+      grantedPermissionNames: Array.from(newCheckedKeys),
+    });
+  };
+
   const filterTreeData = (data: DataNode[], searchText: string): DataNode[] => {
     if (!searchText) return data;
 
@@ -118,7 +176,7 @@ const CreateOrUpdateRole: React.FC<ICreateOrUpdateRoleProps> = (props) => {
 
   const onSearch = (value: string) => {
     setSearchValue(value);
-    setExpandedKeys(getAllKeys(treeData)); // Expand all nodes when searching
+    setExpandedKeys(getAllKeys(treeData));
   };
 
   return (
@@ -143,7 +201,8 @@ const CreateOrUpdateRole: React.FC<ICreateOrUpdateRoleProps> = (props) => {
               <Search placeholder="Search Permissions" allowClear onChange={(e) => onSearch(e.target.value)} style={{ marginBottom: 8 }} />
               <Tree
                 checkable
-                selectable={false}
+                checkStrictly
+                selectable={true}
                 onCheck={onCheck}
                 checkedKeys={checkedKeys}
                 treeData={filterTreeData(treeData, searchValue)}

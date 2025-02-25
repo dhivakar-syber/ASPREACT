@@ -403,6 +403,7 @@ public async l4carddetails(input: l4dashboardinput) {
                     }
                 }
             );
+            console.log("New Table data",result.data.result);
             return result.data.result;
         } catch (error) {
             console.error('Error fetching supplementary summaries:', error);

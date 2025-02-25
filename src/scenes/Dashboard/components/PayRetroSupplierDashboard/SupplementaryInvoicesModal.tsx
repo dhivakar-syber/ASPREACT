@@ -4,6 +4,7 @@ import { UploadOutlined,FilePdfOutlined, FileExcelOutlined } from "@ant-design/i
 import { RcFile } from "antd/es/upload";
 import { ColumnsType } from "antd/es/table";
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
+import {DocumentStatus} from  "../../../../enum"
 
 
 interface SupplementaryInvoiceModalProps {
@@ -51,6 +52,7 @@ const SupplementaryInvoiceModal: React.FC<SupplementaryInvoiceModalProps> = ({
     setTableData([]);      // Clear table data
     onCancel();            // Call the parent-provided onCancel
   };
+  console.log("TableData..",tableData)
   let t = AnnexureVersion;
 let v = [];
 const formatDateToDDMMYY = (date:Date) => {
@@ -93,7 +95,8 @@ for (let i = 1; i <= t; i++) {
     annexureexcelpath: item.attachment3,
     supplementaryFilename: item.fileName,
     annexureFileName: item.annexureFileName,
-    excelfilename: item.fileName3
+    excelfilename: item.fileName3,
+    documentStatus:item.documentStatus
   }));
   
       // Use concat instead of spread
@@ -291,7 +294,12 @@ async function downloadFile({ path }: { path: string }): Promise<void> {
         </Button>
         </Tooltip>
       ),
-    }
+    },
+    { title: "Approval Status", dataIndex: "documentStatus",key: "documentStatus",render: (text: string, record: any) => { 
+      const docStatus = record.documentStatus;
+                const documentStatusText = DocumentStatus[docStatus] || '';
+                return <div>{documentStatusText}</div>;
+    }},
   ];
 
   const Loading = () => (

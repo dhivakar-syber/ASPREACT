@@ -26,11 +26,7 @@ class UserService {
 
   public async getRoles() {
     try {
-      const result = await http.post('api/services/app/Role/GetRoles', {}, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const result = await http.get('api/services/app/Role/GetRoles', {}, );
       return result.data.result.items;
     } catch (error) {
       console.error('Error fetching roles:', error);
@@ -49,7 +45,8 @@ class UserService {
   }
 
     public async getAll(pagedFilterAndSortedRequest: PagedUserResultRequestDto): Promise<PagedResultDto<GetAllUserOutput>> {
-    let result = await http.post('api/services/app/User/GetUsers', { params: pagedFilterAndSortedRequest });
+    console.log('userGetallFilter',pagedFilterAndSortedRequest)
+      let result = await http.get('api/services/app/User/GetUsers',{params:pagedFilterAndSortedRequest});
     return result.data.result;
   }
 }
