@@ -25,6 +25,7 @@ interface TableData {
   supplementaryFilename:string,
   annexureFileName:string,
   excelfilename:string,
+  status:string
 
 }
 
@@ -34,7 +35,7 @@ const SupplementaryInvoiceModal: React.FC<SupplementaryInvoiceModalProps> = ({
   visible,
   onCancel,
 }) => {
-  const [annexureGroup, setAnnexureGroup] = useState<string | "1"| undefined>(undefined);
+  const [annexureGroup, setAnnexureGroup] = useState<number>(1);
   const [invoiceNo, setInvoiceNo] = useState<string>("");
   const [supplementaryFilename, setsupplementaryFilename] = useState<string>("");
   const [annexureFileName, setannexureFileName] = useState<string>("");
@@ -96,7 +97,7 @@ for (let i = 1; i <= t; i++) {
     supplementaryFilename: item.fileName,
     annexureFileName: item.annexureFileName,
     excelfilename: item.fileName3,
-    documentStatus:item.documentStatus
+    status:item.documentStatus
   }));
   
       // Use concat instead of spread
@@ -115,7 +116,18 @@ for (let i = 1; i <= t; i++) {
   }, [visible, rowId]); 
   
   const handleUpload = async () => {
-    if (!invoiceNo || !invoiceDate || !annexureFile || !attachmentFile || !annexureAttachmentFile) {
+
+
+    let existingApproved = tableData.some(item => 
+      item.annexuregroup === annexureGroup && item.status === 'Approved'
+  );
+
+  if (existingApproved) {
+      alert("This document is already approved. Cannot upload document.");
+      
+  }
+  else{
+  if (!invoiceNo || !invoiceDate || !annexureFile || !attachmentFile || !annexureAttachmentFile) {
       message.error("Please fill in all fields and upload files.");
       return;
     }
@@ -127,7 +139,7 @@ for (let i = 1; i <= t; i++) {
   }
     formData.append("invoiceNo", invoiceNo);
     formData.append("invoiceDate", invoiceDate);
-    formData.append("annexureGroup", annexureGroup || "");
+    formData.append("annexureGroup", `${annexureGroup}`);
     
     // Ensure you append the files properly
     if (attachmentFile) {
@@ -174,7 +186,9 @@ for (let i = 1; i <= t; i++) {
     } catch (error) {
       message.error("An error occurred during the upload process.");
     }
+  }
   };  
+
   const handleSupplementrypdfButtonClick = async (pdfPath: string,filename:string) => {
     setsupplementaryFilename(filename);
 
@@ -295,8 +309,8 @@ async function downloadFile({ path }: { path: string }): Promise<void> {
         </Tooltip>
       ),
     },
-    { title: "Approval Status", dataIndex: "documentStatus",key: "documentStatus",render: (text: string, record: any) => { 
-      const docStatus = record.documentStatus;
+    { title: "Approval Status", dataIndex: "status",key: "status",render: (text: string, record: any) => { 
+      const docStatus = record.status;
                 const documentStatusText = DocumentStatus[docStatus] || '';
                 return <div>{documentStatusText}</div>;
     }},
