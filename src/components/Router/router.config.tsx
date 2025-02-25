@@ -40,7 +40,7 @@ export const userRouter: any = [
   //     return null;
   //   },
   //   showInMenu: false,
-  // }
+  // },
   {
     path: '/user/login',
     name: 'login',
