@@ -20,10 +20,10 @@ const getUserPermissions = async (): Promise<string[]> => {
   try {
     // Fetch the current login information asynchronously
     const currentLoginInfo = await sessionService.getCurrentLoginInformations();
-    console.log('User',currentLoginInfo);
+    //console.log('User',currentLoginInfo);
     // Assuming permissions are inside the 'permissions' field of the object
     const permissions: string[] = currentLoginInfo?.user?.permissions || [];
-    console.log('permissions',permissions)
+    //console.log('permissions',permissions)
     return permissions;
   } catch (error) {
     console.error("Error fetching user permissions:", error);
@@ -37,7 +37,7 @@ const hasPermission = async (permission: string): Promise<boolean> => {
 };
 
 hasPermission("Pages.Administration.ApprovalWorkflows").then(hasPerm => {
-  console.log('is',hasPerm);  // true or false based on the session data
+  //console.log('is',hasPerm);  // true or false based on the session data
 });
 
 export interface IApprovalWorkflowsProps {
@@ -215,7 +215,7 @@ toggleFilterBox = () => {
         self.props.approvalWorkflowStore.delete(input);
       },
       onCancel() {
-        console.log('Cancel');
+        //console.log('Cancel');
       },
     });
   }
@@ -272,7 +272,7 @@ editdata:any = null;
   //   };
 
   public render() {
-    console.log(this.props.approvalWorkflowStore);
+    //console.log(this.props.approvalWorkflowStore);
     const { approvalWorkflow } = this.props.approvalWorkflowStore;
     const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
 

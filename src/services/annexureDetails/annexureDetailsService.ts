@@ -64,8 +64,8 @@ class annexureDetailsService {
   }
   public async GetSupplementarysplitAnnexureDetailsToExcel(supplementaryids: number[], TemplatePath: string) {
     try {
-      console.log("Input supplementaryids:", supplementaryids); // Log supplementaryids
-      console.log("Input TemplatePath:", TemplatePath); // Log TemplatePath
+      //console.log("Input supplementaryids:", supplementaryids); // Log supplementaryids
+      //console.log("Input TemplatePath:", TemplatePath); // Log TemplatePath
   
       if (!Array.isArray(supplementaryids) || typeof TemplatePath !== 'string') {
         throw new Error('Invalid input parameters');

@@ -21,10 +21,10 @@ const getUserPermissions = async (): Promise<string[]> => {
   try {
     // Fetch the current login information asynchronously
     const currentLoginInfo = await sessionService.getCurrentLoginInformations();
-    console.log('User',currentLoginInfo);
+    //console.log('User',currentLoginInfo);
     // Assuming permissions are inside the 'permissions' field of the object
     const permissions: string[] = currentLoginInfo?.user?.permissions || [];
-    console.log('permissions',permissions)
+    //console.log('permissions',permissions)
     return permissions;
   } catch (error) {
     console.error("Error fetching user permissions:", error);
@@ -38,7 +38,7 @@ const hasPermission = async (permission: string): Promise<boolean> => {
 };
 
 hasPermission("Pages.Administration.AnnexureDetails").then(hasPerm => {
-  console.log('is',hasPerm);  // true or false based on the session data
+  //console.log('is',hasPerm);  // true or false based on the session data
 });
 
 
@@ -215,7 +215,7 @@ class AnnexureDetails extends AppComponentBase<IAnnexureDetailsProps, IAnnexureD
         self.props.annexureDetailsStore.delete(input);
       },
       onCancel() {
-        console.log('Cancel');
+        //console.log('Cancel');
       },
     });
   }
@@ -271,7 +271,7 @@ editdata:any = null;
   handleInvoiceNoSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ invoiceNoFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.invoiceNoFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.invoiceNoFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
@@ -279,7 +279,7 @@ editdata:any = null;
   //   // If a valid date is selected, it will be a Moment object
   //   const dateValue = date ? date.toDate() : null; // Convert Moment to native Date
   //   this.setState({ minInvoiceDateFilter: dateValue }, () => {
-  //     console.log('Updated minDeliveryNoteDateFilter:', this.state.minInvoiceDateFilter);
+  //     //console.log('Updated minDeliveryNoteDateFilter:', this.state.minInvoiceDateFilter);
   //     this.getAll();
   //   });
   // };
@@ -287,7 +287,7 @@ editdata:any = null;
   // handleMaxInvoiceDateSearch = (date: Moment | null, dateString: string) => {
   //   const dateValue = date ? date.toDate() : null; // Convert Moment to native Date
   //   this.setState({ maxInvoiceDateFilter: dateValue }, () => {
-  //     console.log('Updated maxDeliveryNoteDateFilter:', this.state.maxInvoiceDateFilter);
+  //     //console.log('Updated maxDeliveryNoteDateFilter:', this.state.maxInvoiceDateFilter);
   //     this.getAll();
   //   });
   // };
@@ -295,7 +295,7 @@ editdata:any = null;
   //   // If a valid date is selected, it will be a Moment object
   //   const dateValue = date ? date.toDate() : null; // Convert Moment to native Date
   //   this.setState({ maxContractValidFromFilter: dateValue }, () => {
-  //     console.log('Updated minDeliveryNoteDateFilter:', this.state.maxContractValidFromFilter);
+  //     //console.log('Updated minDeliveryNoteDateFilter:', this.state.maxContractValidFromFilter);
   //     this.getAll();
   //   });
   // };
@@ -304,7 +304,7 @@ editdata:any = null;
   // handleMaxDeliveryNoteSearch = (date: Moment | null, dateString: string) => {
   //   const dateValue = date ? date.toDate() : null; // Convert Moment to native Date
   //   this.setState({ minContractValidToFilter: dateValue }, () => {
-  //     console.log('Updated maxDeliveryNoteDateFilter:', this.state.minContractValidToFilter);
+  //     //console.log('Updated maxDeliveryNoteDateFilter:', this.state.minContractValidToFilter);
   //     this.getAll();
   //   });
   // };
@@ -312,7 +312,7 @@ editdata:any = null;
   //   // If a valid date is selected, it will be a Moment object
   //   const dateValue = date ? date.toDate() : null; // Convert Moment to native Date
   //   this.setState({ maxContractValidToFilter: dateValue }, () => {
-  //     console.log('Updated minDeliveryNoteDateFilter:', this.state.maxContractValidToFilter);
+  //     //console.log('Updated minDeliveryNoteDateFilter:', this.state.maxContractValidToFilter);
   //     this.getAll();
   //   });
   // };
@@ -321,7 +321,7 @@ editdata:any = null;
   // handleMaxDeliveryNoteSearch = (date: Moment | null, dateString: string) => {
   //   const dateValue = date ? date.toDate() : null; // Convert Moment to native Date
   //   this.setState({ minContractValidToFilter: dateValue }, () => {
-  //     console.log('Updated maxDeliveryNoteDateFilter:', this.state.minContractValidToFilter);
+  //     //console.log('Updated maxDeliveryNoteDateFilter:', this.state.minContractValidToFilter);
   //     this.getAll();
   //   });
   // };
@@ -329,7 +329,7 @@ editdata:any = null;
   handleContractNoSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ contractNoFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.contractNoFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.contractNoFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
@@ -338,86 +338,86 @@ editdata:any = null;
   handleCurrencySearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ currencyFilter: Number(value) }, () => {
-      console.log('Updated nameFilter:', this.state.currencyFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.currencyFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   // handleMovementTypeSearch = (value: number) => {
   //   this.setState({ maxOldValueFilter: value }, () => {
-  //     console.log('Updated nameFilter:', this.state.maxOldValueFilter); // Verify the state update
+  //     //console.log('Updated nameFilter:', this.state.maxOldValueFilter); // Verify the state update
   //     this.getAll(); // Correctly call getAll() after the state update
   //   });
   // };
   // handleMovementTypeSearch = (value: number) => {
   //   this.setState({ minOldValueFilter: value }, () => {
-  //     console.log('Updated nameFilter:', this.state.minOldValueFilter); // Verify the state update
+  //     //console.log('Updated nameFilter:', this.state.minOldValueFilter); // Verify the state update
   //     this.getAll(); // Correctly call getAll() after the state update
   //   });
   // };
   // handleMovementTypeSearch = (value: number) => {
   //   this.setState({ maxNewValueFilter: value }, () => {
-  //     console.log('Updated nameFilter:', this.state.maxNewValueFilter); // Verify the state update
+  //     //console.log('Updated nameFilter:', this.state.maxNewValueFilter); // Verify the state update
   //     this.getAll(); // Correctly call getAll() after the state update
   //   });
   // };
   // handleMovementTypeSearch = (value: number) => {
   //   this.setState({ minNewValueFilter: value }, () => {
-  //     console.log('Updated nameFilter:', this.state.minNewValueFilter); // Verify the state update
+  //     //console.log('Updated nameFilter:', this.state.minNewValueFilter); // Verify the state update
   //     this.getAll(); // Correctly call getAll() after the state update
   //   });
   // };
   // handleMovementTypeSearch = (value: number) => {
   //   this.setState({ maxDiffValueFilter: value }, () => {
-  //     console.log('Updated nameFilter:', this.state.maxDiffValueFilter); // Verify the state update
+  //     //console.log('Updated nameFilter:', this.state.maxDiffValueFilter); // Verify the state update
   //     this.getAll(); // Correctly call getAll() after the state update
   //   });
   // };
   // handleMovementTypeSearch = (value: number) => {
   //   this.setState({ minDiffValueFilter: value }, () => {
-  //     console.log('Updated nameFilter:', this.state.minDiffValueFilter); // Verify the state update
+  //     //console.log('Updated nameFilter:', this.state.minDiffValueFilter); // Verify the state update
   //     this.getAll(); // Correctly call getAll() after the state update
   //   });
   // };
   // handleMovementTypeSearch = (value: number) => {
   //   this.setState({ maxQtyFilter: value }, () => {
-  //     console.log('Updated nameFilter:', this.state.maxQtyFilter); // Verify the state update
+  //     //console.log('Updated nameFilter:', this.state.maxQtyFilter); // Verify the state update
   //     this.getAll(); // Correctly call getAll() after the state update
   //   });
   // };
   // handleMovementTypeSearch = (value: number) => {
   //   this.setState({ minQtyFilter: value }, () => {
-  //     console.log('Updated nameFilter:', this.state.minQtyFilter); // Verify the state update
+  //     //console.log('Updated nameFilter:', this.state.minQtyFilter); // Verify the state update
   //     this.getAll(); // Correctly call getAll() after the state update
   //   });
   // };
   // handleMovementTypeSearch = (value: number) => {
   //   this.setState({ maxTotalFilter: value }, () => {
-  //     console.log('Updated nameFilter:', this.state.maxTotalFilter); // Verify the state update
+  //     //console.log('Updated nameFilter:', this.state.maxTotalFilter); // Verify the state update
   //     this.getAll(); // Correctly call getAll() after the state update
   //   });
   // };
   // handleMovementTypeSearch = (value: number) => {
   //   this.setState({ minTotalFilter: value }, () => {
-  //     console.log('Updated nameFilter:', this.state.minTotalFilter); // Verify the state update
+  //     //console.log('Updated nameFilter:', this.state.minTotalFilter); // Verify the state update
   //     this.getAll(); // Correctly call getAll() after the state update
   //   });
   // };
   // handleMovementTypeSearch = (value: number) => {
   //   this.setState({ currencyFilter: value }, () => {
-  //     console.log('Updated nameFilter:', this.state.currencyFilter); // Verify the state update
+  //     //console.log('Updated nameFilter:', this.state.currencyFilter); // Verify the state update
   //     this.getAll(); // Correctly call getAll() after the state update
   //   });
   // };
   handleSupplementarySearch = (value: string) => {
     this.setState({ supplementaryInvoiceNoFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.supplementaryInvoiceNoFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.supplementaryInvoiceNoFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   handlePartPartNoSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ partPartNoFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.partPartNoFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.partPartNoFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
@@ -425,7 +425,7 @@ editdata:any = null;
   handleBuyerNameSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ buyerNameFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.buyerNameFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.buyerNameFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
@@ -433,7 +433,7 @@ editdata:any = null;
   handleSupplierNameSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ supplierNameFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.supplierNameFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.supplierNameFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
@@ -450,7 +450,7 @@ editdata:any = null;
   //   };
 
   public render() {
-    console.log(this.props.annexureDetailsStore);
+    //console.log(this.props.annexureDetailsStore);
     const { annexureDetail } = this.props.annexureDetailsStore;
     const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
 

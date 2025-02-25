@@ -97,7 +97,7 @@ class ProcureStore {
   //       XLSX.utils.book_append_sheet(wb, ws, "Procure Data");
   //       XLSX.writeFile(wb, "ProcureData.xlsx");
 
-  //       console.log("Export successful: ProcureData.xlsx");
+  //       //console.log("Export successful: ProcureData.xlsx");
   //   } catch (error) {
   //       console.error("Error exporting Excel:", error);
   //   }

@@ -60,7 +60,7 @@ class CreateOrUpdateBuyer extends React.Component<ICreateOrUpdateBuyerProps> {
   };
   // Fetch data from the store when component mounts
   async componentDidMount() {
-    console.log('Component mounted. Preparing to fetch buyer data...');
+    //console.log('Component mounted. Preparing to fetch buyer data...');
     const { initialData } = this.props;
   if (initialData && initialData.userId) {
     const selectedItem = this.props.buyerStore.buyerlookupdata?.items.find(
@@ -73,7 +73,7 @@ class CreateOrUpdateBuyer extends React.Component<ICreateOrUpdateBuyerProps> {
     await this.getAllBuyerForLookupTable();
     await this.getAllL3UserForLookupTable();
     await this.getAllL4UserForLookupTable();
-    console.log('Buyer data fetched successfully');
+    //console.log('Buyer data fetched successfully');
   }
 
   async getAllBuyerForLookupTable() {
@@ -107,7 +107,7 @@ class CreateOrUpdateBuyer extends React.Component<ICreateOrUpdateBuyerProps> {
   };
 
   handleBuyerLookupSelect = (record: BuyerLookupItem) => {
-    console.log('Selected record:', record);
+    //console.log('Selected record:', record);
   
     if (!record) {
       console.error('No record selected!');

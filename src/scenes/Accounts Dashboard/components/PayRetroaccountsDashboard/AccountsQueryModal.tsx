@@ -180,7 +180,7 @@ class AccountQueryModal extends AppComponentBase<IDisputesProps, IDisputesdataSt
         self.disputesStore.delete(input);
       },
       onCancel() {
-        console.log('Cancel');
+        //console.log('Cancel');
       },
     });
   }
@@ -190,7 +190,7 @@ class AccountQueryModal extends AppComponentBase<IDisputesProps, IDisputesdataSt
 editdata:any = null;
 IntimateToBuyerMail = async (item: any) => {
    
-      console.log(item);
+      //console.log(item);
       message.success(`F&C to Buyer Forwarded Query Intimation  Mail Sent to - ${item.accoutantName}`);
       
 
@@ -260,7 +260,7 @@ IntimateToBuyerMail = async (item: any) => {
 
   public render() {
     // this.getAll();
-    console.log(this.disputesStore);
+    //console.log(this.disputesStore);
     const { disputedata } = this.disputesStore;
     const columns = [
          {

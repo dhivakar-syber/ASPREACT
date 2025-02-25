@@ -38,13 +38,13 @@ class RoleService {
 
   public async getAllPermissions(role:string) {
     let result = await http.get('/api/services/app/Permission/GetAllPermissions', { params: {role:role} });
-    console.log('Getallpermissions:',result.data.result.items);
+    //console.log('Getallpermissions:',result.data.result.items);
     return result.data.result.items;
   }
 
   public async getRoleForEdit(entityDto: EntityDto,role:string): Promise<GetRoleForEditOutput> {
     let result = await http.get('/api/services/app/Role/GetRoleForEdit', { params: {Id:entityDto.id,CurrentUserRole:role} });
-    console.log('GetRoleForEdit',result)
+    //console.log('GetRoleForEdit',result)
     return result.data.result;
     
   }

@@ -23,8 +23,8 @@ const SupplierModalView: React.FC<SupplierModalViewProps> = ({
   const handleInsideClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
-  console.log(supplementaryData)
-  console.log(supplementaryData.partdescription)
+  //console.log(supplementaryData)
+  //console.log(supplementaryData.partdescription)
 
   function formatDate(d:Date) {
     const date = new Date(d);
@@ -36,7 +36,7 @@ const SupplierModalView: React.FC<SupplierModalViewProps> = ({
 }
 
 const AnnexureTable = ({ data }: { data: any[] }) => {
-  console.log('AnnexureTable',data);
+  //console.log('AnnexureTable',data);
   return (
     <div >
       <br></br>
@@ -96,7 +96,7 @@ const AnnexureTable = ({ data }: { data: any[] }) => {
 };
 
 const InvoiceTable = ({ data }: { data: any[] }) => {
-  console.log('invoiceTable',data);
+  //console.log('invoiceTable',data);
   return (
     <div >
       <h3>CBFC Information</h3>

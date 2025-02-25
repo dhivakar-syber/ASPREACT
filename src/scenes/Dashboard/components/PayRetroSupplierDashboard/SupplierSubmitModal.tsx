@@ -37,7 +37,7 @@ const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({
 
   const handleSubmit = () => {
     const submitRemarks = submitRemarksRef.current?.value || ""; // Get the value from the textarea
-    console.log("Submit Remarks:", submitRemarks);
+    //console.log("Submit Remarks:", submitRemarks);
 
     if (!submitIdRow) {
       console.error("Submit ID Row is not set.");

@@ -61,12 +61,12 @@ const PayRetroAccountsDashboard: React.SFC = () => {
     
            
             const suppliers = await supplementarySummariesService.GetAllSuppliersaccountsdashboard([0]);
-            console.log('suppliers',suppliers)
+            //console.log('suppliers',suppliers)
             setSuppliers(suppliers.data.result || []);
             //setselectedsuppliers([]);
            
             const buyers = await supplementarySummariesService.GetAllBuyersList(0);
-            console.log('buyers',buyers)
+            //console.log('buyers',buyers)
             setBuyers(buyers.data.result || []);
             //setselectedbuyers([0]);
            
@@ -91,7 +91,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
     
               await AccountsDashboardSummaries(accountsdashboardinput);
           
-            console.log('Suppliers',suppliers.data.result);
+            //console.log('Suppliers',suppliers.data.result);
             
           } catch (error) {
             console.error("Error fetching supplementary summaries:", error);
@@ -104,7 +104,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
   const handlesupplierchange =async  (selectedValues: any[]) => {
         
         setselectedsuppliers(selectedValues);
-        console.log('selectedsuppliers',selectedValues)
+        //console.log('selectedsuppliers',selectedValues)
     
         getparts(selectedValues,selectedbuyers);
     
@@ -124,7 +124,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
     const handlebuyerChange =async  (selectedValues: any[]) => {
         
         setselectedbuyers(selectedValues);
-        console.log('selectedbuyers',selectedValues)
+        //console.log('selectedbuyers',selectedValues)
     
         getparts(selectedparts,selectedValues);
 
@@ -142,7 +142,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
         await AccountsDashboardSummaries(accountDashboardInput);
       };
   const handledatechange = async (value:any)=>{
-     console.log('Selected Date',value)
+     //console.log('Selected Date',value)
       
   
       const dateObject =value && value.trim() !== "" ? new Date(value) : null;
@@ -171,7 +171,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
   
     var  result = await supplementarySummariesService.accountsDashboardSummaries(accountDashboardInput);
       setTableData(result.data.result || []);
-      console.log("Account_Supplementary_top_table", result.data.result);
+      //console.log("Account_Supplementary_top_table", result.data.result);
   
       const carddetails = await supplementarySummariesService.accounntcarddetails(accountDashboardInput);
   
@@ -203,7 +203,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
       
            const parts = await supplementarySummariesService.AccountDashboardGetAllPartNumbersList(partbuyers,partsuppliers);
                setParts(parts.data.result || []);
-               console.log('parts',parts.data.result) 
+               //console.log('parts',parts.data.result) 
                setselectedparts([]);
       
       
@@ -215,7 +215,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
     const handlepartChange =async  (selectedValues: any[]) => {
       
       setselectedparts(selectedValues);
-      console.log('selectedparts',selectedValues)
+      //console.log('selectedparts',selectedValues)
   
       var   accountDashboardInput: AccountDashboardInput = {
         Supplierids: selectedsuppliers,
@@ -232,7 +232,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
    
   
     const handlecategorychange = async(selectedValues: number) => {
-      console.log('selected', selectedValues);
+      //console.log('selected', selectedValues);
       setselectedcategory(selectedValues);
   
       var   accountDashboardInput: AccountDashboardInput = {
@@ -248,7 +248,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
       
     };
     const handlestatuschange = async(selectedValues:number) => {
-      console.log('selected', selectedValues);
+      //console.log('selected', selectedValues);
       setselectedstatus(selectedValues);
   
       var   accountDashboardInput: AccountDashboardInput = {
@@ -284,7 +284,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
   // };
 
   // const handleDropdownAction = (action: string, id: number) => {
-  //   console.log(`Action: ${action}, Row ID: ${id}`);
+  //   //console.log(`Action: ${action}, Row ID: ${id}`);
   //   // Placeholder for dropdown action logic
   //   setSubmitIdRow(id);
   //   setIsSupplierSubmitModalOpen(true);
@@ -292,7 +292,7 @@ const PayRetroAccountsDashboard: React.SFC = () => {
   // };
 
   const handleClickAction = ( id: number) => {
-    console.log(` Row ID: ${id}`);
+    //console.log(` Row ID: ${id}`);
     // Placeholder for dropdown action logic
     setSubmitIdRow(id);
     setIsSupplierSubmitModalOpen(true);

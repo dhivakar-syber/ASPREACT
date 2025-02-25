@@ -75,8 +75,7 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
       }
   
       this.setState({ selectedRoles });
-      const returnedRoles = this.props.onRoleSelection(selectedRoles);
-    console.log('Returned roles:', returnedRoles); // You can log t
+      
     });
   };
 
@@ -84,7 +83,7 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
     const { visible, onCancel, onCreate, editRole } = this.props;
     const { selectedRoles } = this.state;
     const roles = this.props.roles || [];
-    console.log("Roles Data:", roles);
+    //console.log("Roles Data:", roles);
     // Handle default selected roles based on 'isAssigned' property
     const options = (editRole?.length > 0 ? editRole : roles)
       ?.map((role: any) => ({

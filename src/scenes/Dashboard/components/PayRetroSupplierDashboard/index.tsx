@@ -32,9 +32,9 @@ import sessionService from "../../../../services/session/sessionService";
 const getUserPermissions = async (): Promise<string[]> => {
   try {
     const currentLoginInfo = await sessionService.getCurrentLoginInformations();
-    // console.log('User',currentLoginInfo);
+    // //console.log('User',currentLoginInfo);
     const permissions: string[] = currentLoginInfo?.user?.permissions || [];
-    // console.log('permissions',permissions)
+    // //console.log('permissions',permissions)
     return permissions;
   } catch (error) {
     console.error("Error fetching user permissions:", error);
@@ -127,16 +127,16 @@ checkPermissions();
       try {
 
         const session = await sessionServices.getCurrentLoginInformations();
-        console.log(session.user.roles);
+        //console.log(session.user.roles);
         const rolesfromsession = session.user.roles;
         const requiredRoles = ["admin", "PayRetroAdmin", "Admin", "payretroadmin"];
         const hasRole = rolesfromsession.some(role => requiredRoles.includes(role));
-        console.log('HasRole:',hasRole);
+        //console.log('HasRole:',hasRole);
         setHasRole(hasRole)
       
 
         const suppliers = await supplementarySummariesService.GetAllSuppliers(abp.session.userId);
-        console.log('suppliers',suppliers)
+        //console.log('suppliers',suppliers)
         
         setSuppliers(suppliers.data.result || []);
           setselectedsuppliers({name:suppliers.data.result[0].name,value:suppliers.data.result[0].id});
@@ -154,7 +154,7 @@ checkPermissions();
           setdashboardinput(supplierDashboardInput);
 
           await LoadsupplementarySummary(supplierDashboardInput);
-        console.log('Suppliers',suppliers.data.result);
+        //console.log('Suppliers',suppliers.data.result);
         
       } catch (error) {
         console.error("Error fetching supplementary summaries:", error);
@@ -171,7 +171,7 @@ checkPermissions();
 
     settableloading(true)
     
-    console.log('selectedSuppliers',option,value)
+    //console.log('selectedSuppliers',option,value)
     setselectedsuppliers({name:option.label,value:value});
     
 
@@ -201,7 +201,7 @@ checkPermissions();
     settableloading(true)
     
     setselectedbuyers(selectedValues);
-    console.log('selectedbuyers',selectedValues)
+    //console.log('selectedbuyers',selectedValues)
 
     getparts(selectedsuppliers.value,selectedValues);
 
@@ -235,7 +235,7 @@ checkPermissions();
 
   var  result = await supplementarySummariesService.loadsupplementarySummary(supplierDashboardInput);
     setTableData(result.data.result || []);
-    console.log("Supplementary_top_table", result.data.result);
+    //console.log("Supplementary_top_table", result.data.result);
 
     const carddetails = await supplementarySummariesService.carddetails(supplierDashboardInput);
 
@@ -255,7 +255,7 @@ checkPermissions();
 
      const parts = await supplementarySummariesService.GetAllPartNumbersList(partsuppliers,partbuyers);
          setParts(parts.data.result || []);
-         console.log('parts',parts.data.result) 
+         //console.log('parts',parts.data.result) 
          setselectedparts([]);
 
 
@@ -266,7 +266,7 @@ checkPermissions();
     
     settableloading(true)
     setselectedparts(selectedValues);
-    console.log('selectedparts',selectedValues)
+    //console.log('selectedparts',selectedValues)
 
     var   supplierDashboardInput: SupplierDashboardInput = {
       Supplierid: selectedsuppliers.value,
@@ -284,7 +284,7 @@ checkPermissions();
   const handlecategorychange = async(value: number) => {
 
     settableloading(true)
-    console.log(`selected ${value}`);
+    //console.log(`selected ${value}`);
     setselectedcategory(value);
 
     var   supplierDashboardInput: SupplierDashboardInput = {
@@ -318,7 +318,7 @@ checkPermissions();
     // event: React.MouseEvent
   ) => {
     // event.stopPropagation();
-    console.log(`Action: ${action}, Row ID: ${id}`);
+    //console.log(`Action: ${action}, Row ID: ${id}`);
     setSubmitIdRow(id);
 
 
@@ -340,7 +340,7 @@ checkPermissions();
       },
       
     });
-    console.log(fetchedData); 
+    //console.log(fetchedData); 
     // Update the state with the fetched data
    setDisputeData(fetchedData.items);
     setIsHistoryModalVisible(true);
@@ -371,7 +371,7 @@ checkPermissions();
         },
       });
   
-      console.log(fetchedData); // Log the fetched data
+      //console.log(fetchedData); // Log the fetched data
   
       if (fetchedData && fetchedData.items) {
         // Filter items that are not closed
@@ -406,7 +406,7 @@ checkPermissions();
   const handleSupplierSubmitAction = (action: string, id: number, event: MenuInfo) => {
     //setdropdownclick(false);
     event.domEvent.stopPropagation();
-    console.log(action, id);
+    //console.log(action, id);
     setSubmitIdRow(id);
     // Open the modal
     setIsSupplierSubmitModalOpen(true);
@@ -422,13 +422,13 @@ checkPermissions();
       content: 'Do you want to Resubmit the Document?',
       onOk: async () => {
         event.domEvent.stopPropagation();
-        console.log(action, id);
+        //console.log(action, id);
         setSubmitIdRow(id);
         // Open the modal
         setIsSupplierSubmitModalOpen(true);
       },
       onCancel() {
-        // console.log('Date change cancelled');
+        // //console.log('Date change cancelled');
       },
     });
   };
@@ -508,8 +508,8 @@ checkPermissions();
   
       setProgress(50); // Midway through validation
   
-      console.log('values', values);
-      console.log('item', item);
+      //console.log('values', values);
+      //console.log('item', item);
   
       await disputesStore.create(values).then(async function () {
         setProgress(100); // Task completed
@@ -613,14 +613,14 @@ checkPermissions();
     try {
       const result = await supplementarySummariesService.grndata(row.id); // Await the Promise
       setModalData(result);
-      console.log('setmodaldata',result) // Assuming the result contains the data in 'data' field
+      //console.log('setmodaldata',result) // Assuming the result contains the data in 'data' field
     } catch (error) {
       console.error('Error fetching data:', error);
     }
     try {
       const annexureresult = await supplementarySummariesService.annexuredata(row.id); // Await the Promise
       annexuresetModalData(annexureresult);
-      console.log('annexuresetmodaldata',annexureresult) // Assuming the result contains the data in 'data' field
+      //console.log('annexuresetmodaldata',annexureresult) // Assuming the result contains the data in 'data' field
     } catch (error) {
       console.error('Error fetching data:', error);
     } 
@@ -641,16 +641,16 @@ checkPermissions();
   // }
 
   const Suppliermodalview = (selectedRow: any) => {
-    console.log(selectedRow)
+    //console.log(selectedRow)
     const handleInsideClick = (e: React.MouseEvent) => {
       // Prevent modal from closing when clicking inside the modal
       e.stopPropagation();
     };
     const handleDateChange = async (date: any, dateString: any) => {
       if (date) {
-        console.log("Formatted Implementation Date:", formatDate(selectedRow.implementationDate));
-        console.log("Changed Date:", formatDate(dateString));
-        console.log("Contract To Date:", formatDate(selectedRow.contractToDate));
+        //console.log("Formatted Implementation Date:", formatDate(selectedRow.implementationDate));
+        //console.log("Changed Date:", formatDate(dateString));
+        //console.log("Contract To Date:", formatDate(selectedRow.contractToDate));
     
         if (formatDate(dateString) < formatDate(selectedRow.contractToDate)) {
           message.warn("Selected date cannot be earlier than the implementation date.");
@@ -660,8 +660,8 @@ checkPermissions();
         title: 'Are you sure?',
         content: 'Do you want to change the Implementation Date?',
         onOk: async () => {
-          console.log('Selected date:', dateString);
-          console.log('Selected row ID:', selectedRow?.id);
+          //console.log('Selected date:', dateString);
+          //console.log('Selected row ID:', selectedRow?.id);
     
           try {
             await supplementarySummariesService.Implementationeffect(selectedRow?.id, dateString);
@@ -670,15 +670,15 @@ checkPermissions();
             const result = await supplementarySummariesService.grndata(selectedRow?.id);
             setModalData([]);
             setModalData(result);
-            console.log('setmodaldata', result);
+            //console.log('setmodaldata', result);
     
             const annexureresult = await supplementarySummariesService.annexuredata(selectedRow?.id);
             annexuresetModalData([]);
             annexuresetModalData(annexureresult);
-            console.log('annexuresetmodaldata', annexureresult);
+            //console.log('annexuresetmodaldata', annexureresult);
     
             const row = await supplementarySummariesService.GetAllsupplementarySummarybyId(selectedRow?.id);
-            console.log('ImplementationDateChange', row[0]);
+            //console.log('ImplementationDateChange', row[0]);
             setSelectedRow([]);
             setSelectedRow(row[0]);
     
@@ -689,7 +689,7 @@ checkPermissions();
           }
         },
         onCancel() {
-          console.log('Date change cancelled');
+          //console.log('Date change cancelled');
         },
       });
     }
@@ -818,7 +818,7 @@ checkPermissions();
   
 
   const InvoiceTable = ({ data }: { data: any[] }) => {
-    console.log('invoiceTable',data);
+    //console.log('invoiceTable',data);
     return (
       <div >
         <h3>CBFC Information</h3>
@@ -908,7 +908,7 @@ checkPermissions();
       });
   };
   const AnnexureTable = ({ data }: { data: any[] }) => {
-    console.log('AnnexureTable',data);
+    //console.log('AnnexureTable',data);
     return (
       <div >
         <br></br>
@@ -1154,7 +1154,7 @@ const Loading = () => (
                     onClick={() => {
                       if (selectedRows.length > 0) {
                         handleAnnexureClick(selectedRows);
-                        console.log('Download Annexure clicked for rows:', selectedRows);
+                        //console.log('Download Annexure clicked for rows:', selectedRows);
                       } else {
                         alert('No rows selected for download!');
                       }

@@ -49,20 +49,20 @@ class AppLayout extends React.Component<ILoginProps> {
   updateStateBasedOnRoles = async () => {
     try {
       const currentLoginInfo = await sessionService.getCurrentLoginInformations();
-      console.log('User', currentLoginInfo);
+      //console.log('User', currentLoginInfo);
   
       const permissions: string[] = currentLoginInfo?.user?.roles || [];
-      console.log('permissions', permissions);
+      //console.log('permissions', permissions);
   
       const requiredRoles = ["admin", "PayRetroAdmin", "Admin", "payretroadmin"];
       const hasRole = permissions.some((role: string) => requiredRoles.includes(role));
   
-      console.log('HasRole:', hasRole);
+      //console.log('HasRole:', hasRole);
   
       // Update the state based on the presence of the required role
       this.setState({ hasRole }, () => {
         // Callback function executed after state update and re-render
-        console.log('State has been updated:', this.state.hasRole);
+        //console.log('State has been updated:', this.state.hasRole);
       });
     } catch (error) {
       console.error("Error fetching user permissions:", error);
@@ -93,7 +93,7 @@ class AppLayout extends React.Component<ILoginProps> {
 
     const roles = this.props.sessionStore?.currentLogin?.user?.roles;
     // const requiredroles = ["admin","Admin","PayRetroAdmin"]
-    console.log('Roles',roles);
+    //console.log('Roles',roles);
     
     let redirectPath = '';
     if (roles?.includes('admin')) {

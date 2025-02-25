@@ -21,10 +21,10 @@ const getUserPermissions = async (): Promise<string[]> => {
   try {
     // Fetch the current login information asynchronously
     const currentLoginInfo = await sessionService.getCurrentLoginInformations();
-    console.log('User',currentLoginInfo);
+    //console.log('User',currentLoginInfo);
     // Assuming permissions are inside the 'permissions' field of the object
     const permissions: string[] = currentLoginInfo?.user?.permissions || [];
-    console.log('permissions',permissions)
+    //console.log('permissions',permissions)
     return permissions;
   } catch (error) {
     console.error("Error fetching user permissions:", error);
@@ -38,7 +38,7 @@ const hasPermission = async (permission: string): Promise<boolean> => {
 };
 
 hasPermission("Pages.Administration.SupplementarySummaries").then(hasPerm => {
-  console.log('is',hasPerm);  // true or false based on the session data
+  //console.log('is',hasPerm);  // true or false based on the session data
 });
 
 
@@ -256,7 +256,7 @@ class SupplementarySummaries extends AppComponentBase<ISupplementarySummariesPro
         self.props.supplementarySummariesStore.delete(input);
       },
       onCancel() {
-        console.log('Cancel');
+        //console.log('Cancel');
       },
     });
   }
@@ -327,209 +327,209 @@ editdata:any = null;
 
   handleDocIdSearch = (value: number) => {
     this.setState({docId : Number(value) }, () => {
-    console.log("Updated MinValidFromFilter:", this.state.docId);
+    //console.log("Updated MinValidFromFilter:", this.state.docId);
     this.getAll();
   });
 };
 handleSupplementaryInvSearch = (value: string) => {
   // Update the state and call getAll() once the state is updated
   this.setState({ supplementaryInvoiceNoFilter: value }, () => {
-    console.log('Updated nameFilter:', this.state.supplementaryInvoiceNoFilter); // Verify the state update
+    //console.log('Updated nameFilter:', this.state.supplementaryInvoiceNoFilter); // Verify the state update
     this.getAll(); // Correctly call getAll() after the state update
   });
 };
 handleDocStatusSearch = (value: number) => {
   this.setState({documentStatusFilter : Number(value) }, () => {
-  console.log("Updated MinValidFromFilter:", this.state.documentStatusFilter);
+  //console.log("Updated MinValidFromFilter:", this.state.documentStatusFilter);
   this.getAll();
 });
 };
 handleIsApprovedSearch = (value: number) => {
   this.setState({isApprovedFilter : Number(value) }, () => {
-  console.log("Updated MinValidFromFilter:", this.state.isApprovedFilter);
+  //console.log("Updated MinValidFromFilter:", this.state.isApprovedFilter);
   this.getAll();
 });
 };
 handleBuyerApprovalStatusSearch = (value: number) => {
   this.setState({buyerApprovalStatusFilter : Number(value) }, () => {
-  console.log("Updated MinValidFromFilter:", this.state.buyerApprovalStatusFilter);
+  //console.log("Updated MinValidFromFilter:", this.state.buyerApprovalStatusFilter);
   this.getAll();
 });
 };
 handleBuyerApprovalSearch = (value: number) => {
   this.setState({buyerApprovalFilter : Number(value) }, () => {
-  console.log("Updated MinValidFromFilter:", this.state.buyerApprovalFilter);
+  //console.log("Updated MinValidFromFilter:", this.state.buyerApprovalFilter);
   this.getAll();
 });
 };
 handleIsRejectedSearch = (value: number) => {
   this.setState({isRejectedFilter : Number(value) }, () => {
-  console.log("Updated MinValidFromFilter:", this.state.isRejectedFilter);
+  //console.log("Updated MinValidFromFilter:", this.state.isRejectedFilter);
   this.getAll();
 });
 };
 handleAccountantApprovalStatusSearch = (value: number) => {
   this.setState({accountantApprovalStatusFilter : Number(value) }, () => {
-  console.log("Updated MinValidFromFilter:", this.state.accountantApprovalStatusFilter);
+  //console.log("Updated MinValidFromFilter:", this.state.accountantApprovalStatusFilter);
   this.getAll();
 });
 };
 handlePaymentApprovalStatusSearch = (value: number) => {
   this.setState({paymentApprovalStatusFilter : Number(value) }, () => {
-  console.log("Updated MinValidFromFilter:", this.state.paymentApprovalStatusFilter);
+  //console.log("Updated MinValidFromFilter:", this.state.paymentApprovalStatusFilter);
   this.getAll();
 });
 };
 handlePaymentAppSearch = (value: number) => {
   this.setState({paymentApprovalFilter : Number(value) }, () => {
-  console.log("Updated MinValidFromFilter:", this.state.paymentApprovalFilter);
+  //console.log("Updated MinValidFromFilter:", this.state.paymentApprovalFilter);
   this.getAll();
 });
 };
 handleContractNoSearch = (value: string) => {
   this.setState({contractNoFilter : value }, () => {
-  console.log("Updated MinValidFromFilter:", this.state.contractNoFilter);
+  //console.log("Updated MinValidFromFilter:", this.state.contractNoFilter);
   this.getAll();
 });
 };
 handleBuyerEmailAddrSearch = (value: string) => {
   // Update the state and call getAll() once the state is updated
   this.setState({ buyerEmailAddressFilter: value }, () => {
-    console.log('Updated nameFilter:', this.state.buyerEmailAddressFilter); // Verify the state update
+    //console.log('Updated nameFilter:', this.state.buyerEmailAddressFilter); // Verify the state update
     this.getAll(); // Correctly call getAll() after the state update
   });
 };
 handleBuyerRemarksSearch = (value: string) => {
   // Update the state and call getAll() once the state is updated
   this.setState({ buyerRemarksFilter: value }, () => {
-    console.log('Updated nameFilter:', this.state.buyerRemarksFilter); // Verify the state update
+    //console.log('Updated nameFilter:', this.state.buyerRemarksFilter); // Verify the state update
     this.getAll(); // Correctly call getAll() after the state update
   });
 };
 handleAccountNameSearch = (value: string) => {
   // Update the state and call getAll() once the state is updated
   this.setState({ accountantNameFilter: value }, () => {
-    console.log('Updated nameFilter:', this.state.accountantNameFilter); // Verify the state update
+    //console.log('Updated nameFilter:', this.state.accountantNameFilter); // Verify the state update
     this.getAll(); // Correctly call getAll() after the state update
   });
 };
 handleAccountEmailAddrearch = (value: string) => {
   // Update the state and call getAll() once the state is updated
   this.setState({ accountantEmailAddressFilter: value }, () => {
-    console.log('Updated nameFilter:', this.state.accountantEmailAddressFilter); // Verify the state update
+    //console.log('Updated nameFilter:', this.state.accountantEmailAddressFilter); // Verify the state update
     this.getAll(); // Correctly call getAll() after the state update
   });
 };
 handleAccountRemarksSearch = (value: string) => {
   // Update the state and call getAll() once the state is updated
   this.setState({ sccountRemarksFilter: value }, () => {
-    console.log('Updated nameFilter:', this.state.sccountRemarksFilter); // Verify the state update
+    //console.log('Updated nameFilter:', this.state.sccountRemarksFilter); // Verify the state update
     this.getAll(); // Correctly call getAll() after the state update
   });
 };
 handlePayerNameSearch = (value: string) => {
   // Update the state and call getAll() once the state is updated
   this.setState({ payerNameFilter: value }, () => {
-    console.log('Updated nameFilter:', this.state.payerNameFilter); // Verify the state update
+    //console.log('Updated nameFilter:', this.state.payerNameFilter); // Verify the state update
     this.getAll(); // Correctly call getAll() after the state update
   });
 };
 handlePayerEmailAddrSearch = (value: string) => {
   // Update the state and call getAll() once the state is updated
   this.setState({ payerEmailAddressFilter: value }, () => {
-    console.log('Updated nameFilter:', this.state.payerEmailAddressFilter); // Verify the state update
+    //console.log('Updated nameFilter:', this.state.payerEmailAddressFilter); // Verify the state update
     this.getAll(); // Correctly call getAll() after the state update
   });
 };
 handlePaymentRemarksSearch = (value: string) => {
   // Update the state and call getAll() once the state is updated
   this.setState({ paymentRemarksFilter: value }, () => {
-    console.log('Updated nameFilter:', this.state.paymentRemarksFilter); // Verify the state update
+    //console.log('Updated nameFilter:', this.state.paymentRemarksFilter); // Verify the state update
     this.getAll(); // Correctly call getAll() after the state update
   });
 };
 handlePartNoSearch = (value: string) => {
   // Update the state and call getAll() once the state is updated
   this.setState({ partPartNoFilter: value }, () => {
-    console.log('Updated nameFilter:', this.state.partPartNoFilter); // Verify the state update
+    //console.log('Updated nameFilter:', this.state.partPartNoFilter); // Verify the state update
     this.getAll(); // Correctly call getAll() after the state update
   });
 };
 handleBuyerNameSearch = (value: string) => {
   // Update the state and call getAll() once the state is updated
   this.setState({ buyerNameFilter: value }, () => {
-    console.log('Updated nameFilter:', this.state.buyerNameFilter); // Verify the state update
+    //console.log('Updated nameFilter:', this.state.buyerNameFilter); // Verify the state update
     this.getAll(); // Correctly call getAll() after the state update
   });
 };
 handleSupplierNameSearch = (value: string) => {
   // Update the state and call getAll() once the state is updated
   this.setState({ supplierNameFilter: value }, () => {
-    console.log('Updated nameFilter:', this.state.supplierNameFilter); // Verify the state update
+    //console.log('Updated nameFilter:', this.state.supplierNameFilter); // Verify the state update
     this.getAll(); // Correctly call getAll() after the state update
   });
 };
 handleBuyerIdsSearch = (value: number[]) => {
   // Update the state and call getAll() once the state is updated
   this.setState({ buyerIds: value }, () => {
-    console.log('Updated nameFilter:', this.state.buyerIds); // Verify the state update
+    //console.log('Updated nameFilter:', this.state.buyerIds); // Verify the state update
     this.getAll(); // Correctly call getAll() after the state update
   });
 };
 handleSupplierIdsSearch = (value: number[]) => {
   // Update the state and call getAll() once the state is updated
   this.setState({ supplierIds: value }, () => {
-    console.log('Updated nameFilter:', this.state.supplierIds); // Verify the state update
+    //console.log('Updated nameFilter:', this.state.supplierIds); // Verify the state update
     this.getAll(); // Correctly call getAll() after the state update
   });
 };
 handlePartIdsSearch = (value: number[]) => {
   // Update the state and call getAll() once the state is updated
   this.setState({ partIds: value }, () => {
-    console.log('Updated nameFilter:', this.state.partIds); // Verify the state update
+    //console.log('Updated nameFilter:', this.state.partIds); // Verify the state update
     this.getAll(); // Correctly call getAll() after the state update
   });
 };
 handlePSupplementaryIdSearch = (value: number) => {
   // Update the state and call getAll() once the state is updated
   this.setState({ supplementaryId: Number(value) }, () => {
-    console.log('Updated nameFilter:', this.state.supplementaryId); // Verify the state update
+    //console.log('Updated nameFilter:', this.state.supplementaryId); // Verify the state update
     this.getAll(); // Correctly call getAll() after the state update
   });
 };
 handlePartIdSearch = (value: number) => {
   this.setState({partid : Number(value) }, () => {
-  console.log("Updated MinValidFromFilter:", this.state.partid);
+  //console.log("Updated MinValidFromFilter:", this.state.partid);
   this.getAll();
 });
 };
 handleBuyerIdSearch = (value: number) => {
   this.setState({buyerid : Number(value) }, () => {
-  console.log("Updated MinValidFromFilter:", this.state.buyerid);
+  //console.log("Updated MinValidFromFilter:", this.state.buyerid);
   this.getAll();
 });
 };
 handleSupplierIdSearch = (value: number) => {
   this.setState({supplierid : Number(value) }, () => {
-  console.log("Updated MinValidFromFilter:", this.state.supplierid);
+  //console.log("Updated MinValidFromFilter:", this.state.supplierid);
   this.getAll();
 });
 };
 handleInvoiceTypeSearch = (value: number) => {
   this.setState({invoicetype : Number(value) }, () => {
-  console.log("Updated MinValidFromFilter:", this.state.invoicetype);
+  //console.log("Updated MinValidFromFilter:", this.state.invoicetype);
   this.getAll();
 });
 };
 handleQueryRaisedSearch = (value: number) => {
   this.setState({queryraisedactive : Number(value) }, () => {
-  console.log("Updated MinValidFromFilter:", this.state.queryraisedactive);
+  //console.log("Updated MinValidFromFilter:", this.state.queryraisedactive);
   this.getAll();
 });
 };
 
   public render() {
-    console.log(this.props.supplementarySummariesStore);
+    //console.log(this.props.supplementarySummariesStore);
     const { supplementarySummary } = this.props.supplementarySummariesStore;
     const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
     const columns = [

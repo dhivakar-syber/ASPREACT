@@ -24,7 +24,7 @@ class AnalysisCreditNotePieChart extends React.Component<PieChartExampleProps> {
 
     // Filter out data where iscreditnote is true
     const filteredData = supplementaryDocStatus.filter(item => item.iscreditnote);
-    console.log(filteredData)
+    //console.log(filteredData)
     // If there is no valid data, return an empty array to prevent rendering
     if (filteredData.length === 0) {
       return [];

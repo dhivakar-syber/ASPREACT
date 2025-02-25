@@ -98,7 +98,7 @@ export const appRouters: any = [
   {
     path: '/SQLqueryExecution',
     name: 'SQL Window',
-    permission: 'Pages.Tenant.Dashboard',
+    permission: 'Pages.Administration.SQLExecutor',
     title: 'SQL Window',
     icon: TagsOutlined,
     showInMenu: true,

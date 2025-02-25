@@ -67,14 +67,14 @@ class RoleStore {
   @action
   async getAllPermissions(role:string) {
     var result = await roleService.getAllPermissions(role);
-    console.log(result.name);
+    //console.log(result.name);
     this.allPermissions = result;
   }
   @action
   async getRoleForEdit(entityDto: EntityDto,role: string) {
       let result = await roleService.getRoleForEdit(entityDto,role);
   
-      console.log("API Role Response:", result);
+      //console.log("API Role Response:", result);
   
       runInAction(() => {
           this.roleEdit = {
@@ -88,7 +88,7 @@ class RoleStore {
           };
       });
   
-      console.log("Updated Store Role:", this.roleEdit);
+      //console.log("Updated Store Role:", this.roleEdit);
   }
   
 

@@ -129,7 +129,7 @@ const CreateOrUpdateRole: React.FC<ICreateOrUpdateRoleProps> = (props) => {
     let newCheckedKeys = new Set<Key>(checkedKeysArray.map(String)); // Ensure all keys are strings
   
     if (info.checked) {
-      console.log(info)
+      //console.log(info)
       // Check parent nodes up the chain
       getAllParentKeys(info.node.key).forEach((parent) => newCheckedKeys.add(parent));
 

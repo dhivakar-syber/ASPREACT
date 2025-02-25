@@ -45,7 +45,7 @@ class UserService {
   }
 
     public async getAll(pagedFilterAndSortedRequest: PagedUserResultRequestDto): Promise<PagedResultDto<GetAllUserOutput>> {
-    console.log('userGetallFilter',pagedFilterAndSortedRequest)
+    //console.log('userGetallFilter',pagedFilterAndSortedRequest)
       let result = await http.get('api/services/app/User/GetUsers',{params:pagedFilterAndSortedRequest});
     return result.data.result;
   }

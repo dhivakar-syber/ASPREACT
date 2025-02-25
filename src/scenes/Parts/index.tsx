@@ -18,10 +18,10 @@ const getUserPermissions = async (): Promise<string[]> => {
   try {
     // Fetch the current login information asynchronously
     const currentLoginInfo = await sessionService.getCurrentLoginInformations();
-    console.log('User',currentLoginInfo);
+    //console.log('User',currentLoginInfo);
     // Assuming permissions are inside the 'permissions' field of the object
     const permissions: string[] = currentLoginInfo?.user?.permissions || [];
-    console.log('permissions',permissions)
+    //console.log('permissions',permissions)
     return permissions;
   } catch (error) {
     console.error("Error fetching user permissions:", error);
@@ -35,7 +35,7 @@ const hasPermission = async (permission: string): Promise<boolean> => {
 };
 
 hasPermission("Pages.Administration.Parts").then(hasPerm => {
-  console.log('is',hasPerm);  // true or false based on the session data
+  //console.log('is',hasPerm);  // true or false based on the session data
 });
 
 export interface IPartsProps {
@@ -167,7 +167,7 @@ class Parts extends AppComponentBase<IPartsProps, IPartsState> {
         self.props.partsStore.delete(input);
       },
       onCancel() {
-        console.log('Cancel');
+        //console.log('Cancel');
       },
     });
   }
@@ -220,27 +220,27 @@ editdata:any = null;
   handleDescriptionSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ DescriptionFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.DescriptionFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.DescriptionFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   handlePartPartNoSearch = (value: string) => {
     this.setState({ PartNoFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.PartNoFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.PartNoFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   
   handleSupplierNameSearch = (value: string) => {
     this.setState({ SupplierNameFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.SupplierNameFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.SupplierNameFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   
   handleBuyerNameSearch = (value: string) => {
     this.setState({ BuyerNameFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.BuyerNameFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.BuyerNameFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
@@ -252,7 +252,7 @@ editdata:any = null;
    
 
   public render() {
-    console.log(this.props.partsStore);
+    //console.log(this.props.partsStore);
     const { parts } = this.props.partsStore;
     const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
     const columns = [

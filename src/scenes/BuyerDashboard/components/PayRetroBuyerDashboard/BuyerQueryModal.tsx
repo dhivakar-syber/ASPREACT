@@ -189,7 +189,7 @@ getAll = async () => {
         self.disputesStore.delete(input);
       },
       onCancel() {
-        console.log('Cancel');
+        //console.log('Cancel');
       },
     });
   }
@@ -279,7 +279,7 @@ ForwardFandButton = () => {
   
   public render() {
     // this.getAll();
-    console.log(this.disputesStore);
+    //console.log(this.disputesStore);
     const { disputedata } = this.disputesStore;
     const columns = [
         {

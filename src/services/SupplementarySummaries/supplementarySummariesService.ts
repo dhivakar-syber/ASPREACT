@@ -403,7 +403,7 @@ public async l4carddetails(input: l4dashboardinput) {
                     }
                 }
             );
-            console.log("New Table data",result.data.result);
+            //console.log("New Table data",result.data.result);
             return result.data.result;
         } catch (error) {
             console.error('Error fetching supplementary summaries:', error);
@@ -470,7 +470,7 @@ public async l4carddetails(input: l4dashboardinput) {
       public async SupplierRaisedQuery(supplementaryid: number) {
         try {
           
-          console.log('SupID',supplementaryid)
+          //console.log('SupID',supplementaryid)
           const result = await http.post(
             `api/services/app/SupplementarySummaries/SupplierQueryToBuyer?supplementaryid=${supplementaryid}`,
             

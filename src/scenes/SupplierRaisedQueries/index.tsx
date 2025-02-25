@@ -20,10 +20,10 @@ const getUserPermissions = async (): Promise<string[]> => {
   try {
     // Fetch the current login information asynchronously
     const currentLoginInfo = await sessionService.getCurrentLoginInformations();
-    console.log('User',currentLoginInfo);
+    //console.log('User',currentLoginInfo);
     // Assuming permissions are inside the 'permissions' field of the object
     const permissions: string[] = currentLoginInfo?.user?.permissions || [];
-    console.log('permissions',permissions)
+    //console.log('permissions',permissions)
     return permissions;
   } catch (error) {
     console.error("Error fetching user permissions:", error);
@@ -37,7 +37,7 @@ const hasPermission = async (permission: string): Promise<boolean> => {
 };
 
 hasPermission("Pages.Administration.SupplierRaisedQueries").then(hasPerm => {
-  console.log('is',hasPerm);  // true or false based on the session data
+  //console.log('is',hasPerm);  // true or false based on the session data
 });
 
 
@@ -177,7 +177,7 @@ class SupplierRaisedQuery extends AppComponentBase<ISupplierRaisedQueryProps, IS
         self.props.supplierRaisedQueryStore.delete(input);
       },
       onCancel() {
-        console.log('Cancel');
+        //console.log('Cancel');
       },
     });
   }
@@ -233,14 +233,14 @@ editdata:any = null;
   handleBuyerRemarksSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ buyerRemarksFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.buyerRemarksFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.buyerRemarksFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   handleStatusSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ statusFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.statusFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.statusFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
@@ -248,14 +248,14 @@ editdata:any = null;
   handleAttachmentSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ attachementFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.attachementFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.attachementFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   handlePartNoSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ partPartNoFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.partPartNoFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.partPartNoFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
@@ -263,14 +263,14 @@ editdata:any = null;
   handleBuyerNameSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ buyerNameFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.buyerNameFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.buyerNameFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   handleSupplierNameSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ supplierNameFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.supplierNameFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.supplierNameFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
@@ -287,7 +287,7 @@ editdata:any = null;
   //   };
 
   public render() {
-    console.log(this.props.supplierRaisedQueryStore);
+    //console.log(this.props.supplierRaisedQueryStore);
     const { supplierRaisedQuery } = this.props.supplierRaisedQueryStore;
     const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
     const columns = [

@@ -17,7 +17,7 @@ const BuyerApprovalModal: React.FC<BuyerApprovalModalProps> = ({ isOpen, onClose
 
     const handleSubmit = () => {
         const submitRemarks = submitRemarksRef.current?.value || ""; // Get the value from the textarea
-        console.log("Submit Remarks:", submitRemarks);
+        //console.log("Submit Remarks:", submitRemarks);
       
         // Validate `submitIdRow` before splitting
         if (!submitIdRow) {

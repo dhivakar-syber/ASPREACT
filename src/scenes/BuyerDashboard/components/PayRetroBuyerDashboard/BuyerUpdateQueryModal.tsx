@@ -41,9 +41,9 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
         // const [loading, setloading] = React.useState<boolean>(false);
     
       console.log(selectedRow)
-      console.log(isModalOpen)
+      //console.log(isModalOpen)
       
-      // console.log(setHoveredRowId)
+      // //console.log(setHoveredRowId)
 
   const getStatusLabel = (status: number): string => {
     switch (status) {
@@ -68,7 +68,7 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
 
       try {
         const result = await supplementarySummariesService.GetAllsupplementarySummarybyId(row); // Await the Promise
-        console.log('ImplementationDateChange',result[0]);
+        //console.log('ImplementationDateChange',result[0]);
         setSupplementaryData([]);
         setSupplementaryData(result[0]);
         
@@ -78,14 +78,14 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
       try {
         const result = await supplementarySummariesService.grndata(row); // Await the Promise
         setModalData(result);
-        console.log('setmodaldata',result) 
+        //console.log('setmodaldata',result) 
       } catch (error) {
         console.error('Error fetching data:', error);
       }
       try {
         const annexureresult = await supplementarySummariesService.annexuredata(row); // Await the Promise
         annexuresetModalData(annexureresult);
-        console.log('annexuresetmodaldata',annexureresult) 
+        //console.log('annexuresetmodaldata',annexureresult) 
       } catch (error) {
         console.error('Error fetching data:', error);
       } 

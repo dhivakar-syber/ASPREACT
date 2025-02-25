@@ -53,7 +53,7 @@ const SupplementaryInvoiceModal: React.FC<SupplementaryInvoiceModalProps> = ({
     setTableData([]);      // Clear table data
     onCancel();            // Call the parent-provided onCancel
   };
-  console.log("TableData..",tableData)
+  //console.log("TableData..",tableData)
   let t = AnnexureVersion;
 let v = [];
 const formatDateToDDMMYY = (date:Date) => {
@@ -73,7 +73,7 @@ for (let i = 1; i <= t; i++) {
   const updateTableData = async (rowId: string) => {
     try {
       const uploadData = await supplementarySummariesService.supplementaryuploadeddetails(rowId);
-      console.log(uploadData)
+      //console.log(uploadData)
       const newData: TableData[] = uploadData.list
   .filter((item: any) => 
     item.annexuregroup !== null &&
@@ -101,7 +101,7 @@ for (let i = 1; i <= t; i++) {
   }));
   
       // Use concat instead of spread
-      console.log('NewData',newData);
+      //console.log('NewData',newData);
       setTableData(newData);
     } catch (error) {
       message.error("Failed to fetch and update table data.");
@@ -154,7 +154,7 @@ for (let i = 1; i <= t; i++) {
       formData.append("annexureAttachmentFile", annexureAttachmentFile);
     }
     formData.forEach((value, key) => {
-      console.log(key + ': ' + value);
+      //console.log(key + ': ' + value);
   });
     try {
       // Call your service's checkSignature method with the FormData

@@ -68,7 +68,7 @@ class Login extends React.Component<ILoginProps> {
     sessionStorage.setItem('rememberMe', loginModel.rememberMe ? '1' : '0');
    const { state } = this.props.location;
     window.location = state ? state.from.pathname : '/';
-    console.log('Window',window.location)
+    //console.log('Window',window.location)
   };
 
   public render() {

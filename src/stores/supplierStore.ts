@@ -60,7 +60,7 @@ class supplierStore {
   async get(entityDto: EntityDto) {
     let result = await supplierservice.get(entityDto);
     this.editUser = result;
-  console.log("hello! Its me");
+  //console.log("hello! Its me");
 
   }
   @action

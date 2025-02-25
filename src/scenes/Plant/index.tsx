@@ -16,10 +16,10 @@ const getUserPermissions = async (): Promise<string[]> => {
   try {
     // Fetch the current login information asynchronously
     const currentLoginInfo = await sessionService.getCurrentLoginInformations();
-    console.log('User',currentLoginInfo);
+    //console.log('User',currentLoginInfo);
     // Assuming permissions are inside the 'permissions' field of the object
     const permissions: string[] = currentLoginInfo?.user?.permissions || [];
-    console.log('permissions',permissions)
+    //console.log('permissions',permissions)
     return permissions;
   } catch (error) {
     console.error("Error fetching user permissions:", error);
@@ -33,7 +33,7 @@ const hasPermission = async (permission: string): Promise<boolean> => {
 };
 
 hasPermission("Pages.Administration.Plants").then(hasPerm => {
-  console.log('is',hasPerm);  // true or false based on the session data
+  //console.log('is',hasPerm);  // true or false based on the session data
 });
 
 
@@ -148,7 +148,7 @@ class Plant extends AppComponentBase<IPlantProps, IPlantState> {
         self.props.plantsStore.delete(input);
       },
       onCancel() {
-        console.log('Cancel');
+        //console.log('Cancel');
       },
     });
   }
@@ -187,14 +187,14 @@ class Plant extends AppComponentBase<IPlantProps, IPlantState> {
 
   handleNameSearch = (value: string) => {
     this.setState({ nameFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.nameFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.nameFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   
   handleDescriptionSearch = (value: string) => {
     this.setState({ descriptionFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.descriptionFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.descriptionFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };

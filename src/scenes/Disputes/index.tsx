@@ -18,10 +18,10 @@ const getUserPermissions = async (): Promise<string[]> => {
   try {
     // Fetch the current login information asynchronously
     const currentLoginInfo = await sessionService.getCurrentLoginInformations();
-    console.log('User',currentLoginInfo);
+    //console.log('User',currentLoginInfo);
     // Assuming permissions are inside the 'permissions' field of the object
     const permissions: string[] = currentLoginInfo?.user?.permissions || [];
-    console.log('permissions',permissions)
+    //console.log('permissions',permissions)
     return permissions;
   } catch (error) {
     console.error("Error fetching user permissions:", error);
@@ -35,7 +35,7 @@ const hasPermission = async (permission: string): Promise<boolean> => {
 };
 
 hasPermission("Pages.Administration.Disputes").then(hasPerm => {
-  console.log('is',hasPerm);  // true or false based on the session data
+  //console.log('is',hasPerm);  // true or false based on the session data
 });
 
 
@@ -227,7 +227,7 @@ toggleFilterBox = () => {
         self.props.disputesStore.delete(input);
       },
       onCancel() {
-        console.log('Cancel');
+        //console.log('Cancel');
       },
     });
   }
@@ -281,7 +281,7 @@ editdata:any = null;
 //     };
 
   public render() {
-    console.log(this.props.disputesStore);
+    //console.log(this.props.disputesStore);
     const { disputedata } = this.props.disputesStore;
     const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
     const columns = [

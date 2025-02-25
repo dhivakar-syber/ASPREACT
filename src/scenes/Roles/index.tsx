@@ -51,9 +51,9 @@ class Role extends AppComponentBase<IRoleProps, IRoleState> {
   async componentDidMount() {
     await this.getAll();
     sessionService.getCurrentLoginInformations().then(currentLoginInfo => {
-      console.log("Current User Role:", currentLoginInfo);
+      //console.log("Current User Role:", currentLoginInfo);
       this.setState({ role: currentLoginInfo?.user?.userName || "No role found" }, () => {
-        console.log("Updated User Role:", this.state.role); // Logs updated state
+        //console.log("Updated User Role:", this.state.role); // Logs updated state
       });
     });
   }
@@ -152,8 +152,8 @@ class Role extends AppComponentBase<IRoleProps, IRoleState> {
     const { allPermissions, roles } = this.props.roleStore;
     const {currentLogin} = this.props.sessionStore
     const isAdmin = currentLogin?.user?.roles?.includes('Admin');
-    console.log(allPermissions);
-    console.log(currentLogin);
+    //console.log(allPermissions);
+    //console.log(currentLogin);
     const specificPermissionsToShow = ["Pages", "Administration", "Disputes","Create new Query","Edit dispute","Delete dispute","Roles","Creating new role",
       "Editing role","Supplier Dashboard","Buyer Dashboard","Accounts Dashboard","Users","Creating new user","Editing user","Deleting user","Annexure details"
     ,"Create new annexure detail","Delete annexure detail","Edit annexure detail","SectionHead Dashboard"];

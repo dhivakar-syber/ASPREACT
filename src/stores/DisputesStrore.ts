@@ -153,7 +153,7 @@ class DisputedataStore {
   async buyergetAll(input:BuyerDashboardInput,skipcount:any) {
     let result = await disputesService.buyergetAll(input,skipcount);
     this.disputedata = result;
-    console.log('Result',result);
+    //console.log('Result',result);
   }
 
   @action

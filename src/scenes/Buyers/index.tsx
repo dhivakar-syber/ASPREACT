@@ -18,10 +18,10 @@ const getUserPermissions = async (): Promise<string[]> => {
   try {
     // Fetch the current login information asynchronously
     const currentLoginInfo = await sessionService.getCurrentLoginInformations();
-    console.log('User',currentLoginInfo);
+    //console.log('User',currentLoginInfo);
     // Assuming permissions are inside the 'permissions' field of the object
     const permissions: string[] = currentLoginInfo?.user?.permissions || [];
-    console.log('permissions',permissions)
+    //console.log('permissions',permissions)
     return permissions;
   } catch (error) {
     console.error("Error fetching user permissions:", error);
@@ -35,7 +35,7 @@ const hasPermission = async (permission: string): Promise<boolean> => {
 };
 
 hasPermission("Pages.Administration.Buyers").then(hasPerm => {
-  console.log('is',hasPerm);  // true or false based on the session data
+  //console.log('is',hasPerm);  // true or false based on the session data
 });
 
 export interface IBuyerProps {
@@ -187,7 +187,7 @@ class Buyers extends AppComponentBase<IBuyerProps, IBuyerStore> {
         self.props.buyerStore.delete(input);
       },
       onCancel() {
-        console.log('Cancel');
+        //console.log('Cancel');
       },
     });
   }
@@ -243,55 +243,55 @@ editdata:any = null;
   handleNameSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ nameFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.nameFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.nameFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   
   handleShortIdSearch = (value: string) => {
     this.setState({ shortIdFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.shortIdFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.shortIdFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   
   handleDepartmentSearch = (value: string) => {
     this.setState({ departmentFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.departmentFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.departmentFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   
   handleReportingToSearch = (value: string) => {
     this.setState({ reportingToFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.reportingToFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.reportingToFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   
   handleUserNameSearch = (value: string) => {
     this.setState({ userNameFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.userNameFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.userNameFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   
   handleL3UserSearch = (value: string) => {
     this.setState({ userName2Filter: value }, () => {
-      console.log('Updated nameFilter:', this.state.userName2Filter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.userName2Filter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   
   handleL4UserSearch = (value: string) => {
     this.setState({ userName3Filter: value }, () => {
-      console.log('Updated nameFilter:', this.state.userName3Filter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.userName3Filter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   
   public render() {
-    console.log(this.props.buyerStore);
+    //console.log(this.props.buyerStore);
     const { buyer } = this.props.buyerStore;
     const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
 
@@ -308,7 +308,7 @@ editdata:any = null;
                             {hasEditPermission && (
                               <Menu.Item
                             onClick={() => {
-                              console.log('Buyer ID:', item.buyer?.id); // Log the buyer ID
+                              //console.log('Buyer ID:', item.buyer?.id); // Log the buyer ID
                               this.setState({ buyerId: item.buyer?.id });
                               this.createOrUpdateModalOpen({ id: item.buyer?.id });
                             }}

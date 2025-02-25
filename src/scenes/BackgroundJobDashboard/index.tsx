@@ -89,7 +89,7 @@ declare var abp: any;
 
 
   const handledatechange = async (value:any)=>{
-   console.log('Selected Date',value)
+   //console.log('Selected Date',value)
     setSelectedDate(value)
 
     const dateObject =value && value.trim() !== "" ? value : null;
@@ -113,7 +113,7 @@ declare var abp: any;
   const handleCorelationChange =async  (selectedValues: any) => {
       
       setselectedparts(selectedValues);
-      console.log('selectedparts',selectedValues)
+      //console.log('selectedparts',selectedValues)
   
       
       await Promise.all([
@@ -129,7 +129,7 @@ declare var abp: any;
   
     var  result = await supplementarySummariesService.GetSyncData(ReportDate);
       setTableData(result || []);
-     // console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
+     // //console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
                     
     }
 
@@ -139,7 +139,7 @@ declare var abp: any;
     
       var  result = await supplementarySummariesService.GetProcurLogData(ReportDate);
         setprocurelogTableData(result || []);
-       // console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
+       // //console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
                       
       }
 
@@ -148,7 +148,7 @@ declare var abp: any;
       
         var  result = await supplementarySummariesService.GetCBFCLogData(ReportDate);
         setcbfclogTableData(result || []);
-        //  console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
+        //  //console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
                         
         }
 
@@ -157,7 +157,7 @@ declare var abp: any;
         
           var  result = await supplementarySummariesService.GetGRNLogData(ReportDate);
           setgrnlogTableData(result || []);
-           // console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
+           // //console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
                           
           }
 

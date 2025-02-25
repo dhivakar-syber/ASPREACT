@@ -83,7 +83,7 @@ const SettingsIcon = () => (
       
           setdashboardinput(buyerdashboard);
             await LoadsupplementarySummary(buyerdashboard);
-        console.log('buyers',buyers.data.result);
+        //console.log('buyers',buyers.data.result);
         
       } catch (error) {
         console.error("Error fetching supplementary summaries:", error);
@@ -96,7 +96,7 @@ const SettingsIcon = () => (
 
   
   const handledatechange = async (value:any)=>{
-   console.log('Selected Date',value)
+   //console.log('Selected Date',value)
     setSelectedDate(value)
 
     const dateObject =value && value.trim() !== "" ? new Date(value) : null;
@@ -118,7 +118,7 @@ const SettingsIcon = () => (
 
   const handlebuyerchange = async  (value:any, option:any) => {
       
-      console.log('selectedbuyers',option,value)
+      //console.log('selectedbuyers',option,value)
       setselectedbuyers({name:option.label,value:value});
   
   
@@ -148,7 +148,7 @@ const SettingsIcon = () => (
     const handlesupplierchange =async  (selectedValues: any[]) => {
       
       setselectedsuppliers(selectedValues);
-      console.log('selectedsuppliers',selectedValues)
+      //console.log('selectedsuppliers',selectedValues)
   
       getparts(selectedValues,selectedbuyers.value);
   
@@ -294,7 +294,7 @@ const SettingsIcon = () => (
   
     var  result = await supplementarySummariesService.BuyerdashboardloadsupplementarySummary(buyerdashboardinput);
       setTableData(result.data.result || []);
-      console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
+      //console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
   
       const carddetails = await supplementarySummariesService.Buyerdashboardcarddetails(buyerdashboardinput);
   
@@ -316,7 +316,7 @@ const SettingsIcon = () => (
   
        const parts = await supplementarySummariesService.BuyerDashboardGetAllPartNumbersList(partbuyers,partsuppliers);
            setParts(parts.data.result || []);
-           console.log('parts',parts.data.result) 
+           //console.log('parts',parts.data.result) 
            setselectedparts([]);
   
   
@@ -325,9 +325,9 @@ const SettingsIcon = () => (
   
     const handlepartChange =async  (selectedValues: any[]) => {
       
-      // console.log(isModalVisible,currentRowId);
+      // //console.log(isModalVisible,currentRowId);
       setselectedparts(selectedValues);
-      console.log('selectedparts',selectedValues)
+      //console.log('selectedparts',selectedValues)
   
       var   buyerdashboardinput: BuyerDashboardInput = {
         Supplierids: selectedsuppliers,
@@ -342,7 +342,7 @@ const SettingsIcon = () => (
     };
   
         const handlestatuschange = async(selectedValues:number) => {
-          console.log('selected', selectedValues);
+          //console.log('selected', selectedValues);
           setselectedstatus(selectedValues);
       
           var   buyerdashboardinput: BuyerDashboardInput = {
@@ -360,7 +360,7 @@ const SettingsIcon = () => (
    
   
     const handlecategorychange = async(value: number) => {
-      console.log(`selected ${value}`);
+      //console.log(`selected ${value}`);
       setselectedcategory(value);
   
       var   buyerdashboardinput: BuyerDashboardInput = {
@@ -380,7 +380,7 @@ const SettingsIcon = () => (
 
   
   const handleClickAction = ( id: number) => {
-    console.log(` Row ID: ${id}`);
+    //console.log(` Row ID: ${id}`);
     // Placeholder for dropdown action logic
     setSubmitIdRow(id);
     setIsApproveRejectModalOpen(true);

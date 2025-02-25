@@ -3,12 +3,10 @@ import { AuthenticationResultModel } from './dto/authenticationResultModel';
 import http from '../httpService';
 import { DiscAuthModel } from './dto/discAuthModel';
 import { ExternResultModel } from './dto/externResultModel';
-declare var abp:any;
 
 class TokenAuthService {
   public async authenticate(authenticationInput: AuthenticationModel): Promise<AuthenticationResultModel> {
     let result = await http.post('api/TokenAuth/Authenticate', authenticationInput);
-    console.log('abpdetails',abp)
     return result.data.result;
   }
 

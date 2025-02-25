@@ -22,10 +22,10 @@ const getUserPermissions = async (): Promise<string[]> => {
   try {
     // Fetch the current login information asynchronously
     const currentLoginInfo = await sessionService.getCurrentLoginInformations();
-    console.log('User',currentLoginInfo);
+    //console.log('User',currentLoginInfo);
     // Assuming permissions are inside the 'permissions' field of the object
     const permissions: string[] = currentLoginInfo?.user?.permissions || [];
-    console.log('permissions',permissions)
+    //console.log('permissions',permissions)
     return permissions;
   } catch (error) {
     console.error("Error fetching user permissions:", error);
@@ -39,7 +39,7 @@ const hasPermission = async (permission: string): Promise<boolean> => {
 };
 
 hasPermission("Pages.Administration.GRNMasters").then(hasPerm => {
-  console.log('is',hasPerm);  // true or false based on the session data
+  //console.log('is',hasPerm);  // true or false based on the session data
 });
 
 export interface IGRNdataProps {
@@ -176,7 +176,7 @@ class GRNDatas extends AppComponentBase<IGRNdataProps, IGRNdataState> {
         self.props.grndataStore.delete(input);
       },
       onCancel() {
-        console.log('Cancel');
+        //console.log('Cancel');
       },
     });
   }
@@ -231,42 +231,42 @@ editdata:any = null;
   handleDescriptionSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ descriptionFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.descriptionFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.descriptionFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   
   handleMovementTypeSearch = (value: number) => {
     this.setState({ movementTypeFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.movementTypeFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.movementTypeFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   
   handleInvoiceNoSearch = (value: string) => {
     this.setState({ invoiceNoFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.invoiceNoFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.invoiceNoFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   
   handlePartPartNoSearch = (value: string) => {
     this.setState({ partPartNoFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.partPartNoFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.partPartNoFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   
   handleSupplierNameSearch = (value: string) => {
     this.setState({ supplierNameFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.supplierNameFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.supplierNameFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   
   handleBuyerNameSearch = (value: string) => {
     this.setState({ buyerNameFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.buyerNameFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.buyerNameFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
@@ -279,7 +279,7 @@ editdata:any = null;
   };
 
   public render() {
-    console.log(this.props.grndataStore);
+    //console.log(this.props.grndataStore);
     const { grndata } = this.props.grndataStore;
     const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
     const columns = [

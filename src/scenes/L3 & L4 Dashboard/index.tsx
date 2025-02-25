@@ -47,14 +47,14 @@ const [selectedcategory, setselectedcategory] =React.useState<any>(String);
             setselectedteams([]);
 
             const Buyers = await supplementarySummariesService.GetAllBuyersforL4Dashboard([]);
-                        console.log('buyers',Buyers)
+                        //console.log('buyers',Buyers)
                         setBuyers(Buyers.data.result || []);
                        // setselectedbuyers([]);
 
 
     
             const suppliers = await supplementarySummariesService.GetAllSuppliersaccountsdashboard([]);
-            console.log('suppliers',suppliers)
+            //console.log('suppliers',suppliers)
             
             setSuppliers(suppliers.data.result || []);
            // setselectedsuppliers([]);
@@ -84,7 +84,7 @@ const [selectedcategory, setselectedcategory] =React.useState<any>(String);
       const handleteamchange =async  (selectedValues: any[]) => {
               
         setselectedteams(selectedValues);
-        console.log('selectedteams',selectedValues)
+        //console.log('selectedteams',selectedValues)
     
         
 
@@ -105,7 +105,7 @@ const [selectedcategory, setselectedcategory] =React.useState<any>(String);
       const handlebuyerChange =async  (selectedValues: any[]) => {
               
               setselectedbuyers(selectedValues);
-              console.log('selectedbuyers',selectedValues)
+              //console.log('selectedbuyers',selectedValues)
           
               
       
@@ -126,7 +126,7 @@ const [selectedcategory, setselectedcategory] =React.useState<any>(String);
       const handlesupplierchange =async  (selectedValues: any[]) => {
               
               setselectedsuppliers(selectedValues);
-              console.log('selectedsuppliers',selectedValues)
+              //console.log('selectedsuppliers',selectedValues)
             var   l4dashboardinput: l4dashboardinput = {
                 Supplierids: selectedValues,
                 Buyerids: selectedbuyers,
@@ -155,7 +155,7 @@ const [selectedcategory, setselectedcategory] =React.useState<any>(String);
               };       
 
               const handlecategorychange = async(selectedValues: number) => {
-                    console.log('selected', selectedValues);
+                    //console.log('selected', selectedValues);
                     setselectedcategory(selectedValues);
                 
                     var   l4dashboardinput: l4dashboardinput = {
@@ -174,7 +174,7 @@ const [selectedcategory, setselectedcategory] =React.useState<any>(String);
       
         var  result = await supplementarySummariesService.loadl4supplementarySummary(l4dashboardinput);
           setTableData(result.data.result || []);
-          console.log("l3Dashboard_top_table", result.data.result);
+          //console.log("l3Dashboard_top_table", result.data.result);
       
           //const carddetails = await supplementarySummariesService.carddetails(supplierDashboardInput);
       

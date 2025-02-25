@@ -19,10 +19,10 @@ const getUserPermissions = async (): Promise<string[]> => {
   try {
     // Fetch the current login information asynchronously
     const currentLoginInfo = await sessionService.getCurrentLoginInformations();
-    console.log('User',currentLoginInfo);
+    //console.log('User',currentLoginInfo);
     // Assuming permissions are inside the 'permissions' field of the object
     const permissions: string[] = currentLoginInfo?.user?.permissions || [];
-    console.log('permissions',permissions)
+    //console.log('permissions',permissions)
     return permissions;
   } catch (error) {
     console.error("Error fetching user permissions:", error);
@@ -36,7 +36,7 @@ const hasPermission = async (permission: string): Promise<boolean> => {
 };
 
 hasPermission("Pages.Administration.ProcureDatas").then(hasPerm => {
-  console.log('is',hasPerm);  // true or false based on the session data
+  //console.log('is',hasPerm);  // true or false based on the session data
 });
 
 
@@ -193,7 +193,7 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
         self.props.procureStore.delete(input);
       },
       onCancel() {
-        console.log('Cancel');
+        //console.log('Cancel');
       },
     });
   }
@@ -238,7 +238,7 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
   // handleMaxValidFromFilterSearch = (date: Moment | null, dateString: string) => {
   //   const dateValue = date ? date.toDate() : null; // Convert Moment to Date
   //   this.setState({ MaxValidFromFilter: dateValue }, () => {
-  //     console.log("Updated MaxValidFromFilter:", this.state.MaxValidFromFilter);
+  //     //console.log("Updated MaxValidFromFilter:", this.state.MaxValidFromFilter);
   //     this.getAll(); // Call API or refresh data
   //   });
   // };
@@ -246,7 +246,7 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
   // handleMinValidFromFilterSearch = (date: Moment | null, dateString: string) => {
   //   const dateValue = date ? date.toDate() : null; // Convert Moment to Date
   //   this.setState({ MinValidFromFilter: dateValue }, () => {
-  //     console.log("Updated MinValidFromFilter:", this.state.MinValidFromFilter);
+  //     //console.log("Updated MinValidFromFilter:", this.state.MinValidFromFilter);
   //     this.getAll();
   //   });
   // };
@@ -254,7 +254,7 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
   // handleMaxValidToFilterSearch = (date: Moment | null, dateString: string) => {
   //   const dateValue = date ? date.toDate() : null; // Convert Moment to Date
   //   this.setState({ MaxValidToFilter: dateValue }, () => {
-  //     console.log("Updated MaxValidToFilter:", this.state.MaxValidToFilter);
+  //     //console.log("Updated MaxValidToFilter:", this.state.MaxValidToFilter);
   //     this.getAll();
   //   });
   // };
@@ -262,7 +262,7 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
   // handleMinValidToFilterSearch = (date: Moment | null, dateString: string) => {
   //   const dateValue = date ? date.toDate() : null; // Convert Moment to Date
   //   this.setState({ MinValidToFilter: dateValue }, () => {
-  //     console.log("Updated MinValidToFilter:", this.state.MinValidToFilter);
+  //     //console.log("Updated MinValidToFilter:", this.state.MinValidToFilter);
   //     this.getAll();
   //   });
   // };
@@ -270,7 +270,7 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
   handleContractNoSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ ContractNoFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.ContractNoFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.ContractNoFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
@@ -278,7 +278,7 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
   //   // Update the state and call getAll() once the state is updated
   //   const dateValue = date ? date.toDate() : null; // Convert Moment to native Date
   //   this.setState({ MaxContractDateFilter: dateValue }, () => {
-  //     console.log('Updated minDeliveryNoteDateFilter:', this.state.MaxContractDateFilter);
+  //     //console.log('Updated minDeliveryNoteDateFilter:', this.state.MaxContractDateFilter);
   //     this.getAll();
   //   });
   // };
@@ -286,7 +286,7 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
   //   // If a valid date is selected, it will be a Moment object
   //   const dateValue = date ? date.toDate() : null; // Convert Moment to native Date
   //   this.setState({ MinContractDateFilter: dateValue }, () => {
-  //     console.log('Updated minDeliveryNoteDateFilter:', this.state.MinContractDateFilter);
+  //     //console.log('Updated minDeliveryNoteDateFilter:', this.state.MinContractDateFilter);
   //     this.getAll();
   //   });
   // };
@@ -294,7 +294,7 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
   //   // Update the state and call getAll() once the state is updated
   //   const dateValue = date ? date.toDate() : null; // Convert Moment to native Date
   //   this.setState({ MaxApprovalDateFilter: dateValue }, () => {
-  //     console.log('Updated minDeliveryNoteDateFilter:', this.state.MaxApprovalDateFilter);
+  //     //console.log('Updated minDeliveryNoteDateFilter:', this.state.MaxApprovalDateFilter);
   //     this.getAll();
   //   });
   // };
@@ -302,7 +302,7 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
   //   // If a valid date is selected, it will be a Moment object
   //   const dateValue = date ? date.toDate() : null; // Convert Moment to native Date
   //   this.setState({ MinApprovalDateFilter: dateValue }, () => {
-  //     console.log('Updated minDeliveryNoteDateFilter:', this.state.MinApprovalDateFilter);
+  //     //console.log('Updated minDeliveryNoteDateFilter:', this.state.MinApprovalDateFilter);
   //     this.getAll();
   //   });
   // };
@@ -310,7 +310,7 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
   handlePlantCodeSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ PlantCodeFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.PlantCodeFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.PlantCodeFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
@@ -318,7 +318,7 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
   handleMaxVersionNoSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ MaxVersionNoFilter: Number(value) }, () => {
-      console.log('Updated nameFilter:', this.state.MaxVersionNoFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.MaxVersionNoFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
@@ -326,7 +326,7 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
   handleMinVersionNoSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ MinVersionNoFilter: Number(value) }, () => {
-      console.log('Updated nameFilter:', this.state.MinVersionNoFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.MinVersionNoFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
@@ -336,7 +336,7 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
   handlePartPartNoSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ PartPartNoFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.PartPartNoFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.PartPartNoFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
@@ -344,7 +344,7 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
   handleBuyerNameSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ BuyerNameFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.BuyerNameFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.BuyerNameFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
@@ -352,7 +352,7 @@ class Procure extends AppComponentBase<IProcureProps, IProcureState> {
   handleSupplierNameSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ SupplierNameFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.SupplierNameFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.SupplierNameFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };

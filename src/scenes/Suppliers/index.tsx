@@ -21,10 +21,10 @@ const getUserPermissions = async (): Promise<string[]> => {
     try {
       // Fetch the current login information asynchronously
       const currentLoginInfo = await sessionService.getCurrentLoginInformations();
-      console.log('User',currentLoginInfo);
+      //console.log('User',currentLoginInfo);
       // Assuming permissions are inside the 'permissions' field of the object
       const permissions: string[] = currentLoginInfo?.user?.permissions || [];
-      console.log('permissions',permissions)
+      //console.log('permissions',permissions)
       return permissions;
     } catch (error) {
       console.error("Error fetching user permissions:", error);
@@ -38,7 +38,7 @@ const getUserPermissions = async (): Promise<string[]> => {
   };
   
   hasPermission("Pages.Administration.Suppliers").then(hasPerm => {
-    console.log('is',hasPerm);  // true or false based on the session data
+    //console.log('is',hasPerm);  // true or false based on the session data
   });
 
 
@@ -189,7 +189,7 @@ class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState>
                 self.props.supplierStore.delete(input);
             },
             onCancel() {
-                console.log('Cancel');
+                //console.log('Cancel');
             },
         });
     }
@@ -220,7 +220,7 @@ class Supplier extends AppComponentBase<SupplierdataProps, SupplierdataState>
     };
 
     public render() {
-        console.log(this.props.supplierStore);
+        //console.log(this.props.supplierStore);
         const { supplier } = this.props.supplierStore;
         const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
         const columns = [

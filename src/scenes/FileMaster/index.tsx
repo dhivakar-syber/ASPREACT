@@ -22,10 +22,10 @@ const getUserPermissions = async (): Promise<string[]> => {
   try {
     // Fetch the current login information asynchronously
     const currentLoginInfo = await sessionService.getCurrentLoginInformations();
-    console.log('User',currentLoginInfo);
+    //console.log('User',currentLoginInfo);
     // Assuming permissions are inside the 'permissions' field of the object
     const permissions: string[] = currentLoginInfo?.user?.permissions || [];
-    console.log('permissions',permissions)
+    //console.log('permissions',permissions)
     return permissions;
   } catch (error) {
     console.error("Error fetching user permissions:", error);
@@ -39,7 +39,7 @@ const hasPermission = async (permission: string): Promise<boolean> => {
 };
 
 hasPermission("Pages.Administration.FileMasters").then(hasPerm => {
-  console.log('is',hasPerm);  // true or false based on the session data
+  //console.log('is',hasPerm);  // true or false based on the session data
 });
 
 
@@ -198,7 +198,7 @@ class FileMaster extends AppComponentBase<IFileMasterdataProps, IfileMasterState
         self.props.filemasterStore.delete(input);
       },
       onCancel() {
-        console.log('Cancel');
+        //console.log('Cancel');
       },
     });
   }
@@ -261,7 +261,7 @@ editdata:any = null;
   handleMaxAnnexureIdSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ MaxAnnexureIdFilter: Number(value) }, () => {
-      console.log('Updated nameFilter:', this.state.MaxAnnexureIdFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.MaxAnnexureIdFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
@@ -269,14 +269,14 @@ editdata:any = null;
   handleMinAnnexureIdSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ MinAnnexureIdFilter: Number(value) }, () => {
-      console.log('Updated nameFilter:', this.state.MinAnnexureIdFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.MinAnnexureIdFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   handleMaxSupplementaryIdSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ MaxSupplementaryIdFilter: Number(value) }, () => {
-      console.log('Updated nameFilter:', this.state.MaxSupplementaryIdFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.MaxSupplementaryIdFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
@@ -284,56 +284,56 @@ editdata:any = null;
   handleMinSupplementaryIdSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ MinSupplementaryIdFilter: Number(value) }, () => {
-      console.log('Updated nameFilter:', this.state.MinSupplementaryIdFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.MinSupplementaryIdFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   handleFileNameSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ FileNameFilter: Number(value) }, () => {
-      console.log('Updated nameFilter:', this.state.FileNameFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.FileNameFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   handleTokenSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ TokenFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.TokenFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.TokenFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   handleSupplementaryPathSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ SupplementaryInvoicePathFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.SupplementaryInvoicePathFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.SupplementaryInvoicePathFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   handleAnnexurePathSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ AnnecurePathFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.AnnecurePathFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.AnnecurePathFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   handlePartNoSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ PartPartNoFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.PartPartNoFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.PartPartNoFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   handleBuyerNameSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ BuyerNameFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.BuyerNameFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.BuyerNameFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
   handleSupplierNameSearch = (value: string) => {
     // Update the state and call getAll() once the state is updated
     this.setState({ SupplierNameFilter: value }, () => {
-      console.log('Updated nameFilter:', this.state.SupplierNameFilter); // Verify the state update
+      //console.log('Updated nameFilter:', this.state.SupplierNameFilter); // Verify the state update
       this.getAll(); // Correctly call getAll() after the state update
     });
   };
@@ -346,7 +346,7 @@ editdata:any = null;
   // };
 
   public render() {
-    console.log(this.props.filemasterStore);
+    //console.log(this.props.filemasterStore);
     const { fileMaster } = this.props.filemasterStore;
     const { hasCreatePermission,hasEditPermission,hasDeletePermission } = this.state;
     const columns = [
