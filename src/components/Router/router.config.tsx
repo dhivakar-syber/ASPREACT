@@ -31,23 +31,27 @@ export const userRouter: any = [
     isLayout: true,
     showInMenu: false,
   },
-  {
-    path: '/user/login',
-    name: 'login',
-    title: 'LogIn',
-    component: () => {
-      window.location.replace('https://www.digitalsupplychain.bharatbenz.com/dicvscar/DaimDISC/#/login');
-      return null;
-    },
-    showInMenu: false,
-  },
   // {
   //   path: '/user/login',
   //   name: 'login',
   //   title: 'LogIn',
-  //   component: LoadableComponent(() => import('../../scenes/Login')),
+  //   component: () => {
+  //     window.location.replace('https://www.digitalsupplychain.bharatbenz.com/dicvscar/DaimDISC/#/login');
+  //     return null;
+  //   },
   //   showInMenu: false,
   // },
+  {
+    path: '/user/login',
+    name: 'login',
+    title: 'LogIn',
+    //  component: LoadableComponent(() => import('../../scenes/Login')),
+    component: () => {
+          window.location.replace('https://www.digitalsupplychain.bharatbenz.com/dicvscar/DaimDISC/#/login');
+           return null;
+       },
+    showInMenu: false,
+  },
 ];
 
 export const discRoute: any =[
