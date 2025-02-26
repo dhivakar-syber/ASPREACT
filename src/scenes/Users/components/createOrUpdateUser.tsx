@@ -168,11 +168,9 @@ options = (this.props.editRole?.length > 0 ? this.props.editRole : this.props.ro
               <Form.Item label={L('Email')} {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="emailAddress" rules={rules.emailAddress as []}>
                 <Input />
               </Form.Item>
-              <Form.Item label={L('Email')} {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="emailAddress" rules={rules.emailAddress as []}>
-                <Input />
-              </Form.Item>
               <Form.Item
-                label="Role Type"
+                label="User Type"
+                {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }}
                 name="roleType"
                 
                 rules={[{ required: true, message: 'Please select a role!' }]}

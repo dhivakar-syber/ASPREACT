@@ -4,10 +4,10 @@ const rules = {
   userNameOrEmailAddress: [
     {
       required: true,
-      message: L('ThisFieldIsRequired'),
+      message: L('This Field is Required'),
     },
   ],
-  password: [{ required: true, message: L('ThisFieldIsRequired') }],
+  password: [{ required: true, message: L('This Field is Required') }],
 };
 
 export default rules;
