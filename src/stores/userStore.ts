@@ -10,6 +10,7 @@ import { PagedResultDto } from '../services/dto/pagedResultDto';
 import { PagedUserResultRequestDto } from '../services/user/dto/PagedUserResultRequestDto';
 //import { UpdateUserInput } from '../services/user/dto/updateUserInput';
 import userService from '../services/user/userService';
+import { EnumRoleType } from '../enum';
 
 class UserStore {
   @observable users!: PagedResultDto<GetUserOutput>;
@@ -66,6 +67,7 @@ class UserStore {
         shouldChangePasswordOnNextLogin: false,
         isTwoFactorEnabled: false,
         isLockoutEnabled: false,
+        roleType:EnumRoleType.NotPartOfOrganization
       },
       assignedRoleNames: [] as string[], // Default empty array
       sendActivationEmail: false,

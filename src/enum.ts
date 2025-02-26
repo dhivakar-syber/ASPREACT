@@ -55,3 +55,9 @@ export enum EnumDisputeStatus
     Close=2,
     InimatedToBuyer=3
 }
+export enum EnumRoleType
+{
+   NotPartOfOrganization=0,
+   Internal =1,
+   External =2
+}

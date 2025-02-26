@@ -11,7 +11,7 @@ import http from '../httpService';
 class buyerService {
   // public async create(createOrEditBuyerDto: CreateOrEditBuyerDto) {
   //   let result = await http.post('/api/services/app/Buyers/CreateOrEdit', createOrEditBuyerDto);
-  //   console.log(result.data.result)
+  //   //console.log(result.data.result)
   //   return result.data.result;
   // }
 
