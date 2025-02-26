@@ -32,9 +32,6 @@ class CreateOrUpdateSupplier extends React.Component<ICreateOrUpdateSupplierProp
     selectedSupplierLookupItem: null as SupplierLookupItem | null,
     visibleUserLookup: false,
     selectedUserLookupItem: null as UserLookupItem | null,
-          currentPage: 1, // Track the current page
-      pageSize: 10,
-      totalItems: 0,
   };
 
   // Fetch data from the store when component mounts
@@ -107,44 +104,6 @@ class CreateOrUpdateSupplier extends React.Component<ICreateOrUpdateSupplierProp
   };
   handleUserLookupCancel = () => {
     this.setState({ visibleUserLookup: false });
-  };
-
-
-  handleSupplierPageChange = (pagination: any) => {
-    
-    // const { current = 1, pageSize = 10 } = pagination; // Default to 1 and 10 if undefined
-
-    const current = typeof pagination === 'number' ? pagination : pagination?.current || 1;
-    const pageSize = pagination?.pageSize || 10;
-
-    const skipCount = (current - 1 ) * pageSize;
-    const maxResultCount = pageSize;
-  
-// alert((pagination - 1) * pageSize);
-
-    // Log for debugging
-    console.log('Pagination Params:', {
-      current,
-      pageSize,
-      skipCount,
-      maxResultCount,
-    });
-  
-    // Update state and fetch new data
-    this.setState(
-      {
-        currentPage: current, // Use 'current' instead of 'pagination'
-        pageSize: pageSize,
-      },
-      async () => {
-
-       this.pagedFilterAndSortedRequest.skipCount = skipCount;
-       this.pagedFilterAndSortedRequest.maxResultCount = maxResultCount;
-
-       await this.getAllSupplierForLookupTable(); // Fetch new data with updated pagination
-      },
-      
-    );
   };
 
   render() {

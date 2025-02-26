@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { Checkbox, Input, Modal, Tabs, Form, Space } from 'antd';
+import { Checkbox, Input, Modal, Tabs, Form, Space, Select } from 'antd';
 import { GetRoles } from '../../../services/user/dto/getRolesOuput';
 import { L } from '../../../lib/abpUtility';
 import rules from './createOrUpdateUser.validation';
 import { FormInstance } from 'antd/lib/form';
+import {EnumRoleType} from '../../../enum';
 
 const TabPane = Tabs.TabPane;
 
@@ -22,7 +23,37 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
   state = {
     confirmDirty: false,
     selectedRoles: [] as string[], // Add state for selected roles
+    selectedRole: 0
   };
+
+
+  // Now filter the roles based on selection
+  filterRoles = () => {
+    const { selectedRole } = this.state;
+    // console.log(selectedRole)
+    const {editRole} = this.props;
+    // const { options } = this;
+    const roles = this.props.roles || [];
+
+    const options = (editRole?.length > 0 ? editRole : roles)
+    ?.map((role: any) => ({
+      label: role.roleDisplayName || role.displayName, // Access `displayName` if `role,DisplayName` is not present
+      value: role.roleName || role.name, // Use `roleName` or fallback to `name`
+      isAssigned:role.isAssigned,
+      className: this.state.selectedRoles.includes(role.roleName || role.name|| role.isAssigned) ? 'ant-checkbox-checked' : '',
+    }))
+    .filter((role: any) => role.label && role.value);
+    if (selectedRole === 1) {
+      return options?.filter((role: any) => role.value !== "Supplier");
+    }
+    if (selectedRole === 2) {
+      return options?.filter((role: any) => role.value === "Supplier");
+    }
+    // console.log(options)
+    return options;
+    
+  };
+  
 
   compareToFirstPassword = (rule: any, value: any) => {
     const form = this.props.formRef.current;
@@ -79,19 +110,37 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
     });
   };
 
+
+ handleTypeRoleChange = (value: string) => {
+  this.setState({ selectedRole: value });
+  // console.log(this.state.selectedRole)
+};
+options = (this.props.editRole?.length > 0 ? this.props.editRole : this.props.roles)
+  ?.map((role: any) => ({
+    label: role.roleDisplayName || role.displayName, 
+    value: role.roleName || role.name, 
+    isAssigned:role.isAssigned
+  }))
+  .filter((role: any) => role.label && role.value);
+
+
   render() {
-    const { visible, onCancel, onCreate, editRole } = this.props;
-    const { selectedRoles } = this.state;
-    const roles = this.props.roles || [];
+    const { visible, onCancel, onCreate } = this.props;
+    // const { selectedRoles } = this.state;
+    // console.log("selectedRoles",selectedRoles)
+    const filteredRoles = this.filterRoles();
     //console.log("Roles Data:", roles);
     // Handle default selected roles based on 'isAssigned' property
-    const options = (editRole?.length > 0 ? editRole : roles)
-      ?.map((role: any) => ({
-        label: role.roleDisplayName || role.displayName, // Access `displayName` if `roleDisplayName` is not present
-        value: role.roleName || role.name, // Use `roleName` or fallback to `name`
-        className: selectedRoles.includes(role.roleName || role.name) ? 'ant-checkbox-checked' : '',
-      }))
-      .filter((role: any) => role.label && role.value);
+ 
+
+      
+// Now filter the roles based on selection
+//     const filteredRoles = options?.filter((role: any) => {
+//   if (this.state.selectedRole === "internal") return role.value !== "Supplier"; 
+//   if (this.state.selectedRole === "external") return role.value === "Supplier"; 
+//   return true;
+// });
+
 
     return (
       <Modal
@@ -119,6 +168,25 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
               <Form.Item label={L('Email')} {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="emailAddress" rules={rules.emailAddress as []}>
                 <Input />
               </Form.Item>
+              <Form.Item label={L('Email')} {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="emailAddress" rules={rules.emailAddress as []}>
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="Role Type"
+                name="roleType"
+                
+                rules={[{ required: true, message: 'Please select a role!' }]}
+              >
+                <Select placeholder="Choose a role type"
+                onChange={this.handleTypeRoleChange}>
+                  <Select.Option key="internal" value={EnumRoleType.Internal}>
+                    Internal
+                  </Select.Option>
+                  <Select.Option key="external" value={EnumRoleType.External}>
+                    External
+                  </Select.Option>
+                </Select>
+              </Form.Item>
               {/* {this.props.modalType === 'edit' && (
                 <>
                   <Form.Item
@@ -144,24 +212,23 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
               </Form.Item>
             </TabPane>
             <TabPane tab={L('Roles')} key="roles" forceRender>
-  <Form.Item {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="roleNames">
-    <Checkbox.Group>
-      <Space direction="vertical">
-        {options?.map((role: any) => (
-          <Checkbox
-            key={role.value}
-            value={role.value}
-            checked={selectedRoles.includes(role.value)}
-            onChange={(e) => this.handleRoleChange(role.value, e.target.checked)}
-          >
-            {role.label}
-          </Checkbox>
-        ))}
-      </Space>
-    </Checkbox.Group>
-  </Form.Item>
-</TabPane>
+            <Form.Item>
+  <Checkbox.Group
+    value={this.state.selectedRoles}
+    onChange={(checkedValues) => this.setState({ selectedRoles: checkedValues })}
+  >
+    <Space direction="vertical">
+      {filteredRoles?.map((role: any) => (
+        <Checkbox key={role.value} value={role.value}>
+          {role.label}
+        </Checkbox>
+      ))}
+    </Space>
+  </Checkbox.Group>
+</Form.Item>
 
+
+            </TabPane>
           </Tabs>
         </Form>
       </Modal>

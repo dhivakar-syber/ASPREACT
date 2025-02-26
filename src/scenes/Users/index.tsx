@@ -110,7 +110,7 @@ class User extends AppComponentBase<IUserProps, IUserState> {
   
     form!.validateFields().then(async (values: any) => {
       // Destructure values for better clarity
-      const { name, surname, userName, emailAddress, isActive, roleNames,phoneNumber,password, ...otherValues } = values;
+      const { name, surname, userName, emailAddress, isActive, roleNames,phoneNumber,password,roleType, ...otherValues } = values;
       const { selectedRoles } = this.state;
       // Construct the input object
       const userInput = {
@@ -123,7 +123,8 @@ class User extends AppComponentBase<IUserProps, IUserState> {
           emailAddress,    
           isActive,
           phoneNumber:"--", 
-          password:"Daimler@123"
+          password:"Daimler@123",
+          roleType
         },
         assignedRoleNames: selectedRoles, 
       };
