@@ -13,10 +13,10 @@ class TokenAuthService {
   public async sessionAndRedirect(discAuthModel: DiscAuthModel): Promise<AuthenticationResultModel> {
     let result = await http.post('api/TokenAuth/SessionAndRedirect', discAuthModel);
     return result.data.result;
-  }
+  } 
 
   public async externalAuthenticate(token:string): Promise<ExternResultModel> {
-    let result = await http.post('https://www.digitalsupplychain-qa.bharatbenz.com/DICVDISC/core/validatePayRetroToken',
+    let result = await http.post('https://www.digitalsupplychain.bharatbenz.com/DICVDISC/core/validatePayRetroToken',
       {},
       {
         baseURL: '',

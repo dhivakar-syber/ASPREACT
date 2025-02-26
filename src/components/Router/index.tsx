@@ -27,11 +27,12 @@ const Router = () => {
 
             let dresult = await tokenAuthService.externalAuthenticate(token);
 
+            var shortid=dresult.shortid?dresult.shortid:dresult.vendorcode
             if (dresult)
             {
               if (dresult.status === 'success'){
                 let result = await tokenAuthService.sessionAndRedirect({
-                  shortId: dresult.shortid,
+                  shortId: shortid,
                   rememberClient: true,
                   email:'',
                   returnUrl: props.location.search,
