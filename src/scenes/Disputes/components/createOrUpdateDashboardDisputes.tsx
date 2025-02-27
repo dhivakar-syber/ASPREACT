@@ -60,7 +60,7 @@ const CreateOrUpdateDahBoardDisputesData: React.FC<ICreateOrUpdateDahBoardDisput
   
 
   return (
-    <Modal visible={visible} onCancel={onCancel} onOk={onCreate} title={L('Disputes')} width={550} okText="Raise">
+    <Modal visible={visible} onCancel={onCancel} onOk={onCreate} title={L('Queries')} width={550} okText="Raise">
       <Form ref={formRef} initialValues={initialData}>
       <Form.Item label={L('BuyerName')} name="buyerName" {...formItemLayout}  >
               <Input disabled value={initialData ? initialData.buyerName : ''} style={{color:'#000000D9'}}/>

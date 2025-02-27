@@ -158,7 +158,7 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
       visible={visible}
       onCancel={onclose}
       // onOk={() => formRef.current?.submit()}
-      title={L('Disputes')}
+      title={L('Queries')}
       width={550}
       footer={[
         <div key="footer-buttons" style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>

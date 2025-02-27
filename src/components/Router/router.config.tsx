@@ -265,10 +265,10 @@ export const appRouters: any = [
   },
 
   {
-    path: '/Disputes',
-    name: 'Disputes',
+    path: '/Queries',
+    name: 'Queries',
     permission: 'Pages.Administration.Disputes',
-    title: 'Disputes',
+    title: 'Queries',
     icon: WarningOutlined,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/Disputes')),

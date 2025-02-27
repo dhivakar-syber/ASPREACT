@@ -236,7 +236,7 @@ class CreateOrUpdatedisputedata extends React.Component<ICreateOrUpdateDisputesD
     ];
     return (
       <div>
-        <Modal visible={visible} onCancel={onCancel} onOk={onCreate} title={L('Disputes')} width={550}>
+        <Modal visible={visible} onCancel={onCancel} onOk={onCreate} title={L('Queries')} width={550}>
           <Form ref={formRef} initialValues={initialData} onValuesChange={(changedValues, allValues) => {
       if (changedValues.summaries && selectedSummariesLookupItem) {
         formRef.current?.setFieldsValue({

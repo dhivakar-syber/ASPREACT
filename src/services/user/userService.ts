@@ -40,7 +40,7 @@ class UserService {
   }
 
   public async get(entityDto: EntityDto): Promise<GetUserForEditOutput> {
-    let result = await http.get('api/services/app/User/GetUserForEdit', { params: entityDto });
+    let result = await http.get('api/services/app/User/GetUserForEdit', { params: entityDto});
     return result.data.result;
   }
 

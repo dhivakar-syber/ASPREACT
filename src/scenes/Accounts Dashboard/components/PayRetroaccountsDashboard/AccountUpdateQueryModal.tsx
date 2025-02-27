@@ -131,7 +131,7 @@ const handleModalClose = () => {
           visible={visible}
           onCancel={onCancel}
           onOk={() => formRef.current?.submit()}
-          title={L('Disputes')}
+          title={L('Queries')}
           width={550}
           okText="Initiate to Account"  // Change OK button text
           cancelText="Close"
