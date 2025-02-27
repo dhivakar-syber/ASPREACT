@@ -23,13 +23,13 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
   state = {
     confirmDirty: false,
     selectedRoles: [] as string[], // Add state for selected roles
-    selectedRole: 0
+    selectedRoleType: 0
   };
 
 
   // Now filter the roles based on selection
   filterRoles = () => {
-    const { selectedRole } = this.state;
+    const { selectedRoleType } = this.state;
     // console.log(selectedRole)
     const {editRole} = this.props;
     // const { options } = this;
@@ -43,10 +43,10 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
       className: this.state.selectedRoles.includes(role.roleName || role.name|| role.isAssigned) ? 'ant-checkbox-checked' : '',
     }))
     .filter((role: any) => role.label && role.value);
-    if (selectedRole === 1) {
+    if (selectedRoleType === 1) {
       return options?.filter((role: any) => role.value !== "Supplier");
     }
-    if (selectedRole === 2) {
+    if (selectedRoleType === 2) {
       return options?.filter((role: any) => role.value === "Supplier");
     }
     // console.log(options)
@@ -104,17 +104,28 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
           selectedRoles.splice(index, 1);
         }
       }
-  
+  // console.log(selectedRoles)
+  this.props.onRoleSelection(selectedRoles);
       this.setState({ selectedRoles });
       
     });
   };
 
 
- handleTypeRoleChange = (value: string) => {
-  this.setState({ selectedRole: value });
-  // console.log(this.state.selectedRole)
-};
+  handleTypeRoleChange = (value: number) => {
+    let updatedRoles = this.state.selectedRoles;
+  
+    if (value === 2) {
+      updatedRoles = ['Supplier']; // Ensure 'Supplier' is selected
+    } else {
+      updatedRoles = []; // Reset selected roles if switching back
+    }
+  
+    this.setState({ selectedRoleType: value, selectedRoles: updatedRoles }, () => {
+      this.props.onRoleSelection(updatedRoles); // Ensure parent component is updated
+    });
+  };
+  
 options = (this.props.editRole?.length > 0 ? this.props.editRole : this.props.roles)
   ?.map((role: any) => ({
     label: role.roleDisplayName || role.displayName, 
@@ -126,7 +137,7 @@ options = (this.props.editRole?.length > 0 ? this.props.editRole : this.props.ro
 
   render() {
     const { visible, onCancel, onCreate } = this.props;
-    // const { selectedRoles } = this.state;
+    const { selectedRoles } = this.state;
     // console.log("selectedRoles",selectedRoles)
     const filteredRoles = this.filterRoles();
     //console.log("Roles Data:", roles);
@@ -168,11 +179,11 @@ options = (this.props.editRole?.length > 0 ? this.props.editRole : this.props.ro
               <Form.Item label={L('Email')} {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="emailAddress" rules={rules.emailAddress as []}>
                 <Input />
               </Form.Item>
+
               <Form.Item
-                label="User Type"
-                {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }}
+                label="Role Type"
                 name="roleType"
-                
+                {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }}
                 rules={[{ required: true, message: 'Please select a role!' }]}
               >
                 <Select placeholder="Choose a role type"
@@ -211,21 +222,19 @@ options = (this.props.editRole?.length > 0 ? this.props.editRole : this.props.ro
             </TabPane>
             <TabPane tab={L('Roles')} key="roles" forceRender>
             <Form.Item>
-  <Checkbox.Group
-    value={this.state.selectedRoles}
-    onChange={(checkedValues) => this.setState({ selectedRoles: checkedValues })}
-  >
-    <Space direction="vertical">
-      {filteredRoles?.map((role: any) => (
-        <Checkbox key={role.value} value={role.value}>
-          {role.label}
-        </Checkbox>
-      ))}
-    </Space>
-  </Checkbox.Group>
-</Form.Item>
-
-
+          <Space direction="vertical">
+            {filteredRoles.map((role:any) => (
+              <Checkbox
+                key={role.value}
+                value={role.value}
+                checked={selectedRoles.includes(role.value)}
+                onChange={(e) => this.handleRoleChange(role.value,  e.target.checked)}
+              >
+                {role.label}
+              </Checkbox>
+            ))}
+          </Space>
+        </Form.Item>
             </TabPane>
           </Tabs>
         </Form>

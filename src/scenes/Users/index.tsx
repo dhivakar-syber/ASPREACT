@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Button, Card, Col, Dropdown, Input, Menu, Modal, Row, Table, Tag } from 'antd';
+import { Button, Card, Col, Dropdown, Input, Menu, message, Modal, Row, Table, Tag } from 'antd';
 import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../components/AppComponentBase';
@@ -11,6 +11,7 @@ import Stores from '../../stores/storeIdentifier';
 import UserStore from '../../stores/userStore';
 import { FormInstance } from 'antd/lib/form';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
+import sessionService from '../../services/session/sessionService';
 
 export interface IUserProps {
   userStore: UserStore;
@@ -22,6 +23,7 @@ export interface IUserState {
   skipCount: number;
   userId: number;
   filter: string;
+  role: string;
   selectedRoles: string[],
 }
 
@@ -39,11 +41,18 @@ class User extends AppComponentBase<IUserProps, IUserState> {
     skipCount: 0,
     userId: 0,
     filter: '',
+    role: '',
     selectedRoles:[] as string[]
   };
 
   async componentDidMount() {
     await this.getAll();
+        sessionService.getCurrentLoginInformations().then(currentLoginInfo => {
+          //console.log("Current User Role:", currentLoginInfo);
+          this.setState({ role: currentLoginInfo?.user?.userName || "No role found" }, () => {
+            //console.log("Updated User Role:", this.state.role); // Logs updated state
+          });
+        });
   }
 
   async getAll() {
@@ -72,7 +81,7 @@ class User extends AppComponentBase<IUserProps, IUserState> {
       await this.props.userStore.createUser();
       await this.props.userStore.getRoles();
     } else {
-      await this.props.userStore.get(entityDto);
+      await this.props.userStore.get(entityDto,this.state.role);
       await this.props.userStore.getRoles();
     }
 
@@ -131,8 +140,10 @@ class User extends AppComponentBase<IUserProps, IUserState> {
       
       if (this.state.userId === 0) {
         await this.props.userStore.create(userInput);
+         message.success("Successfully Created!")
       } else {
         await this.props.userStore.update({ id: this.state.userId, ...userInput });
+         message.success("Successfully Updated!")
       }
   
       await this.getAll();

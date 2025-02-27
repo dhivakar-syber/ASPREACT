@@ -95,6 +95,7 @@ const [loading, setloading] = React.useState<boolean>(false);
 const [tableloading, settableloading] = React.useState<boolean>(false);
 const [supplierActionsPermission, setSupplierActionsPermission] = useState(false);
 
+// console.log(tableData)
 const checkPermissions = async () => {
   const hasPermissionSupplierActions = await hasPermission("Pages.Tenant.Dashboard.Actions");
   setSupplierActionsPermission(hasPermissionSupplierActions)
@@ -718,6 +719,7 @@ checkPermissions();
                   <Col span={12} style={{ textAlign: 'right', fontSize: '12px' }}>
                     <p>Part Number</p>
                     <p>Description</p>
+                    <p>Description</p>
                     <p>Buyer Name</p>
                     <p>Supplier Code</p>
                     <p>Supplier Name</p>
@@ -742,14 +744,16 @@ checkPermissions();
                     <p>Valid To</p>
                     <p>Contract No</p>
                     <p>Released Date</p>
-                    <p>Plant</p>
+                    <p>ES1</p>
+                    <p>ES2</p>
                   </Col>
                   <Col span={12} style={{ fontSize: '12px' }}>
                     <p><span>: {formatDate(selectedRow?.contractFromDate)}</span></p>
                     <p><span>: {formatDate(selectedRow?.contractToDate)}</span></p>
                     <p><span>: {selectedRow?.contractNo}</span></p>
                     <p><span>: {formatDate(selectedRow?.approvalDate)}</span></p>
-                    <p><span>: {selectedRow?.plantCode}</span></p>
+                    <p><span>: {selectedRow?.es1}</span></p>
+                    <p><span>: {selectedRow?.es2}</span></p>
                   </Col>
                 </Row>
               </div>
@@ -760,6 +764,7 @@ checkPermissions();
               <div>
                 <Row gutter={[14, 10]}>
                   <Col span={12} style={{ textAlign: 'right', fontSize: '12px' }}>
+                  <p>Plant</p>
                     <p>Old Value</p>
                     <p>New Value</p>
                     <p>Delta</p>
@@ -767,6 +772,7 @@ checkPermissions();
                     <p>Total</p>
                   </Col>
                   <Col span={12} style={{ fontSize: '12px' }}>
+                  <p><span>: {selectedRow?.plantCode}</span></p>
                     <p><span>: {selectedRow?.oldValue}</span></p>
                     <p><span>: {selectedRow?.newValue}</span></p>
                     <p><span>: {selectedRow?.delta}</span></p>
@@ -1311,6 +1317,9 @@ const Loading = () => (
           { title: 'Query', dataIndex: 'querycount', render: (count) => (count > 0 ? `${count} Query Raised` : '') ,width:100},
           { title: 'Buyer Name', dataIndex: 'buyerName' ,width:200},
           { title: 'Part No - Version', dataIndex: 'partno', render: (_, row) => `${row.partno}-${row.versionNo}` ,width:150},
+          { title: 'PlantCode', dataIndex: 'plantCode', align: 'center' ,width:100},
+          { title: 'ES1', dataIndex: 'es1', align: 'center' ,width:100},
+          { title: 'ES2', dataIndex: 'es2', align: 'center' ,width:100},
           { title: 'Report Date', dataIndex: 'createtime', render: formatDate ,width:120},
           { title: 'Ageing', dataIndex: 'ageing', align: 'center' ,width:100},
           { title: 'Supplementary Invoice/Credit Note', dataIndex: 'supplementaryInvoiceNo',width:300 },

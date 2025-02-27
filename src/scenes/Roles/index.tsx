@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Button, Card, Col, Dropdown, Input, Menu, Modal, Row, Table } from 'antd';
+import { Button, Card, Col, Dropdown, Input, Menu, message, Modal, Row, Table } from 'antd';
 import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../components/AppComponentBase';
@@ -133,8 +133,10 @@ class Role extends AppComponentBase<IRoleProps, IRoleState> {
   
       if (this.state.roleId === 0) {
         await this.props.roleStore.create(roleInput);
+        message.success("Successfully Created!")
       } else {
         await this.props.roleStore.update({ id: this.state.roleId, ...roleInput });
+        message.success("Successfully Updated!")
       }
   
       await this.getAll();
