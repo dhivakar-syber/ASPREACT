@@ -27,7 +27,7 @@ const Router = () => {
 
             let dresult = await tokenAuthService.externalAuthenticate(token);
 
-            var shortid=dresult.shortid?dresult.shortid:dresult.vendorcode
+            var shortid=dresult.shortid?dresult.shortid:dresult.code
             if (dresult)
             {
               if (dresult.status === 'success'){
