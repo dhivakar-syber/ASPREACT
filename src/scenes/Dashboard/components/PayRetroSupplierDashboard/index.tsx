@@ -610,6 +610,8 @@ checkPermissions();
     if ((e.target as HTMLElement).tagName !== 'INPUT') {
     setSelectedRow(row); // Set the clicked row data
     setIsModalOpen(true); // Open the modal
+    setModalData([]);
+    annexuresetModalData([]);
     
     try {
       const result = await supplementarySummariesService.grndata(row.id); // Await the Promise
