@@ -135,7 +135,7 @@ const Loading = () => (
             textAlign: "left",
           }}
         >
-          <b>Buyer Approval Send Box</b>
+          <b>Supplier Remarks</b>
         </h6>
         <div className="col-md-12">
           <div className="rm-a3-remarks-container">
