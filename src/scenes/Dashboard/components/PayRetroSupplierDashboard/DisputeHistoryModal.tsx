@@ -110,7 +110,7 @@ const DisputeTable: React.FC<DisputeTableProps> = ({ rowId, visible, onCancel, d
 
   return (
     <Modal
-      title={`Dispute History`}
+      title={`Query History`}
       visible={visible}
       onCancel={onCancel}
       footer={null} // Remove the default footer
