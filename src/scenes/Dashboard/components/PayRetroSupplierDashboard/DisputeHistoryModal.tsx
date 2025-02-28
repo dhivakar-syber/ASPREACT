@@ -48,14 +48,14 @@ const DisputeTable: React.FC<DisputeTableProps> = ({ rowId, visible, onCancel, d
       align: "center" as "center",
     },
     {
-      title: "Rejection Code",
+      title: "Query",
       dataIndex: "supplierRejectionCode",
       key: "supplierRejectionCode",
       width: "auto",
       align: "center" as "center",
     },
     {
-      title: "Query",
+      title: "Additional Query",
       dataIndex: "dispute.query",
       key: "query",
       render: (text: any, record: any) => (

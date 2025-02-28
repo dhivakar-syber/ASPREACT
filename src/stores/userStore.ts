@@ -46,8 +46,8 @@ class UserStore {
   }
 
   @action
-  async get(entityDto: EntityDto) {
-    let result = await userService.get(entityDto);
+  async get(entityDto: EntityDto,role:string) {
+    let result = await userService.get(entityDto,role);
     this.editUser = result.user;
     this.editRole = result.roles;
   }

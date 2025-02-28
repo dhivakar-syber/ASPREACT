@@ -45,11 +45,11 @@ export const userRouter: any = [
     path: '/user/login',
     name: 'login',
     title: 'LogIn',
-    // component: LoadableComponent(() => import('../../scenes/Login')),
-    component: () => {
-      window.location.replace('https://www.digitalsupplychain.bharatbenz.com/dicvscar/DaimDISC/#/login');
-       return null;
-   },
+    component: LoadableComponent(() => import('../../scenes/Login')),
+  //   component: () => {
+  //     window.location.replace('https://www.digitalsupplychain.bharatbenz.com/dicvscar/DaimDISC/#/login');
+  //      return null;
+  //  },
     showInMenu: false,
   },
 ];
@@ -268,7 +268,7 @@ export const appRouters: any = [
     path: '/Queries',
     name: 'Queries',
     permission: 'Pages.Administration.Disputes',
-    title: 'Queries',
+    title: 'Disputes',
     icon: WarningOutlined,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/Disputes')),

@@ -22,7 +22,7 @@ export interface ICreateOrUpdateUserProps {
 class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
   state = {
     confirmDirty: false,
-    selectedRoles: [] as string[], // Add state for selected roles
+    selectedRoles: ['User'] as string[], // Add state for selected roles
     selectedRoleType: 0
   };
 
@@ -47,7 +47,7 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
       return options?.filter((role: any) => role.value !== "Supplier");
     }
     if (selectedRoleType === 2) {
-      return options?.filter((role: any) => role.value === "Supplier");
+      return options?.filter((role: any) => role.value === "Supplier" || role.value === "User");
     }
     // console.log(options)
     return options;
@@ -116,9 +116,9 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
     let updatedRoles = this.state.selectedRoles;
   
     if (value === 2) {
-      updatedRoles = ['Supplier']; // Ensure 'Supplier' is selected
+      updatedRoles = ['User','Supplier']; // Ensure 'Supplier' is selected
     } else {
-      updatedRoles = []; // Reset selected roles if switching back
+      updatedRoles = ['User']; // Reset selected roles if switching back
     }
   
     this.setState({ selectedRoleType: value, selectedRoles: updatedRoles }, () => {

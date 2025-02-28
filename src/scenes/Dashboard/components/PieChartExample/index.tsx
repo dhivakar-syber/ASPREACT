@@ -125,7 +125,7 @@ class AnalysisPieChart extends React.Component<SupplementaryDocStatusProps> {
   
     // Determine the appropriate unit (Lakhs or Crores)
     let formattedValue = value;
-    let unit = "Crores"; // Default unit
+    let unit = "Cr"; // Default unit
   
     // If the value is less than 1 lakh, show it in Lakhs
     // if (value < 100000) {

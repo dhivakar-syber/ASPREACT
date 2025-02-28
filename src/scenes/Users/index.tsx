@@ -81,7 +81,7 @@ class User extends AppComponentBase<IUserProps, IUserState> {
       await this.props.userStore.createUser();
       await this.props.userStore.getRoles();
     } else {
-      await this.props.userStore.get(entityDto);
+      await this.props.userStore.get(entityDto,this.state.role);
       await this.props.userStore.getRoles();
     }
 
