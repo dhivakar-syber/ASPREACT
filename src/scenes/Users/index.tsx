@@ -119,7 +119,7 @@ class User extends AppComponentBase<IUserProps, IUserState> {
   
     form!.validateFields().then(async (values: any) => {
       // Destructure values for better clarity
-      const { name, surname, userName, emailAddress, isActive, roleNames,phoneNumber,password,roleType, ...otherValues } = values;
+      const { name, surname, userName, emailAddress, isActive, roleNames,phoneNumber,password,roleType,vendorcode, ...otherValues } = values;
       const { selectedRoles } = this.state;
       // Construct the input object
       const userInput = {
@@ -133,7 +133,8 @@ class User extends AppComponentBase<IUserProps, IUserState> {
           isActive,
           phoneNumber:"--", 
           password:"Daimler@123",
-          roleType
+          roleType,
+          vendorcode
         },
         assignedRoleNames: selectedRoles, 
       };
@@ -161,6 +162,7 @@ class User extends AppComponentBase<IUserProps, IUserState> {
     const columns = [
       { title: L('UserName'), dataIndex: 'userName', key: 'userName', width: 150, render: (text: string) => <div>{text}</div> },
       { title: L('FullName'), dataIndex: 'name', key: 'name', width: 150, render: (text: string) => <div>{text}</div> },
+      { title: L('Vendor Code'), dataIndex: 'vendorCode', key: 'vendorCode', width: 150, render: (text: string) => <div>{text}</div> },
       { title: L('EmailAddress'), dataIndex: 'emailAddress', key: 'emailAddress', width: 150, render: (text: string) => <div>{text}</div> },
       {
         title: L('IsActive'),
@@ -256,6 +258,7 @@ class User extends AppComponentBase<IUserProps, IUserState> {
           onCreate={this.handleCreate}
           roles={this.props.userStore.roles}
           editRole={this.props.userStore.editRole}
+          editUser={this.props.userStore.editUser}
           onRoleSelection={this.handleRoleSelection}
         />
       </Card>

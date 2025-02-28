@@ -67,6 +67,7 @@ class UserStore {
         shouldChangePasswordOnNextLogin: false,
         isTwoFactorEnabled: false,
         isLockoutEnabled: false,
+        vendorcode: '',
         roleType:EnumRoleType.NotPartOfOrganization
       },
       assignedRoleNames: [] as string[], // Default empty array

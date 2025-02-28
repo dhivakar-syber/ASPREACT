@@ -813,7 +813,7 @@ checkPermissions();
             </Col>
           </Row>
   
-          {/* <InvoiceTable data={modalData} /> */}
+          <InvoiceTable data={modalData} />
           <AnnexureTable data={annexuremodalData} />
         </div>
       </Modal>
@@ -823,46 +823,46 @@ checkPermissions();
 
   
 
-  // const InvoiceTable = ({ data }: { data: any[] }) => {
+  const InvoiceTable = ({ data }: { data: any[] }) => {
     //console.log('invoiceTable',data);
-    // return (
-    //   <div >
-    //     <h3>CBFC Information</h3>
-    //     <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px",
-    //           borderRadius: '5px' }}>
-    //       <thead>
-    //       <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" , borderRadius: '2px'}}>
-    //           <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>S.no</th>
-    //           <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>PartNo</th>
-    //           <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Invoice No</th>
-    //           <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>InvoiceDate</th>
-    //           <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Qty</th>
-    //           <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Price (GRN)</th>
-    //           <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Paid Amount (CBFC)</th>
-    //         </tr>
-    //       </thead>
-    //       <tbody >
-    //         {data && data.length > 0 ? (
-    //           data.map((item:any, index:any) => (
-    //             <tr key={index} style={{
-    //               backgroundColor:
-    //               index % 2 === 0 ? '#f9f9f9' : '#fff',
-    //             }}>
-    //               <td style={{ padding: "10px", border: "1px solid #ddd" }}>{index + 1}</td>
-    //               <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.partNo}</td>
-    //               <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.invoiceNo}</td>
-    //               <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(item.invoicedate)}</td>
-    //               <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.quantity}</td>
-    //               <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.invoiceRate}</td>
-    //               <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.paidAmount}</td>
-    //             </tr>
-    //           ))
-    //         ):''}
-    //       </tbody>
-    //     </table>
-    //   </div>
-    // );
-  // };
+    return (
+      <div >
+        <h3>CBFC Information</h3>
+        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px",
+              borderRadius: '5px' }}>
+          <thead>
+          <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" , borderRadius: '2px'}}>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>S.no</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>PartNo</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Invoice No</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>InvoiceDate</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Qty</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Price (GRN)</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Paid Amount (CBFC)</th>
+            </tr>
+          </thead>
+          <tbody >
+            {data && data.length > 0 ? (
+              data.map((item:any, index:any) => (
+                <tr key={index} style={{
+                  backgroundColor:
+                  index % 2 === 0 ? '#f9f9f9' : '#fff',
+                }}>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{index + 1}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.partNo}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.invoiceNo}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(item.invoicedate)}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.quantity}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.invoiceRate}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.paidAmount}</td>
+                </tr>
+              ))
+            ):''}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
   const handleAnnexureClick = (supplementarysummaryIds: number[]) => {
     const templatepath = '//assets/SampleFiles/AnnexureDetails.xlsx';
   

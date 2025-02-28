@@ -3,7 +3,7 @@ const AppConsts = {
     defaultAdminUserName: 'admin',
   },
   localization: {
-    defaultLocalizationSourceName: 'AbpProjectName',
+    defaultLocalizationSourceName: 'Sybergate',
   },
   authorization: {
     encrptedAuthTokenName: 'enc_auth_token',

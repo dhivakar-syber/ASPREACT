@@ -10,6 +10,7 @@ export interface UserEditDto extends IPassivable {
     emailAddress: string;
     phoneNumber?: string; 
     password?: string; 
+    vendorcode:string;
     
     isActive: boolean;
     shouldChangePasswordOnNextLogin: boolean;
