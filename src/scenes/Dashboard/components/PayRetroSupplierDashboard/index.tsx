@@ -722,7 +722,6 @@ checkPermissions();
                   <Col span={12} style={{ textAlign: 'right', fontSize: '12px' }}>
                     <p>Part Number</p>
                     <p>Description</p>
-                    <p>Description</p>
                     <p>Buyer Name</p>
                     <p>Supplier Code</p>
                     <p>Supplier Name</p>
