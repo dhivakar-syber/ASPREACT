@@ -338,7 +338,7 @@ public async l4carddetails(input: l4dashboardinput) {
         try {
           
           const result = await http.get(
-            'api/services/app/SupplementarySummaries/Getgrndbfcdetail',{ params: { supplementaryid:id } },
+            'api/services/app/SupplementarySummaries/GetGrnCbfcDetail',{ params: { sid:id } },
              
           );
           return result.data.result;

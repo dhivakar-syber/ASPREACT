@@ -606,27 +606,30 @@ checkPermissions();
     });
   };
 
-  const handleRowClick = async (e: React.MouseEvent<HTMLElement>,row: any) => {
-    if ((e.target as HTMLElement).tagName !== 'INPUT') {
-    setSelectedRow(row); // Set the clicked row data
-    setIsModalOpen(true); // Open the modal
-    
-    try {
-      const result = await supplementarySummariesService.grndata(row.id); // Await the Promise
-      setModalData(result);
-      //console.log('setmodaldata',result) // Assuming the result contains the data in 'data' field
-    } catch (error) {
-      console.error('Error fetching data:', error);
+  const handleRowClick = async (e: React.MouseEvent<HTMLElement>, row: any) => {
+    if ((e.target as HTMLElement).tagName !== "INPUT") {
+      setSelectedRow(row); // Set the clicked row data
+      setModalData([]); // Reset data before fetching
+      annexuresetModalData([]); 
+  
+      try {
+        const [result, annexureresult] = await Promise.all([
+          supplementarySummariesService.grndata(row.id),
+          supplementarySummariesService.annexuredata(row.id),
+        ]);
+  
+        // Batch state updates together to minimize re-renders
+        setModalData(result);
+        annexuresetModalData(annexureresult);
+  
+        // Now open the modal after data is set
+        setIsModalOpen(true);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     }
-    try {
-      const annexureresult = await supplementarySummariesService.annexuredata(row.id); // Await the Promise
-      annexuresetModalData(annexureresult);
-      //console.log('annexuresetmodaldata',annexureresult) // Assuming the result contains the data in 'data' field
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    } 
-   } 
   };
+  
   //const { Item } = Form;
 
   const handleModalClose = () => {

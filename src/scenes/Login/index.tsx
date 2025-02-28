@@ -16,8 +16,7 @@ import Stores from '../../stores/storeIdentifier';
 import TenantAvailabilityState from '../../services/account/dto/tenantAvailabilityState';
 import rules from './index.validation';
 
-import daimlerLogo from '../../images/abp-logo-long.png';
-import payRetrologo from '../../images/Payretro.png';
+import logo from '../../images/abp-logo-long.png';
 
 const FormItem = Form.Item;
 declare var abp: any;
@@ -68,7 +67,7 @@ class Login extends React.Component<ILoginProps> {
     sessionStorage.setItem('rememberMe', loginModel.rememberMe ? '1' : '0');
    const { state } = this.props.location;
     window.location = state ? state.from.pathname : '/';
-    //console.log('Window',window.location)
+    console.log('Window Location',window.location)
   };
 
   public render() {
@@ -104,176 +103,160 @@ class Login extends React.Component<ILoginProps> {
           </Row> */}
 
              
-          <div className="login login-1 login-signin-on d-flex flex-column flex-lg-row flex-column-fluid bg-white" style={{ paddingRight: '20%' }}>
-            <div className="login-content flex-row-fluid d-flex flex-column justify-content-center position-relative overflow-hidden p-7 mx-auto">
-              <div className="d-flex flex-column-fluid flex-center" >
-              <div
-                className="login-form-container"
-                style={{
-                  maxWidth: '400px',
-                  width: '100%',
-                  height: '30rem',
-                  position: 'absolute', // Position the form absolutely
-                  top: '50%',
-                  backgroundColor: 'rgba(158, 158, 158, 0.5)', // Semi-transparent gray background
-                  left: '7rem',
-                  transform: 'translateY(-50%)', // Center vertically
-                  padding: '20px',
-                  boxSizing: 'border-box',
-                  borderRadius: '25px', // Rounded corners
-                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.27)', // Subtle shadow effect
-                }}
-              >
-                  {/* Begin::Logo (Placed above Tenant Info Box) */}
-                  <div style={{ textAlign: 'center' }}>
-                    <img 
-                      src={daimlerLogo} 
-                      alt="Account Logo" 
-                      style={{ 
-                        maxWidth: '400px', // Increased maximum width
-                        width: '90%',     // Adjusts to container width
-                        height: 'auto'     // Maintains aspect ratio
-                      }} 
-                    />
-                  </div>
-                  {/* End::Logo */}
+<div className="login login-1 login-signin-on d-flex flex-column flex-lg-row flex-column-fluid bg-white" style={{ paddingRight: '20%' }}>
+  <div className="login-content flex-row-fluid d-flex flex-column justify-content-center position-relative overflow-hidden p-7 mx-auto">
+    <div className="d-flex flex-column-fluid flex-center" style={{ height: '100vh' }}>
+      <div className="login-form-container" style={{
+        maxWidth: '400px',
+        width: '100%',
+        position: 'absolute', // Position the form absolutely
+        top: '50%',
+        right: '50px',
+        transform: 'translateY(-50%)', // Center vertically
+        padding: '20px',
+        boxSizing: 'border-box',
+        backgroundColor: 'transparent', // Transparent background for the form
+        borderRadius: '4px', // Rounded corners
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Subtle shadow effect
+      }}>
 
-                  {/* Begin::Tenant Info Box */}
-                  {/* <Row style={{
-                    position: 'absolute',
-                    top: '-70px', // Adjust as needed to position relative to the logo
-                    width: 'calc(100% - 40px)', // Account for padding
-                    paddingRight: '20px',
-                    marginRight: '20px', // Add space to the right side of the info box
-                  }}>
-                    <Col span={24} style={{ textAlign: 'center', paddingBottom: '20px' }}>
-                      <Card style={{ paddingRight: '20px' }}> 
-                        <Row>
-                          {!!this.props.sessionStore!.currentLogin.tenant ? (
-                            <Col span={24} style={{ textAlign: 'center' }}>
-                              <Button type="link" onClick={loginModel.toggleShowModal}>
-                                {L('CurrentTenant')} : {this.props.sessionStore!.currentLogin.tenant.tenancyName}
-                              </Button>
-                            </Col>
-                          ) : (
-                            <Col span={24} style={{ textAlign: 'center' }}>
-                              <Button type="link" onClick={loginModel.toggleShowModal}>
-                                {L('NotSelected')}
-                              </Button>
-                            </Col>
-                          )}
-                        </Row>
-                      </Card>
-                    </Col>
-                  </Row> */}
-                  {/* End::Tenant Info Box */}
+        {/* Begin::Logo (Placed above Tenant Info Box) */}
+        <div style={{ textAlign: 'center' }}>
+          <img 
+            src={logo} 
+            alt="Account Logo" 
+            style={{ 
+              maxWidth: '400px', // Increased maximum width
+              width: '90%',     // Adjusts to container width
+              height: 'auto'     // Maintains aspect ratio
+            }} 
+          />
+        </div>
+        {/* End::Logo */}
 
+        {/* Begin::Tenant Info Box */}
+        {/* <Row style={{
+          position: 'absolute',
+          top: '-70px', // Adjust as needed to position relative to the logo
+          width: 'calc(100% - 40px)', // Account for padding
+          paddingRight: '20px',
+          marginRight: '20px', // Add space to the right side of the info box
+        }}>
+          <Col span={24} style={{ textAlign: 'center', paddingBottom: '20px' }}>
+            <Card style={{ paddingRight: '20px' }}> 
+              <Row>
+                {!!this.props.sessionStore!.currentLogin.tenant ? (
+                  <Col span={24} style={{ textAlign: 'center' }}>
+                    <Button type="link" onClick={loginModel.toggleShowModal}>
+                      {L('CurrentTenant')} : {this.props.sessionStore!.currentLogin.tenant.tenancyName}
+                    </Button>
+                  </Col>
+                ) : (
+                  <Col span={24} style={{ textAlign: 'center' }}>
+                    <Button type="link" onClick={loginModel.toggleShowModal}>
+                      {L('NotSelected')}
+                    </Button>
+                  </Col>
+                )}
+              </Row>
+            </Card>
+          </Col>
+        </Row> */}
+        {/* End::Tenant Info Box */}
 
-                  {/* Begin::Logo (Placed above Tenant Info Box) */}
-                  <div style={{ textAlign: 'center' }}>
-                    <img 
-                      src={payRetrologo} 
-                      alt="Account Logo" 
-                      style={{ 
-                        maxWidth: '125px', // Increased maximum width
-                        width: '90%',     // Adjusts to container width
-                        height: 'auto',     // Maintains aspect ratio
-                        paddingBottom: '20px'
-                      }} 
-                    />
-                  </div>
-                  {/* End::Logo */}
+        {/* Begin::Aside Title */}
+        <span className="font-weight-bolder text-center font-size-h5-md" style={{ color: '#5097AB', display: 'block', marginBottom: '30px' ,textAlign: 'center'}}>
+          PAY RETRO
+        </span>
+        {/* End::Aside Title */}
 
-                  {/* Begin::Form */}
-                  <FormItem name="userNameOrEmailAddress" rules={rules.userNameOrEmailAddress}>
-                    <div style={{
-                      display: 'flex',           // Use flexbox to center the content
-                      justifyContent: 'center',  // Centers horizontally
-                      alignItems: 'center',      // Centers vertically
-                      height: '100%',            // Ensure the container takes up full height
-                      margin: '0',               // Remove any default margin
-                      borderRadius:'7px'
-                    }}>
-                      <Input
-                        placeholder={L('UserNameOrEmail')}
-                        prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-                        size="large"
-                        style={{
-                          width: '90%',               // Input takes 90% of the container's width
-                          backgroundColor: '#fff',    // White background for the input
-                          maxWidth: '400px',          // Optionally limit the width of the input
-                          borderRadius: '7px'
-                        }}
-                      />
-                    </div>
-                  </FormItem>
-
-
-                  <FormItem name="password" rules={rules.password}>
-                  <div style={{
-                      display: 'flex',           // Use flexbox to center the content
-                      justifyContent: 'center',  // Centers horizontally
-                      alignItems: 'center',      // Centers vertically
-                      height: '100%',            // Ensure the container takes up full height
-                      margin: '0',               // Remove any default margin
-                    }}>
-                    <Input
-                      placeholder={L('Password')}
-                      prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      type="password"
-                      size="large"
-                      style={{
-                        width: '90%',  // Ensure the input takes full width within the container
-                        backgroundColor: '#fff', // White background for the input
-                        borderRadius: '7px'
-                        
-                      }}
-                    />
-                    </div>
-                  </FormItem>
-
-                  <Row style={{ margin: '0px 0 10px 15px', alignItems: 'center' }}>
-                      <Col span={12} style={{ display: 'flex', alignItems: 'center' }}>
-                        <Checkbox 
-                          checked={loginModel.rememberMe} 
-                          onChange={loginModel.toggleRememberMe} 
-                          style={{ paddingRight: 8 }}
-                        />
-                        <span style={{ color: 'rgb(0, 67, 85)' }}>
-                          {L('Remember Me')}
-                        </span>
-                      </Col>
-                      <Col span={12} style={{ textAlign: 'right' }}>
-                        <a href="#" style={{ color: 'rgb(0, 67, 85)', textDecoration: 'none' }}>
-                          {L('ForgotPassword')}
-                        </a>
-                      </Col>
-                    </Row>
-                    <br></br>
-                    <Row style={{ textAlign: 'center', marginTop: '10px' }}>
-                      <Col span={24}>
-                        <Button 
-                          style={{ 
-                            backgroundColor: '#E6E6E6', 
-                            color: 'rgb(0, 122, 147)', 
-                            display: 'block', 
-                            margin: '0 auto', // Center the button
-                            width: '150px',
-                            borderRadius: '7px'
-                          }} 
-                          htmlType="submit" 
-                          
-                        >
-                          {L('Log in')}
-                        </Button>
-                      </Col>
-                    </Row>
-
-                  {/* End::Form */}
-                </div>
-              </div>
-            </div>
+        {/* Begin::Form */}
+        <FormItem name="userNameOrEmailAddress" rules={rules.userNameOrEmailAddress}>
+          <div style={{
+            display: 'flex',           // Use flexbox to center the content
+            justifyContent: 'center',  // Centers horizontally
+            alignItems: 'center',      // Centers vertically
+            height: '100%',            // Ensure the container takes up full height
+            margin: '0',               // Remove any default margin
+          }}>
+            <Input
+              placeholder={L('UserNameOrEmail')}
+              prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+              size="large"
+              style={{
+                width: '90%',               // Input takes 90% of the container's width
+                backgroundColor: '#fff',    // White background for the input
+                maxWidth: '400px',          // Optionally limit the width of the input
+              }}
+            />
           </div>
+        </FormItem>
+
+
+        <FormItem name="password" rules={rules.password}>
+        <div style={{
+            display: 'flex',           // Use flexbox to center the content
+            justifyContent: 'center',  // Centers horizontally
+            alignItems: 'center',      // Centers vertically
+            height: '100%',            // Ensure the container takes up full height
+            margin: '0',               // Remove any default margin
+          }}>
+          <Input
+            placeholder={L('Password')}
+            prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+            type="password"
+            size="large"
+            style={{
+              width: '90%',  // Ensure the input takes full width within the container
+              backgroundColor: '#fff', // White background for the input
+              
+            }}
+          />
+          </div>
+        </FormItem>
+
+        <Row style={{ margin: '0px 0 10px 15px', alignItems: 'center' }}>
+            <Col span={12} style={{ display: 'flex', alignItems: 'center' }}>
+              <Checkbox 
+                checked={loginModel.rememberMe} 
+                onChange={loginModel.toggleRememberMe} 
+                style={{ paddingRight: 8 }}
+              />
+              <span style={{ color: '#1ca47c' }}>
+                {L('Remember Me')}
+              </span>
+            </Col>
+            <Col span={12} style={{ textAlign: 'right' }}>
+              <a href="#" style={{ color: '#1c916c', textDecoration: 'none' }}>
+                {L('ForgotPassword')}
+              </a>
+            </Col>
+          </Row>
+          <br></br>
+          <Row style={{ textAlign: 'center', marginTop: '10px' }}>
+            <Col span={24}>
+              <Button 
+                style={{ 
+                  backgroundColor: '#1c916c', 
+                  color: 'white', 
+                  display: 'block', 
+                  margin: '0 auto' // Center the button
+                }} 
+                htmlType="submit" 
+                
+              >
+
+                {L('LogIn')}
+              </Button>
+            </Col>
+          </Row>
+
+        {/* End::Form */}
+      </div>
+    </div>
+  </div>
+</div>
+
         </Form>
     );
   }
