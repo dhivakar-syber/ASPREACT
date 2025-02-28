@@ -336,7 +336,7 @@ editdata:any = null;
             xxl={{ span: 2, offset: 0 }}
           >
             {' '}
-            <h2>{L('Dispute')}</h2>
+            <h2>{L('Queries')}</h2>
           </Col>
             
           <Col

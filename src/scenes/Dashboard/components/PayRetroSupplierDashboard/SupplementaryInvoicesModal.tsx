@@ -274,44 +274,55 @@ async function downloadFile({ path }: { path: string }): Promise<void> {
     { title: "Date", dataIndex: "supplementaryinvoicedate" },
     {
       title: "Supplementary Invoice/Credit Note File",
-      dataIndex: "supplementaryinvoicepath", // Keep the original title
+      dataIndex: "supplementaryinvoicepath",
       render: (_, record) => (
         <Tooltip title={record.supplementaryFilename}>
-        <Button type="link" onClick={() => handleSupplementrypdfButtonClick(record.supplementaryinvoicepath,record.supplementaryFilename)}>
-          <FilePdfOutlined style={{ marginRight: 8, fontSize: '16px', verticalAlign: 'middle' }}  />
-        </Button>
+          <Button
+            type="link"
+            onClick={() => handleSupplementrypdfButtonClick(record.supplementaryinvoicepath, record.supplementaryFilename)}
+            style={{ display: "inline-flex", alignItems: "center", padding: 0, justifyContent: "right" }} // Ensure proper alignment
+          >
+            <FilePdfOutlined style={{ fontSize: "20px" }} />
+          </Button>
         </Tooltip>
       ),
     },
     {
       title: "Annexure File",
-      dataIndex: "annexurepdfpath", // Keep the original title
+      dataIndex: "annexurepdfpath",
       render: (_, record) => (
         <Tooltip title={record.annexureFileName}>
-          <Button type="link" onClick={() => handleAnnexurepdfButtonClick(record.annexurepdfpath,record.annexureFileName)}>
-            <FilePdfOutlined style={{ marginRight: 8, fontSize: '16px', verticalAlign: 'middle' }} />
+          <Button
+            type="link"
+            onClick={() => handleAnnexurepdfButtonClick(record.annexurepdfpath, record.annexureFileName)}
+            style={{ display: "inline-flex", alignItems: "center", padding: 0, justifyContent: "right" }} // Remove extra padding
+          >
+            <FilePdfOutlined style={{ fontSize: "20px" }} />
           </Button>
         </Tooltip>
       ),
-    },    
+    },
+    
     {
       title: "Annexure Attachment",
-      dataIndex: "annexureexcelpath", // Keep the original title
+      dataIndex: "annexureexcelpath",
       render: (_, record) => (
         <Tooltip title={record.excelfilename}>
-        <Button type="link"onClick={() =>
-          downloadFile({
-            path: record.annexureexcelpath,
-          })
-        }>
-          <FileExcelOutlined style={{ marginRight: 8, fontSize: '16px', verticalAlign: 'middle' }} />
-        </Button>
+          <Button
+            type="link"
+            onClick={() => downloadFile({ path: record.annexureexcelpath })}
+            style={{ display: "inline-flex", alignItems: "center", padding: 0, justifyContent: "right" }}
+          >
+            <FileExcelOutlined style={{ fontSize: "20px" }} />
+          </Button>
         </Tooltip>
       ),
     },
+    
     { title: "Approval Status", dataIndex: "status",key: "status",render: (text: string, record: any) => { 
       const docStatus = record.status;
-                const documentStatusText = DocumentStatus[docStatus] || '';
+                var documentStatusText = DocumentStatus[docStatus] || '';
+                if (documentStatusText === "NotStarted") documentStatusText = "Not Submitted";
                 return <div>{documentStatusText}</div>;
     }},
   ];
@@ -346,7 +357,7 @@ async function downloadFile({ path }: { path: string }): Promise<void> {
       onCancel={handleCancel} // Handle modal close
       footer={null}
       width={700}
-      
+      style= {{height:700}}
     >
       <div className="row mb-4">
         <div className="col-md-3" style = {{paddingTop: '20px'}}>
