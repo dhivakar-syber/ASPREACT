@@ -241,7 +241,7 @@ class CreateOrUpdateSupplementarySummaries extends React.Component<ICreateOrUpda
     ];
     return (
       <div>
-        <Modal visible={visible} onCancel={onCancel} onOk={onCreate} title={L('SupplementarySummaries')} width={550}>
+        <Modal visible={visible} onCancel={onCancel} onOk={onCreate} okText={L('Save')} title={L('SupplementarySummaries')} width={550}>
           <Form ref={formRef} initialValues={initialData} onValuesChange={(changedValues, allValues) => {
       if (changedValues.partNo && selectedLookupItem) {
         formRef.current?.setFieldsValue({

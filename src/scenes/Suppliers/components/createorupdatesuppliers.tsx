@@ -147,7 +147,7 @@ class CreateOrUpdateSupplier extends React.Component<ICreateOrUpdateSupplierProp
 
     return (
       <div>
-        <Modal visible={visible} onCancel={onCancel} onOk={onCreate} title={L('Supplier')} width={550}>
+        <Modal visible={visible} onCancel={onCancel} onOk={onCreate} okText={L('Save')} title={L('Supplier')} width={550}>
           <Form ref={formRef} initialValues={initialData} onValuesChange={(changedValues, allValues) => {
       if (changedValues.userName && selectedUserLookupItem) {
         formRef.current?.setFieldsValue({

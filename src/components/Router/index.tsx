@@ -40,7 +40,7 @@ const Router = () => {
                 if (result){
                   if (result.accessToken){
                     const tokenExpireDate = new Date(
-                      new Date().getTime() + 1000 * result.expireInSeconds
+                      new Date().getTime() +result.expireInSeconds
                     );
                     abp.auth.setToken(result.accessToken, tokenExpireDate);
                     abp.utils.setCookieValue(

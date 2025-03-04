@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 
-import { Button, Card, Col, Dropdown, Input, InputNumber, Menu, Modal, Row, Table} from 'antd';
+import { Button, Card, Col, Dropdown, Input, InputNumber, Menu, message, Modal, Row, Table} from 'antd';
 import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../components/AppComponentBase';
@@ -244,8 +244,10 @@ editdata:any = null;
     form!.validateFields().then(async (values: any) => {
       if (this.state.userId === 0) {
         await this.props.filemasterStore.create(values);
+        message.success("Successfully Created!")
       } else {
         await this.props.filemasterStore.update({ ...values, id: this.state.userId });
+        message.success("Successfully Updated!")
       }
 
       await this.getAll();

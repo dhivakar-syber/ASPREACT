@@ -248,7 +248,7 @@ class CreateOrUpdateCBFCdata extends React.Component<ICreateOrUpdateCBFCdataProp
     ];
     return (
       <div>
-        <Modal visible={visible} onCancel={onCancel} onOk={onCreate} title={L('CBFCDatas')} width={550}>
+        <Modal visible={visible} onCancel={onCancel} onOk={onCreate} title={L('CBFCDatas')} okText={L('Save')} width={550}>
           <Form ref={formRef} initialValues={initialData} onValuesChange={(changedValues, allValues) => {
       if (changedValues.partNo && selectedLookupItem) {
         formRef.current?.setFieldsValue({
