@@ -243,7 +243,7 @@ class CreateOrUpdateFilemasterdata extends React.Component<ICreateOrUpdateFileMa
     ];
     return (
       <div>
-        <Modal visible={visible} onCancel={onCancel} onOk={onCreate} title={L('FileMaster')} width={550}>
+        <Modal visible={visible} onCancel={onCancel} onOk={onCreate} okText={L('Save')}  title={L('FileMaster')} width={550}>
           <Form ref={formRef} initialValues={initialData} onValuesChange={(changedValues, allValues) => {
       if (changedValues.partNo && selectedLookupItem) {
         formRef.current?.setFieldsValue({

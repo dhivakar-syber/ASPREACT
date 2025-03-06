@@ -40,7 +40,7 @@ class CreateOrEditProcureDatas extends React.Component<ICreateOrEditPlantProps> 
     const { visible, onCancel, onCreate, formRef } = this.props;
 
     return (
-      <Modal visible={visible} onCancel={onCancel} onOk={onCreate} title={L('Crerate PlanteData')} width={550}>
+      <Modal visible={visible} onCancel={onCancel} onOk={onCreate} okText={L('Save')} title={L('Crerate PlanteData')} width={550}>
         <Form ref={formRef}>   
             
           <Form.Item label={L('Name')} name={'name'}  {...formItemLayout}>

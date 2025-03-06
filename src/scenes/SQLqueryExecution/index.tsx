@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import supplementarySummariesService from "../../services/SupplementarySummaries/supplementarySummariesService";
-import { Input, Button, Table, Alert, Spin, Typography } from "antd";
+import { Input, Button, Table, Alert, Spin, Typography, Card } from "antd";
 
 const { TextArea } = Input;
 const { Title } = Typography;
@@ -101,6 +101,7 @@ const QueryExecutor = () => {
 
       {columns.length > 0 && (
         <div style={{ width: "1500px", overflowX: "auto" }}>
+          <Card>
         <Table
           columns={columns}
           dataSource={data}
@@ -109,6 +110,7 @@ const QueryExecutor = () => {
           pagination={{ pageSize: 15 }}
           
         />
+        </Card>
       </div>
       )}
     </div>

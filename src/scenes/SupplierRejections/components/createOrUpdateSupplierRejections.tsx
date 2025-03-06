@@ -34,7 +34,7 @@ class CreateOrUpdateSupplierRejections extends React.Component<ICreateOrUpdateSu
     const { visible, onCancel, onCreate, formRef } = this.props;
     return (
       <div>
-        <Modal visible={visible} onCancel={onCancel} onOk={onCreate} title={L('SupplementarySummaries')} width={550}>
+        <Modal visible={visible} onCancel={onCancel} onOk={onCreate} okText={L('Save')} title={L('SupplementarySummaries')} width={550}>
           <Form ref={formRef}>      
             <Form.Item label={L('Code')} name={'code'} {...formItemLayout}>
               <Input/>

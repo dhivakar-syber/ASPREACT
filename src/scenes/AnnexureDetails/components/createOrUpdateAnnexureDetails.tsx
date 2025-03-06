@@ -224,7 +224,7 @@ class CreateOrUpdateAnnexureDetails extends React.Component<ICreateOrUpdateAnnex
     ];
     return (
       <div>
-        <Modal visible={visible} onCancel={onCancel} onOk={onCreate} title={L('Annexure Details')} width={550}>
+        <Modal visible={visible} onCancel={onCancel} onOk={onCreate} title={L('Annexure Details')} okText={L('Save')} width={550}>
           <Form ref={formRef} initialValues={initialData} onValuesChange={(changedValues, allValues) => {
       if (changedValues.partNo && selectedLookupItem) {
         formRef.current?.setFieldsValue({

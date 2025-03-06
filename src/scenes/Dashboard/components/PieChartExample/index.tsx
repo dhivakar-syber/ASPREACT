@@ -50,74 +50,69 @@ class AnalysisPieChart extends React.Component<SupplementaryDocStatusProps> {
       Rejected: 0,
       Resubmit: 0,
     };
-
+  
     this.props.supplementaryDocStatus.forEach((doc) => {
       if (doc.iscreditnote === iscreditnote) {
+        let value = Math.abs(doc.total || 0); // Convert negative values to positive
+  
         if (statusType === "buyerApproval") {
-          // Sum totals based on buyer approval status
           switch (doc.buyerApprovalStatus) {
             case 1:
-              statusTotals.Pending += doc.total || 0;
+              statusTotals.Pending += value;
               break;
             case 2:
-              statusTotals.Approved += doc.total || 0;
+              statusTotals.Approved += value;
               break;
             case 3:
-              statusTotals.Rejected += doc.total || 0;
-              break;
-            default:
+              statusTotals.Rejected += value;
               break;
           }
         } else if (statusType === "accountantApproval") {
-          // Sum totals based on accountant approval status
           switch (doc.accountantApprovalStatus) {
             case 1:
-              statusTotals.Pending += doc.total || 0;
+              statusTotals.Pending += value;
               break;
             case 2:
-              statusTotals.Approved += doc.total || 0;
+              statusTotals.Approved += value;
               break;
             case 3:
-              statusTotals.Rejected += doc.total || 0;
-              break;
-            default:
+              statusTotals.Rejected += value;
               break;
           }
         } else if (statusType === "total") {
-          // Sum totals based on overall document status
-          switch (doc.documentStatus) {
-            case DocumentStatus.NotSubmitted:
-              statusTotals.NotSubmitted += doc.total || 0;
-              break;
-            case DocumentStatus.Pending:
-              statusTotals.Pending += doc.total || 0;
-              break;
-            case DocumentStatus.Approved:
-              statusTotals.Approved += doc.total || 0;
-              break;
-            case DocumentStatus.Rejected:
-              statusTotals.Rejected += doc.total || 0;
-              break;
-            case DocumentStatus.Resubmit:
-              statusTotals.Resubmit += doc.total || 0;
-              break;
-            default:
-              break;
+          if (doc.documentStatus === DocumentStatus.NotSubmitted) {
+            // Instead of adding to NotSubmitted, add to Pending
+            statusTotals.Pending += value;
+          } else {
+            switch (doc.documentStatus) {
+              case DocumentStatus.Pending:
+                statusTotals.Pending += value;
+                break;
+              case DocumentStatus.Approved:
+                statusTotals.Approved += value;
+                break;
+              case DocumentStatus.Rejected:
+                statusTotals.Rejected += value;
+                break;
+              case DocumentStatus.Resubmit:
+                statusTotals.Resubmit += value;
+                break;
+            }
           }
         }
       }
     });
-    // const totalSum = Object.values(statusTotals).reduce((sum, val) => sum + val, 0);
+  
     return Object.entries(statusTotals)
-    .map(([name, value]) => ({
-      name,
-      value, // Keep the raw value instead of converting it to a percentage
-      color: STATUS_COLORS[name],
-    }))
-    .filter((item) => item.value > 0); // Remove items with zero value
+      .map(([name, value]) => ({
+        name,
+        value,
+        color: STATUS_COLORS[name],
+      }))
+      .filter((item) => item.value > 0);
+  }
   
   
-  }  
 
   // Custom label formatter for pie chart: displays "TotalValue - Status"
   renderCustomLabel = (props: any) => {
@@ -161,14 +156,14 @@ class AnalysisPieChart extends React.Component<SupplementaryDocStatusProps> {
 
     return (
       <div style={{ textAlign: "center" }}>
-        <h3><b>{title}</b></h3>
+        <h2><b>{title}</b></h2>
         <PieChart width={500} height={500} key={chartKey}>
           <Pie
             dataKey="value"
             data={chartData}
             cx="50%"
             cy="50%"
-            outerRadius={80}
+            outerRadius={90}
             label={this.renderCustomLabel}
             onMouseEnter={this.onPieEnter}
           >
@@ -196,7 +191,7 @@ class AnalysisPieChart extends React.Component<SupplementaryDocStatusProps> {
       <div>
         {/* Row title for Supplementary Invoice */}
         <div style={{ textAlign: "left", marginBottom: "20px" }}>
-          <h2><b>Supplementary Invoice</b></h2>
+          <h1><b>Supplementary Invoice</b></h1>
         </div>
         {/* Supplementary Invoice Pie Charts Row */}
         <div style={{ display: "flex", justifyContent: "space-around", marginBottom: "20px" }}>
@@ -207,7 +202,7 @@ class AnalysisPieChart extends React.Component<SupplementaryDocStatusProps> {
 
         {/* Row title for Credit Note */}
         <div style={{ textAlign: "left", marginBottom: "20px" }}>
-          <h2><b>Credit Note</b></h2>
+          <h1><b>Credit Note</b></h1>
         </div>
         {/* Credit Note Pie Charts Row */}
         <div style={{ display: "flex", justifyContent: "space-around" }}>

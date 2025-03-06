@@ -177,7 +177,7 @@ class CreateOrUpdateBuyer extends React.Component<ICreateOrUpdateBuyerProps> {
     ];
     return (
     <div>
-    <Modal visible={visible} onCancel={onCancel} onOk={onCreate} title={L('Buyers')} width={550}>
+    <Modal visible={visible} onCancel={onCancel} onOk={onCreate} title={L('Buyers')} okText={L('Save')} width={550}>
       <Form ref={formRef} initialValues={initialData} 
       onValuesChange={(changedValues, allValues) => {
     if (changedValues.l3User && selectedL3UserLookupItem) {
