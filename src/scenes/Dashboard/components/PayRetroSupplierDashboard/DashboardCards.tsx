@@ -14,7 +14,7 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ SupplierDashboardInputs
         const fetchData = async () => {
             try {
                 const result = await supplementarySummariesService.carddetails(SupplierDashboardInputs);
-                // console.log('Dashboard_card_details', result);
+                console.log('Dashboard_card_details', result);
                 setcarddata(result.data.result || {});
             } catch (error) {
                 console.error("Error fetching supplementary summaries:", error);
@@ -86,10 +86,10 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ SupplierDashboardInputs
           <span className="dot rejected"></span>
           <div className="status-text" style={{ marginRight: "5px" }}>Rejected</div>
         </div>
-        <div className="progress-dot">
+        {/* <div className="progress-dot">
           <span className="dot not-submitted"></span>
           <div className="status-text" style={{ marginRight: "5px" }}>Not Submitted</div>
-        </div>
+        </div> */}
       </div>
       </Col>
     </Row>    
