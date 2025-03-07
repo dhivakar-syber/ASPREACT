@@ -1,4 +1,4 @@
-import React ,{ useRef,useState} from "react";
+import React ,{ useEffect, useRef,useState} from "react";
 
 import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
 import annexureDetailsService from "../../../../services/annexureDetails/annexureDetailsService";
@@ -49,7 +49,6 @@ const hasPermission = async (permission: string): Promise<boolean> => {
 
 
 
-declare var abp: any;
 
 const SettingsIcon = () => (
   <span role="img" aria-label="home" className="anticon">
@@ -95,12 +94,14 @@ const [loading, setloading] = React.useState<boolean>(false);
 const [tableloading, settableloading] = React.useState<boolean>(false);
 const [supplierActionsPermission, setSupplierActionsPermission] = useState(false);
 
+useEffect(() => {
 // console.log(tableData)
 const checkPermissions = async () => {
   const hasPermissionSupplierActions = await hasPermission("Pages.Tenant.Dashboard.Actions");
   setSupplierActionsPermission(hasPermissionSupplierActions)
 };
 checkPermissions();
+}, []); 
 
   // const [implementationDate, setImplementationDate] = React.useState(selectedRow?.implementationDate || '');
   const [dashboardinput, setdashboardinput] = React.useState<SupplierDashboardInput>({
@@ -136,7 +137,7 @@ checkPermissions();
         setHasRole(hasRole)
       
 
-        const suppliers = await supplementarySummariesService.GetAllSuppliers(abp.session.userId);
+        const suppliers = await supplementarySummariesService.GetAllSuppliers();
         //console.log('suppliers',suppliers)
         
         setSuppliers(suppliers.data.result || []);
@@ -1324,7 +1325,9 @@ const Loading = () => (
           { title: 'ES2', dataIndex: 'es2', align: 'center' ,width:100},
           { title: 'Report Date', dataIndex: 'createtime', render: formatDate ,width:120},
           { title: 'Ageing', dataIndex: 'ageing', align: 'center' ,width:100},
-          { title: 'Supplementary Invoice/Credit Note', dataIndex: 'supplementaryInvoiceNo',width:300 },
+          { title: 'Supplementary Invoice/Credit Note', dataIndex: 'supplementaryInvoiceNo',width:300 
+            
+          },
           { title: 'Date', dataIndex: 'supplementaryinvoicedatestring',width:120 },
           { title: 'From', dataIndex: 'contractFromDate', render: formatDate ,width:120},
           { title: 'To', dataIndex: 'contractToDate', render: formatDate ,width:120},

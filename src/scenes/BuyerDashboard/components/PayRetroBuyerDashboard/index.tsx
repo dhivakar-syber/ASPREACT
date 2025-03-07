@@ -12,7 +12,7 @@ import { inject, observer } from "mobx-react"; // Import MobX utilities
 
 import ApproveorRejectModal from "../ApproveorRejectModal"
 
-declare var abp: any;
+// declare var abp: any;
 //const skipCount=0;
 const SettingsIcon = () => (
   <span role="img" aria-label="home" className="anticon">
@@ -65,7 +65,7 @@ const SettingsIcon = () => (
         const hasRole = roles.some(role => requiredRoles.includes(role));
         setHasRole(hasRole);
         
-        const buyers = await supplementarySummariesService.GetLoginBuyer(abp.session.userId);
+        const buyers = await supplementarySummariesService.GetLoginBuyer();
           setBuyers(buyers.data.result || []);
           setselectedbuyers({name:buyers.data.result[0].name,value:buyers.data.result[0].id});
           getsuppliers(buyers.data.result[0].id)

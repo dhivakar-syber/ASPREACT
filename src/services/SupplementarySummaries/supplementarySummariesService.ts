@@ -115,11 +115,11 @@ class supplementarySummariesService{
         throw error; 
       }
   }
-    public async GetAllSuppliers(input:string) {
+    public async GetAllSuppliers() {
       try {
         
         const result = await http.get(
-          'api/services/app/SupplementarySummaries/GetLoginSupplier2',{ params:{userid:input}  },
+          'api/services/app/SupplementarySummaries/GetLoginSupplier2'
            
         );
         return result;
@@ -129,11 +129,11 @@ class supplementarySummariesService{
       }
   }
 
-  public async GetLoginBuyer(input:string) {
+  public async GetLoginBuyer() {
     try {
       
       const result = await http.get(
-        'api/services/app/SupplementarySummaries/GetLoginBuyer2',{ params:{userid:input}  },
+        'api/services/app/SupplementarySummaries/GetLoginBuyer2'
          
       );
       return result;

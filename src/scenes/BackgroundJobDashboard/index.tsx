@@ -31,7 +31,7 @@ declare var abp: any;
   //   Date:null,
   //   });
 
-  var userid='0';
+  // var userid='0';
   
   
 
@@ -45,7 +45,7 @@ declare var abp: any;
        
         
 
-        const buyers = await supplementarySummariesService.GetLoginBuyer(userid);
+        const buyers = await supplementarySummariesService.GetLoginBuyer();
         //setBuyers(buyers.data.result || []);
         if(abp.session.userId===1||abp.session.userId===2)
         {
