@@ -112,13 +112,13 @@ const CreateOrUpdateDahBoardDisputedata: React.FC<ICreateOrUpdateDahBoardDispute
           setActionType('forward'); // Set action type before submitting
           await formRef.current?.submit();
           setIsModalOpen(false);
-          await onUpdate(); 
+          
         } catch (error) {
           console.error('Error when forwarding query:', error);
           message.error('Failed to Forward the query to F&C');
         } 
         finally {
-           
+          await onUpdate(); 
           //setloading(false); 
         }
       },

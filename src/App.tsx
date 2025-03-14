@@ -7,13 +7,17 @@ import SessionStore from './stores/sessionStore';
 import SignalRAspNetCoreHelper from './lib/signalRAspNetCoreHelper';
 import Stores from './stores/storeIdentifier';
 import { inject } from 'mobx-react';
+import AuthenticationStore from './stores/authenticationStore';
 
 export interface IAppProps {
   sessionStore?: SessionStore;
+  authenticationStore?: AuthenticationStore;
 }
 
-@inject(Stores.SessionStore)
+@inject(Stores.SessionStore, Stores.AuthenticationStore)
 class App extends React.Component<IAppProps> {
+  private tokenCheckInterval: any;
+
   async componentDidMount() {
     await this.props.sessionStore!.getCurrentLoginInformations();
 
@@ -21,6 +25,21 @@ class App extends React.Component<IAppProps> {
       if (this.props.sessionStore!.currentLogin.application.features['SignalR.AspNetCore']) {
         SignalRAspNetCoreHelper.initSignalR();
       }
+    }
+
+    // Call the function initially
+    this.props.authenticationStore?.initializeRefresh();
+
+    // Start a background process to repeatedly call it every 5 minutes
+    this.tokenCheckInterval = setInterval(() => {
+      this.props.authenticationStore?.initializeRefresh();
+    }, 3000); // 300000 ms = 5 minutes
+  }
+
+  componentWillUnmount() {
+    // Clear interval when component unmounts to prevent memory leaks
+    if (this.tokenCheckInterval) {
+      clearInterval(this.tokenCheckInterval);
     }
   }
 

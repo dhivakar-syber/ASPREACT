@@ -190,16 +190,27 @@ const [selectedcategory, setselectedcategory] =React.useState<any>(String);
 
   return (
     <div>
-      <Row
-          style={{ color: '#444444', paddingLeft: '10px', paddingTop: '10px', margin: '2px' }}
-          gutter={11}
-        >
-          <p>L3 & L4 Dashboard</p>
-        </Row>
+      <div
+                    style={{
+                      background: '#fafafa',
+                      padding: '!2px',
+                      marginTop: '16px',
+                      marginBottom: '10px',
+                      borderRadius: '2px',
+                    }}
+                  >
+                    <Row
+                      style={{ color: '#444444', paddingLeft: '10px', paddingTop: '10px', margin: '2px' }}
+                      gutter={11}
+                    >
+                      <p>L3 & L4 Dashboard</p>
+                    </Row>
+                  </div>
         {/* <DashboardCards SupplierDashboardInputs={dashboardinput} /> */}
         <Row gutter={16}>
           
         </Row>
+        <Card style={{ backgroundColor:"#fafafa", fontSize: "12px" }}>
         <Row gutter={11} style={{ marginRight: '-200.5px' }}>
         <Col className="gutter-row" span={5}>
                     <div style={{ textAlign: 'left' }}>
@@ -296,6 +307,8 @@ const [selectedcategory, setselectedcategory] =React.useState<any>(String);
                   </Col>
                  
                 </Row>
+                </Card>
+                <Card>
                 <Tabs defaultActiveKey="1">
                   <Tabs.TabPane tab="Summary" key="1">
                   <Tabs>
@@ -464,7 +477,7 @@ const [selectedcategory, setselectedcategory] =React.useState<any>(String);
 
   ]}
   dataSource={TableData}
-    className="custom-table"
+    className="custom-ant-table"
     pagination={{ pageSize: 10 }}
     scroll={{ x: 'max-content' }}
     bordered
@@ -475,6 +488,7 @@ const [selectedcategory, setselectedcategory] =React.useState<any>(String);
  
 </Tabs.TabPane>
                 </Tabs>
+                </Card>
     </div>
   );
 };

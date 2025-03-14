@@ -118,13 +118,35 @@ const AccountsApproval: React.FC<ApproveRejectModalProps> = ({
               <Tabs.TabPane tab="Approve" key="1">
 
           <Form>
-          <Form.Item label="Accounting No" name="accNo">
-            <Input
-              value={accountNo}
-              onChange={(e) => setAccountNo(e.target.value)}
-              placeholder="Enter Accounting No"
-            />
-          </Form.Item>
+          <Form.Item
+  label="Accounting No"
+  name="accNo"
+  rules={[
+    {
+      required: true,
+      message: "Please enter Accounting No.",
+    },
+    {
+      pattern: /^\d{10}$/, // Ensures exactly 10 numeric digits
+      message: "Accounting Number should contain only numbers and must be exactly 10 digits.",
+    }
+  ]}
+  
+>
+  <Input
+    value={accountNo}
+    onChange={(e) => {
+      // Allow only numbers
+      const onlyNums = e.target.value.replace(/\D/g, "");
+      setAccountNo(onlyNums);
+    }}
+    maxLength={10} // Restrict input to 10 characters
+    placeholder="Enter Accounting No"
+  />
+</Form.Item>
+
+
+
   
           <Form.Item label="Accounting Date" name="accDate">
             <DatePicker

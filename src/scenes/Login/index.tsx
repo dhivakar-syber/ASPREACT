@@ -63,11 +63,15 @@ class Login extends React.Component<ILoginProps> {
 
   handleSubmit = async (values: any) => {
     const { loginModel } = this.props.authenticationStore!;
-    await this.props.authenticationStore!.login(values);
+
+    values.rememberMe = loginModel.rememberMe === true;
+
     sessionStorage.setItem('rememberMe', loginModel.rememberMe ? '1' : '0');
+    await this.props.authenticationStore!.login(values);
    const { state } = this.props.location;
     window.location = state ? state.from.pathname : '/';
     console.log('Window Location',window.location)
+    
   };
 
   public render() {
@@ -216,16 +220,18 @@ class Login extends React.Component<ILoginProps> {
         </FormItem>
 
         <Row style={{ margin: '0px 0 10px 15px', alignItems: 'center' }}>
+        <FormItem name="rememberMe">
             <Col span={12} style={{ display: 'flex', alignItems: 'center' }}>
               <Checkbox 
                 checked={loginModel.rememberMe} 
-                onChange={loginModel.toggleRememberMe} 
+                onChange={(e) => loginModel.toggleRememberMe(e.target.checked)} 
                 style={{ paddingRight: 8 }}
               />
               <span style={{ color: '#1ca47c' }}>
                 {L('Remember Me')}
               </span>
             </Col>
+            </FormItem>
             <Col span={12} style={{ textAlign: 'right' }}>
               <a href="#" style={{ color: '#1c916c', textDecoration: 'none' }}>
                 {L('ForgotPassword')}

@@ -209,6 +209,7 @@ IntimateToBuyerMail = async (item: any) => {
         
         await this.disputesStore.update({ ...values, id: this.state.userId });
         this.IntimateToBuyerMail(values);
+        this.getAll();
        
       }
 

@@ -6,6 +6,7 @@ import  DashboardCards  from "../PayRetroaccountsDashboard/DashboardCards";
 import ApproveorRejectModal from "../ApproveorRejectModal"
 import { FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
 import AccountQueryModal from "./AccountsQueryModal"
+import StatusStackedChart from "./StatusStackedChart"
 // import DisputedataStore from "../../../../stores/DisputesStrore";
 import settingsIcon from "../../../../images/Setting.svg";
 // import DisputedataStore from "../../../../stores/DisputesStrore";
@@ -100,6 +101,37 @@ const PayRetroAccountsDashboard: React.SFC = () => {
 
     fetchData();
   }, []);
+
+  const downloadExcelFile = async function() {
+    try {
+        // Call the service method to get the file details
+        const file = await supplementarySummariesService.accountsDashboardSummariesExcel(dashboardinput);
+        file.fileContent = file.fileBytes;
+        // Check if the required properties exist
+        if (!file.fileContent || !file.fileType || !file.fileName) {
+            throw new Error("Invalid file data received.");
+        }
+
+        // Convert the file content (Base64) into a Blob
+        const byteCharacters = atob(file.fileContent);
+        const byteNumbers = Array.from(byteCharacters, char => char.charCodeAt(0));
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: file.fileType });
+
+        // Create a temporary anchor element to trigger the download
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob); // Create a Blob URL
+        link.download = file.fileName || "Annexure.xlsx"; // Use provided filename or default
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // Revoke the Blob URL to free up memory
+        URL.revokeObjectURL(link.href);
+    } catch (error) {
+        console.error("Error downloading the file:", error);
+    }
+}
 
   const handlesupplierchange =async  (selectedValues: any[]) => {
         
@@ -517,7 +549,7 @@ function barstatus(status:any) {
             />
             </div>
               </Col>
-              <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '250px' }}>
+              <Col className="gutter-row" span={3} style={{ flex: '1', maxWidth: '250px' }}>
               <div style={{ textAlign: 'left' }}>
               <span style={{padding: "2px"}}>Suppliers</span>
               <Select
@@ -537,7 +569,7 @@ function barstatus(status:any) {
             />
             </div>
               </Col>
-              <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '250px' }}>
+              <Col className="gutter-row" span={3} style={{ flex: '1', maxWidth: '250px' }}>
               <div style={{ textAlign: 'left' }}>
               <span style={{padding: "2px"}}>Category</span>
               
@@ -587,7 +619,7 @@ function barstatus(status:any) {
             </div>
               </Col>
               
-              <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '215px', margin: '4px' }}>
+              <Col className="gutter-row" span={3} style={{ flex: '1', maxWidth: '215px', margin: '4px' }}>
         <div style={{ textAlign: 'left' }}>
           <span style={{ padding: "2px" }}>Date</span>
           <div style={{
@@ -624,7 +656,7 @@ function barstatus(status:any) {
           </div>
         </div>
       </Col>
-              <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '250px' }}>
+              <Col className="gutter-row" span={3} style={{ flex: '1', maxWidth: '250px' }}>
               <div style={{ textAlign: 'left' }}>
               <span style={{padding: "2px"}}>Document Status</span>
               
@@ -658,9 +690,14 @@ function barstatus(status:any) {
               />
             </div>
               </Col>
-            </Row>
-
-
+              <Col className="gutter-row" span={3} style={{ flex: '1', maxWidth: '250px',marginTop:'20px' }}>
+            <Button type="primary" 
+            onClick={() => downloadExcelFile()}
+            >
+                    Download Report
+                </Button>
+                </Col>
+                </Row>
             <Tabs defaultActiveKey="1">
     <Tabs.TabPane tab="Home" key="1">
   <Card>
@@ -699,7 +736,7 @@ function barstatus(status:any) {
           render: (_, __, index) => index + 1, 
           width: 60 
         },
-        { title: 'Document', dataIndex: 'document',render: (_, row) => row.isCreditNote ? 'Credit Note' : 'Supplementary Invoice', width: 170 },
+        { title: 'Document', dataIndex: 'document',render: (_, row) => row.isCreditNote ? 'Credit Note' : 'Supplementary Invoice', width: 200 },
         { title: 'Document Number', dataIndex: 'supplementaryInvoiceNo', width: 150 },
         { 
           title: 'Date', 
@@ -850,9 +887,14 @@ function barstatus(status:any) {
         )}
       </Modal>
       	</Tabs.TabPane>
-    <Tabs.TabPane tab="Queries" key="3">
+    <Tabs.TabPane tab="Queries" key="2">
     <AccountQueryModal AccountDashboardInput ={dashboardinput} />
 
+    </Tabs.TabPane>
+    <Tabs.TabPane tab="Analysis" key="3">
+      
+    {/* <AccountQueryModal AccountDashboardInput ={dashboardinput} /> */}
+<StatusStackedChart />
     </Tabs.TabPane>
   </Tabs> 
      
