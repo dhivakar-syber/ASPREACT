@@ -33,10 +33,13 @@ const userDropdownMenu = (
   </Menu>
 );
 
-const pdfUrl = '/assets/manual/PayRetroSupplierDashboardUserManual.pdf'
-const iframe = document.createElement('iframe');
-iframe.src = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}`;
-document.body.appendChild(iframe);
+// const pdfUrl = '/assets/manual/PayRetroSupplierDashboardUserManual.pdf'
+// const iframe = document.createElement('iframe');
+// iframe.src = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}`;
+// document.body.appendChild(iframe);
+
+// window.open('/assets/manual/PayRetroSupplierDashboardUserManual.pdf', '_blank');
+
 
 @inject(Stores.SessionStore)
 @observer
@@ -62,15 +65,22 @@ export class Header extends React.Component<IHeaderProps> {
           {/* <LanguageSelect /> {'   '} */}
           {/* {this.props.sessionStore!.currentLogin.user!.name!} */}
           {isSupplier && (
-          <Tooltip title="PayRetro User Manual">
-            <button 
-                style={{ border: "none", background: "none", cursor: "pointer" }}  
-                onClick={() => 
-                window.open('/Manual/PayRetroSupplierDashboardUserManual_v1.pdf', '_blank', 'noopener,noreferrer')}
-            >
-              <QuestionCircleOutlined />
-            </button>
-          </Tooltip>
+            <Tooltip title="PayRetro User Manual">
+  <button 
+    style={{ border: "none", background: "none", cursor: "pointer" }}  
+    onClick={() => {
+      const link = document.createElement("a");
+      link.href = "PayRetro/assets/manual/PayRetroSupplierDashboardUserManual.pdf";
+      link.download = "PayRetroSupplierDashboardUserManual.pdf"; // Optional: set a custom filename
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }}
+  >
+    <QuestionCircleOutlined />
+  </button>
+</Tooltip>
+
         )}
           <span style={{ marginRight: 10 }}>Welcome</span><span style={{ marginRight: 10 }}>{userName}</span>
           <Dropdown overlay={userDropdownMenu} trigger={['click']}>

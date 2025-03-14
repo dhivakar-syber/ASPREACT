@@ -699,7 +699,7 @@ function barstatus(status:any) {
           render: (_, __, index) => index + 1, 
           width: 60 
         },
-        { title: 'Document', dataIndex: 'document',render: (_, row) => row.isCreditNote ? 'Credit Note' : 'Supplementary Invoice', width: 170 },
+        { title: 'Document', dataIndex: 'document',render: (_, row) => row.isCreditNote ? 'Credit Note' : 'Supplementary Invoice', width: 200 },
         { title: 'Document Number', dataIndex: 'supplementaryInvoiceNo', width: 150 },
         { 
           title: 'Date', 

@@ -4,7 +4,7 @@ import supplementarySummariesService from "../../../../services/SupplementarySum
 import annexureDetailsService from "../../../../services/annexureDetails/annexureDetailsService";
 import { SupplierDashboardInput } from "./SupplierDashboardInput";
 import  DashboardCards  from "../PayRetroSupplierDashboard/DashboardCards";
-import { Row, Col,Select,message, Card,Modal,Button,DatePicker,Spin,Tag, Tabs, Table, Checkbox, Dropdown, Menu } from 'antd';
+import { Row, Col,Select,message, Card,Modal,Button,DatePicker,Spin,Tag, Tabs, Table, Checkbox, Dropdown, Menu, Tooltip } from 'antd';
 import SupplierSubmitModal from './SupplierSubmitModal';
 import SupplementaryInvoiceModal from "./SupplementaryInvoicesModal";
 import DisputesStore from "../../../../stores/DisputesStrore";
@@ -21,7 +21,7 @@ import './index.css'; // or your CSS file
 import settingsIcon from "../../../../images/Setting.svg";
 import SessionStore from "../../../../stores/sessionStore";
 import { inject, observer } from "mobx-react"; // Import MobX utilities
-import { ExclamationCircleFilled } from '@ant-design/icons';
+import { ExclamationCircleFilled, FileExcelOutlined, FilePdfOutlined } from '@ant-design/icons';
 import AnalysisPieChart from "../PieChartExample";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
 import { MenuInfo } from "rc-menu/lib/interface";
@@ -49,6 +49,7 @@ const hasPermission = async (permission: string): Promise<boolean> => {
 
 
 
+// declare var abp: any;
 
 const SettingsIcon = () => (
   <span role="img" aria-label="home" className="anticon">
@@ -79,6 +80,7 @@ const PayRetroSupplierDashboard: React.FC<{ sessionStore?: SessionStore }> = ({
   const [selectedcategory, setselectedcategory] =React.useState<any>(String);
   const [submitIdRow, setSubmitIdRow] = React.useState<number>(0);
   const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);  // Track modal visibility
+    const [isPreviewModalVisible, setIsPreviewModalVisible] = useState<boolean>(false);
   const [isQueryModalVisible, setIsQueryModalVisible] = React.useState<boolean>(false);  // Track modal visibility
   const [isHistoryModalVisible, setIsHistoryModalVisible] = React.useState<boolean>(false);  // Track modal visibility
   const [currentRowId, setCurrentRowId] = React.useState<string | null>(null); 
@@ -93,22 +95,28 @@ const [progress, setProgress] = useState(0);
 const [loading, setloading] = React.useState<boolean>(false);
 const [tableloading, settableloading] = React.useState<boolean>(false);
 const [supplierActionsPermission, setSupplierActionsPermission] = useState(false);
-
-useEffect(() => {
+const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [supplementaryFilename, setsupplementaryFilename] = useState<string>("");
+  const [annexureFileName, setannexureFileName] = useState<string>("");
+  const [selectedstatus, setselectedstatus] =React.useState<number|null>(0);
 // console.log(tableData)
-const checkPermissions = async () => {
-  const hasPermissionSupplierActions = await hasPermission("Pages.Tenant.Dashboard.Actions");
-  setSupplierActionsPermission(hasPermissionSupplierActions)
-};
-checkPermissions();
-}, []); 
+useEffect(() => {
+  const checkPermissions = async () => {
+    const hasPermissionSupplierActions = await hasPermission("Pages.Tenant.Dashboard.Actions");
+    setSupplierActionsPermission(hasPermissionSupplierActions);
+  };
+
+  checkPermissions();
+}, []); //  Now it only runs once on mount
+
 
   // const [implementationDate, setImplementationDate] = React.useState(selectedRow?.implementationDate || '');
   const [dashboardinput, setdashboardinput] = React.useState<SupplierDashboardInput>({
     Supplierid: 0,
     Buyerids: [0],
     Partids: [0],
-    invoicetype:0
+    invoicetype:0,
+    DocumentStatusFilter:0
   });
   const [initialData, setInitialData] = React.useState({
     buyerShortId: "",
@@ -150,7 +158,8 @@ checkPermissions();
             Supplierid: suppliers.data.result[0].id,
             Buyerids: [0],
             Partids: [0],
-            invoicetype:0
+            invoicetype:0,
+            DocumentStatusFilter : 0
           };
 
           setdashboardinput(supplierDashboardInput);
@@ -186,7 +195,8 @@ checkPermissions();
       Supplierid: value,
       Buyerids: [],
       Partids: [],
-      invoicetype:selectedcategory
+      invoicetype:selectedcategory,
+      DocumentStatusFilter : selectedstatus
     };
     setdashboardinput(supplierDashboardInput);
     await LoadsupplementarySummary(supplierDashboardInput);
@@ -211,7 +221,8 @@ checkPermissions();
       Supplierid: selectedsuppliers.value,
       Buyerids: selectedValues,
       Partids: [],
-      invoicetype:selectedcategory
+      invoicetype:selectedcategory,
+      DocumentStatusFilter : selectedstatus
     };
     setdashboardinput(supplierDashboardInput);
     await LoadsupplementarySummary(supplierDashboardInput);
@@ -251,8 +262,7 @@ checkPermissions();
 
   }
 
-  
-
+   
   const getparts=async  (partsuppliers: number,partbuyers: any[]) => {
 
      const parts = await supplementarySummariesService.GetAllPartNumbersList(partsuppliers,partbuyers);
@@ -274,7 +284,8 @@ checkPermissions();
       Supplierid: selectedsuppliers.value,
       Buyerids: selectedbuyers,
       Partids: selectedValues,
-      invoicetype:selectedcategory
+      invoicetype:selectedcategory,
+      DocumentStatusFilter : selectedstatus
     };
     setdashboardinput(supplierDashboardInput);
     await LoadsupplementarySummary(supplierDashboardInput);
@@ -293,7 +304,8 @@ checkPermissions();
       Supplierid: selectedsuppliers.value,
       Buyerids: selectedbuyers,
       Partids: selectedparts,
-      invoicetype:value
+      invoicetype:value,
+      DocumentStatusFilter : selectedstatus
     };
     setdashboardinput(supplierDashboardInput);
     await LoadsupplementarySummary(supplierDashboardInput);
@@ -302,7 +314,21 @@ checkPermissions();
     
   };
 
-
+   const handlestatuschange = async(selectedValues:number) => {
+      //console.log('selected', selectedValues);
+      setselectedstatus(selectedValues);
+  
+      var   supplierDashboardInput: SupplierDashboardInput = {
+        Supplierid: selectedsuppliers.value,
+        Buyerids: selectedbuyers,
+        Partids: selectedparts,
+        invoicetype:selectedcategory,
+        DocumentStatusFilter : selectedstatus
+      };
+      setdashboardinput(supplierDashboardInput);
+      await LoadsupplementarySummary(supplierDashboardInput);
+      settableloading(false)
+    };
 
   
 
@@ -522,7 +548,8 @@ checkPermissions();
           Supplierid: selectedsuppliers.value,
           Buyerids: selectedbuyers,
           Partids: [],
-          invoicetype:selectedcategory
+          invoicetype:selectedcategory,
+          DocumentStatusFilter : selectedstatus
         };
         setdashboardinput(supplierDashboardInput);
         await LoadsupplementarySummary(supplierDashboardInput);
@@ -547,7 +574,8 @@ checkPermissions();
         Supplierid: selectedsuppliers.value,
         Buyerids:selectedbuyers,
         Partids: selectedparts,
-        invoicetype:selectedcategory
+        invoicetype:selectedcategory,
+        DocumentStatusFilter : selectedstatus
       };
       setdashboardinput(supplierDashboardInput);
        LoadsupplementarySummary(supplierDashboardInput).then(
@@ -574,7 +602,8 @@ checkPermissions();
       Supplierid: selectedsuppliers.value,
       Buyerids: selectedbuyers,
       Partids: selectedparts,
-      invoicetype:selectedcategory
+      invoicetype:selectedcategory,
+      DocumentStatusFilter : selectedstatus
     };
     setdashboardinput(supplierDashboardInput);
     await LoadsupplementarySummary(supplierDashboardInput);
@@ -816,7 +845,7 @@ checkPermissions();
             </Col>
           </Row>
   
-          {/* <InvoiceTable data={modalData} /> */}
+          <InvoiceTable data={modalData} />
           <AnnexureTable data={annexuremodalData} />
         </div>
       </Modal>
@@ -826,46 +855,46 @@ checkPermissions();
 
   
 
-  // const InvoiceTable = ({ data }: { data: any[] }) => {
-  //   //console.log('invoiceTable',data);
-  //   return (
-  //     <div >
-  //       <h3>CBFC Information</h3>
-  //       <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px",
-  //             borderRadius: '5px' }}>
-  //         <thead>
-  //         <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" , borderRadius: '2px'}}>
-  //             <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>S.no</th>
-  //             <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>PartNo</th>
-  //             <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Invoice No</th>
-  //             <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>InvoiceDate</th>
-  //             <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Qty</th>
-  //             <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Price (GRN)</th>
-  //             <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Paid Amount (CBFC)</th>
-  //           </tr>
-  //         </thead>
-  //         <tbody >
-  //           {data && data.length > 0 ? (
-  //             data.map((item:any, index:any) => (
-  //               <tr key={index} style={{
-  //                 backgroundColor:
-  //                 index % 2 === 0 ? '#f9f9f9' : '#fff',
-  //               }}>
-  //                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{index + 1}</td>
-  //                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.partNo}</td>
-  //                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.invoiceNo}</td>
-  //                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(item.invoicedate)}</td>
-  //                 <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.quantity}</td>
-  //                 <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.invoiceRate}</td>
-  //                 <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.paidAmount}</td>
-  //               </tr>
-  //             ))
-  //           ):''}
-  //         </tbody>
-  //       </table>
-  //     </div>
-  //   );
-  // };
+  const InvoiceTable = ({ data }: { data: any[] }) => {
+    //console.log('invoiceTable',data);
+    return (
+      <div >
+        <h3>CBFC Information</h3>
+        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "12px",
+              borderRadius: '5px' }}>
+          <thead>
+          <tr style={{ backgroundColor: "#005f7f", color: "#fff", textAlign: "left" , borderRadius: '2px'}}>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>S.no</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>PartNo</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>Invoice No</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px'}}>InvoiceDate</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Qty</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Price (GRN)</th>
+              <th style={{ padding: '10px', border: '1px solid #ffffff1a', fontWeight: 'normal', borderRadius: '2px', textAlign: "right"}}>Paid Amount (CBFC)</th>
+            </tr>
+          </thead>
+          <tbody >
+            {data && data.length > 0 ? (
+              data.map((item:any, index:any) => (
+                <tr key={index} style={{
+                  backgroundColor:
+                  index % 2 === 0 ? '#f9f9f9' : '#fff',
+                }}>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{index + 1}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.partNo}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.invoiceNo}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{formatDate(item.invoicedate)}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.quantity}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.invoiceRate}</td>
+                  <td style={{ padding: "10px", border: "1px solid #ddd" , textAlign: "right"}}>{item.paidAmount}</td>
+                </tr>
+              ))
+            ):''}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
   const handleAnnexureClick = (supplementarysummaryIds: number[]) => {
     const templatepath = '//assets/SampleFiles/AnnexureDetails.xlsx';
   
@@ -1015,6 +1044,107 @@ function barstatus(status:any) {
 
 }
 
+async function downloadFile({ path }: { path: string }): Promise<void> {  try {
+    // Call the service method to get the file details
+    const file = await supplementarySummariesService.DownloadExcel(path);
+
+    // Check if the required properties exist
+    if (!file.fileContent || !file.fileType || !file.fileName) {
+      throw new Error("Invalid file data received.");
+    }
+
+    // Convert the file content (Base64) into a Blob
+    const byteCharacters = atob(file.fileContent);
+    const byteNumbers = Array.from(byteCharacters, char => char.charCodeAt(0));
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: file.fileType });
+
+    // Create a temporary anchor element to trigger the download
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob); // Create a Blob URL
+    link.download = file.fileName || "Annexure.xlsx"; // Use provided filename or default
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Revoke the Blob URL to free up memory
+    URL.revokeObjectURL(link.href);
+  } catch (error) {
+    console.error("Error downloading the file:", error);
+  }
+}
+
+  const handleSupplementryPathCancel = () => {
+    setIsPreviewModalVisible(false); // Close the modal
+  };
+  const handleAnnexurepdfButtonClick = async (pdfPath: string,filename:string) => {
+    setannexureFileName(filename);
+    try {
+        // Fetch file data from the API
+        const response = await supplementarySummariesService.GetFile(pdfPath);
+
+        if (response && response.fileBytes && response.fileType) {
+            // Convert the fileBytes (base64 string) into a data URL
+            const dataUrl = `data:${response.fileType};base64,${response.fileBytes}`;
+            
+            // Set the generated data URL to display in the iframe
+            setPdfUrl(dataUrl);
+            setIsPreviewModalVisible(true); // Open the modal
+        } else {
+            console.error("Invalid file response:", response);
+        }
+    } catch (error) {
+        console.error("Error fetching the PDF file:", error);
+    }
+};
+
+ const handleSupplementrypdfButtonClick = async (pdfPath: string,filename:string) => {
+    
+    setsupplementaryFilename(filename);
+
+    try {
+        // Fetch file data from the API
+        const response = await supplementarySummariesService.GetFile(pdfPath);
+
+        if (response && response.fileBytes && response.fileType) {
+            // Convert the fileBytes (base64 string) into a data URL
+            const dataUrl = `data:${response.fileType};base64,${response.fileBytes}`;
+            
+            // Set the generated data URL to display in the iframe
+            setPdfUrl(dataUrl);
+            setIsPreviewModalVisible(true); // Open the modal
+        } else {
+            console.error("Invalid file response:", response);
+        }
+    } catch (error) {
+        console.error("Error fetching the PDF file:", error);
+    }
+};
+const handleAnnexurePathCancel = () => {
+  setIsPreviewModalVisible(false); // Close the modal
+};
+
+// // Step 1: Compute Rowspan for each AnnexureVersionNo
+// const calculateRowSpans = (data:any) => {
+//   const rowSpans = {};
+//   var currentSpan = 0;
+//   var prevAnnexureVersionNo = 0;
+
+//   data.forEach((record:any, index:number) => {
+//     if (record.AnnexureVersionNo === prevAnnexureVersionNo) {
+//       return {rowSpans :record.AnnexureVersionNo} // Hide subsequent rows
+//     } else {
+//       rowSpans[index] = currentSpan + 1;
+//       currentSpan = 1;
+//     }
+//     prevAnnexureVersionNo = record.AnnexureVersionNo;
+//   });
+
+//   return rowSpans;
+// };
+
+// const rowSpans = calculateRowSpans(tableData);
+
 const Loading = () => (
   <div
   style={{
@@ -1065,7 +1195,7 @@ const Loading = () => (
       <Card style={{ backgroundColor:"#fafafa", fontSize: "12px" }}>
         <Row gutter={11} style={{ marginRight: '-200.5px' }}>
         {hasRole?(
-          <Col className="gutter-row" span={5}>
+          <Col className="gutter-row" span={4}>
             <div style={{ textAlign: 'left' }}>
               <span style={{padding: "2px"}}>Suppliers</span>
               <Select
@@ -1085,7 +1215,7 @@ const Loading = () => (
               </div>
           </Col>
         ):''}
-        <Col className="gutter-row" span={5}>
+        <Col className="gutter-row" span={4}>
             <div style={{ textAlign: 'left' }}>
               <span style={{padding: "2px"}}>Buyers</span>
               <Select
@@ -1107,7 +1237,7 @@ const Loading = () => (
               />
             </div>
           </Col>
-          <Col className="gutter-row" span={5}>
+          <Col className="gutter-row" span={4}>
             <div style={{ textAlign: 'left' }}>
               <span style={{padding: "2px"}}>Category</span>
               <Select
@@ -1134,7 +1264,7 @@ const Loading = () => (
             </div>
           </Col>
           
-          <Col className="gutter-row" span={5}>
+          <Col className="gutter-row" span={4}>
             <div style={{ textAlign: 'left' }}>
               <span style={{padding: "2px"}}>Parts</span>
               <Select
@@ -1155,6 +1285,40 @@ const Loading = () => (
               />
             </div>
           </Col>
+                        <Col className="gutter-row" span={4}>
+                        <div style={{ textAlign: 'left' }}>
+                        <span style={{padding: "2px"}}>Document Status</span>
+                        
+                        <Select<number>
+                          
+                          style={{ width: '200px' }}
+                          placeholder="Select one or more options"
+                          options={[
+                            {
+                              label: 'Select All',
+                              value: 0,
+                            },
+                          {
+                            label: 'Pending',
+                            value: 1,
+                  
+                          },
+                          {
+                            label: 'Approved',
+                            value: 2,
+                          },
+                          {
+                            label: 'Rejected',
+                            value: 3,
+                          },
+          
+                        ]}
+                        value={selectedstatus ?? undefined}
+                          onChange={handlestatuschange}
+                          optionLabelProp="label"
+                        />
+                      </div>
+                        </Col>
          <Col className="gutter-row" span={5}>
             <div style={{ textAlign: 'left' }}>
             {showDownloadButton && (
@@ -1325,9 +1489,98 @@ const Loading = () => (
           { title: 'ES2', dataIndex: 'es2', align: 'center' ,width:100},
           { title: 'Report Date', dataIndex: 'createtime', render: formatDate ,width:120},
           { title: 'Ageing', dataIndex: 'ageing', align: 'center' ,width:100},
-          { title: 'Supplementary Invoice/Credit Note', dataIndex: 'supplementaryInvoiceNo',width:300 
-            
+          {
+            title: 'Supplementary Invoice/Credit Note',
+            dataIndex: 'supplementaryInvoiceNo',
+            align: 'center',
+            width: 300,
+            render: (_, record) => {
+              // const rowSpan = record.annexureVersionNo > 1 ? record.annexureVersionNo : 1; // Ensure rowspan is at least 1
+              return {
+                children: record.supplementaryInvoiceNo || '', // Avoid null values
+                // props: { rowSpan },
+              };
+            },
           },
+          {
+            title: 'Documents',
+            dataIndex: '',
+            width: 250,
+            render: (_, record) => {
+              const splitValues = (values?: string) => values ? values.split(',').map(v => v.trim()) : [];
+          
+              const invoices = splitValues(record.supplementaryInvoiceNo); // Invoice numbers
+              const invoicePaths = splitValues(record.supplementaryinvoicepath);
+              const invoiceFilenames = splitValues(record.supplementaryFilename);
+          
+              const annexurePaths = splitValues(record.supplementaryannexurepath);
+              const annexureFilenames = splitValues(record.annexureFileName);
+          
+              const excelPaths = splitValues(record.annexureexcelpath);
+              const excelFilenames = splitValues(record.FileName3);
+          
+              const maxRows = Math.max(invoices.length, invoicePaths.length, annexurePaths.length, excelPaths.length);
+          
+              return (
+                <div>
+                  {Array.from({ length: maxRows }).map((_, index) => (
+                    <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                      {/* Invoice Number (if available) */}
+                      {/* <span>{invoices[index] ? `${invoices[index]} -` : '-'}</span> */}
+          
+                      {/* PDF Buttons (Invoice & Annexure) */}
+                      {invoicePaths[index] && (
+                        <Tooltip title={invoiceFilenames[index] || 'Invoice PDF'}>
+                          <Button
+                            type="link"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleSupplementrypdfButtonClick(invoicePaths[index], invoiceFilenames[index]);
+                            }}
+                            style={{ display: 'inline-flex', alignItems: 'center', padding: 0 }}
+                          >
+                            <FilePdfOutlined style={{ fontSize: '20px' }} />
+                          </Button>
+                        </Tooltip>
+                      )}
+          
+                      {annexurePaths[index] && (
+                        <Tooltip title={annexureFilenames[index] || 'Annexure PDF'}>
+                          <Button
+                            type="link"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAnnexurepdfButtonClick(annexurePaths[index], annexureFilenames[index]);
+                            }}
+                            style={{ display: 'inline-flex', alignItems: 'center', padding: 0 }}
+                          >
+                            <FilePdfOutlined style={{ fontSize: '20px' }} />
+                          </Button>
+                        </Tooltip>
+                      )}
+          
+                      {/* Excel Button */}
+                      {excelPaths[index] && (
+                        <Tooltip title={excelFilenames[index] || 'Excel File'}>
+                          <Button
+                            type="link"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              downloadFile({ path: excelPaths[index] });
+                            }}
+                            style={{ display: 'inline-flex', alignItems: 'center', padding: 0 }}
+                          >
+                            <FileExcelOutlined style={{ fontSize: '20px' }} />
+                          </Button>
+                        </Tooltip>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              );
+            },
+          },
+                         
           { title: 'Date', dataIndex: 'supplementaryinvoicedatestring',width:120 },
           { title: 'From', dataIndex: 'contractFromDate', render: formatDate ,width:120},
           { title: 'To', dataIndex: 'contractToDate', render: formatDate ,width:120},
@@ -1457,6 +1710,41 @@ const Loading = () => (
   // }}
             />
       {/* Modals */}
+      <Modal
+              title={supplementaryFilename}
+              visible={isPreviewModalVisible}
+              onCancel={handleSupplementryPathCancel}
+              footer={null}
+              width="60%"
+            >
+              {pdfUrl && (
+                <iframe
+                  src={pdfUrl}
+                  width="100%"
+                  height="600px"
+                  title="PDF Viewer"
+                  style={{ border: 'none' }}
+                />
+              )}
+            </Modal>
+               <Modal
+                      title={annexureFileName}
+                      visible={isPreviewModalVisible}
+                      onCancel={handleAnnexurePathCancel}
+                      footer={null}
+                      width="60%"
+                    >
+                      {pdfUrl && (
+                        <iframe
+                          src={pdfUrl}
+                          width="100%"
+                          height="600px"
+                          title="PDF Viewer"
+                          style={{ border: 'none' }}
+                        />
+                      )}
+                    </Modal>
+
       <SupplierSubmitModal
         isOpen={isSupplierSubmitModalOpen}
         onClose={closeSupplierSubmitModal}

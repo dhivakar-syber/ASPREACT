@@ -3,5 +3,6 @@ export interface SupplierDashboardInput {
     Buyerids: number[];
     Partids:number[];
     invoicetype:number;
+    DocumentStatusFilter : number|null;
 
   }

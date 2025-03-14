@@ -213,7 +213,7 @@ ForwardFandButton = () => {
         await this.disputesStore.update({ ...values, id: this.state.disputeId });
         message.success("Forwarded to F&C")
         message.success(`Buyer  to F&C  Query Forwarded Intimation  Mail Sent `);
-        
+        this.getAll();
       }
 
       this.setState({ modalVisible: false });
@@ -246,6 +246,7 @@ ForwardFandButton = () => {
 
         
         message.success(`Query Closed Information Sent to - ${values.supplierName}`);
+        this.getAll();
             
     }
   
@@ -282,23 +283,23 @@ ForwardFandButton = () => {
     //console.log(this.disputesStore);
     const { disputedata } = this.disputesStore;
     const columns = [
-        {
-            title: L('Actions'),
-            width: 150,
-            render: (text: string, item: any) => (
-              <div>
-           {item.dispute?.status !== 2 ? (
-          <Button onClick={() => this.createOrUpdateModalOpen({ id: item.dispute?.id })} type="primary">{L('Response')}</Button>
-        ) : <Button type="primary" disabled>{L('Response')}</Button>}
-            </div>
-            ),
-            onHeaderCell: () => ({
-              style: {
-                backgroundColor: '#005f7f', // Set header background color for this column
-                color: '#fff',
-              },
-            }),
-          },
+      {
+        title: L('Actions'),
+        width: 150,
+        render: (text: string, item: any) => (
+          <div>
+            {item.dispute?.status !== 2 ? (
+              <Button onClick={() => this.createOrUpdateModalOpen({ id: item.dispute?.id })} type="primary">
+                {L('Response')}
+              </Button>
+            ) : (
+              <Button type="primary" disabled>
+                {L('Response')}
+              </Button>
+            )}
+          </div>
+        ),
+      },      
           { title: L('BuyerName'), dataIndex: 'buyerShortId', key: 'buyerFk.buyerShortId', width: 150, render: (text: string) => <div>{text}</div>,    onHeaderCell: () => ({
             style: {
               backgroundColor: '#005f7f', // Set header background color for this column

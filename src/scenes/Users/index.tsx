@@ -24,7 +24,8 @@ export interface IUserState {
   userId: number;
   filter: string;
   role: string;
-  selectedRoles: string[],
+  selectedRoles: string[];
+  currentpage : number;
 }
 
 const confirm = Modal.confirm;
@@ -42,7 +43,8 @@ class User extends AppComponentBase<IUserProps, IUserState> {
     userId: 0,
     filter: '',
     role: '',
-    selectedRoles:[] as string[]
+    selectedRoles:[] as string[],
+    currentpage:1
   };
 
   async componentDidMount() {
@@ -57,18 +59,24 @@ class User extends AppComponentBase<IUserProps, IUserState> {
 
   async getAll() {
     const filters = {
-      maxResultCount: this.state.maxResultCount,
-      skipCount: this.state.skipCount,
-      keyword: this.state.filter,
-      Filter: this.state.filter
-    }
-    
-    await this.props.userStore.getAll(filters);
-  }
+        maxResultCount: this.state.maxResultCount,
+        skipCount: this.state.filter? 0 : this.state.skipCount, // Fixed condition
+        keyword: this.state.filter,
+        Filter: this.state.filter
+    };
 
-  handleTableChange = (pagination: any) => {
-    this.setState({ skipCount: (pagination.current - 1) * this.state.maxResultCount! }, async () => await this.getAll());
-  };
+    await this.props.userStore.getAll(filters);
+}
+
+handleTableChange = (pagination: any) => {
+  this.setState(
+    {
+      currentpage: pagination.current,
+      skipCount: (pagination.current - 1) * this.state.maxResultCount!,
+    },
+    async () => await this.getAll()
+  );
+};
 
   Modal = () => {
     this.setState({
@@ -154,7 +162,8 @@ class User extends AppComponentBase<IUserProps, IUserState> {
   };
 
   handleSearch = (value: string) => {
-    this.setState({ filter: value }, async () => await this.getAll());
+    this.setState({ filter: value ,currentpage: 1, skipCount: 0}, async () => await this.getAll());
+    // this.setState({ filter: value}, async () => await this.getAll());
   };
 
   public render() {
@@ -235,10 +244,13 @@ class User extends AppComponentBase<IUserProps, IUserState> {
             xxl={{ span: 24, offset: 0 }}
           >
             <Table
-              rowKey="id"
+              rowKey={(record) => record?.id?.toString()}
               bordered={true}
               columns={columns}
-              pagination={{ pageSize: 10, total: users === undefined ? 0 : users.totalCount, defaultCurrent: 1 }}
+               pagination={{ pageSize: 10, total: users === undefined ? 0 : users.totalCount, defaultCurrent:1,
+                current: this.state.currentpage, // Controlled pagination
+               }}
+              // pagination={false}
               loading={users === undefined ? true : false}
               dataSource={users === undefined ? [] : users.items}
               onChange={this.handleTableChange}

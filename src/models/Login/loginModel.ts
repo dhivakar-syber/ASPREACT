@@ -7,8 +7,8 @@ class LoginModel {
   @observable rememberMe!: boolean;
   @observable showModal!: boolean;
 
-  toggleRememberMe = () => {
-    this.rememberMe = !this.rememberMe;
+  toggleRememberMe = (checked: boolean) => {
+    this.rememberMe = checked;
   };
 
   toggleShowModal = () => {

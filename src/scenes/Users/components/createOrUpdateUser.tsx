@@ -237,9 +237,16 @@ options = (this.props.editRole?.length > 0 ? this.props.editRole : this.props.ro
                   </Form.Item>
                 </>
               )} */}
-              <Form.Item label={L('IsActive')} {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }} name="isActive" valuePropName="checked">
-                <Checkbox>{L('IsActive')}</Checkbox>
-              </Form.Item>
+              <Form.Item
+  label={L('IsActive')}
+  {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }}
+  name="isActive"
+  valuePropName="checked"
+  initialValue={this.props.modalType === 'create' ? true : undefined} // Default true when creating
+>
+  <Checkbox>{L('IsActive')}</Checkbox>
+</Form.Item>
+
             </TabPane>
             <TabPane tab={L('Roles')} key="roles" forceRender>
             <Form.Item>
