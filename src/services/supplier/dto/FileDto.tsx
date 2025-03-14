@@ -1,6 +1,7 @@
 export interface FileDto{
-    FileName:string;
-    FileType:string;
-    FileToken:string;
-    FileContent:string;
+    fileName:string;
+    fileType:string;
+    fileToken:string;
+    fileContent:string;
+    fileBytes:string;
 }

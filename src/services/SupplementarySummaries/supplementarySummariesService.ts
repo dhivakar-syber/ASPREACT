@@ -14,6 +14,7 @@ import {SupplierDashboardInput} from '../../scenes/Dashboard/components/PayRetro
 import { BuyerDashboardInput } from '../../scenes/BuyerDashboard/components/PayRetroBuyerDashboard/BuyerDashboardInput';
 import { AccountDashboardInput } from '../../scenes/Accounts Dashboard/components/PayRetroaccountsDashboard/AccountsDashboardInput';
 import { l4dashboardinput } from '../../scenes/L3 & L4 Dashboard/l4dashboardinput';
+import { FileDto } from '../supplier/dto/FileDto';
 
 class supplementarySummariesService{
 
@@ -70,6 +71,19 @@ class supplementarySummariesService{
            
         );
         return result;
+      } catch (error) {
+        console.error('Error fetching supplementary summaries:', error);
+        throw error; 
+      }
+  }
+    public async accountsDashboardSummariesExcel(input: AccountDashboardInput): Promise<FileDto> {
+      try {
+        
+        const result = await http.get(
+          'api/services/app/SupplementarySummaries/GetAllsupplementarySummaryaccountdashboardinExcel',{ params: input },
+           
+        );
+        return result.data.result;
       } catch (error) {
         console.error('Error fetching supplementary summaries:', error);
         throw error; 
@@ -636,7 +650,19 @@ public async workflowIsntances(correlationId : any) {
   });
   return result.data.result;
 }
+public async getAllAnalysisValue() {
+  try {
     
+    const result = await http.get(
+      'api/services/app/SupplementarySummaries/GetAllAnalysisValue',
+       
+    );
+    return result.data.result;
+  } catch (error) {
+    console.error('Error fetching supplementary summaries:', error);
+    throw error; 
+  }
+}
 
      
 }
