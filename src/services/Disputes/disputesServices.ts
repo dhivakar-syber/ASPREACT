@@ -11,7 +11,7 @@ import {DisputeSupplierLookupTableDto} from './dto/DisputeSupplierLookupTableDto
 import {DisputeSupplierRejectionLookupTableDto} from './dto/DisputeSupplierRejectionLookupTableDto';
 import http from '../httpService';
 import { BuyerDashboardInput } from '../../scenes/BuyerDashboard/BuyerDashboardInput';
-import { AccountDashboardInput } from '../../scenes/Accounts Dashboard/components/PayRetroaccountsDashboard/AccountsDashboardInput';
+import { AccountDashboardInput } from '../../scenes/Accounts Dashboard/AccountsDashboardInput';
 
 class disputesService {
   public async create(createOrEditDisputeDto: CreateOrEditDisputeDto) {

@@ -9,19 +9,19 @@ const ProtectedRoute = ({ path, component: Component, permission, render, ...res
     <Route
       {...rest}
       render={props => {
-        if (!abp.session.userId) {
-          window.location.href = 'https://www.digitalsupplychain.bharatbenz.com/dicvscar/DaimDISC/#/login';
-          return null; // Prevents further rendering after redirection
-        }
-        // if (!abp.session.userId)
-        //   return (
-        //     <Redirect
-        //       to={{
-        //         pathname: '/user/login',
-        //         state: { from: props.location },
-        //       }}
-        //     />
-        //   );
+        // if (!abp.session.userId) {
+        //   window.location.href = 'https://www.digitalsupplychain.bharatbenz.com/dicvscar/DaimDISC/#/login';
+        //   return null; // Prevents further rendering after redirection
+        // }
+        if (!abp.session.userId)
+          return (
+            <Redirect
+              to={{
+                pathname: '/user/login',
+                state: { from: props.location },
+              }}
+            />
+          );
 
         if (permission && !isGranted(permission)) {
           return (

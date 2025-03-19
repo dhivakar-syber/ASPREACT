@@ -10,9 +10,9 @@ import {SupplementarySummarySupplierLookupTableDto} from './dto/supplementarySum
 //import {SupplementaryData} from './dto/checkSignatureInputDto';
 import http from '../httpService';
 
-import {SupplierDashboardInput} from '../../scenes/Dashboard/components/PayRetroSupplierDashboard/SupplierDashboardInput'
-import { BuyerDashboardInput } from '../../scenes/BuyerDashboard/components/PayRetroBuyerDashboard/BuyerDashboardInput';
-import { AccountDashboardInput } from '../../scenes/Accounts Dashboard/components/PayRetroaccountsDashboard/AccountsDashboardInput';
+import {SupplierDashboardInput} from '../../scenes/Dashboard/SupplierDashboardInput'
+import { BuyerDashboardInput } from '../../scenes/BuyerDashboard/BuyerDashboardInput';
+import { AccountDashboardInput } from '../../scenes/Accounts Dashboard/AccountsDashboardInput';
 import { l4dashboardinput } from '../../scenes/L3 & L4 Dashboard/l4dashboardinput';
 import { FileDto } from '../supplier/dto/FileDto';
 
@@ -424,11 +424,11 @@ public async l4carddetails(input: l4dashboardinput) {
             throw error;
         }
     }
-      public async supplementaryInvoiceSubmit(id: number,remarks:string) {
+      public async supplementaryInvoiceSubmit(id: number,remarks:string,isResubmit:boolean) {
         try {
           
           const result = await http.post(
-            `api/services/app/SupplementarySummaries/supplementaryInvoiceSubmit?supplementaryid=${id}&submitRemarks=${remarks}`,
+            `api/services/app/SupplementarySummaries/supplementaryInvoiceSubmit?supplementaryid=${id}&submitRemarks=${remarks}&isResubmit=${isResubmit}`,
             '',
             {
               headers: {

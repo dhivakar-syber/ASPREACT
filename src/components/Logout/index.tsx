@@ -12,8 +12,8 @@ export interface ILogoutProps {
 class Logout extends React.Component<ILogoutProps> {
   componentDidMount() {
     this.props.authenticationStore!.logout();
-    window.location.href = 'https://www.digitalsupplychain.bharatbenz.com/dicvscar/DaimDISC/#/login';
-    // window.location.href = '/';
+    // window.location.href = 'https://www.digitalsupplychain.bharatbenz.com/dicvscar/DaimDISC/#/login';
+    window.location.href = '/';
   }
 
   render() {

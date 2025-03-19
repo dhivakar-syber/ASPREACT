@@ -93,10 +93,10 @@ const BuyersApproval: React.FC<ApproveRejectModalModalProps> = ({
             console.error('Error during submission:', error);
             message.error('Rejection failed. Please try again.');
           })
-          // .finally(() => {
-          //   setRejectLoading(false); // Stop reject loading
-          //   setloading(false); // Set loading to true before operation
-          // });
+          .finally(() => {
+            setRejectLoading(false); // Stop reject loading
+            setloading(false); // Set loading to true before operation
+          });
       })
       .catch((errorInfo) => {
         console.error('Validation Failed:', errorInfo);

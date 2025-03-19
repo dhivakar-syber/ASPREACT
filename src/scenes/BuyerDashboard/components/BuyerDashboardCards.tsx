@@ -1,7 +1,7 @@
 import React from "react";
 import { Badge, Row, Col } from "antd";
-import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
-import { BuyerDashboardInput } from "./BuyerDashboardInput";
+import supplementarySummariesService from "../../../services/SupplementarySummaries/supplementarySummariesService";
+import { BuyerDashboardInput } from "../BuyerDashboardInput";
 
 interface DashboardCardsProps {
     BuyerDashboardinputs: BuyerDashboardInput; // Explicitly define expected props
@@ -64,7 +64,7 @@ const BuyerDashboardCards: React.FC<DashboardCardsProps> = ({ BuyerDashboardinpu
                 </Col>
                 <Col span={6}>
                     <div className="card-icon" style={{ paddingTop:"14px", textAlign: "right" }}>
-                      <img width={45} src={require(`../../../../images/${card.key}.png`)} alt={card.key} />
+                      <img width={45} src={require(`../../../images/${card.key}.png`)} alt={card.key} />
                     </div>
                 </Col>
                 </Row>

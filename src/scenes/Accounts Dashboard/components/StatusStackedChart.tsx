@@ -10,7 +10,7 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import { Button, Card, Spin } from 'antd';
-import supplementarySummariesService from '../../../../services/SupplementarySummaries/supplementarySummariesService';
+import supplementarySummariesService from '../../../services/SupplementarySummaries/supplementarySummariesService';
 
 interface DataItem {
   ageBucket: string;

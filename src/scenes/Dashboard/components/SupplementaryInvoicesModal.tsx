@@ -3,8 +3,8 @@ import { Modal, Button, Input, Select, DatePicker, Upload, message, Table ,Spin,
 import { UploadOutlined,FilePdfOutlined, FileExcelOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/es/upload";
 import { ColumnsType } from "antd/es/table";
-import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
-import {DocumentStatus} from  "../../../../enum"
+import supplementarySummariesService from "../../../services/SupplementarySummaries/supplementarySummariesService";
+import {DocumentStatus} from  "../../../enum"
 
 
 interface SupplementaryInvoiceModalProps {

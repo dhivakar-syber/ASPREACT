@@ -13,8 +13,8 @@ import { DisputeSupplierLookupTableDto } from '../services/Disputes/dto/DisputeS
 import { DisputeBuyerLookupTableDto } from '../services/Disputes/dto/DisputeBuyerLookupTableDto';
 import disputesService from '../services/Disputes/disputesServices';
 import { EnumDisputeStatus } from '../enum';
-import { BuyerDashboardInput } from '../scenes/BuyerDashboard/components/PayRetroBuyerDashboard/BuyerDashboardInput';
-import { AccountDashboardInput } from '../scenes/Accounts Dashboard/components/PayRetroaccountsDashboard/AccountsDashboardInput';
+import { BuyerDashboardInput } from '../scenes/BuyerDashboard/BuyerDashboardInput';
+import { AccountDashboardInput } from '../scenes/Accounts Dashboard/AccountsDashboardInput';
 
 
 class DisputedataStore {

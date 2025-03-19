@@ -266,7 +266,7 @@ handleTableChange = (pagination: any) => {
             });
             this.formRef.current?.resetFields();
           }}
-          modalType={this.state.userId === 0 ? 'edit' : 'create'}
+          modalType={this.state.userId === 0 ? 'create' : 'edit'}
           onCreate={this.handleCreate}
           roles={this.props.userStore.roles}
           editRole={this.props.userStore.editRole}

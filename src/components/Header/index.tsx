@@ -40,6 +40,10 @@ const userDropdownMenu = (
 
 // window.open('/assets/manual/PayRetroSupplierDashboardUserManual.pdf', '_blank');
 
+const handleClick = () => {
+  window.open('/Manual/PayRetroSupplierDashboardUserManual_v1.pdf', '_blank');
+};
+
 
 @inject(Stores.SessionStore)
 @observer
@@ -66,22 +70,11 @@ export class Header extends React.Component<IHeaderProps> {
           {/* {this.props.sessionStore!.currentLogin.user!.name!} */}
           {isSupplier && (
             <Tooltip title="PayRetro User Manual">
-  <button 
-    style={{ border: "none", background: "none", cursor: "pointer" }}  
-    onClick={() => {
-      const link = document.createElement("a");
-      link.href = "PayRetro/assets/manual/PayRetroSupplierDashboardUserManual.pdf";
-      link.download = "PayRetroSupplierDashboardUserManual.pdf"; // Optional: set a custom filename
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }}
-  >
-    <QuestionCircleOutlined />
-  </button>
-</Tooltip>
-
-        )}
+              <button style={{ border: 'none', background: 'none', cursor: 'pointer' }} onClick={handleClick}>
+                <QuestionCircleOutlined />
+              </button>
+            </Tooltip>
+          )}
           <span style={{ marginRight: 10 }}>Welcome</span><span style={{ marginRight: 10 }}>{userName}</span>
           <Dropdown overlay={userDropdownMenu} trigger={['click']}>
             <Badge style={{}} >

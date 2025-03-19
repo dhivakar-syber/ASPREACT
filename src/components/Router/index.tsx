@@ -7,6 +7,7 @@ import utils from '../../utils/utils';
 import tokenAuthService from '../../services/tokenAuth/tokenAuthService';
 import AppConsts from '../../lib/appconst';
 import Loading from '../Loading';
+import IdleTimerHandler from '../IdleTimerHandler';
 
 declare var abp: any;
 
@@ -91,7 +92,7 @@ const Router = () => {
       <Switch>
         <Route path="/discauth" render={(props: any) => <ThirdPartyLogin {...props} />} />
         <Route path="/user" render={(props: any) => <UserLayout {...props} />} />
-        <ProtectedRoute path="/" render={(props: any) => <AppLayout {...props} exact />} />
+        <ProtectedRoute path="/" render={(props: any) => <IdleTimerHandler><AppLayout {...props} exact /> </IdleTimerHandler>} />
       </Switch>
     </BrowserRouter>
     

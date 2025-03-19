@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Form, Input, Modal, Col, Row, Button,message, Tooltip  } from 'antd';
 import { FormInstance } from 'antd/lib/form';
-import { L } from '../../../../lib/abpUtility';
-import DisputesStrore from '../../../../stores/DisputesStrore';
-import supplementarySummariesService from '../../../../services/SupplementarySummaries/supplementarySummariesService';
+import { L } from '../../../lib/abpUtility';
+import DisputesStrore from '../../../stores/DisputesStrore';
+import supplementarySummariesService from '../../../services/SupplementarySummaries/supplementarySummariesService';
 import SupplierModalView from './supplierModalView';
 
 export interface ICreateOrUpdateDahBoardDisputesDataProps {

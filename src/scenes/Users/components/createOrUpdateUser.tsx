@@ -27,9 +27,7 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
     selectedRoleType: 0,
     vendorvisible:false
   };
-
-
-
+        
   // Now filter the roles based on selection
   filterRoles = () => {
     const { selectedRoleType } = this.state;
@@ -78,16 +76,20 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
   };
 
   componentDidUpdate(prevProps: ICreateOrUpdateUserProps) {
+    if(this.props.modalType === "edit")
+      {
+        this.state.selectedRoleType = this?.props?.editUser?.roleType
+      }
     if (this.props.editRole !== prevProps.editRole) {
       const { formRef, editRole,editUser } = this.props;
       // If the form is available, set the field values
       if (formRef?.current) {
         formRef.current.setFieldsValue({
-          ...editRole, // Assuming editRole is an object with the fields matching your form's field names
+          ...editRole, // editRole is an object with the fields matching your form's field names
           ...editUser
         });
       }
-      if(editUser.roleType==2){
+      if(editUser.roleType === 2){
         this.setState({vendorvisible:true})
       }else{this.setState({vendorvisible:false})}
 
@@ -217,6 +219,27 @@ options = (this.props.editRole?.length > 0 ? this.props.editRole : this.props.ro
     <Input />
   </Form.Item>
 ) : null}
+
+{(this.state?.selectedRoleType === 2 ) && (
+          <Form.Item
+            label={L('Roles')}
+            labelCol={{ span: 6 }}
+            wrapperCol={{ span: 18 }}
+          >
+            {/* <Space direction="vertical"> */}
+              {filteredRoles.map((role: any) => (
+                <Checkbox
+                  key={role.value}
+                  value={role.value}
+                  checked={selectedRoles.includes(role.value)}
+                  onChange={(e) => this.handleRoleChange(role.value, e.target.checked)}
+                >
+                  {role.label}
+                </Checkbox>
+              ))}
+            {/* </Space> */}
+          </Form.Item>
+        )}
               {/* {this.props.modalType === 'edit' && (
                 <>
                   <Form.Item
@@ -237,38 +260,39 @@ options = (this.props.editRole?.length > 0 ? this.props.editRole : this.props.ro
                   </Form.Item>
                 </>
               )} */}
-              <Form.Item
-  label={L('IsActive')}
-  {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }}
-  name="isActive"
-  valuePropName="checked"
-  initialValue={this.props.modalType === 'create' ? true : undefined} // Default true when creating
->
-  <Checkbox>{L('IsActive')}</Checkbox>
-</Form.Item>
-
-            </TabPane>
-            <TabPane tab={L('Roles')} key="roles" forceRender>
+          <Form.Item
+            label={L('IsActive')}
+            {...{ labelCol: { span: 6 }, wrapperCol: { span: 18 } }}
+            name="isActive"
+            valuePropName="checked"
+            initialValue={this.props.modalType === 'create' ? true : undefined}
+          >
+            <Checkbox>{L('IsActive')}</Checkbox>
+          </Form.Item>
+        </TabPane>
+        {/* Conditional Role Checkboxes based on selectedRoleType */}
+        
+        {(this.state?.selectedRoleType === 1)  && (
+          <TabPane tab={L('Roles')} key="roles-external" forceRender>
             <Form.Item>
-          <Space direction="vertical">
-            {filteredRoles.map((role:any) => (
-              <Checkbox
-                key={role.value}
-                value={role.value}
-                checked={selectedRoles.includes(role.value)}
-                onChange={(e) => this.handleRoleChange(role.value,  e.target.checked)}
-              >
-                {role.label}
-              </Checkbox>
-            ))}
-          </Space>
-        </Form.Item>
-            </TabPane>
-          </Tabs>
-        </Form>
-      </Modal>
-    );
-  }
-}
-
+              <Space direction="vertical">
+                {filteredRoles.map((role: any) => (
+                  <Checkbox
+                    key={role.value}
+                    value={role.value}
+                    checked={selectedRoles.includes(role.value)}
+                    onChange={(e) => this.handleRoleChange(role.value, e.target.checked)}
+                  >
+                    {role.label}
+                  </Checkbox>
+                ))}
+              </Space>
+            </Form.Item>
+          </TabPane>
+        )}
+      </Tabs>
+    </Form>
+  </Modal>
+);
+  }}
 export default CreateOrUpdateUser;

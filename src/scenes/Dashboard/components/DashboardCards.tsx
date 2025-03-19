@@ -1,27 +1,27 @@
 import React from "react";
 import { Badge, Row, Col } from "antd";
-import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
-import { AccountDashboardInput } from "./AccountsDashboardInput";
+import supplementarySummariesService from "../../../services/SupplementarySummaries/supplementarySummariesService";
+import { SupplierDashboardInput } from "../SupplierDashboardInput";
 
 interface DashboardCardsProps {
-  AccountsDashboardInputs: AccountDashboardInput; // Explicitly define expected props
+    SupplierDashboardInputs: SupplierDashboardInput; // Explicitly define expected props
 }
 
-const DashboardCards: React.FC<DashboardCardsProps> = ({ AccountsDashboardInputs }) => {
+const DashboardCards: React.FC<DashboardCardsProps> = ({ SupplierDashboardInputs }) => {
     const [carddata, setcarddata] = React.useState<any>({});
 
     React.useEffect(() => {
         const fetchData = async () => {
             try {
-                const result = await supplementarySummariesService.accounntcarddetails(AccountsDashboardInputs);
-                //console.log('Dashboard_card_details', result);
+                const result = await supplementarySummariesService.carddetails(SupplierDashboardInputs);
+                console.log('Dashboard_card_details', result);
                 setcarddata(result.data.result || {});
             } catch (error) {
                 console.error("Error fetching supplementary summaries:", error);
             }
         };
         fetchData();
-    }, [AccountsDashboardInputs]);
+    }, [SupplierDashboardInputs]);
 
     const cardDetails = [
         { key: "totalInvoicePending", title: "Pending Supplementary Invoice" },
@@ -64,7 +64,7 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ AccountsDashboardInputs
             </Col>
             <Col span={6}>
                 <div className="card-icon" style={{ paddingTop:"14px", textAlign: "right" }}>
-                  <img width={45} src={require(`../../../../images/${card.key}.png`)} alt={card.key} />
+                  <img width={45} src={require(`../../../images/${card.key}.png`)} alt={card.key} />
                 </div>
             </Col>
             </Row>
@@ -72,29 +72,26 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ AccountsDashboardInputs
           
         </Col>
       ))}
-     <Col style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", position: "relative", right: '-2rem', top: 0}}>
-                       <div className="col-1 status">
-                         <div className="progress-dot">
-                           <span className="dot approved"></span>
-                           <div className="status-text" style={{ marginRight: "1px" }}>
-                             Approved
-                           </div>
-                         </div>
-                         <div className="progress-dot">
-                         <span className="dot pending"></span>
-                           <div className="status-text" style={{ marginRight: "10px" }}>
-                             Pending
-                           </div>
-                         </div>
-     
-                         <div className="progress-dot">
-                         <span className="dot rejected"></span>
-                           <div className="status-text" style={{ marginRight: "5px" }}>
-                             Rejected
-                           </div>
-                         </div>
-                       </div>
-                     </Col>
+      <Col style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", position: "relative", right: '-2rem', top: 0}}>
+      <div className="">
+        <div className="progress-dot">
+          <span className="dot approved"></span>
+          <div className="status-text" style={{ marginRight: "1px" }}>Approved</div>
+        </div>
+        <div className="progress-dot">
+          <span className="dot pending"></span>
+          <div className="status-text" style={{ marginRight: "10px" }}>Pending</div>
+        </div>
+        <div className="progress-dot">
+          <span className="dot rejected"></span>
+          <div className="status-text" style={{ marginRight: "5px" }}>Rejected</div>
+        </div>
+        {/* <div className="progress-dot">
+          <span className="dot not-submitted"></span>
+          <div className="status-text" style={{ marginRight: "5px" }}>Not Submitted</div>
+        </div> */}
+      </div>
+      </Col>
     </Row>    
 </div>
     );

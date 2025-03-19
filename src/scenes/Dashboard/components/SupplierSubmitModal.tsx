@@ -1,8 +1,8 @@
 import React, { useState, useRef } from "react";
 import { message, Button, Spin } from "antd"; // Import Spin for the loader
-import supplementarySummariesService from "../../../../services/SupplementarySummaries/supplementarySummariesService";
-import submiticon from "../../../../images/Submiticon.svg";
-import closeicon from "../../../../images/close.svg";
+import supplementarySummariesService from "../../../services/SupplementarySummaries/supplementarySummariesService";
+import submiticon from "../../../images/Submiticon.svg";
+import closeicon from "../../../images/close.svg";
 
 
 
@@ -11,6 +11,7 @@ interface SupplierSubmitModalProps {
   onClose: () => void;
   submitIdRow: number; // Assuming this comes as a prop
   supplementaryInvoiceSubmit: (item: any) => void;
+  isResubmit:boolean;
 }
 
 const Submiticon = () => (
@@ -29,6 +30,7 @@ const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({
   onClose,
   submitIdRow,
   supplementaryInvoiceSubmit,
+  isResubmit
 }) => {
   const [submitText, setSubmitText] = useState("");
   const [loading, setLoading] = useState(false); // Loading state
@@ -48,7 +50,7 @@ const SupplierSubmitModal: React.FC<SupplierSubmitModalProps> = ({
     setLoading(true);
     
     supplementarySummariesService
-      .supplementaryInvoiceSubmit(submitIdRow, submitRemarks) // Call the API method with the necessary parameters
+      .supplementaryInvoiceSubmit(submitIdRow, submitRemarks,isResubmit) // Call the API method with the necessary parameters
       .then((result: any[]) => {
         result.forEach((item) => {
           supplementaryInvoiceSubmit(item); // Process each item in the result
