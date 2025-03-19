@@ -31,8 +31,8 @@ class UserLayout extends React.Component<any> {
                   <Route key={index} path={item.path} component={item.component} exact={item.exact} />
                 ))}
 
-              <Redirect from="/user" to="/user/login" />
-              {/* <Redirect from="/user" to="https://www.digitalsupplychain.bharatbenz.com/dicvscar/DaimDISC/#/login" /> */}
+              {/* <Redirect from="/user" to="/user/login" /> */}
+              <Redirect from="/user" to="https://www.digitalsupplychain.bharatbenz.com/dicvscar/DaimDISC/#/login" />
             </Switch>
           </div>
           {/* <Footer /> */}
