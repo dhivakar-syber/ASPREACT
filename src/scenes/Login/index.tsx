@@ -70,7 +70,7 @@ class Login extends React.Component<ILoginProps> {
     await this.props.authenticationStore!.login(values);
    const { state } = this.props.location;
     window.location = state ? state.from.pathname : '/';
-    console.log('Window Location',window.location)
+    // console.log('Window Location',window.location)
     
   };
 

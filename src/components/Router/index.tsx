@@ -21,7 +21,7 @@ const Router = () => {
         const token = new URLSearchParams(props.location.search).get('token');
 
         if (token) {
-          console.log('discauthToken',token);
+          // console.log('discauthToken',token);
           localStorage.setItem('authToken', token);
 
           try {
@@ -41,7 +41,7 @@ const Router = () => {
                 if (result){
                   if (result.accessToken){
                     const tokenExpireDate = new Date(
-                      new Date().getTime() +result.expireInSeconds
+                      new Date().getTime() + 1000 * result.expireInSeconds
                     );
                     abp.auth.setToken(result.accessToken, tokenExpireDate);
                     abp.utils.setCookieValue(
@@ -52,8 +52,8 @@ const Router = () => {
                     );
         
                     // Debugging
-                    console.log("Token Set:", abp.auth.getToken());
-                    console.log("Cookie Set:", abp.utils.getCookieValue(AppConsts.authorization.encrptedAuthTokenName));
+                    // console.log("Token Set:", abp.auth.getToken());
+                    // console.log("Cookie Set:", abp.utils.getCookieValue(AppConsts.authorization.encrptedAuthTokenName));
         
                   }
                 }
@@ -61,7 +61,7 @@ const Router = () => {
               }
             }
             else{
-              console.log('External Authentication Result:', 'No Result');
+              // console.log('External Authentication Result:', 'No Result');
             }
 
             // Redirect to the appropriate page after successful login

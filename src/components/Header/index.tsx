@@ -13,7 +13,7 @@ import profilePicture from '../../images/user.png';
 import SessionStore from '../../stores/sessionStore';
 import { inject, observer } from 'mobx-react';
 import Stores from '../../stores/storeIdentifier';
-declare var abp: any;
+// declare var abp: any;
 
 //declare var abp: any;
 export interface IHeaderProps {
@@ -52,7 +52,7 @@ export class Header extends React.Component<IHeaderProps> {
     const { sessionStore } = this.props;
     const userName =
       sessionStore?.currentLogin?.user?.name || L('Guest');
-      console.log(abp.session.userId)
+      // console.log(abp.session.userId)
       var isSupplier = sessionStore?.currentLogin?.user?.roles
     ?.some((role: string) => role.toLowerCase() === "supplier")
     return (  

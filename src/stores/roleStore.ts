@@ -67,7 +67,7 @@ class RoleStore {
   @action
   async getAllPermissions(role:string) {
     var result = await roleService.getAllPermissions(role);
-    console.log(result.name);
+    // console.log(result.name);
     this.allPermissions = result;
   }
   @action

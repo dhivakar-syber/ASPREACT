@@ -48,6 +48,7 @@ export const userRouter: any = [
     // component: LoadableComponent(() => import('../../scenes/Login')),
     component: () => {
       window.location.replace('https://www.digitalsupplychain.bharatbenz.com/dicvscar/DaimDISC/#/login');
+      // window.location.replace('https://www.digitalsupplychain-qa.bharatbenz.com/dicvscar/DaimDISC/#/login');
        return null;
    },
     showInMenu: false,

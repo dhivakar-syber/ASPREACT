@@ -14,7 +14,7 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ SupplierDashboardInputs
         const fetchData = async () => {
             try {
                 const result = await supplementarySummariesService.carddetails(SupplierDashboardInputs);
-                console.log('Dashboard_card_details', result);
+                // console.log('Dashboard_card_details', result);
                 setcarddata(result.data.result || {});
             } catch (error) {
                 console.error("Error fetching supplementary summaries:", error);

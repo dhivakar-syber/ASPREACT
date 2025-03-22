@@ -60,7 +60,7 @@ class IdleTimerHandler extends Component<IdleTimerHandlerProps> {
     // this.props.history.push('/logout');
     // Redirect to login
     window.location.href = 'https://www.digitalsupplychain.bharatbenz.com/dicvscar/DaimDISC/#/login';
-    // window.location.href = 'https://www.digitalsupplychain.bharatbenz.com/dicvscar/DaimDISC/#/login';
+    // window.location.href = 'https://www.digitalsupplychain-qa.bharatbenz.com/dicvscar/DaimDISC/#/login';
   };
 
   render() {

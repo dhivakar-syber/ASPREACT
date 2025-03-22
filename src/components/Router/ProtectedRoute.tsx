@@ -11,6 +11,7 @@ const ProtectedRoute = ({ path, component: Component, permission, render, ...res
       render={props => {
         if (!abp.session.userId) {
           window.location.href = 'https://www.digitalsupplychain.bharatbenz.com/dicvscar/DaimDISC/#/login';
+          // window.location.href = 'https://www.digitalsupplychain-qa.bharatbenz.com/dicvscar/DaimDISC/#/login';
           return null; // Prevents further rendering after redirection
         }
         // if (!abp.session.userId)

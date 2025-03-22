@@ -76,7 +76,7 @@ const SettingsIcon = () => (
 
           setBuyers(buyerslist || []);
 
-          console.log(buyers.data.result)
+          // console.log(buyers.data.result)
           setselectedbuyers({name:buyers.data.result[0].name,value:buyers.data.result[0].id});
           getsuppliers(buyers.data.result[0].id)
           setselectedcategory(0);
@@ -291,7 +291,7 @@ const SettingsIcon = () => (
   
       const suppliers = await supplementarySummariesService.GetAllSupplierListBuyerDashboard(supplybuyers);
           setSuppliers(suppliers.data.result || []);
-          console.log(suppliers.data.result)
+          // console.log(suppliers.data.result)
           setselectedsuppliers([]);
           
   
@@ -305,7 +305,7 @@ const SettingsIcon = () => (
   
     var  result = await supplementarySummariesService.BuyerdashboardloadsupplementarySummary(buyerdashboardinput);
       setTableData(result.data.result || []);
-      console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
+      // console.log("BuyerDashboard_Supplementary_top_table", result.data.result);
   
       const carddetails = await supplementarySummariesService.Buyerdashboardcarddetails(buyerdashboardinput);
   

@@ -8,7 +8,7 @@ import { Row, Col,Select,message, Card,Modal,Button,DatePicker,Spin,Tag, Tabs, T
 import SupplierSubmitModal from './components/SupplierSubmitModal';
 import SupplementaryInvoiceModal from "./components/SupplementaryInvoicesModal";
 import DisputesStore from "../../stores/DisputesStrore";
-import { FormInstance } from 'antd/lib/form';
+import  { FormInstance } from 'antd/lib/form';
 import CreateOrUpdateDisputes from '../Disputes/components/createOrUpdateDashboardDisputes';
 import DisputedataStore from "../../stores/DisputesStrore";
 import DisputeHistoryModal from "./components/DisputeHistoryModal";
@@ -26,6 +26,7 @@ import AnalysisPieChart from "./PieChartExample";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
 import { MenuInfo } from "rc-menu/lib/interface";
 import sessionService from "../../services/session/sessionService";
+import dayjs from "dayjs";
 
 
 
@@ -98,8 +99,9 @@ const [supplierActionsPermission, setSupplierActionsPermission] = useState(false
 const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [supplementaryFilename, setsupplementaryFilename] = useState<string>("");
   const [annexureFileName, setannexureFileName] = useState<string>("");
-  const [selectedstatus, setselectedstatus] =React.useState<number|null>(0);
+  const [selectedstatus, setselectedstatus] =React.useState<number|null>(null);
   const [isResubmit, setisReSubmit] = React.useState<boolean>(false);
+  const [isImplementaionDateChanged, setisImplementaionDateChanged] = React.useState<boolean>(false);
   
 // console.log(tableData)
 useEffect(() => {
@@ -148,7 +150,7 @@ useEffect(() => {
       
 
         const suppliers = await supplementarySummariesService.GetAllSuppliers();
-        console.log('suppliers',suppliers.data.result)
+        // console.log('suppliers',suppliers.data.result)
         
         const supplierslist = suppliers.data.result ||[]
           // Define the "Select All" option
@@ -156,7 +158,7 @@ useEffect(() => {
 
           // Add the "Select All" option to the beginning of the buyers list
           supplierslist.unshift(selectAllOption);
-          console.log(supplierslist)
+          // console.log(supplierslist)
           setBuyers(supplierslist || []);
           setSuppliers(suppliers.data.result || []);
           setselectedsuppliers({name:suppliers.data.result[0].code+' - '+suppliers.data.result[0].name,value:suppliers.data.result[0].id});
@@ -258,7 +260,7 @@ useEffect(() => {
 
   var  result = await supplementarySummariesService.loadsupplementarySummary(supplierDashboardInput);
     setTableData(result.data.result || []);
-    console.log("Supplementary_top_table", result.data.result);
+    // console.log("Supplementary_top_table", result.data.result);
 
     const carddetails = await supplementarySummariesService.carddetails(supplierDashboardInput);
 
@@ -324,8 +326,10 @@ useEffect(() => {
     
   };
 
-   const handlestatuschange = async(selectedValues:number) => {
+   const handlestatuschange = async(selectedValues:number|null) => {
+    settableloading(true)
       //console.log('selected', selectedValues);
+      selectedValues = selectedValues === -1 ? null : selectedValues
       setselectedstatus(selectedValues);
   
       var   supplierDashboardInput: SupplierDashboardInput = {
@@ -676,6 +680,7 @@ useEffect(() => {
   const handleModalClose = () => {
     setIsModalOpen(false); // Close the modal
     setSelectedRow(null);  // Clear the selected row data
+    setisImplementaionDateChanged(false)
   };
   
   //const disputestores = new DisputesStore;
@@ -691,13 +696,29 @@ useEffect(() => {
       // Prevent modal from closing when clicking inside the modal
       e.stopPropagation();
     };
-    const handleDateChange = async (date: any, dateString: any) => {
-      if (date) {
-        //console.log("Formatted Implementation Date:", formatDate(selectedRow.implementationDate));
-        //console.log("Changed Date:", formatDate(dateString));
-        //console.log("Contract To Date:", formatDate(selectedRow.contractToDate));
+    const isValidImplementationDate = (selectedDate: any, contractToDate: any) => {
+      const selected = dayjs(selectedDate, "DD-MM-YYYY");
+      const contractEnd = dayjs(contractToDate, "DD-MM-YYYY");
     
-        if (formatDate(dateString) > formatDate(selectedRow.contractToDate)) {
+      // console.log("Selected Implementation Date:", selected.format("YYYY-MM-DD"));
+      // console.log("Contract To Date:", contractEnd.format("YYYY-MM-DD"));
+    
+      return selected.isAfter(contractEnd);
+    };
+    
+    const handleDateChange = async (date: any, dateString: any) => {
+      // if (date) {
+      //   console.log("Formatted Implementation Date:", formatDate(selectedRow.implementationDate));
+      //   console.log("Changed Date:", formatDate(dateString));
+      //   console.log("Contract To Date:", formatDate(selectedRow.contractToDate));
+    
+      //   if (formatDate(dateString) > formatDate(selectedRow.contractToDate)) {
+      //     message.warn("Selected date cannot be earlier than the implementation date.");
+      //     return;
+      //   }
+
+      if (date) {
+        if (!isValidImplementationDate(dateString, selectedRow.contractToDate)) {
           message.warn("Selected date cannot be earlier than the implementation date.");
           return;
         }
@@ -728,6 +749,7 @@ useEffect(() => {
             setSelectedRow(row[0]);
     
             message.success('Implementation Date changed Successfully Synced');
+            setisImplementaionDateChanged(true)
           } catch (error) {
             console.error('Error fetching data:', error);
             message.error('Failed to update Implementation Date.');
@@ -835,20 +857,24 @@ useEffect(() => {
                     <p>Accounted Value</p>
                     <p>Version No</p>
                     <p>Implementation Date</p>
-                    {selectedRow.documentStatus === 0 && <p>Change</p>}
+                    {(selectedRow.documentStatus === 0 && selectedRow.iscreditnote !== true)&& (
+                      <p>
+                        <span style={{ color: 'red', fontWeight: 'bold' }}>*</span> Change:
+                      </p>
+                    )}
                   </Col>
                   <Col span={12} style={{ fontSize: '12px' }}>
                     <p><span>: {selectedRow?.accoutedPrice}</span></p>
                     <p><span>: {selectedRow?.accountedValue}</span></p>
                     <p><span>: {selectedRow?.versionNo}</span></p>
                     <p><span>: {formatDate(selectedRow.implementationDate)}</span></p>
-                    {selectedRow.documentStatus === 0 && (
-  <DatePicker
-    // value={selectedRow?.implementationDate ? dayjs(selectedRow.implementationDate) : null} // Using dayjs
-    onChange={handleDateChange}
-    format="YYYY-MM-DD"
-    style={{ width: '100%' }}
-  />
+                    {(selectedRow.documentStatus === 0 && selectedRow.iscreditnote !== true ) && (
+    <DatePicker
+ onChange={(date, dateString) => {
+  handleDateChange(date, dateString);
+  }}      format="YYYY-MM-DD"
+      style={{ width: '100%' }}
+    />
 )}
                   </Col>
                 </Row>
@@ -962,11 +988,21 @@ useEffect(() => {
       <div >
         <br></br>
         <h3>Annexure Details</h3>
+        
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button
   className="upload-btn"
   id="downloadannexure"
-  onClick={() => handleAnnexureClick(data[0].supplementarysummaryId)}
+ onClick={() => handleAnnexureClick(data[0].supplementarysummaryId)}
+    disabled={!(selectedRow.iscreditnote || isImplementaionDateChanged)} // Only these two conditions
+    style={{
+      backgroundColor: (selectedRow.iscreditnote || isImplementaionDateChanged) 
+        ? '#005f7f' 
+        : '#ccc', // Change color when disabled
+      cursor: (selectedRow.iscreditnote || isImplementaionDateChanged) 
+        ? 'pointer' 
+        : 'not-allowed',
+    }}
 >
   Download Annexure
 </button>
@@ -1299,39 +1335,42 @@ const Loading = () => (
               />
             </div>
           </Col>
-                        <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '250px' }}>
-                                        <div style={{ textAlign: 'left' }}>
-                        <span style={{padding: "2px"}}>Document Status</span>
-                        <Select<number>
-                          
-                          style={{ width: '200px' }}
-                          placeholder="Select one or more options"
-                          options={[
-                            {
-                              label: 'Select All',
-                              value: 0,
-                            },
-                          {
-                            label: 'Pending',
-                            value: 1,
-                  
-                          },
-                          {
-                            label: 'Approved',
-                            value: 2,
-                          },
-                          {
-                            label: 'Rejected',
-                            value: 3,
-                          },
-          
-                        ]}
-                        value={selectedstatus ?? undefined}
-                          onChange={handlestatuschange}
-                          optionLabelProp="label"
-                        />
-                      </div>
-                        </Col>
+          <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '250px' }}>
+            <div style={{ textAlign: 'left' }}>
+              <span style={{ padding: "2px" }}>Document Status</span>
+              <Select<number>
+                style={{ width: '200px' }}
+                placeholder="Select All"
+                options={[
+                  {
+                    label: 'Select All',
+                    value: -1, // Use -1 instead of an empty string
+                  },
+                  {
+                    label: 'Pending',
+                    value: 0,
+                  },
+                  {
+                    label: 'Submitted',
+                    value: 1,
+                  },
+                  {
+                    label: 'Approved',
+                    value: 2,
+                  },
+                  {
+                    label: 'Rejected',
+                    value: 3,
+                  },
+                ]}
+                value={selectedstatus ?? -1} // Default to "Select All"
+                onChange={(value) => {
+                  handlestatuschange(value === -1 ? null : value); // Convert -1 to null before sending to backend
+                }}
+                optionLabelProp="label"
+              />
+            </div>
+          </Col>
          <Col className="gutter-row" span={4} style={{ flex: '1', maxWidth: '250px' }}>
                          <div style={{ textAlign: 'left' }}>
             {showDownloadButton && (
@@ -1552,7 +1591,7 @@ const Loading = () => (
               const annexureFilenames = splitValues(record.annexureFileName);
           
               const excelPaths = splitValues(record.annexureexcelpath);
-              const excelFilenames = splitValues(record.FileName3);
+              const excelFilenames = splitValues(record.annexureAttachmentFileName);
           
               const maxRows = Math.max(invoices.length, invoicePaths.length, annexurePaths.length, excelPaths.length);
           
